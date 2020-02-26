@@ -18,7 +18,7 @@ public interface SubjectRepository extends NamedEntityRepository<XtdSubject> {
             "WITH DISTINCT s SKIP {skip} LIMIT {limit} " +
             "RETURN s, [ p=(s)<-[:IS_NAME_OF|IS_DESCRIPTION_OF]-() | [relationships(p), nodes(p)] ], ID(s)"
     )
-    Iterable<XtdSubject> findAllOrderedByName(@Param("skip") int skip, @Param("limit") int limit);
+    Iterable<XtdSubject> findAll(@Param("skip") int skip, @Param("limit") int limit);
 
     @Query(
             "CALL db.index.fulltext.queryNodes('namesAndDescriptions', {term}) YIELD node, score " +
@@ -34,5 +34,4 @@ public interface SubjectRepository extends NamedEntityRepository<XtdSubject> {
             "WITH DISTINCT hit RETURN count(hit)"
     )
     int countByTerm(@Param("term") String term);
-
 }
