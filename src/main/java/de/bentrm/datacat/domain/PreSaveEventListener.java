@@ -5,6 +5,7 @@ import org.neo4j.ogm.session.event.EventListenerAdapter;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Component
@@ -16,9 +17,16 @@ public class PreSaveEventListener extends EventListenerAdapter {
 
 		if (obj instanceof UniqueEntity) {
 			UniqueEntity entity = (UniqueEntity) obj;
-			if (entity.getUniqueId() == null) {
+
+			if (entity.getUniqueId() == null || entity.getUniqueId().isBlank()) {
 				entity.setUniqueId(UUID.randomUUID().toString());
 			}
+
+			LocalDateTime now = LocalDateTime.now();
+			if (entity.getCreated() == null) {
+				entity.setCreated(now);
+			}
+			entity.setLastModified(now);
 		}
 
 		if (obj instanceof XtdRoot) {
