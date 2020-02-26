@@ -152,7 +152,7 @@ public class XtdObjectDataFetchers {
 
             Page<XtdSubject> page;
             if (dto.getTerm() != null && !dto.getTerm().isBlank()) {
-                page = objectService.findByTerm(dto.getTerm(), dto.getPageNumber(), dto.getPageSize());
+                page = objectService.findSubjectsByTerm(dto.getTerm(), dto.getPageNumber(), dto.getPageSize());
             } else {
                 page = objectService.findAllSubjects(dto.getPageNumber(), dto.getPageSize());
             }

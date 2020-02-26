@@ -18,6 +18,10 @@ public abstract class NamedEntity extends UniqueEntity {
         this.names = names;
     }
 
+    public String getLabel() {
+        return getNames().stream().map(XtdName::getName).reduce((a, b) -> a + ", " + b).orElse("");
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this)

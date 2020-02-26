@@ -51,9 +51,10 @@ public class XtdDataFetchers {
                 .dataFetcher(coordinates("query", "languages"), languageBySearch())
                 .dataFetcher(coordinates(XtdName.LABEL, "languageName"), getLanguage())
                 .dataFetcher(coordinates(XtdDescription.LABEL, "languageName"), getLanguage())
-                .dataFetcher(coordinates("mutation", "addExternalDocument"), addExternalDocument())
-                .dataFetcher(coordinates("query", "externalDocument"), externalDocumentByUniqueId())
-                .dataFetcher(coordinates("query", "externalDocuments"), externalDocumentBySearch())
+                .dataFetcher(coordinates("mutation", "addDocument"), addExternalDocument())
+                .dataFetcher(coordinates("mutation", "deleteDocument"), deleteExternalDocument())
+                .dataFetcher(coordinates("query", "document"), externalDocumentByUniqueId())
+                .dataFetcher(coordinates("query", "documents"), externalDocumentBySearch())
                 .build();
     }
 
@@ -76,9 +77,13 @@ public class XtdDataFetchers {
     private DataFetcher<Connection<XtdLanguage>> languageBySearch() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("options");
+
             ObjectMapper mapper = new ObjectMapper();
-            SearchOptionsDto searchOptionsDto = mapper.convertValue(input, SearchOptionsDto.class);
-            Page<XtdLanguage> page = languageService.findAll(searchOptionsDto.getPageNumber(), searchOptionsDto.getPageSize());
+            SearchOptionsDto dto = mapper.convertValue(input, SearchOptionsDto.class);
+
+            if (dto == null) dto = SearchOptionsDto.defaults();
+
+            Page<XtdLanguage> page = languageService.findAll(dto.getPageNumber(), dto.getPageSize());
             Connection<XtdLanguage> connection = new Connection<>();
             connection.setNodes(page.get().collect(Collectors.toList()));
             connection.setPage(PageInfo.fromPage(page));
@@ -149,10 +154,17 @@ public class XtdDataFetchers {
 
     private DataFetcher<XtdExternalDocument> addExternalDocument() {
         return environment -> {
-            Map<String, Object> input = environment.getArgument("newExternalDocument");
+            Map<String, Object> input = environment.getArgument("newDocument");
             ObjectMapper mapper = new ObjectMapper();
             XtdExternalDocumentInputDto dto = mapper.convertValue(input, XtdExternalDocumentInputDto.class);
-            return externalDocumentService.create(dto);
+            return externalDocumentService.createExternalDocument(dto);
+        };
+    }
+
+    private DataFetcher<XtdExternalDocument> deleteExternalDocument() {
+        return environment -> {
+            String uniqueId = environment.getArgument("uniqueId");
+            return externalDocumentService.deleteExternalDocument(uniqueId);
         };
     }
 
@@ -167,11 +179,23 @@ public class XtdDataFetchers {
         return environment -> {
             Map<String, Object> input = environment.getArgument("options");
             ObjectMapper mapper = new ObjectMapper();
-            SearchOptionsDto searchOptionsDto = mapper.convertValue(input, SearchOptionsDto.class);
-            Page<XtdExternalDocument> page = externalDocumentService.findAll(XtdExternalDocument.LABEL, searchOptionsDto.getPageNumber(), searchOptionsDto.getPageSize());
+            SearchOptionsDto dto = mapper.convertValue(input, SearchOptionsDto.class);
+
+            if (dto == null) {
+                dto = SearchOptionsDto.defaults();
+            }
+
+            Page<XtdExternalDocument> page;
+            if (dto.hasTerm()) {
+                page = externalDocumentService.findExternalDocumentsByTerm(dto.getTerm(), dto.getPageNumber(), dto.getPageSize());
+            } else {
+                page = externalDocumentService.findAllExternalDocuments(dto.getPageNumber(), dto.getPageSize());
+            }
+
             Connection<XtdExternalDocument> connection = new Connection<>();
             connection.setNodes(page.get().collect(Collectors.toList()));
             connection.setPage(PageInfo.fromPage(page));
+
             return connection;
         };
     }
