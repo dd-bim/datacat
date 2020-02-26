@@ -22,7 +22,6 @@ import java.util.SortedSet;
 class LanguageRepresentationServiceImpl implements LanguageRepresentationService {
 
     private final LanguageRepository languageRepository;
-
     private final ObjectRepository repository;
 
     @Autowired

@@ -1,12 +1,13 @@
 package de.bentrm.datacat.service.impl;
 
 import de.bentrm.datacat.domain.*;
+import de.bentrm.datacat.domain.relationship.XtdRelGroups;
 import de.bentrm.datacat.dto.*;
 import de.bentrm.datacat.repository.*;
+import de.bentrm.datacat.repository.relationship.RelGroupsRepository;
 import de.bentrm.datacat.service.XtdObjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
@@ -21,29 +22,45 @@ public class XtdObjectServiceImpl extends NamedEntityServiceImpl<XtdObject, Obje
     private final ActorRepository actorRepository;
     private final ActivityRepository activityRepository;
     private final SubjectRepository subjectRepository;
+    private final RelGroupsRepository relGroupsRepository;
 
     @Autowired
     public XtdObjectServiceImpl(LanguageRepository languageRepository,
                                 ActorRepository actorRepository,
                                 ActivityRepository activityRepository,
                                 SubjectRepository subjectRepository,
+                                RelGroupsRepository relGroupsRepository,
                                 ObjectRepository repository) {
         super(languageRepository, repository);
         this.languageRepository = languageRepository;
         this.actorRepository = actorRepository;
         this.activityRepository = activityRepository;
         this.subjectRepository = subjectRepository;
+        this.relGroupsRepository = relGroupsRepository;
     }
 
-    @Transactional(readOnly = true)
-    public Page<XtdObject> findByGroup(String label, String groupUniqueId, int pageNumber, int pageSize) {
-        int skip = pageSize * pageNumber;
-        Iterable<XtdObject> queryResults = repository.findAllByGroup(label, groupUniqueId, skip, pageSize);
-        int totalCount = repository.countFindAllByGroup(label, groupUniqueId);
+    @Override
+    public Page<XtdObject> findByRelDocumentsUniqueId(String uniqueId, int pageNumber, int pageSize) {
+        int skip = pageNumber * pageSize;
+        Iterable<XtdObject> objects = repository.findByRelDocumentsUniqueId(uniqueId, skip, pageSize);
 
-        List<XtdObject> results = new ArrayList<>();
-        queryResults.forEach(results::add);
-        return new PageImpl<>(results, PageRequest.of(pageNumber, pageSize), totalCount);
+        List<XtdObject> content = new ArrayList<>();
+        objects.forEach(content::add);
+
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
+        return PageableExecutionUtils.getPage(content, pageRequest, () -> repository.countByRelDocumentsUniqueId(uniqueId));
+    }
+
+    @Override
+    public Page<XtdObject> findByRelGroupsUniqueId(String uniqueId, int pageNumber, int pageSize) {
+        int skip = pageNumber * pageSize;
+        Iterable<XtdObject> objects = repository.findByRelGroupsUniqueId(uniqueId, skip, pageSize);
+
+        List<XtdObject> content = new ArrayList<>();
+        objects.forEach(content::add);
+
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
+        return PageableExecutionUtils.getPage(content, pageRequest, () -> repository.countByRelGroupsUniqueId(uniqueId));
     }
 
     @Override
@@ -91,7 +108,7 @@ public class XtdObjectServiceImpl extends NamedEntityServiceImpl<XtdObject, Obje
     @Override
     public Page<XtdSubject> findAllSubjects(int pageNumber, int pageSize) {
         int skip = pageNumber * pageSize;
-        Iterable<XtdSubject> nodes = subjectRepository.findAllOrderedByName(skip, pageSize);
+        Iterable<XtdSubject> nodes = subjectRepository.findAll(skip, pageSize);
 
         List<XtdSubject> resultList = new ArrayList<>();
         nodes.forEach(resultList::add);
@@ -103,7 +120,7 @@ public class XtdObjectServiceImpl extends NamedEntityServiceImpl<XtdObject, Obje
     }
 
     @Override
-    public Page<XtdSubject> findByTerm(String term, int pageNumber, int pageSize) {
+    public Page<XtdSubject> findSubjectsByTerm(String term, int pageNumber, int pageSize) {
         int skip = pageNumber * pageSize;
         Iterable<XtdSubject> nodes = subjectRepository.findByTerm(term, skip, pageSize);
 
