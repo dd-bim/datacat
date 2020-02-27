@@ -59,7 +59,7 @@ public class XtdRelationshipServiceImpl extends NamedEntityServiceImpl<XtdRelati
 
     @Override
     public XtdRelDocuments findRelDocumentsByUniqueId(String uniqueId) {
-        return relDocumentsRepository.findByUniqueId(uniqueId);
+        return relDocumentsRepository.findByUniqueId(uniqueId, 2);
     }
 
     @Override
