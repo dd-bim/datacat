@@ -10,32 +10,32 @@ import org.springframework.stereotype.Repository;
 public interface ObjectRepository extends NamedEntityRepository<XtdObject> {
 
     @Query(
-            "MATCH (name:XtdName)-[:IS_NAME_OF]->(o:XtdObject)<-[:DOCUMENTS]-(rel:XtdRelDocuments {uniqueId: {uniqueId}})" +
+            "MATCH (name:XtdName)-[:IS_NAME_OF]->(o:XtdObject)<-[:DOCUMENTS]-(rel:XtdRelDocuments {id: {id}})" +
             "WITH o, name ORDER BY name.sortOrder, toLower(name.name) ASC, name.name DESC " +
             "WITH DISTINCT o SKIP {skip} LIMIT {limit} " +
             "RETURN o, [ p=(o)<-[:IS_NAME_OF|IS_DESCRIPTION_OF]-() | [relationships(p), nodes(p)] ], ID(o)"
     )
-    Iterable<XtdObject> findByRelDocumentsUniqueId(@Param("uniqueId") String uniqueId, @Param("skip") int skip, @Param("limit") int limit);
+    Iterable<XtdObject> findByRelDocumentsId(@Param("id") String id, @Param("skip") int skip, @Param("limit") int limit);
 
     @Query(
-            "MATCH (o:XtdObject)<-[:DOCUMENTS]-(rel:XtdRelDocuments {uniqueId: {uniqueId}})" +
+            "MATCH (o:XtdObject)<-[:DOCUMENTS]-(rel:XtdRelDocuments {id: {id}})" +
             "RETURN count(DISTINCT o)"
 
     )
-    long countByRelDocumentsUniqueId(@Param("uniqueId") String uniqueId);
+    long countByRelDocumentsId(@Param("id") String id);
 
     @Query(
-            "MATCH (name:XtdName)-[:IS_NAME_OF]->(o:XtdObject)<-[:ASSOCIATES]-(rel:XtdRelGroups {uniqueId: {uniqueId}})" +
+            "MATCH (name:XtdName)-[:IS_NAME_OF]->(o:XtdObject)<-[:ASSOCIATES]-(rel:XtdRelGroups {id: {id}})" +
             "WITH o, name ORDER BY name.sortOrder, toLower(name.name) ASC, name.name DESC " +
             "WITH DISTINCT o SKIP {skip} LIMIT {limit} " +
             "RETURN o, [ p=(o)<-[:IS_NAME_OF|IS_DESCRIPTION_OF]-() | [relationships(p), nodes(p)] ], ID(o)"
     )
-    Iterable<XtdObject> findByRelGroupsUniqueId(@Param("uniqueId") String uniqueId, @Param("skip") int skip, @Param("limit") int limit);
+    Iterable<XtdObject> findByRelGroupsId(@Param("id") String id, @Param("skip") int skip, @Param("limit") int limit);
 
     @Query(
-            "MATCH (o:XtdObject)<-[:ASSOCIATES]-(rel:XtdRelGroups {uniqueId: {uniqueId}})" +
+            "MATCH (o:XtdObject)<-[:ASSOCIATES]-(rel:XtdRelGroups {id: {id}})" +
             "RETURN count(DISTINCT o)"
 
     )
-    long countByRelGroupsUniqueId(@Param("uniqueId") String uniqueId);
+    long countByRelGroupsId(@Param("id") String id);
 }

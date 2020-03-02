@@ -3,7 +3,6 @@ package de.bentrm.datacat.service.impl;
 import de.bentrm.datacat.domain.XtdExternalDocument;
 import de.bentrm.datacat.domain.XtdLanguage;
 import de.bentrm.datacat.domain.XtdName;
-import de.bentrm.datacat.domain.XtdSubject;
 import de.bentrm.datacat.repository.ExternalDocumentRepository;
 import de.bentrm.datacat.repository.LanguageRepository;
 import de.bentrm.datacat.repository.relationship.RelDocumentsRepository;
@@ -14,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,12 +37,12 @@ public class XtdExternalDocumentServiceImpl extends NamedEntityServiceImpl<XtdEx
 
     public XtdExternalDocument createExternalDocument(XtdExternalDocumentInputDto dto) {
         XtdExternalDocument newExternalDocument = new XtdExternalDocument();
-        newExternalDocument.setUniqueId(dto.getUniqueId());
+        newExternalDocument.setId(dto.getId());
         for (int i = 0; i < dto.getNames().size(); i++) {
             XtdNameInputDto nameDto = dto.getNames().get(i);
             XtdName newName = new XtdName();
             XtdLanguage language = languageRepository.findByLanguageCode(nameDto.getLanguageCode());
-            newName.setUniqueId(nameDto.getUniqueId());
+            newName.setId(nameDto.getId());
             newName.setLanguageName(language);
             newName.setName(nameDto.getName());
             newName.setSortOrder(i);
@@ -55,8 +52,8 @@ public class XtdExternalDocumentServiceImpl extends NamedEntityServiceImpl<XtdEx
     }
 
     @Override
-    public XtdExternalDocument deleteExternalDocument(String uniqueId) {
-        XtdExternalDocument document = repository.findByUniqueId(uniqueId);
+    public XtdExternalDocument deleteExternalDocument(String id) {
+        XtdExternalDocument document = repository.findById(id);
         document.getDocuments().forEach(relDocumentsRepository::delete);
         repository.delete(document);
         return document;

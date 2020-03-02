@@ -6,7 +6,7 @@ import javax.validation.constraints.NotBlank;
 
 public class XtdDescriptionInputDto {
 
-    private String uniqueId;
+    private String id;
 
     @NotBlank
     private String languageCode;
@@ -16,8 +16,8 @@ public class XtdDescriptionInputDto {
 
     private Integer sortOrder;
 
-    public String getUniqueId() {
-        return uniqueId;
+    public String getId() {
+        return id;
     }
 
     public String getLanguageCode() {
@@ -35,7 +35,7 @@ public class XtdDescriptionInputDto {
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .append("uniqueId", uniqueId)
+                .append("id", id)
                 .append("languageCode", languageCode)
                 .append("description", description)
                 .append("sortOrder", sortOrder)

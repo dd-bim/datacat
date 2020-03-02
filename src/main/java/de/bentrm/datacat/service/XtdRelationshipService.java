@@ -8,13 +8,13 @@ import org.springframework.data.domain.Page;
 
 public interface XtdRelationshipService extends NamedEntityService<XtdRelationship> {
 
-    XtdRelDocuments findRelDocumentsByUniqueId(String uniqueId);
+    XtdRelDocuments findRelDocumentsById(String id);
     Page<XtdRelDocuments> findAllRelDocuments(int pageNumber, int pageSize);
-    Page<XtdRelDocuments> findRelDocumentsByRelatingDocument(String relatingDocumentUniqueId, int pageNumber, int pageSize);
+    Page<XtdRelDocuments> findRelDocumentsByRelatingDocument(String relatingDocumentId, int pageNumber, int pageSize);
 
     XtdRelGroups createRelGroups(XtdRelGroupsInputDto dto);
-    XtdRelGroups findRelGroupsByUniqueId(String uniqueId);
-    Page<XtdRelGroups> findRelGroupsByRelatingObjectUniqueId(String relatingObjectUniqueId, int pageNumber, int pageSize);
+    XtdRelGroups findRelGroupsById(String id);
+    Page<XtdRelGroups> findRelGroupsByRelatingObjectId(String relatingObjectId, int pageNumber, int pageSize);
     Page<XtdRelGroups> findAllRelGroups(int pageNumber, int pageSize);
 
 }

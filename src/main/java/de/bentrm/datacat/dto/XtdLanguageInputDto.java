@@ -4,13 +4,13 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class XtdLanguageInputDto {
 
-    private String uniqueId;
+    private String id;
     private String languageCode;
     private String languageNameInEnglish;
     private String languageNameInSelf;
 
-    public String getUniqueId() {
-        return uniqueId;
+    public String getId() {
+        return id;
     }
 
     public String getLanguageCode() {
@@ -28,7 +28,7 @@ public class XtdLanguageInputDto {
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .append("uniqueId", uniqueId)
+                .append("id", id)
                 .append("languageCode", languageCode)
                 .append("languageNameInEnglish", languageNameInEnglish)
                 .append("languageNameInSelf", languageNameInSelf)

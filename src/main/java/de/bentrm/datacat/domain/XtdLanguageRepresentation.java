@@ -1,7 +1,5 @@
 package de.bentrm.datacat.domain;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
@@ -9,7 +7,7 @@ import org.neo4j.ogm.annotation.Relationship;
 import javax.validation.constraints.NotNull;
 
 @NodeEntity(label = XtdLanguageRepresentation.LABEL)
-public abstract class XtdLanguageRepresentation extends UniqueEntity implements Comparable<XtdLanguageRepresentation> {
+public abstract class XtdLanguageRepresentation extends Entity implements Comparable<XtdLanguageRepresentation> {
 
 	public static final String TITLE = "LanguageRepresentation";
 	public static final String TITLE_PLURAL = "LanguageRepresentations";
@@ -47,7 +45,7 @@ public abstract class XtdLanguageRepresentation extends UniqueEntity implements 
 	public String toString() {
 		return new ToStringBuilder(this)
 				.appendSuper(super.toString())
-				.append("uniqueId", uniqueId)
+				.append("id", id)
 				.append("languageName", languageName)
 				.append("sortOrder", sortOrder)
 				.toString();

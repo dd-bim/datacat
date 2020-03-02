@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 
 public interface NamedEntityService<T extends NamedEntity> {
 
-    T findByUniqueId(String uniqueId);
+    T findById(String id);
     Page<T> findAll(String label, int pageNumber, int pageSize);
     Page<T> findByMatch(String label, String match, int pageNumber, int pageSize);
 

@@ -6,8 +6,8 @@ import org.springframework.data.domain.Page;
 
 public interface XtdLanguageService {
 
-    XtdLanguage findByUniqueId(String uniqueId);
-    XtdLanguage findByLanguageRepresentationUniqueId(String uniqueId);
+    XtdLanguage findById(String id);
+    XtdLanguage findByLanguageRepresentationId(String id);
     Page<XtdLanguage> findAll();
     Page<XtdLanguage> findAll(int pageNumber, int pageSize);
     XtdLanguage create(XtdLanguageInputDto dto);

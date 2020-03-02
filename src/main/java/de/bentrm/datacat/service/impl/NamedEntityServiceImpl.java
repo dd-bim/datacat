@@ -3,7 +3,6 @@ package de.bentrm.datacat.service.impl;
 import de.bentrm.datacat.domain.*;
 import de.bentrm.datacat.dto.XtdDescriptionInputDto;
 import de.bentrm.datacat.dto.XtdNameInputDto;
-import de.bentrm.datacat.dto.XtdObjectInputDto;
 import de.bentrm.datacat.dto.XtdRootDto;
 import de.bentrm.datacat.repository.LanguageRepository;
 import de.bentrm.datacat.repository.NamedEntityRepository;
@@ -37,8 +36,8 @@ public abstract class NamedEntityServiceImpl<T extends NamedEntity, R extends Na
 
     @Override
     @Transactional(readOnly = true)
-    public T findByUniqueId(String uniqueId) {
-        return repository.findByUniqueId(uniqueId);
+    public T findById(String id) {
+        return repository.findById(id);
     }
 
     @Override
@@ -66,12 +65,12 @@ public abstract class NamedEntityServiceImpl<T extends NamedEntity, R extends Na
     }
 
     protected void mapInputToObject(XtdRoot newObject, XtdRootDto dto) {
-        newObject.setUniqueId(dto.getUniqueId());
+        newObject.setId(dto.getId());
         for (int i = 0; i < dto.getNames().size(); i++) {
             XtdNameInputDto nameDto = dto.getNames().get(i);
             XtdName newName = new XtdName();
             XtdLanguage language = languageRepository.findByLanguageCode(nameDto.getLanguageCode());
-            newName.setUniqueId(nameDto.getUniqueId());
+            newName.setId(nameDto.getId());
             newName.setLanguageName(language);
             newName.setName(nameDto.getName());
             newName.setSortOrder(i);
@@ -81,7 +80,7 @@ public abstract class NamedEntityServiceImpl<T extends NamedEntity, R extends Na
             XtdDescriptionInputDto descriptionDto = dto.getDescriptions().get(i);
             XtdDescription newDescription = new XtdDescription();
             XtdLanguage language = languageRepository.findByLanguageCode(descriptionDto.getLanguageCode());
-            newDescription.setUniqueId(descriptionDto.getUniqueId());
+            newDescription.setId(descriptionDto.getId());
             newDescription.setLanguageName(language);
             newDescription.setDescription(descriptionDto.getDescription());
             newDescription.setSortOrder(i);

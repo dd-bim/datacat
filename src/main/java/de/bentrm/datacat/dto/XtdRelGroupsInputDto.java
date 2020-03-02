@@ -7,14 +7,14 @@ import java.util.List;
 
 public class XtdRelGroupsInputDto implements XtdRootDto {
 
-    private String uniqueId;
+    private String id;
     private List<XtdNameInputDto> names = new ArrayList<>();
     private List<XtdDescriptionInputDto> descriptions = new ArrayList<>();
-    private String relatingObjectUniqueId;
-    private List<String> relatedObjectsUniqueIds;
+    private String relatingObjectId;
+    private List<String> relatedObjectsIds;
 
-    public String getUniqueId() {
-        return uniqueId;
+    public String getId() {
+        return id;
     }
 
     public List<XtdNameInputDto> getNames() {
@@ -25,22 +25,22 @@ public class XtdRelGroupsInputDto implements XtdRootDto {
         return descriptions;
     }
 
-    public String getRelatingObjectUniqueId() {
-        return relatingObjectUniqueId;
+    public String getRelatingObjectId() {
+        return relatingObjectId;
     }
 
-    public List<String> getRelatedObjectsUniqueIds() {
-        return relatedObjectsUniqueIds;
+    public List<String> getRelatedObjectsIds() {
+        return relatedObjectsIds;
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .append("uniqueId", uniqueId)
+                .append("id", id)
                 .append("names", names)
                 .append("descriptions", descriptions)
-                .append("relatingObjectUniqueId", relatingObjectUniqueId)
-                .append("relatedObjectsUniqueIds", relatedObjectsUniqueIds)
+                .append("relatingObjectId", relatingObjectId)
+                .append("relatedObjectsIds", relatedObjectsIds)
                 .toString();
     }
 }

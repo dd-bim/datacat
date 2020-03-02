@@ -5,7 +5,7 @@ import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.*;
 
-public abstract class NamedEntity extends UniqueEntity {
+public abstract class NamedEntity extends Entity {
 
     @Relationship(type = XtdName.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
     protected SortedSet<XtdName> names = new TreeSet<>();

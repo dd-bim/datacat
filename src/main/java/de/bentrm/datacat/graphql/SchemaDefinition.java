@@ -40,7 +40,7 @@ public class SchemaDefinition {
     private GraphQLInterfaceType entity = newInterface()
             .name("Entity")
             .field(field -> field.name("id").type(nonNull(GraphQLString)))
-            .field(field -> field.name("uniqueId").type(nonNull(GraphQLID)))
+            .field(field -> field.name("id").type(nonNull(GraphQLID)))
             .field(field -> field.name("created").type(nonNull(GraphQLString)))
             .field(field -> field.name("lastModified").type(nonNull(GraphQLString)))
             .build();
@@ -170,7 +170,7 @@ public class SchemaDefinition {
 
     private GraphQLInputObjectType xtdNameInput = newInputObject()
             .name(XtdName.LABEL + "Input")
-            .field(field -> field.name("uniqueId").type(GraphQLID))
+            .field(field -> field.name("id").type(GraphQLID))
             .field(field -> field.name("languageCode").type(nonNull(GraphQLString)))
             .field(field -> field.name("name").type(nonNull(GraphQLString)))
             .field(field -> field.name("ignoreDuplicate").type(GraphQLBoolean).defaultValue(false))
@@ -183,7 +183,7 @@ public class SchemaDefinition {
 
     private GraphQLInputObjectType xtdDescriptionInput = newInputObject()
             .name(XtdDescription.LABEL + "Input")
-            .field(field -> field.name("uniqueId").type(GraphQLID))
+            .field(field -> field.name("id").type(GraphQLID))
             .field(field -> field.name("languageCode").type(nonNull(GraphQLString)))
             .field(field -> field.name("description").type(nonNull(GraphQLString)))
             .build();
@@ -195,7 +195,7 @@ public class SchemaDefinition {
 
     private GraphQLInputObjectType xtdRootInput = newInputObject()
             .name("RootInput")
-            .field(field -> field.name("uniqueId").type(GraphQLID))
+            .field(field -> field.name("id").type(GraphQLID))
             .field(field -> field.name("versionId").type(GraphQLString))
             .field(field -> field.name("versionDate").type(GraphQLString))
             .field(field -> field.name("names").type(nonNull(list(nonNull(xtdNameInput)))))
@@ -222,14 +222,14 @@ public class SchemaDefinition {
 
         queryTypeBuilder.field(field -> field.name("groupsRelationship")
                 .type(xtdRelGroups)
-                .argument(arg -> arg.name("uniqueId").type(GraphQLID)))
+                .argument(arg -> arg.name("id").type(GraphQLID)))
                 .field(field -> field.name("groupsRelationships")
                         .type(nonNull(connection(xtdRelGroups)))
                         .argument(arg -> arg.name("options").type(relGroupsSearchOptions)));
 
         GraphQLInputObjectType xtdLanguageInput = newInputObject()
                 .name(XtdLanguage.LABEL + "Input")
-                .field(field -> field.name("uniqueId").type(GraphQLID))
+                .field(field -> field.name("id").type(GraphQLID))
                 .field(field -> field.name("languageCode").type(nonNull(GraphQLString)))
                 .field(field -> field.name("languageNameInEnglish").type(nonNull(GraphQLString)))
                 .field(field -> field.name("languageNameInSelf").type(GraphQLString))
@@ -237,7 +237,7 @@ public class SchemaDefinition {
 
         GraphQLInputObjectType xtdDocumentInput = newInputObject()
                 .name(XtdExternalDocument.LABEL + "Input")
-                .field(field -> field.name("uniqueId").type(GraphQLID))
+                .field(field -> field.name("id").type(GraphQLID))
                 .field(field -> field.name("names").type(nonNull(list(nonNull(xtdNameInput)))))
                 .build();
 
@@ -245,30 +245,30 @@ public class SchemaDefinition {
                 .name("mutation")
                 .field(field -> field.name("addName")
                         .type(xtdObject)
-                        .argument(arg -> arg.name("parentUniqueId").type(nonNull(GraphQLID)))
+                        .argument(arg -> arg.name("parentId").type(nonNull(GraphQLID)))
                         .argument(arg -> arg.name("newName").type(nonNull(xtdAddNameInput))))
                 .field(field -> field.name("updateName")
                         .type(xtdObject)
-                        .argument(arg -> arg.name("parentUniqueId").type(nonNull(GraphQLID)))
-                        .argument(arg -> arg.name("uniqueId").type(nonNull(GraphQLID)))
+                        .argument(arg -> arg.name("parentId").type(nonNull(GraphQLID)))
+                        .argument(arg -> arg.name("id").type(nonNull(GraphQLID)))
                         .argument(arg -> arg.name("newName").type(nonNull(GraphQLString))))
                 .field(field -> field.name("deleteName")
                         .type(xtdObject)
-                        .argument(arg -> arg.name("parentUniqueId").type(nonNull(GraphQLID)))
-                        .argument(arg -> arg.name("uniqueId").type(nonNull(GraphQLID))))
+                        .argument(arg -> arg.name("parentId").type(nonNull(GraphQLID)))
+                        .argument(arg -> arg.name("id").type(nonNull(GraphQLID))))
                 .field(field -> field.name("addDescription")
                         .type(xtdObject)
-                        .argument(arg -> arg.name("parentUniqueId").type(nonNull(GraphQLID)))
+                        .argument(arg -> arg.name("parentId").type(nonNull(GraphQLID)))
                         .argument(arg -> arg.name("newDescription").type(nonNull(xtdAddDescriptionInput))))
                 .field(field -> field.name("updateDescription")
                         .type(xtdObject)
-                        .argument(arg -> arg.name("parentUniqueId").type(nonNull(GraphQLID)))
-                        .argument(arg -> arg.name("uniqueId").type(nonNull(GraphQLID)))
+                        .argument(arg -> arg.name("parentId").type(nonNull(GraphQLID)))
+                        .argument(arg -> arg.name("id").type(nonNull(GraphQLID)))
                         .argument(arg -> arg.name("newDescription").type(nonNull(GraphQLString))))
                 .field(field -> field.name("deleteDescription")
                         .type(xtdObject)
-                        .argument(arg -> arg.name("parentUniqueId").type(nonNull(GraphQLID)))
-                        .argument(arg -> arg.name("uniqueId").type(nonNull(GraphQLID))))
+                        .argument(arg -> arg.name("parentId").type(nonNull(GraphQLID)))
+                        .argument(arg -> arg.name("id").type(nonNull(GraphQLID))))
                 .field(field -> field.name("addLanguage")
                         .type(xtdLanguage)
                         .argument(arg -> arg.name("newLanguage").type(nonNull(xtdLanguageInput))))
@@ -277,7 +277,7 @@ public class SchemaDefinition {
                         .argument(arg -> arg.name("newDocument").type(nonNull(xtdDocumentInput))))
                 .field(field -> field.name("deleteDocument")
                         .type(xtdDocument)
-                        .argument(arg -> arg.name("uniqueId").type(nonNull(GraphQLID))));
+                        .argument(arg -> arg.name("id").type(nonNull(GraphQLID))));
 
         xtdObjectMutation(mutationTypeBuilder, XtdActor.TITLE, xtdActor);
         xtdObjectMutation(mutationTypeBuilder, XtdActivity.TITLE, xtdActivity);
@@ -292,8 +292,8 @@ public class SchemaDefinition {
 
         GraphQLInputObjectType xtdRelGroupsInput = newInputObject(xtdRootInput)
                 .name(xtdRelGroups.getName() + "Input")
-                .field(field -> field.name("relatingObjectUniqueId").type(nonNull(GraphQLID)))
-                .field(field -> field.name("relatedObjectsUniqueIds").type(nonNull(list(nonNull(GraphQLID)))))
+                .field(field -> field.name("relatingObjectId").type(nonNull(GraphQLID)))
+                .field(field -> field.name("relatedObjectsIds").type(nonNull(list(nonNull(GraphQLID)))))
                 .build();
 
         mutationTypeBuilder
@@ -338,7 +338,7 @@ public class SchemaDefinition {
         builder
                 .field(field -> field.name(singularName)
                         .type(type)
-                        .argument(arg -> arg.name("uniqueId").type(GraphQLID)))
+                        .argument(arg -> arg.name("id").type(GraphQLID)))
                 .field(field -> field.name(pluralName)
                         .type(nonNull(connection(type)))
                         .argument(arg -> arg.name("options").type(searchOptions)));
@@ -356,6 +356,6 @@ public class SchemaDefinition {
                         .argument(arg -> arg.name("new" + label).type(nonNull(inputType))))
                 .field(field -> field.name("delete" + label)
                         .type(type)
-                        .argument(arg -> arg.name("uniqueId").type(nonNull(GraphQLID))));
+                        .argument(arg -> arg.name("id").type(nonNull(GraphQLID))));
     }
 }

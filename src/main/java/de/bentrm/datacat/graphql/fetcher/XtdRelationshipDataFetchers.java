@@ -3,7 +3,6 @@ package de.bentrm.datacat.graphql.fetcher;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.bentrm.datacat.domain.XtdExternalDocument;
 import de.bentrm.datacat.domain.XtdObject;
-import de.bentrm.datacat.domain.XtdRoot;
 import de.bentrm.datacat.domain.XtdSubject;
 import de.bentrm.datacat.domain.relationship.XtdRelDocuments;
 import de.bentrm.datacat.domain.relationship.XtdRelGroups;
@@ -23,8 +22,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Page;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -45,13 +42,13 @@ public class XtdRelationshipDataFetchers {
         return newCodeRegistry()
                 .typeResolver(XtdRelationship.LABEL, new XtdRelationshipTypeResolver())
 
-                .dataFetcher(coordinates("query", "documentsRelationships"), relDocumentsByUniqueId())
+                .dataFetcher(coordinates("query", "documentsRelationships"), relDocumentsById())
                 .dataFetcher(coordinates("query", "documentsRelationships"), relDocuments())
                 .dataFetcher(coordinates(XtdExternalDocument.LABEL, "documents"), relDocumentsByRelatingDocument())
                 .dataFetcher(coordinates(XtdRelDocuments.LABEL, "relatedThings"), relDocumentsRelatedThings())
 
                 .dataFetcher(coordinates("mutation", "addGroupsRelationship"), addRelGroups())
-                .dataFetcher(coordinates("query", "groupsRelationship"), relGroupsByUniqueId())
+                .dataFetcher(coordinates("query", "groupsRelationship"), relGroupsById())
                 .dataFetcher(coordinates("query", "groupsRelationships"), relGroups())
                 .dataFetcher(coordinates(XtdSubject.LABEL, "groups"), relGroupsByRelatingObject())
                 .dataFetcher(coordinates(XtdRelGroups.LABEL, "relatedObjects"), relGroupsRelatedObjects())
@@ -59,10 +56,10 @@ public class XtdRelationshipDataFetchers {
     }
 
 
-    public DataFetcher<XtdRelDocuments> relDocumentsByUniqueId() {
+    public DataFetcher<XtdRelDocuments> relDocumentsById() {
         return env -> {
-            String uniqueId = env.getArgument("uniqueId");
-            return relationshipService.findRelDocumentsByUniqueId(uniqueId);
+            String id = env.getArgument("id");
+            return relationshipService.findRelDocumentsById(id);
         };
     }
 
@@ -93,7 +90,7 @@ public class XtdRelationshipDataFetchers {
 
             if (dto == null) dto = SearchOptionsDto.defaults();
 
-            Page<XtdObject> page = objectService.findByRelDocumentsUniqueId(relationship.getUniqueId(), dto.getPageNumber(), dto.getPageSize());
+            Page<XtdObject> page = objectService.findByRelDocumentsId(relationship.getId(), dto.getPageNumber(), dto.getPageSize());
 
             Connection<XtdObject> connection = new Connection<>();
             connection.setNodes(page.get().collect(Collectors.toList()));
@@ -111,7 +108,7 @@ public class XtdRelationshipDataFetchers {
 
             if (dto == null) dto = SearchOptionsDto.defaults();
 
-            Page<XtdRelDocuments> page = relationshipService.findRelDocumentsByRelatingDocument(document.getUniqueId(), dto.getPageNumber(), dto.getPageSize());
+            Page<XtdRelDocuments> page = relationshipService.findRelDocumentsByRelatingDocument(document.getId(), dto.getPageNumber(), dto.getPageSize());
 
             Connection<XtdRelDocuments> connection = new Connection<>();
             connection.setNodes(page.get().collect(Collectors.toList()));
@@ -129,10 +126,10 @@ public class XtdRelationshipDataFetchers {
         };
     }
 
-    public DataFetcher<XtdRelGroups> relGroupsByUniqueId() {
+    public DataFetcher<XtdRelGroups> relGroupsById() {
         return environment -> {
-            String uniqueId = environment.getArgument("uniqueId");
-            return relationshipService.findRelGroupsByUniqueId(uniqueId);
+            String id = environment.getArgument("id");
+            return relationshipService.findRelGroupsById(id);
         };
     }
 
@@ -146,7 +143,7 @@ public class XtdRelationshipDataFetchers {
 
             Page<XtdRelGroups> page;
             if (dto.hasRelatingObject()) {
-                page = relationshipService.findRelGroupsByRelatingObjectUniqueId(dto.getRelatingObject(), dto.getPageNumber(), dto.getPageSize());
+                page = relationshipService.findRelGroupsByRelatingObjectId(dto.getRelatingObject(), dto.getPageNumber(), dto.getPageSize());
             } else {
                 page = relationshipService.findAllRelGroups(dto.getPageNumber(), dto.getPageSize());
             }
@@ -167,9 +164,9 @@ public class XtdRelationshipDataFetchers {
 
             if (dto == null) dto = SearchOptionsDto.defaults();
 
-            System.out.println(parent.getUniqueId());
+            System.out.println(parent.getId());
 
-            Page<XtdRelGroups> page = relationshipService.findRelGroupsByRelatingObjectUniqueId(parent.getUniqueId(), dto.getPageNumber(), dto.getPageSize());
+            Page<XtdRelGroups> page = relationshipService.findRelGroupsByRelatingObjectId(parent.getId(), dto.getPageNumber(), dto.getPageSize());
 
             Connection<XtdRelGroups> connection = new Connection<>();
             connection.setNodes(page.get().collect(Collectors.toList()));
@@ -187,7 +184,7 @@ public class XtdRelationshipDataFetchers {
 
             if (dto == null) dto = SearchOptionsDto.defaults();
 
-            Page<XtdObject> page = objectService.findByRelGroupsUniqueId(relationship.getUniqueId(), dto.getPageNumber(), dto.getPageSize());
+            Page<XtdObject> page = objectService.findByRelGroupsId(relationship.getId(), dto.getPageNumber(), dto.getPageSize());
 
             Connection<XtdObject> connection = new Connection<>();
             connection.setNodes(page.get().collect(Collectors.toList()));

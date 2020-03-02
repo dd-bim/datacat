@@ -6,9 +6,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface NamedEntityRepository<T extends NamedEntity> extends UniqueEntityRepository<T> {
+public interface NamedEntityRepository<T extends NamedEntity> extends EntityRepository<T> {
 
-    boolean existsByUniqueId(String uniqueId);
+    boolean existsById(String id);
 
     @Query("MATCH (n)<-[:IS_NAME_OF]-(name:XtdName) " +
             "WHERE {label} IN labels(n) " +
@@ -29,7 +29,7 @@ public interface NamedEntityRepository<T extends NamedEntity> extends UniqueEnti
     int countFindAllResults(@Param("label") String label);
 
     @Query("MATCH (group)-[:ASSOCIATES]->(:XtdRelGroups)-[:ASSOCIATES]->(n)<-[:IS_NAME_OF]-(name:XtdName) " +
-            "WHERE group.uniqueId = {groupUniqueId} AND {label} IN labels(n) " +
+            "WHERE group.id = {groupId} AND {label} IN labels(n) " +
             "WITH n, name ORDER BY name.sortOrder ASC, toLower(name.value) ASC, name.value DESC " +
             "WITH DISTINCT n SKIP {skip} LIMIT {limit} " +
             "RETURN n, " +
@@ -39,10 +39,10 @@ public interface NamedEntityRepository<T extends NamedEntity> extends UniqueEnti
                     "[ r=(member)<-[:IS_NAME_OF|IS_DESCRIPTION_OF]-() |[relationships(r), nodes(r)] ] " +
                 "], ID(n)"
     )
-    Iterable<T> findAllByGroup(@Param("label") String label, @Param("groupUniqueId") String groupUniqueId, @Param("skip") int skip, @Param("limit") int limit);
+    Iterable<T> findAllByGroup(@Param("label") String label, @Param("groupId") String groupId, @Param("skip") int skip, @Param("limit") int limit);
 
-    @Query("MATCH (group)-[:ASSOCIATES]->(:XtdRelGroups)-[:ASSOCIATES]->(n) WHERE group.uniqueId = {groupUniqueId} AND {label} IN labels(n) RETURN count(n)")
-    int countFindAllByGroup(@Param("label") String label, @Param("groupUniqueId") String groupUniqueId);
+    @Query("MATCH (group)-[:ASSOCIATES]->(:XtdRelGroups)-[:ASSOCIATES]->(n) WHERE group.id = {groupId} AND {label} IN labels(n) RETURN count(n)")
+    int countFindAllByGroup(@Param("label") String label, @Param("groupId") String groupId);
 
     @Query("CALL db.index.fulltext.queryNodes('namesAndDescriptions', {term}) YIELD node, score " +
             "MATCH (node)-[:IS_NAME_OF|:IS_DESCRIPTION_OF]->(hit) " +

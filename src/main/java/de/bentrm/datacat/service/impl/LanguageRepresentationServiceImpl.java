@@ -30,8 +30,8 @@ class LanguageRepresentationServiceImpl implements LanguageRepresentationService
         this.repository = repository;
     }
 
-    public XtdObject addName(@NotBlank String parentUniqueId, @NotNull XtdNameInputDto dto) {
-        XtdObject parent = repository.findByUniqueId(parentUniqueId, 2);
+    public XtdObject addName(@NotBlank String parentId, @NotNull XtdNameInputDto dto) {
+        XtdObject parent = repository.findById(parentId, 2);
         if (parent == null) {
             throw new IllegalArgumentException("Parent not found.");
         }
@@ -42,7 +42,7 @@ class LanguageRepresentationServiceImpl implements LanguageRepresentationService
         }
 
         XtdName newName = new XtdName();
-        newName.setUniqueId(dto.getUniqueId());
+        newName.setId(dto.getId());
         newName.setLanguageName(language);
         newName.setName(dto.getName());
 
@@ -79,43 +79,43 @@ class LanguageRepresentationServiceImpl implements LanguageRepresentationService
         return repository.save(parent);
     }
 
-    public XtdObject updateName(String parentUniqueId, String uniqueId, String newName) {
-        XtdObject parent = repository.findByUniqueId(parentUniqueId, 2);
+    public XtdObject updateName(String parentId, String id, String newName) {
+        XtdObject parent = repository.findById(parentId, 2);
         if (parent == null) {
             throw new IllegalArgumentException("Parent not found.");
         }
 
-        if (uniqueId == null) {
+        if (id == null) {
             throw new IllegalArgumentException("Missing unique id of name.");
         }
 
         XtdName name = null;
         for (XtdName cur : parent.getNames()) {
-            if (cur.getUniqueId().equals(uniqueId)) {
+            if (cur.getId().equals(id)) {
                 name = cur;
             }
         }
         if (name == null) {
-            throw new IllegalArgumentException("No name with given unique id found for parent " + parentUniqueId);
+            throw new IllegalArgumentException("No name with given unique id found for parent " + parentId);
         }
 
         name.setName(newName);
         return repository.save(parent);
     }
 
-    public XtdObject deleteName(String parentUniqueId, String uniqueId) {
-        XtdObject parent = repository.findByUniqueId(parentUniqueId, 2);
+    public XtdObject deleteName(String parentId, String id) {
+        XtdObject parent = repository.findById(parentId, 2);
 
         if (parent.getNames().size() <= 1) {
             throw new IllegalArgumentException("Parent only has one name and may not be unnamed.");
         }
 
-        parent.getNames().removeIf(cur -> cur.getUniqueId().equals(uniqueId));
+        parent.getNames().removeIf(cur -> cur.getId().equals(id));
         return repository.save(parent);
     }
 
-    public XtdObject addDescription(String parentUniqueId, XtdDescriptionInputDto dto) {
-        XtdObject parent = repository.findByUniqueId(parentUniqueId, 2);
+    public XtdObject addDescription(String parentId, XtdDescriptionInputDto dto) {
+        XtdObject parent = repository.findById(parentId, 2);
         if (parent == null) {
             throw new IllegalArgumentException("Parent not found.");
         }
@@ -126,7 +126,7 @@ class LanguageRepresentationServiceImpl implements LanguageRepresentationService
         }
 
         XtdDescription newDescription = new XtdDescription();
-        newDescription.setUniqueId(dto.getUniqueId());
+        newDescription.setId(dto.getId());
         newDescription.setLanguageName(language);
         newDescription.setDescription(dto.getDescription());
 
@@ -163,33 +163,33 @@ class LanguageRepresentationServiceImpl implements LanguageRepresentationService
         return repository.save(parent);
     }
 
-    public XtdObject updateDescription(String parentUniqueId, String uniqueId, String newDescription) {
-        XtdObject parent = repository.findByUniqueId(parentUniqueId, 2);
+    public XtdObject updateDescription(String parentId, String id, String newDescription) {
+        XtdObject parent = repository.findById(parentId, 2);
         if (parent == null) {
             throw new IllegalArgumentException("Parent not found.");
         }
 
-        if (uniqueId == null) {
+        if (id == null) {
             throw new IllegalArgumentException("Missing unique id of description.");
         }
 
         XtdDescription description = null;
         for (XtdDescription cur : parent.getDescriptions()) {
-            if (cur.getUniqueId().equals(uniqueId)) {
+            if (cur.getId().equals(id)) {
                 description = cur;
             }
         }
         if (description == null) {
-            throw new IllegalArgumentException("No description with given unique id found for parent " + parentUniqueId);
+            throw new IllegalArgumentException("No description with given unique id found for parent " + parentId);
         }
 
         description.setDescription(newDescription);
         return repository.save(parent);
     }
 
-    public XtdObject deleteDescription(String parentUniqueId, String uniqueId) {
-        XtdObject parent = repository.findByUniqueId(parentUniqueId, 2);
-        parent.getDescriptions().removeIf(cur -> cur.getUniqueId().equals(uniqueId));
+    public XtdObject deleteDescription(String parentId, String id) {
+        XtdObject parent = repository.findById(parentId, 2);
+        parent.getDescriptions().removeIf(cur -> cur.getId().equals(id));
         return repository.save(parent);
     }
 }

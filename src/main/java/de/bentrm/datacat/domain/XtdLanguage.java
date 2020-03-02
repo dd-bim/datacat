@@ -5,7 +5,7 @@ import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 
 @NodeEntity(label = XtdLanguage.LABEL)
-public class XtdLanguage extends UniqueEntity {
+public class XtdLanguage extends Entity {
 
     public static final String TITLE = "Language";
     public static final String TITLE_PLURAL = "Languages";

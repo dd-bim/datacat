@@ -39,25 +39,25 @@ public class XtdObjectDataFetchers {
                 .typeResolver(XtdObject.LABEL, new XtdObjectTypeResolver())
                 .dataFetcher(coordinates("mutation", "addActor"), addActor())
                 .dataFetcher(coordinates("mutation", "deleteActor"), deleteActor())
-                .dataFetcher(coordinates("query", "actor"), objectByUniqueId())
+                .dataFetcher(coordinates("query", "actor"), objectById())
                 .dataFetcher(coordinates("query", "actors"), objectsByMatch(XtdActor.LABEL))
                 .dataFetcher(coordinates("mutation", "addActivity"), addActivity())
                 .dataFetcher(coordinates("mutation", "deleteActivity"), deleteActivity())
-                .dataFetcher(coordinates("query", "activity"), objectByUniqueId())
+                .dataFetcher(coordinates("query", "activity"), objectById())
                 .dataFetcher(coordinates("query", "activities"), objectsByMatch(XtdActivity.LABEL))
-                .dataFetcher(coordinates("query", "classification"), objectByUniqueId())
+                .dataFetcher(coordinates("query", "classification"), objectById())
                 .dataFetcher(coordinates("query", "classifications"), objectsByMatch(XtdClassification.LABEL))
-                .dataFetcher(coordinates("query", "measure"), objectByUniqueId())
+                .dataFetcher(coordinates("query", "measure"), objectById())
                 .dataFetcher(coordinates("query", "measures"), objectsByMatch(XtdMeasureWithUnit.LABEL))
-                .dataFetcher(coordinates("query", "property"), objectByUniqueId())
+                .dataFetcher(coordinates("query", "property"), objectById())
                 .dataFetcher(coordinates("query", "properties"), objectsByMatch(XtdProperty.LABEL))
                 .dataFetcher(coordinates("mutation", "addSubject"), addSubject())
                 .dataFetcher(coordinates("mutation", "deleteSubject"), deleteSubject())
-                .dataFetcher(coordinates("query", "subject"), objectByUniqueId())
+                .dataFetcher(coordinates("query", "subject"), objectById())
                 .dataFetcher(coordinates("query", "subjects"), subjectsByMatch())
-                .dataFetcher(coordinates("query", "unit"), objectByUniqueId())
+                .dataFetcher(coordinates("query", "unit"), objectById())
                 .dataFetcher(coordinates("query", "units"), objectsByMatch(XtdUnit.LABEL))
-                .dataFetcher(coordinates("query", "value"), objectByUniqueId())
+                .dataFetcher(coordinates("query", "value"), objectById())
                 .dataFetcher(coordinates("query", "values"), objectsByMatch(XtdValue.LABEL))
                 .build();
     }
@@ -73,8 +73,8 @@ public class XtdObjectDataFetchers {
 
     public DataFetcher<XtdActor> deleteActor() {
         return environment -> {
-            String uniqueId = environment.getArgument("uniqueId");
-            return objectService.deleteActor(uniqueId);
+            String id = environment.getArgument("id");
+            return objectService.deleteActor(id);
         };
     }
 
@@ -89,8 +89,8 @@ public class XtdObjectDataFetchers {
 
     public DataFetcher<XtdActivity> deleteActivity() {
         return environment -> {
-            String uniqueId = environment.getArgument("uniqueId");
-            return objectService.deleteActivity(uniqueId);
+            String id = environment.getArgument("id");
+            return objectService.deleteActivity(id);
         };
     }
 
@@ -105,15 +105,15 @@ public class XtdObjectDataFetchers {
 
     public DataFetcher<XtdSubject> deleteSubject() {
         return environment -> {
-            String uniqueId = environment.getArgument("uniqueId");
-            return objectService.deleteSubject(uniqueId);
+            String id = environment.getArgument("id");
+            return objectService.deleteSubject(id);
         };
     }
 
-    public DataFetcher<XtdObject> objectByUniqueId() {
+    public DataFetcher<XtdObject> objectById() {
         return env -> {
-            String uniqueId = env.getArgument("uniqueId");
-            return objectService.findByUniqueId(uniqueId);
+            String id = env.getArgument("id");
+            return objectService.findById(id);
         };
     }
 

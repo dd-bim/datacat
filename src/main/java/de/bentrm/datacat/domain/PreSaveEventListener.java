@@ -15,12 +15,8 @@ public class PreSaveEventListener extends EventListenerAdapter {
 	public void onPreSave(Event event) {
 		Object obj = event.getObject();
 
-		if (obj instanceof UniqueEntity) {
-			UniqueEntity entity = (UniqueEntity) obj;
-
-			if (entity.getUniqueId() == null || entity.getUniqueId().isBlank()) {
-				entity.setUniqueId(UUID.randomUUID().toString());
-			}
+		if (obj instanceof Entity) {
+			Entity entity = (Entity) obj;
 
 			LocalDateTime now = LocalDateTime.now();
 			if (entity.getCreated() == null) {

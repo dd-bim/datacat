@@ -22,7 +22,7 @@ public interface RelGroupsRepository extends NamedEntityRepository<XtdRelGroups>
     Iterable<XtdRelGroups> findAllOrderedByRelatingObjectName(@Param("skip") int skip, @Param("limit") int limit);
 
     @Query(
-            "MATCH (name:XtdName)-[:IS_NAME_OF]->(obj:XtdObject {uniqueId: {uniqueId}}) " +
+            "MATCH (name:XtdName)-[:IS_NAME_OF]->(obj:XtdObject {id: {id}}) " +
             "WITH obj, name ORDER BY name.sortOrder, toLower(name.name) ASC, name.name DESC " +
             "MATCH (obj)-[:ASSOCIATES]->(rel:XtdRelGroups) " +
             "WITH DISTINCT rel SKIP {skip} LIMIT {limit} " +
@@ -32,14 +32,14 @@ public interface RelGroupsRepository extends NamedEntityRepository<XtdRelGroups>
             "], ID(rel)"
     )
     Iterable<XtdRelGroups> findByRelatingObjectOrderedByRelatingObjectName(
-            @Param("uniqueId") String uniqueId,
+            @Param("id") String id,
             @Param("skip") int skip,
             @Param("limit") int limit);
 
     @Query(
-            "MATCH (:XtdObject {uniqueId: {uniqueId}})-[:ASSOCIATES]->(rel:XtdRelGroups) " +
+            "MATCH (:XtdObject {id: {id}})-[:ASSOCIATES]->(rel:XtdRelGroups) " +
             "RETURN count(DISTINCT rel)"
     )
-    int countByRelatingObject(@Param("uniqueId") String uniqueId);
+    int countByRelatingObject(@Param("id") String id);
 
 }

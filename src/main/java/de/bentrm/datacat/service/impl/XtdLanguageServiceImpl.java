@@ -26,14 +26,14 @@ public class XtdLanguageServiceImpl implements XtdLanguageService {
 
     @Override
     @Transactional(readOnly = true)
-    public XtdLanguage findByUniqueId(String uniqueId) {
-        return repository.findByUniqueId(uniqueId);
+    public XtdLanguage findById(String id) {
+        return repository.findById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public XtdLanguage findByLanguageRepresentationUniqueId(String uniqueId) {
-        return repository.findByLanguageRepresentationUniqueId(uniqueId);
+    public XtdLanguage findByLanguageRepresentationId(String id) {
+        return repository.findByLanguageRepresentationId(id);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class XtdLanguageServiceImpl implements XtdLanguageService {
     @Override
     public XtdLanguage create(@NotNull XtdLanguageInputDto dto) {
         XtdLanguage newLanguage = new XtdLanguage();
-        newLanguage.setUniqueId(dto.getUniqueId());
+        newLanguage.setId(dto.getId());
         newLanguage.setLanguageCode(dto.getLanguageCode());
         newLanguage.setLanguageNameInEnglish(dto.getLanguageNameInEnglish());
         newLanguage.setLanguageNameInSelf(dto.getLanguageNameInSelf());

@@ -6,11 +6,11 @@ import java.util.List;
 
 public class XtdExternalDocumentInputDto {
 
-    private String uniqueId;
+    private String id;
     private List<XtdNameInputDto> names;
 
-    public String getUniqueId() {
-        return uniqueId;
+    public String getId() {
+        return id;
     }
 
     public List<XtdNameInputDto> getNames() {
@@ -20,7 +20,7 @@ public class XtdExternalDocumentInputDto {
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .append("uniqueId", uniqueId)
+                .append("id", id)
                 .append("names", names)
                 .toString();
     }

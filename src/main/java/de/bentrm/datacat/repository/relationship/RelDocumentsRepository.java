@@ -23,7 +23,7 @@ public interface RelDocumentsRepository extends NamedEntityRepository<XtdRelDocu
     Iterable<XtdRelDocuments> findAllOrderedByRelatingDocumentName(@Param("skip") int skip, @Param("limit") int limit);
 
     @Query(
-            "MATCH (name:XtdName)-[:IS_NAME_OF]->(document:XtdExternalDocument {uniqueId: {uniqueId}}) " +
+            "MATCH (name:XtdName)-[:IS_NAME_OF]->(document:XtdExternalDocument {id: {id}}) " +
             "WITH document, name ORDER BY name.sortOrder, toLower(name.name) ASC, name.name DESC " +
             "MATCH (document)-[:DOCUMENTS]->(rel:XtdRelDocuments) " +
             "WITH DISTINCT rel SKIP {skip} LIMIT {limit} " +
@@ -32,12 +32,12 @@ public interface RelDocumentsRepository extends NamedEntityRepository<XtdRelDocu
                 "[ q=(rel)<-[:DOCUMENTS]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF]-() | [relationships(q), nodes(q)] ] " +
             "], ID(rel)"
     )
-    Iterable<XtdRelDocuments> findByRelatingDocumentOrderedByRelatingDocumentName(@Param("uniqueId") String uniqueId, @Param("skip") int skip, @Param("limit") int limit);
+    Iterable<XtdRelDocuments> findByRelatingDocumentOrderedByRelatingDocumentName(@Param("id") String id, @Param("skip") int skip, @Param("limit") int limit);
 
     @Query(
-            "MATCH (:XtdExternalDocument {uniqueId: {uniqueId}})-[:DOCUMENTS]->(rel:XtdRelDocuments) " +
+            "MATCH (:XtdExternalDocument {id: {id}})-[:DOCUMENTS]->(rel:XtdRelDocuments) " +
             "RETURN count(DISTINCT rel)"
     )
-    int countByRelatingDocument(@Param("uniqueId") String uniqueId);
+    int countByRelatingDocument(@Param("id") String id);
 
 }

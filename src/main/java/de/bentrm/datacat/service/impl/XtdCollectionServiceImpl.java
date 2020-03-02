@@ -39,10 +39,10 @@ public class XtdCollectionServiceImpl extends NamedEntityServiceImpl<XtdCollecti
                 throw new UnsupportedOperationException("Unsupported input: " + inputDto);
         }
 
-        if (inputDto.getUniqueId() != null && repository.existsByUniqueId(inputDto.getUniqueId())) {
+        if (inputDto.getId() != null && repository.existsById(inputDto.getId())) {
             throw new IllegalArgumentException("Unique ID is already in use.");
         }
-        newEntity.setUniqueId(inputDto.getUniqueId());
+        newEntity.setId(inputDto.getId());
 
         newEntity.setVersionId(inputDto.getVersionId());
         newEntity.setVersionDate(inputDto.getVersionDate());

@@ -37,17 +37,17 @@ public class XtdCollectionDataFetchers {
     public GraphQLCodeRegistry buildCodeRegistry() {
         return newCodeRegistry()
                 .typeResolver(XtdCollection.LABEL, new XtdCollectionTypeResolver())
-                .dataFetcher(coordinates("query", "bag"), collectionByUniqueId())
+                .dataFetcher(coordinates("query", "bag"), collectionById())
                 .dataFetcher(coordinates("query", "bags"), collectionsByMatch(XtdBag.LABEL))
-                .dataFetcher(coordinates("query", "nest"), collectionByUniqueId())
+                .dataFetcher(coordinates("query", "nest"), collectionById())
                 .dataFetcher(coordinates("query", "nests"), collectionsByMatch(XtdNest.LABEL))
                 .build();
     }
 
-    public DataFetcher<XtdCollection> collectionByUniqueId() {
+    public DataFetcher<XtdCollection> collectionById() {
         return env -> {
-            String uniqueId = env.getArgument("uniqueId");
-            return collectionService.findByUniqueId(uniqueId);
+            String id = env.getArgument("id");
+            return collectionService.findById(id);
         };
     }
 

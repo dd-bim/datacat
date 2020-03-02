@@ -9,7 +9,7 @@ import java.util.*;
 public class NamedEntityInput {
 
     private String label;
-    private String uniqueId;
+    private String id;
     private String versionId;
     private String versionDate;
     private List<XtdName> names = new ArrayList<>();
@@ -19,9 +19,9 @@ public class NamedEntityInput {
 
         label = (String) input.get("label");
 
-        uniqueId = (String) input.getOrDefault("uniqueId", null);
-        if (uniqueId != null) {
-            uniqueId = uniqueId.isBlank() ? null : uniqueId.trim();
+        id = (String) input.getOrDefault("id", null);
+        if (id != null) {
+            id = id.isBlank() ? null : id.trim();
         }
 
         versionId = (String) input.get("versionId");
@@ -35,7 +35,7 @@ public class NamedEntityInput {
         for (int i = 0; i < namesInput.size(); i++) {
             var item = namesInput.get(i);
             XtdName newName = new XtdName();
-            newName.setUniqueId(item.get("uniqueId"));
+            newName.setId(item.get("id"));
             newName.setName(item.get("value"));
 //            newName.setLanguage(item.get("language"));
             newName.setSortOrder(i);
@@ -47,7 +47,7 @@ public class NamedEntityInput {
             for (int i = 0; i < descriptionsInput.size(); i++) {
                 var item = descriptionsInput.get(i);
                 XtdDescription newDescription = new XtdDescription();
-                newDescription.setUniqueId(item.get("uniqueId"));
+                newDescription.setId(item.get("id"));
                 newDescription.setDescription(item.get("value"));
 //                newDescription.setLanguage(item.get("language"));
                 newDescription.setSortOrder(i);
@@ -60,8 +60,8 @@ public class NamedEntityInput {
         return label;
     }
 
-    public String getUniqueId() {
-        return uniqueId;
+    public String getId() {
+        return id;
     }
 
     public String getVersionId() {
@@ -84,7 +84,7 @@ public class NamedEntityInput {
     public String toString() {
         return new ToStringBuilder(this)
                 .append("label", label)
-                .append("uniqueId", uniqueId)
+                .append("id", id)
                 .append("versionId", versionId)
                 .append("versionDate", versionDate)
                 .append("names", names)

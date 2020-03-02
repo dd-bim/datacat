@@ -1,6 +1,5 @@
 package de.bentrm.datacat.domain;
 
-import org.intellij.lang.annotations.Language;
 import org.junit.jupiter.api.Test;
 
 import java.util.SortedSet;
@@ -35,12 +34,12 @@ public class XtdNameTests {
     void equalityIsDetected() {
         XtdLanguage lang = new XtdLanguage();
         XtdName a = new XtdName();
-        a.setUniqueId("A");
+        a.setId("A");
         a.setLanguageName(lang);
         a.setName("Test");
 
         XtdName b = new XtdName();
-        b.setUniqueId("B");
+        b.setId("B");
         b.setLanguageName(lang);
         b.setName("Test");
 

@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 public interface XtdExternalDocumentService extends NamedEntityService<XtdExternalDocument> {
 
     XtdExternalDocument createExternalDocument(XtdExternalDocumentInputDto dto);
-    XtdExternalDocument deleteExternalDocument(String uniqueId);
+    XtdExternalDocument deleteExternalDocument(String id);
     Page<XtdExternalDocument> findAllExternalDocuments(int pageNumber, int pageSize);
     Page<XtdExternalDocument> findExternalDocumentsByTerm(String term, int pageNumber, int pageSize);
 

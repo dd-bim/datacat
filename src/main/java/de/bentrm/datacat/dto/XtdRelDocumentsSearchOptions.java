@@ -2,9 +2,9 @@ package de.bentrm.datacat.dto;
 
 public class XtdRelDocumentsSearchOptions extends SearchOptionsDto {
 
-    private String relatingDocumentUniqueId;
+    private String relatingDocumentId;
 
-    public String getRelatingDocumentUniqueId() {
-        return relatingDocumentUniqueId;
+    public String getRelatingDocumentId() {
+        return relatingDocumentId;
     }
 }

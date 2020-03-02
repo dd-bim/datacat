@@ -6,7 +6,7 @@ import javax.validation.constraints.NotBlank;
 
 public class XtdNameInputDto {
 
-    private String uniqueId;
+    private String id;
 
     @NotBlank
     private String languageCode;
@@ -18,8 +18,8 @@ public class XtdNameInputDto {
 
     private Boolean ignoreDuplicate;
 
-    public String getUniqueId() {
-        return uniqueId;
+    public String getId() {
+        return id;
     }
 
     public String getLanguageCode() {
@@ -41,7 +41,7 @@ public class XtdNameInputDto {
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .append("uniqueId", uniqueId)
+                .append("id", id)
                 .append("languageCode", languageCode)
                 .append("name", name)
                 .append("sortOrder", sortOrder)

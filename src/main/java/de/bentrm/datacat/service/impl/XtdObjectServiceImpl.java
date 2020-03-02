@@ -22,45 +22,42 @@ public class XtdObjectServiceImpl extends NamedEntityServiceImpl<XtdObject, Obje
     private final ActorRepository actorRepository;
     private final ActivityRepository activityRepository;
     private final SubjectRepository subjectRepository;
-    private final RelGroupsRepository relGroupsRepository;
 
     @Autowired
     public XtdObjectServiceImpl(LanguageRepository languageRepository,
                                 ActorRepository actorRepository,
                                 ActivityRepository activityRepository,
                                 SubjectRepository subjectRepository,
-                                RelGroupsRepository relGroupsRepository,
                                 ObjectRepository repository) {
         super(languageRepository, repository);
         this.languageRepository = languageRepository;
         this.actorRepository = actorRepository;
         this.activityRepository = activityRepository;
         this.subjectRepository = subjectRepository;
-        this.relGroupsRepository = relGroupsRepository;
     }
 
     @Override
-    public Page<XtdObject> findByRelDocumentsUniqueId(String uniqueId, int pageNumber, int pageSize) {
+    public Page<XtdObject> findByRelDocumentsId(String id, int pageNumber, int pageSize) {
         int skip = pageNumber * pageSize;
-        Iterable<XtdObject> objects = repository.findByRelDocumentsUniqueId(uniqueId, skip, pageSize);
+        Iterable<XtdObject> objects = repository.findByRelDocumentsId(id, skip, pageSize);
 
         List<XtdObject> content = new ArrayList<>();
         objects.forEach(content::add);
 
         PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
-        return PageableExecutionUtils.getPage(content, pageRequest, () -> repository.countByRelDocumentsUniqueId(uniqueId));
+        return PageableExecutionUtils.getPage(content, pageRequest, () -> repository.countByRelDocumentsId(id));
     }
 
     @Override
-    public Page<XtdObject> findByRelGroupsUniqueId(String uniqueId, int pageNumber, int pageSize) {
+    public Page<XtdObject> findByRelGroupsId(String id, int pageNumber, int pageSize) {
         int skip = pageNumber * pageSize;
-        Iterable<XtdObject> objects = repository.findByRelGroupsUniqueId(uniqueId, skip, pageSize);
+        Iterable<XtdObject> objects = repository.findByRelGroupsId(id, skip, pageSize);
 
         List<XtdObject> content = new ArrayList<>();
         objects.forEach(content::add);
 
         PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
-        return PageableExecutionUtils.getPage(content, pageRequest, () -> repository.countByRelGroupsUniqueId(uniqueId));
+        return PageableExecutionUtils.getPage(content, pageRequest, () -> repository.countByRelGroupsId(id));
     }
 
     @Override
@@ -71,8 +68,8 @@ public class XtdObjectServiceImpl extends NamedEntityServiceImpl<XtdObject, Obje
     }
 
     @Override
-    public XtdActor deleteActor(String uniqueId) {
-        XtdActor actor = actorRepository.findByUniqueId(uniqueId);
+    public XtdActor deleteActor(String id) {
+        XtdActor actor = actorRepository.findById(id);
         repository.delete(actor);
         return actor;
     }
@@ -85,8 +82,8 @@ public class XtdObjectServiceImpl extends NamedEntityServiceImpl<XtdObject, Obje
     }
 
     @Override
-    public XtdActivity deleteActivity(String uniqueId) {
-        XtdActivity activity = activityRepository.findByUniqueId(uniqueId);
+    public XtdActivity deleteActivity(String id) {
+        XtdActivity activity = activityRepository.findById(id);
         repository.delete(activity);
         return activity;
     }
@@ -99,8 +96,8 @@ public class XtdObjectServiceImpl extends NamedEntityServiceImpl<XtdObject, Obje
     }
 
     @Override
-    public XtdSubject deleteSubject(String uniqueId) {
-        XtdSubject subject = subjectRepository.findByUniqueId(uniqueId);
+    public XtdSubject deleteSubject(String id) {
+        XtdSubject subject = subjectRepository.findById(id);
         repository.delete(subject);
         return subject;
     }

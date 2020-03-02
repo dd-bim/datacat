@@ -6,12 +6,12 @@ import de.bentrm.datacat.dto.XtdNameInputDto;
 
 public interface LanguageRepresentationService {
 
-    XtdObject addName(String parentUniqueId, XtdNameInputDto dto);
-    XtdObject updateName(String parentUniqueId, String uniqueId, String newName);
-    XtdObject deleteName(String parentUniqueId, String uniqueId);
+    XtdObject addName(String parentId, XtdNameInputDto dto);
+    XtdObject updateName(String parentId, String id, String newName);
+    XtdObject deleteName(String parentId, String id);
 
-    XtdObject addDescription(String parentUniqueId, XtdDescriptionInputDto dto);
-    XtdObject updateDescription(String parentUniqueId, String uniqueId, String newDescription);
-    XtdObject deleteDescription(String parentUniqueId, String uniqueId);
+    XtdObject addDescription(String parentId, XtdDescriptionInputDto dto);
+    XtdObject updateDescription(String parentId, String id, String newDescription);
+    XtdObject deleteDescription(String parentId, String id);
 
 }

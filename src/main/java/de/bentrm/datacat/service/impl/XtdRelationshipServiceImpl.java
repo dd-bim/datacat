@@ -58,8 +58,8 @@ public class XtdRelationshipServiceImpl extends NamedEntityServiceImpl<XtdRelati
     }
 
     @Override
-    public XtdRelDocuments findRelDocumentsByUniqueId(String uniqueId) {
-        return relDocumentsRepository.findByUniqueId(uniqueId, 2);
+    public XtdRelDocuments findRelDocumentsById(String id) {
+        return relDocumentsRepository.findById(id, 2);
     }
 
     @Override
@@ -74,16 +74,16 @@ public class XtdRelationshipServiceImpl extends NamedEntityServiceImpl<XtdRelati
     }
 
     @Override
-    public Page<XtdRelDocuments> findRelDocumentsByRelatingDocument(String relatingDocumentUniqueId, int pageNumber, int pageSize) {
+    public Page<XtdRelDocuments> findRelDocumentsByRelatingDocument(String relatingDocumentId, int pageNumber, int pageSize) {
         int skip = pageNumber * pageSize;
         Iterable<XtdRelDocuments> relationships = relDocumentsRepository
-                .findByRelatingDocumentOrderedByRelatingDocumentName(relatingDocumentUniqueId, skip, pageSize);
+                .findByRelatingDocumentOrderedByRelatingDocumentName(relatingDocumentId, skip, pageSize);
 
         List<XtdRelDocuments> content = new ArrayList<>();
         relationships.forEach(content::add);
 
         return PageableExecutionUtils.getPage(content, PageRequest.of(pageNumber, pageSize),
-                () -> relDocumentsRepository.countByRelatingDocument(relatingDocumentUniqueId));
+                () -> relDocumentsRepository.countByRelatingDocument(relatingDocumentId));
     }
 
     @Override
@@ -91,16 +91,16 @@ public class XtdRelationshipServiceImpl extends NamedEntityServiceImpl<XtdRelati
         XtdRelGroups newRelGroups = new XtdRelGroups();
         mapInputToObject(newRelGroups, dto);
 
-        XtdObject relatingObject = objectRepository.findByUniqueId(dto.getRelatingObjectUniqueId());
+        XtdObject relatingObject = objectRepository.findById(dto.getRelatingObjectId());
         if (relatingObject == null) {
             throw new IllegalArgumentException("No relating object provided.");
         }
         newRelGroups.setRelatingObject(relatingObject);
 
-        dto.getRelatedObjectsUniqueIds().forEach(uniqueId -> {
-            XtdObject relatedObject = objectRepository.findByUniqueId(uniqueId);
+        dto.getRelatedObjectsIds().forEach(id -> {
+            XtdObject relatedObject = objectRepository.findById(id);
             if (relatedObject == null) {
-                throw new IllegalArgumentException("No related object with ID " + uniqueId + " found.");
+                throw new IllegalArgumentException("No related object with ID " + id + " found.");
             }
             newRelGroups.getRelatedObjects().add(relatedObject);
         });
@@ -109,17 +109,17 @@ public class XtdRelationshipServiceImpl extends NamedEntityServiceImpl<XtdRelati
     }
 
     @Override
-    public Page<XtdRelGroups> findRelGroupsByRelatingObjectUniqueId(
-            String relatingObjectUniqueId, int pageNumber, int pageSize) {
+    public Page<XtdRelGroups> findRelGroupsByRelatingObjectId(
+            String relatingObjectId, int pageNumber, int pageSize) {
         int skip = pageNumber * pageSize;
         Iterable<XtdRelGroups> relationships = relGroupsRepository
-                .findByRelatingObjectOrderedByRelatingObjectName(relatingObjectUniqueId, skip, pageSize);
+                .findByRelatingObjectOrderedByRelatingObjectName(relatingObjectId, skip, pageSize);
 
         List<XtdRelGroups> content = new ArrayList<>();
         relationships.forEach(content::add);
 
         return PageableExecutionUtils.getPage(content, PageRequest.of(pageNumber, pageSize),
-                () -> relGroupsRepository.countByRelatingObject(relatingObjectUniqueId));
+                () -> relGroupsRepository.countByRelatingObject(relatingObjectId));
     }
 
     @Override
@@ -134,7 +134,7 @@ public class XtdRelationshipServiceImpl extends NamedEntityServiceImpl<XtdRelati
     }
 
     @Override
-    public XtdRelGroups findRelGroupsByUniqueId(String uniqueId) {
-        return relGroupsRepository.findByUniqueId(uniqueId, 3);
+    public XtdRelGroups findRelGroupsById(String id) {
+        return relGroupsRepository.findById(id, 3);
     }
 }

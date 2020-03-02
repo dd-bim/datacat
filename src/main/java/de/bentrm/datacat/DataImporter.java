@@ -25,14 +25,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -146,7 +144,7 @@ public class DataImporter implements ResourceLoaderAware {
 
                 // map "Fachmodell" to Collection
                 if (!names.isBlank()) {
-                    XtdBag newBag = bagRepository.findByUniqueId(entityIds.get(names));
+                    XtdBag newBag = bagRepository.findById(entityIds.get(names));
 
                     if (newBag != null) {
                         continue;
@@ -164,7 +162,7 @@ public class DataImporter implements ResourceLoaderAware {
                     }
 
                     newBag = bagRepository.save(newBag);
-                    entityIds.put(names, newBag.getUniqueId());
+                    entityIds.put(names, newBag.getId());
                 }
 
             }
@@ -184,7 +182,7 @@ public class DataImporter implements ResourceLoaderAware {
                 String names = properties[1];
 
                 if (!names.isBlank()) {
-                    XtdSubject newSubject = subjectRepository.findByUniqueId(entityIds.get(names));
+                    XtdSubject newSubject = subjectRepository.findById(entityIds.get(names));
 
                     if (newSubject != null) {
                         continue;
@@ -203,7 +201,7 @@ public class DataImporter implements ResourceLoaderAware {
                     }
 
                     newSubject = subjectRepository.save(newSubject);
-                    entityIds.put(names, newSubject.getUniqueId());
+                    entityIds.put(names, newSubject.getId());
                 }
 
             }
@@ -222,7 +220,7 @@ public class DataImporter implements ResourceLoaderAware {
                 String names = properties[2];
 
                 if (!names.isBlank()) {
-                    XtdSubject newSubject = subjectRepository.findByUniqueId(entityIds.get(names));
+                    XtdSubject newSubject = subjectRepository.findById(entityIds.get(names));
 
                     if (newSubject != null) {
                         continue;
@@ -240,7 +238,7 @@ public class DataImporter implements ResourceLoaderAware {
                     }
 
                     newSubject = subjectRepository.save(newSubject);
-                    entityIds.put(names, newSubject.getUniqueId());
+                    entityIds.put(names, newSubject.getId());
                 }
             }
             lineNumber++;
@@ -263,7 +261,7 @@ public class DataImporter implements ResourceLoaderAware {
                     continue;
                 }
 
-                var subject = subjectRepository.findByUniqueId(entityIds.get(subjectName));
+                var subject = subjectRepository.findById(entityIds.get(subjectName));
                 if (subject == null) {
                     System.out.println("No subject found with name: " + subjectName);
                     continue;
@@ -320,13 +318,13 @@ public class DataImporter implements ResourceLoaderAware {
                     }
 
                     relationship = new XtdRelCollects();
-                    relationship.setRelatingCollection(bagRepository.findByUniqueId(entityIds.get((curRelatingCollectionName))));
+                    relationship.setRelatingCollection(bagRepository.findById(entityIds.get((curRelatingCollectionName))));
                 }
 
                 if (!subjectName.isBlank() && !subjectName.equals(curRelatedThing)) {
                     curRelatedThing = subjectName;
 
-                    var subject = subjectRepository.findByUniqueId(entityIds.get(curRelatedThing));
+                    var subject = subjectRepository.findById(entityIds.get(curRelatedThing));
                     relationship.getRelatedThings().add(subject);
                 }
             }
@@ -360,7 +358,7 @@ public class DataImporter implements ResourceLoaderAware {
                         relGroupsRepository.save(relationship);
                     }
 
-                    var relatingObject = subjectRepository.findByUniqueId(entityIds.get((curGroupName)));
+                    var relatingObject = subjectRepository.findById(entityIds.get((curGroupName)));
                     if (!relatingObject.getAssociates().isEmpty()) {
                         relationship = (XtdRelGroups) relatingObject.getAssociates().iterator().next();
                     } else {
@@ -373,7 +371,7 @@ public class DataImporter implements ResourceLoaderAware {
                 if (!subjectName.isBlank() && !subjectName.equals(curGroupName) && !subjectName.equals(curGroupMemberName)) {
                     curGroupMemberName = subjectName;
 
-                    var subject = subjectRepository.findByUniqueId(entityIds.get(curGroupMemberName));
+                    var subject = subjectRepository.findById(entityIds.get(curGroupMemberName));
                     relationship.getRelatedObjects().add(subject);
                 }
             }

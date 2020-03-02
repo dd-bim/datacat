@@ -47,13 +47,13 @@ public class XtdDataFetchers {
                 .dataFetcher(coordinates("mutation", "updateDescription"), updateDescription())
                 .dataFetcher(coordinates("mutation", "deleteDescription"), deleteDescription())
                 .dataFetcher(coordinates("mutation", "addLanguage"), addLanguage())
-                .dataFetcher(coordinates("query", "language"), languageByUniqueId())
+                .dataFetcher(coordinates("query", "language"), languageById())
                 .dataFetcher(coordinates("query", "languages"), languageBySearch())
                 .dataFetcher(coordinates(XtdName.LABEL, "languageName"), getLanguage())
                 .dataFetcher(coordinates(XtdDescription.LABEL, "languageName"), getLanguage())
                 .dataFetcher(coordinates("mutation", "addDocument"), addExternalDocument())
                 .dataFetcher(coordinates("mutation", "deleteDocument"), deleteExternalDocument())
-                .dataFetcher(coordinates("query", "document"), externalDocumentByUniqueId())
+                .dataFetcher(coordinates("query", "document"), externalDocumentById())
                 .dataFetcher(coordinates("query", "documents"), externalDocumentBySearch())
                 .build();
     }
@@ -67,10 +67,10 @@ public class XtdDataFetchers {
         };
     }
 
-    private DataFetcher<XtdLanguage> languageByUniqueId() {
+    private DataFetcher<XtdLanguage> languageById() {
         return environment -> {
-            String uniqueId = environment.getArgument("uniqueId");
-            return languageService.findByUniqueId(uniqueId);
+            String id = environment.getArgument("id");
+            return languageService.findById(id);
         };
     }
 
@@ -94,61 +94,61 @@ public class XtdDataFetchers {
     private DataFetcher<XtdLanguage> getLanguage() {
         return environment -> {
             XtdLanguageRepresentation value = environment.getSource();
-            return languageService.findByLanguageRepresentationUniqueId(value.getUniqueId());
+            return languageService.findByLanguageRepresentationId(value.getId());
         };
     }
 
     private DataFetcher<XtdObject> addName() {
         return environment -> {
-            String parentUniqueId = environment.getArgument("parentUniqueId");
+            String parentId = environment.getArgument("parentId");
             Map<String, Object> input = environment.getArgument("newName");
             ObjectMapper mapper = new ObjectMapper();
             XtdNameInputDto dto = mapper.convertValue(input, XtdNameInputDto.class);
-            return languageRepresentationService.addName(parentUniqueId, dto);
+            return languageRepresentationService.addName(parentId, dto);
         };
     }
 
     private DataFetcher<XtdObject> updateName() {
         return environment -> {
-            String parentUniqueId = environment.getArgument("parentUniqueId");
-            String uniqueId = environment.getArgument("uniqueId");
+            String parentId = environment.getArgument("parentId");
+            String id = environment.getArgument("id");
             String newName = environment.getArgument("newName");
-            return languageRepresentationService.updateName(parentUniqueId, uniqueId, newName);
+            return languageRepresentationService.updateName(parentId, id, newName);
         };
     }
 
     private DataFetcher<XtdObject> deleteName() {
         return environment -> {
-            String parentUniqueId = environment.getArgument("parentUniqueId");
-            String uniqueId = environment.getArgument("uniqueId");
-            return languageRepresentationService.deleteName(parentUniqueId, uniqueId);
+            String parentId = environment.getArgument("parentId");
+            String id = environment.getArgument("id");
+            return languageRepresentationService.deleteName(parentId, id);
         };
     }
 
     private DataFetcher<XtdObject> addDescription() {
         return environment -> {
-            String parentUniqueId = environment.getArgument("parentUniqueId");
+            String parentId = environment.getArgument("parentId");
             Map<String, Object> input = environment.getArgument("newDescription");
             ObjectMapper mapper = new ObjectMapper();
             XtdDescriptionInputDto dto = mapper.convertValue(input, XtdDescriptionInputDto.class);
-            return languageRepresentationService.addDescription(parentUniqueId, dto);
+            return languageRepresentationService.addDescription(parentId, dto);
         };
     }
 
     private DataFetcher<XtdObject> updateDescription() {
         return environment -> {
-            String parentUniqueId = environment.getArgument("parentUniqueId");
-            String uniqueId = environment.getArgument("uniqueId");
+            String parentId = environment.getArgument("parentId");
+            String id = environment.getArgument("id");
             String newDescription = environment.getArgument("newDescription");
-            return languageRepresentationService.updateDescription(parentUniqueId, uniqueId, newDescription);
+            return languageRepresentationService.updateDescription(parentId, id, newDescription);
         };
     }
 
     private DataFetcher<XtdObject> deleteDescription() {
         return environment -> {
-            String parentUniqueId = environment.getArgument("parentUniqueId");
-            String uniqueId = environment.getArgument("uniqueId");
-            return languageRepresentationService.deleteDescription(parentUniqueId, uniqueId);
+            String parentId = environment.getArgument("parentId");
+            String id = environment.getArgument("id");
+            return languageRepresentationService.deleteDescription(parentId, id);
         };
     }
 
@@ -163,15 +163,15 @@ public class XtdDataFetchers {
 
     private DataFetcher<XtdExternalDocument> deleteExternalDocument() {
         return environment -> {
-            String uniqueId = environment.getArgument("uniqueId");
-            return externalDocumentService.deleteExternalDocument(uniqueId);
+            String id = environment.getArgument("id");
+            return externalDocumentService.deleteExternalDocument(id);
         };
     }
 
-    private DataFetcher<XtdExternalDocument> externalDocumentByUniqueId() {
+    private DataFetcher<XtdExternalDocument> externalDocumentById() {
         return environment -> {
-            String uniqueId = environment.getArgument("uniqueId");
-            return externalDocumentService.findByUniqueId(uniqueId);
+            String id = environment.getArgument("id");
+            return externalDocumentService.findById(id);
         };
     }
 
