@@ -20,8 +20,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
-import java.io.File;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 @Configuration
 public class SchemaDefinition implements ResourceLoaderAware {
@@ -47,8 +49,10 @@ public class SchemaDefinition implements ResourceLoaderAware {
         SchemaParser schemaParser = new SchemaParser();
         SchemaGenerator schemaGenerator = new SchemaGenerator();
 
-        File schemaFile = loadSchema("classpath:schema.graphqls").getFile();
-        TypeDefinitionRegistry typeRegistry = schemaParser.parse(schemaFile);
+        InputStream input = loadSchema("classpath:schema.graphqls").getInputStream();
+        InputStreamReader inputStreamReader = new InputStreamReader(input);
+        BufferedReader reader = new BufferedReader(inputStreamReader);
+        TypeDefinitionRegistry typeRegistry = schemaParser.parse(reader);
         RuntimeWiring wiring = RuntimeWiring.newRuntimeWiring()
                 .type("XtdLanguageRepresentation", typeWiring -> typeWiring
                         .typeResolver(new XtdLanguageRepresentationTypeResolver())
