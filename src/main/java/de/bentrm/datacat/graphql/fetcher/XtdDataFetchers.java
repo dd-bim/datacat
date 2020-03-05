@@ -1,80 +1,56 @@
 package de.bentrm.datacat.graphql.fetcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.bentrm.datacat.domain.*;
-import de.bentrm.datacat.dto.*;
+import de.bentrm.datacat.domain.XtdExternalDocument;
+import de.bentrm.datacat.domain.XtdLanguage;
+import de.bentrm.datacat.domain.XtdLanguageRepresentation;
+import de.bentrm.datacat.dto.ExternalDocumentInputDto;
+import de.bentrm.datacat.dto.LanguageInputDto;
+import de.bentrm.datacat.dto.SearchOptionsDto;
 import de.bentrm.datacat.graphql.Connection;
-import de.bentrm.datacat.graphql.PageInfo;
-import de.bentrm.datacat.graphql.resolver.XtdLanguageRepresentationTypeResolver;
-import de.bentrm.datacat.graphql.resolver.XtdRootTypeResolver;
-import de.bentrm.datacat.service.LanguageRepresentationService;
-import de.bentrm.datacat.service.XtdExternalDocumentService;
-import de.bentrm.datacat.service.XtdLanguageService;
+import de.bentrm.datacat.service.ExternalDocumentService;
+import de.bentrm.datacat.service.LanguageService;
 import graphql.schema.DataFetcher;
-import graphql.schema.GraphQLCodeRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
-import static graphql.schema.FieldCoordinates.coordinates;
-import static graphql.schema.GraphQLCodeRegistry.newCodeRegistry;
-
-@Configuration
+@Component
 public class XtdDataFetchers {
 
     @Autowired
-    private LanguageRepresentationService languageRepresentationService;
+    private LanguageService languageService;
 
     @Autowired
-    private XtdLanguageService languageService;
+    private ExternalDocumentService externalDocumentService;
 
-    @Autowired
-    private XtdExternalDocumentService externalDocumentService;
-
-    @Bean("xtdCodeRegistry")
-    public GraphQLCodeRegistry buildCodeRegistry() {
-        return newCodeRegistry()
-                .typeResolver(XtdLanguageRepresentation.LABEL, new XtdLanguageRepresentationTypeResolver())
-                .typeResolver(XtdRoot.LABEL, new XtdRootTypeResolver())
-                .dataFetcher(coordinates("mutation", "addName"), addName())
-                .dataFetcher(coordinates("mutation", "updateName"), updateName())
-                .dataFetcher(coordinates("mutation", "deleteName"), deleteName())
-                .dataFetcher(coordinates("mutation", "addDescription"), addDescription())
-                .dataFetcher(coordinates("mutation", "updateDescription"), updateDescription())
-                .dataFetcher(coordinates("mutation", "deleteDescription"), deleteDescription())
-                .dataFetcher(coordinates("mutation", "addLanguage"), addLanguage())
-                .dataFetcher(coordinates("query", "language"), languageById())
-                .dataFetcher(coordinates("query", "languages"), languageBySearch())
-                .dataFetcher(coordinates(XtdName.LABEL, "languageName"), getLanguage())
-                .dataFetcher(coordinates(XtdDescription.LABEL, "languageName"), getLanguage())
-                .dataFetcher(coordinates("mutation", "addDocument"), addExternalDocument())
-                .dataFetcher(coordinates("mutation", "deleteDocument"), deleteExternalDocument())
-                .dataFetcher(coordinates("query", "document"), externalDocumentById())
-                .dataFetcher(coordinates("query", "documents"), externalDocumentBySearch())
-                .build();
-    }
-
-    private DataFetcher<XtdLanguage> addLanguage() {
+    public DataFetcher<XtdLanguage> createLanguage() {
         return environment -> {
-            Map<String, Object> input = environment.getArgument("newLanguage");
+            Map<String, Object> input = environment.getArgument("language");
             ObjectMapper mapper = new ObjectMapper();
-            XtdLanguageInputDto dto = mapper.convertValue(input, XtdLanguageInputDto.class);
+            LanguageInputDto dto = mapper.convertValue(input, LanguageInputDto.class);
             return languageService.create(dto);
         };
     }
 
-    private DataFetcher<XtdLanguage> languageById() {
+    public DataFetcher<Optional<XtdLanguage>> deleteLanguage() {
+        return environment -> {
+            String id = environment.getArgument("id");
+            return languageService.delete(id);
+        };
+    }
+
+    public DataFetcher<Optional<XtdLanguage>> languageById() {
         return environment -> {
             String id = environment.getArgument("id");
             return languageService.findById(id);
         };
     }
 
-    private DataFetcher<Connection<XtdLanguage>> languageBySearch() {
+    public DataFetcher<Connection<XtdLanguage>> languageBySearch() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("options");
 
@@ -83,99 +59,42 @@ public class XtdDataFetchers {
 
             if (dto == null) dto = SearchOptionsDto.defaults();
 
-            Page<XtdLanguage> page = languageService.findAll(dto.getPageNumber(), dto.getPageSize());
-            Connection<XtdLanguage> connection = new Connection<>();
-            connection.setNodes(page.get().collect(Collectors.toList()));
-            connection.setPage(PageInfo.fromPage(page));
-            return connection;
+            Page<XtdLanguage> page = languageService.findAll(dto.getPageble());
+            return new Connection<>(page);
         };
     }
 
-    private DataFetcher<XtdLanguage> getLanguage() {
+    public DataFetcher<Optional<XtdLanguage>> languageByLanguageRepresentationId() {
         return environment -> {
             XtdLanguageRepresentation value = environment.getSource();
             return languageService.findByLanguageRepresentationId(value.getId());
         };
     }
 
-    private DataFetcher<XtdObject> addName() {
+    public DataFetcher<XtdExternalDocument> createExternalDocument() {
         return environment -> {
-            String parentId = environment.getArgument("parentId");
-            Map<String, Object> input = environment.getArgument("newName");
+            Map<String, Object> input = environment.getArgument("document");
             ObjectMapper mapper = new ObjectMapper();
-            XtdNameInputDto dto = mapper.convertValue(input, XtdNameInputDto.class);
-            return languageRepresentationService.addName(parentId, dto);
+            ExternalDocumentInputDto dto = mapper.convertValue(input, ExternalDocumentInputDto.class);
+            return externalDocumentService.create(dto);
         };
     }
 
-    private DataFetcher<XtdObject> updateName() {
-        return environment -> {
-            String parentId = environment.getArgument("parentId");
-            String id = environment.getArgument("id");
-            String newName = environment.getArgument("newName");
-            return languageRepresentationService.updateName(parentId, id, newName);
-        };
-    }
-
-    private DataFetcher<XtdObject> deleteName() {
-        return environment -> {
-            String parentId = environment.getArgument("parentId");
-            String id = environment.getArgument("id");
-            return languageRepresentationService.deleteName(parentId, id);
-        };
-    }
-
-    private DataFetcher<XtdObject> addDescription() {
-        return environment -> {
-            String parentId = environment.getArgument("parentId");
-            Map<String, Object> input = environment.getArgument("newDescription");
-            ObjectMapper mapper = new ObjectMapper();
-            XtdDescriptionInputDto dto = mapper.convertValue(input, XtdDescriptionInputDto.class);
-            return languageRepresentationService.addDescription(parentId, dto);
-        };
-    }
-
-    private DataFetcher<XtdObject> updateDescription() {
-        return environment -> {
-            String parentId = environment.getArgument("parentId");
-            String id = environment.getArgument("id");
-            String newDescription = environment.getArgument("newDescription");
-            return languageRepresentationService.updateDescription(parentId, id, newDescription);
-        };
-    }
-
-    private DataFetcher<XtdObject> deleteDescription() {
-        return environment -> {
-            String parentId = environment.getArgument("parentId");
-            String id = environment.getArgument("id");
-            return languageRepresentationService.deleteDescription(parentId, id);
-        };
-    }
-
-    private DataFetcher<XtdExternalDocument> addExternalDocument() {
-        return environment -> {
-            Map<String, Object> input = environment.getArgument("newDocument");
-            ObjectMapper mapper = new ObjectMapper();
-            XtdExternalDocumentInputDto dto = mapper.convertValue(input, XtdExternalDocumentInputDto.class);
-            return externalDocumentService.createExternalDocument(dto);
-        };
-    }
-
-    private DataFetcher<XtdExternalDocument> deleteExternalDocument() {
+    public DataFetcher<Optional<XtdExternalDocument>> deleteExternalDocument() {
         return environment -> {
             String id = environment.getArgument("id");
-            return externalDocumentService.deleteExternalDocument(id);
+            return externalDocumentService.delete(id);
         };
     }
 
-    private DataFetcher<XtdExternalDocument> externalDocumentById() {
+    public DataFetcher<Optional<XtdExternalDocument>> externalDocumentById() {
         return environment -> {
             String id = environment.getArgument("id");
             return externalDocumentService.findById(id);
         };
     }
 
-    private DataFetcher<Connection<XtdExternalDocument>> externalDocumentBySearch() {
+    public DataFetcher<Connection<XtdExternalDocument>> externalDocumentBySearch() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("options");
             ObjectMapper mapper = new ObjectMapper();
@@ -187,16 +106,12 @@ public class XtdDataFetchers {
 
             Page<XtdExternalDocument> page;
             if (dto.hasTerm()) {
-                page = externalDocumentService.findExternalDocumentsByTerm(dto.getTerm(), dto.getPageNumber(), dto.getPageSize());
+                page = externalDocumentService.findByTerm(dto.getTerm(), dto.getPageble());
             } else {
-                page = externalDocumentService.findAllExternalDocuments(dto.getPageNumber(), dto.getPageSize());
+                page = externalDocumentService.findAll(dto.getPageble());
             }
 
-            Connection<XtdExternalDocument> connection = new Connection<>();
-            connection.setNodes(page.get().collect(Collectors.toList()));
-            connection.setPage(PageInfo.fromPage(page));
-
-            return connection;
+            return new Connection<>(page);
         };
     }
 

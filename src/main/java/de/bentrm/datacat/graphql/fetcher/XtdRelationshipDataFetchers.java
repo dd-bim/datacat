@@ -11,30 +11,26 @@ import de.bentrm.datacat.dto.SearchOptionsDto;
 import de.bentrm.datacat.dto.XtdRelGroupsInputDto;
 import de.bentrm.datacat.dto.XtdRelGroupsSearchOptionsDto;
 import de.bentrm.datacat.graphql.Connection;
-import de.bentrm.datacat.graphql.PageInfo;
 import de.bentrm.datacat.graphql.resolver.XtdRelationshipTypeResolver;
 import de.bentrm.datacat.service.XtdObjectService;
 import de.bentrm.datacat.service.XtdRelationshipService;
 import graphql.schema.DataFetcher;
 import graphql.schema.GraphQLCodeRegistry;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Page;
 
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static graphql.schema.FieldCoordinates.coordinates;
 import static graphql.schema.GraphQLCodeRegistry.newCodeRegistry;
 
-@Configuration
+//@Configuration
 public class XtdRelationshipDataFetchers {
 
-    @Autowired
+//    @Autowired
     private XtdObjectService objectService;
 
-    @Autowired
+//    @Autowired
     private XtdRelationshipService relationshipService;
 
     @Bean("relationshipCodeRegistry")
@@ -74,10 +70,7 @@ public class XtdRelationshipDataFetchers {
             Page<XtdRelDocuments> page = relationshipService.findAllRelDocuments(dto.getPageNumber(), dto.getPageSize());
 
 
-            Connection<XtdRelDocuments> connection = new Connection<>();
-            connection.setNodes(page.get().collect(Collectors.toList()));
-            connection.setPage(PageInfo.fromPage(page));
-            return connection;
+            return new Connection<>(page);
         };
     }
 
@@ -92,10 +85,7 @@ public class XtdRelationshipDataFetchers {
 
             Page<XtdObject> page = objectService.findByRelDocumentsId(relationship.getId(), dto.getPageNumber(), dto.getPageSize());
 
-            Connection<XtdObject> connection = new Connection<>();
-            connection.setNodes(page.get().collect(Collectors.toList()));
-            connection.setPage(PageInfo.fromPage(page));
-            return connection;
+            return new Connection<>(page);
         };
     }
 
@@ -110,10 +100,7 @@ public class XtdRelationshipDataFetchers {
 
             Page<XtdRelDocuments> page = relationshipService.findRelDocumentsByRelatingDocument(document.getId(), dto.getPageNumber(), dto.getPageSize());
 
-            Connection<XtdRelDocuments> connection = new Connection<>();
-            connection.setNodes(page.get().collect(Collectors.toList()));
-            connection.setPage(PageInfo.fromPage(page));
-            return connection;
+            return new Connection<>(page);
         };
     }
 
@@ -148,10 +135,7 @@ public class XtdRelationshipDataFetchers {
                 page = relationshipService.findAllRelGroups(dto.getPageNumber(), dto.getPageSize());
             }
 
-            Connection<XtdRelGroups> connection = new Connection<>();
-            connection.setNodes(page.get().collect(Collectors.toList()));
-            connection.setPage(PageInfo.fromPage(page));
-            return connection;
+            return new Connection<>(page);
         };
     }
 
@@ -168,10 +152,7 @@ public class XtdRelationshipDataFetchers {
 
             Page<XtdRelGroups> page = relationshipService.findRelGroupsByRelatingObjectId(parent.getId(), dto.getPageNumber(), dto.getPageSize());
 
-            Connection<XtdRelGroups> connection = new Connection<>();
-            connection.setNodes(page.get().collect(Collectors.toList()));
-            connection.setPage(PageInfo.fromPage(page));
-            return connection;
+            return new Connection<>(page);
         };
     }
 
@@ -186,10 +167,7 @@ public class XtdRelationshipDataFetchers {
 
             Page<XtdObject> page = objectService.findByRelGroupsId(relationship.getId(), dto.getPageNumber(), dto.getPageSize());
 
-            Connection<XtdObject> connection = new Connection<>();
-            connection.setNodes(page.get().collect(Collectors.toList()));
-            connection.setPage(PageInfo.fromPage(page));
-            return connection;
+            return new Connection<>(page);
         };
     }
 

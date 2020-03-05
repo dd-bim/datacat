@@ -1,0 +1,511 @@
+directive @fetch(from : String!) on FIELD_DEFINITION
+
+type Page {
+    pageNumber: Int!
+    pageSize: Int!
+    pageElements: Int!
+    totalPages: Int!
+    totalElements: Int!
+    hasNext: Boolean!
+    hasPrevious: Boolean!
+    isFirst: Boolean!
+    isLast: Boolean!
+}
+
+type XtdLanguage {
+    id: ID!
+    created: String!
+    lastModified: String!
+    languageNameInEnglish: String!
+    languageNameInSelf: String!
+}
+
+type XtdLanguageConnection {
+    nodes: [XtdLanguage!]!
+    page: Page!
+}
+
+type XtdName {
+    id: ID!
+    created: String!
+    lastModified: String!
+    value: String! @fetch(from: "name")
+    languageName: XtdLanguage!
+}
+
+type XtdDescription {
+    id: ID!
+    created: String!
+    lastModified: String!
+    value: String! @fetch(from: "description")
+    languageName: XtdLanguage!
+}
+
+union XtdLanguageRepresentation = XtdName | XtdDescription
+
+type XtdExternalDocument {
+    id: ID!
+    created: String!
+    lastModified: String!
+    names: [XtdName!]!
+    documents: XtdRelDocumentsConnection!
+}
+
+type XtdExternalDocumentConnection {
+    nodes: [XtdExternalDocument!]!
+    page: Page!
+}
+
+interface XtdRoot {
+    id: ID!
+    created: String!
+    lastModified: String!
+    versionId: String!
+    versionDate: String!
+    label: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+}
+
+type XtdRootConnection {
+    nodes: [XtdRoot!]!
+    page: Page!
+}
+
+interface XtdObject {
+    id: ID!
+    created: String!
+    lastModified: String!
+    versionId: String!
+    versionDate: String!
+    label: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    documentedBy: XtdRelDocumentsConnection!
+    associates: XtdRelAssociatesConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    groups(options: PagingOptions): XtdRelGroupsConnection!
+    groupedBy(options: PagingOptions): XtdRelGroupsConnection!
+}
+
+type XtdObjectConnection {
+    nodes: [XtdObject!]!
+    page: Page!
+}
+
+interface XtdCollection {
+    id: ID!
+    created: String!
+    lastModified: String!
+    versionId: String!
+    versionDate: String!
+    label: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+}
+
+type XtdCollectionConnection {
+    nodes: [XtdCollection!]!
+    page: Page!
+}
+
+interface XtdRelationship {
+    id: ID!
+    created: String!
+    lastModified: String!
+    versionId: String!
+    versionDate: String!
+    label: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+}
+
+type XtdRelationshipConnection {
+    nodes: [XtdRelationship!]!
+    page: Page!
+}
+
+type XtdActivity implements XtdRoot, XtdObject {
+    id: ID!
+    created: String!
+    lastModified: String!
+    versionId: String!
+    versionDate: String!
+    label: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    documentedBy: XtdRelDocumentsConnection!
+    associates: XtdRelAssociatesConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    groups(options: PagingOptions): XtdRelGroupsConnection!
+    groupedBy(options: PagingOptions): XtdRelGroupsConnection!
+}
+
+type XtdActivityConnection {
+    nodes: [XtdActivity!]!
+    page: Page!
+}
+
+type XtdActor implements XtdRoot, XtdObject  {
+    id: ID!
+    created: String!
+    lastModified: String!
+    versionId: String!
+    versionDate: String!
+    label: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    documentedBy: XtdRelDocumentsConnection!
+    associates: XtdRelAssociatesConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    groups(options: PagingOptions): XtdRelGroupsConnection!
+    groupedBy(options: PagingOptions): XtdRelGroupsConnection!
+}
+
+type XtdActorConnection {
+    nodes: [XtdActor!]!
+    page: Page!
+}
+
+type XtdClassification implements XtdRoot, XtdObject {
+    id: ID!
+    created: String!
+    lastModified: String!
+    versionId: String!
+    versionDate: String!
+    label: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    documentedBy: XtdRelDocumentsConnection!
+    associates: XtdRelAssociatesConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    groups(options: PagingOptions): XtdRelGroupsConnection!
+    groupedBy(options: PagingOptions): XtdRelGroupsConnection!
+}
+
+type XtdClassificationConnection {
+    nodes: [XtdClassification!]!
+    page: Page!
+}
+
+type XtdMeasureWithUnit implements XtdRoot, XtdObject {
+    id: ID!
+    created: String!
+    lastModified: String!
+    versionId: String!
+    versionDate: String!
+    label: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    documentedBy: XtdRelDocumentsConnection!
+    associates: XtdRelAssociatesConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    groups(options: PagingOptions): XtdRelGroupsConnection!
+    groupedBy(options: PagingOptions): XtdRelGroupsConnection!
+}
+
+type XtdMeasureWithUnitConnection {
+    nodes: [XtdMeasureWithUnit!]!
+    page: Page!
+}
+
+type XtdProperty implements XtdRoot, XtdObject {
+    id: ID!
+    created: String!
+    lastModified: String!
+    versionId: String!
+    versionDate: String!
+    label: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    documentedBy: XtdRelDocumentsConnection!
+    associates: XtdRelAssociatesConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    groups(options: PagingOptions): XtdRelGroupsConnection!
+    groupedBy(options: PagingOptions): XtdRelGroupsConnection!
+}
+
+type XtdPropertyConnection {
+    nodes: [XtdProperty!]!
+    page: Page!
+}
+
+type XtdSubject implements XtdRoot, XtdObject {
+    id: ID!
+    created: String!
+    lastModified: String!
+    versionId: String!
+    versionDate: String!
+    label: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    documentedBy: XtdRelDocumentsConnection!
+    associates: XtdRelAssociatesConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    groups(options: PagingOptions): XtdRelGroupsConnection!
+    groupedBy(options: PagingOptions): XtdRelGroupsConnection!
+}
+
+type XtdSubjectConnection {
+    nodes: [XtdSubject!]!
+    page: Page!
+}
+
+type XtdUnit implements XtdRoot, XtdObject {
+    id: ID!
+    created: String!
+    lastModified: String!
+    versionId: String!
+    versionDate: String!
+    label: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    documentedBy: XtdRelDocumentsConnection!
+    associates: XtdRelAssociatesConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    groups(options: PagingOptions): XtdRelGroupsConnection!
+    groupedBy(options: PagingOptions): XtdRelGroupsConnection!
+}
+
+type XtdUnitConnection {
+    nodes: [XtdUnit!]!
+    page: Page!
+}
+
+type XtdValue implements XtdRoot, XtdObject {
+    id: ID!
+    created: String!
+    lastModified: String!
+    versionId: String!
+    versionDate: String!
+    label: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    documentedBy: XtdRelDocumentsConnection!
+    associates: XtdRelAssociatesConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    groups(options: PagingOptions): XtdRelGroupsConnection!
+    groupedBy(options: PagingOptions): XtdRelGroupsConnection!
+}
+
+type XtdValueConnection {
+    nodes: [XtdValue!]!
+    page: Page!
+}
+
+type XtdBag implements XtdRoot, XtdCollection {
+    id: ID!
+    created: String!
+    lastModified: String!
+    versionId: String!
+    versionDate: String!
+    label: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+}
+
+type XtdBagConnection {
+    nodes: [XtdBag!]!
+    page: Page!
+}
+
+type XtdNest implements XtdRoot, XtdCollection {
+    id: ID!
+    created: String!
+    lastModified: String!
+    versionId: String!
+    versionDate: String!
+    label: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+}
+
+type XtdNestConnection {
+    nodes: [XtdNest!]!
+    page: Page!
+}
+
+type XtdRelDocuments implements XtdRoot, XtdRelationship {
+    id: ID!
+    created: String!
+    lastModified: String!
+    versionId: String!
+    versionDate: String!
+    label: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    relatingDocument: XtdExternalDocument!
+    relatedObjects(options: PagingOptions): XtdObjectConnection!
+}
+
+type XtdRelDocumentsConnection {
+    nodes: [XtdRelDocuments!]!
+    page: Page!
+}
+
+type XtdRelAssociates implements XtdRoot, XtdRelationship {
+    id: ID!
+    created: String!
+    lastModified: String!
+    versionId: String!
+    versionDate: String!
+    label: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    relatingObject: XtdObject!
+    relatedObjects(options: PagingOptions): XtdObjectConnection!
+}
+
+type XtdRelAssociatesConnection {
+    nodes: [XtdRelAssociates!]!
+    page: Page!
+}
+
+type XtdRelGroups implements XtdRoot, XtdRelationship {
+    id: ID!
+    created: String!
+    lastModified: String!
+    versionId: String!
+    versionDate: String!
+    label: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    relatingObject: XtdObject!
+    relatedObjects(options: PagingOptions): XtdObjectConnection!
+}
+
+type XtdRelGroupsConnection {
+    nodes: [XtdRelGroups!]!
+    page: Page!
+}
+
+input PagingOptions {
+    pageSize: Int
+    pageNumber: Int
+}
+
+input SearchOptions {
+    term: String
+    pageSize: Int
+    pageNumber: Int
+}
+
+type Query {
+    language(id: ID!): XtdLanguage
+    languages(options: SearchOptions): XtdLanguageConnection
+
+    document(id: ID!): XtdExternalDocument
+    documents(options: SearchOptions): XtdExternalDocumentConnection
+
+    actor(id: ID!): XtdActor
+    actors(options: SearchOptions): XtdActorConnection
+
+    activity(id: ID!): XtdActivity
+    activities(options: SearchOptions): XtdActivityConnection
+
+    classification(id: ID!): XtdClassification
+    classifications(options: SearchOptions): XtdClassificationConnection
+
+    measure(id: ID!): XtdExternalDocument
+    measures(options: SearchOptions): XtdMeasureWithUnitConnection
+
+    property(id: ID!): XtdProperty
+    properies(options: SearchOptions): XtdPropertyConnection
+
+    subject(id: ID!): XtdSubject
+    subjects(options: SearchOptions): XtdSubjectConnection
+
+    unit(id: ID!): XtdUnit
+    units(options: SearchOptions): XtdUnitConnection
+
+    value(id: ID!): XtdValue
+    values(options: SearchOptions): XtdValueConnection
+
+    bag(id: ID!): XtdBag
+    bags(options: SearchOptions): XtdBagConnection
+
+    nest(id: ID!): XtdNest
+    nests(options: SearchOptions): XtdNestConnection
+
+    documentsRelation(id: ID!): XtdRelDocuments
+    documentsRelations(options: SearchOptions): XtdRelDocumentsConnection
+
+    associatesRelation(id: ID!): XtdRelAssociates
+    associatesRelations(options: SearchOptions): XtdRelAssociatesConnection
+
+    groupsRelation(id: ID!): XtdRelGroups
+    groupsRelations(relatingObject: ID, relatedObject: ID, options: SearchOptions): XtdRelGroupsConnection
+}
+
+input LanguageInput {
+    id: ID!
+    languageNameInEnglish: String!
+    languageNameInSelf: String!
+}
+
+input TextInput {
+    id: ID
+    languageCode: ID!
+    value: String!
+}
+
+input ExternalDocumentInput {
+    id: ID
+    names: [TextInput!]!
+}
+
+input RootInput {
+    id: ID
+    versionId: String
+    versionDate: String
+    names: [TextInput!]!
+    descriptions: [TextInput!]
+}
+
+type Mutation {
+    createLanguage(language: LanguageInput!): XtdLanguage
+    deleteLanguage(id: ID!): XtdLanguage
+
+    createDocument(document: ExternalDocumentInput!): XtdExternalDocument
+    deleteDocument(id: ID!): XtdExternalDocument
+
+    createActor(actor: RootInput!): XtdActor
+    deleteActor(id: ID!): XtdActor
+
+    createActivity(activity: RootInput!): XtdActivity
+    deleteActivity(id: ID!): XtdActivity
+
+    createClassification(classification: RootInput!): XtdClassification
+    delXtdClassification(id: ID!): XtdClassification
+
+    createMeasure(measure: RootInput!): XtdMeasureWithUnit
+    deleteMeasure(id: ID!): XtdMeasureWithUnit
+
+    createProperty(property: RootInput!): XtdProperty
+    deleteProperty(id: ID!): XtdProperty
+
+    createSubject(subject: RootInput!): XtdSubject
+    deleteSubject(id: ID!): XtdSubject
+
+    createUnit(unit: RootInput!): XtdUnit
+    deleteUnit(id: ID!): XtdUnit
+
+    createValue(value: RootInput!): XtdValue
+    deleteValue(id: ID!): XtdValue
+
+    createDocumentsRelation(relatingDocument: ID!, relatedObjects: [ID!]!, relation: RootInput!): XtdRelDocuments
+    deleteDocumentsRelation(id: ID!): XtdRelDocuments
+
+    createAssociatesRelation(relatingObject: ID!, relatedObjects: [ID!]!, relation: RootInput!): XtdRelAssociates
+    deleteAssociatesRelation(id: ID!): XtdRelAssociates
+
+    createGroupsRelation(relatingObject: ID!, relatedObjects: [ID!]!, relation: RootInput!): XtdRelGroups
+    addRelatedObjectsToGroupsRelation(id: ID!, relatedObjects: [ID!]!): XtdRelGroups
+    removeRelatedObjectsFromGroupsRelation(id: ID!, relatedObjects: [ID!]!): XtdRelGroups
+    deleteGroupsRelation(id: ID!): XtdRelGroups
+}
+
+schema {
+    query: Query
+    mutation: Mutation
+}

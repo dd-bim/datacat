@@ -3,6 +3,7 @@ package de.bentrm.datacat.graphql.resolver;
 import de.bentrm.datacat.domain.relationship.*;
 import graphql.TypeResolutionEnvironment;
 import graphql.schema.GraphQLObjectType;
+import graphql.schema.GraphQLSchema;
 import graphql.schema.TypeResolver;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Component;
@@ -13,48 +14,49 @@ public class XtdRelationshipTypeResolver implements TypeResolver {
     @Override
     public GraphQLObjectType getType(TypeResolutionEnvironment env) {
         Object obj = env.getObject();
+        GraphQLSchema schema = env.getSchema();
 
         if (obj instanceof XtdRelActsUpon) {
-            return env.getSchema().getObjectType(XtdRelActsUpon.LABEL);
+            return schema.getObjectType(XtdRelActsUpon.LABEL);
         }
         if (obj instanceof XtdRelAssignsCollections) {
-            return env.getSchema().getObjectType(XtdRelAssignsCollections.LABEL);
+            return schema.getObjectType(XtdRelAssignsCollections.LABEL);
         }
         if (obj instanceof XtdRelAssignsMeasures) {
-            return env.getSchema().getObjectType(XtdRelAssignsMeasures.LABEL);
+            return schema.getObjectType(XtdRelAssignsMeasures.LABEL);
         }
         if (obj instanceof XtdRelAssignsProperties) {
-            return env.getSchema().getObjectType(XtdRelAssignsProperties.LABEL);
+            return schema.getObjectType(XtdRelAssignsProperties.LABEL);
         }
         if (obj instanceof XtdRelAssignsPropertyWithValues) {
-            return env.getSchema().getObjectType(XtdRelAssignsPropertyWithValues.LABEL);
+            return schema.getObjectType(XtdRelAssignsPropertyWithValues.LABEL);
         }
         if (obj instanceof XtdRelAssignsUnit) {
-            return env.getSchema().getObjectType(XtdRelAssignsUnit.LABEL);
+            return schema.getObjectType(XtdRelAssignsUnit.LABEL);
         }
         if (obj instanceof XtdRelAssignsValues) {
-            return env.getSchema().getObjectType(XtdRelAssignsValues.LABEL);
+            return schema.getObjectType(XtdRelAssignsValues.LABEL);
         }
         if (obj instanceof XtdRelClassifies) {
-            return env.getSchema().getObjectType(XtdRelClassifies.LABEL);
+            return schema.getObjectType(XtdRelClassifies.LABEL);
         }
         if (obj instanceof XtdRelCollects) {
-            return env.getSchema().getObjectType(XtdRelCollects.LABEL);
+            return schema.getObjectType(XtdRelCollects.LABEL);
         }
         if (obj instanceof XtdRelComposes) {
-            return env.getSchema().getObjectType(XtdRelComposes.LABEL);
+            return schema.getObjectType(XtdRelComposes.LABEL);
         }
         if (obj instanceof XtdRelDocuments) {
-            return env.getSchema().getObjectType(XtdRelDocuments.LABEL);
+            return schema.getObjectType(XtdRelDocuments.LABEL);
         }
         if (obj instanceof XtdRelGroups) {
-            return env.getSchema().getObjectType(XtdRelGroups.LABEL);
+            return schema.getObjectType(XtdRelGroups.LABEL);
         }
         if (obj instanceof XtdRelSequences) {
-            return env.getSchema().getObjectType(XtdRelSequences.LABEL);
+            return schema.getObjectType(XtdRelSequences.LABEL);
         }
         if (obj instanceof XtdRelSpecializes) {
-            return env.getSchema().getObjectType(XtdRelSpecializes.LABEL);
+            return schema.getObjectType(XtdRelSpecializes.LABEL);
         }
 
         throw new NotImplementedException("Unsupported relationships type: " + obj);

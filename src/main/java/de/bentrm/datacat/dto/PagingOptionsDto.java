@@ -3,25 +3,14 @@ package de.bentrm.datacat.dto;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-public class SearchOptionsDto {
+public class PagingOptionsDto {
 
-    private String term;
+    public static final int DEFAULT_PAGE_SIZE = 10;
+    public static final int DEFAULT_PAGE_NUMBER = 0;
 
-    private Integer pageSize = PagingOptionsDto.DEFAULT_PAGE_SIZE;
+    private Integer pageSize = DEFAULT_PAGE_SIZE;
 
-    private Integer pageNumber = PagingOptionsDto.DEFAULT_PAGE_NUMBER;
-
-    public String getTerm() {
-        return term;
-    }
-
-    public boolean hasTerm() {
-        return term != null && !term.isBlank();
-    }
-
-    public void setTerm(String term) {
-        this.term = term;
-    }
+    private Integer pageNumber = DEFAULT_PAGE_NUMBER;
 
     public Integer getPageSize() {
         return pageSize;
@@ -43,7 +32,7 @@ public class SearchOptionsDto {
         return PageRequest.of(pageNumber, pageSize);
     }
 
-    public static SearchOptionsDto defaults() {
-        return new SearchOptionsDto();
+    public static PagingOptionsDto defaults() {
+        return new PagingOptionsDto();
     }
 }

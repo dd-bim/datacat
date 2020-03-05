@@ -1,20 +1,30 @@
 package de.bentrm.datacat.graphql;
 
-import de.bentrm.datacat.domain.Entity;
 import org.springframework.data.domain.Page;
 
 public class PageInfo {
 
-    long pageNumber;
-    long pageSize;
-    long totalElements;
-    long totalPages;
-    boolean hasNext;
-    boolean hasPrevious;
-    boolean isFirst;
-    boolean isLast;
+    private long pageNumber;
+    private long pageSize;
+    private int pageElements;
+    private int totalPages;
+    private long totalElements;
+    private boolean hasNext;
+    private boolean hasPrevious;
+    private boolean isFirst;
+    private boolean isLast;
 
-    private PageInfo() {}
+    public PageInfo(Page page) {
+        this.pageNumber = page.getNumber();
+        this.pageSize = page.getSize();
+        this.pageElements = page.getNumberOfElements();
+        this.totalPages = page.getTotalPages();
+        this.totalElements = page.getTotalElements();
+        this.hasNext = page.hasNext();
+        this.hasPrevious = page.hasPrevious();
+        this.isFirst = page.isFirst();
+        this.isLast = page.isLast();
+    }
 
     public long getPageNumber() {
         return pageNumber;
@@ -24,12 +34,16 @@ public class PageInfo {
         return pageSize;
     }
 
-    public long getTotalElements() {
-        return totalElements;
+    public int getPageElements() {
+        return pageElements;
     }
 
-    public long getTotalPages() {
+    public int getTotalPages() {
         return totalPages;
+    }
+
+    public long getTotalElements() {
+        return totalElements;
     }
 
     public boolean isHasNext() {
@@ -46,19 +60,6 @@ public class PageInfo {
 
     public boolean isLast() {
         return isLast;
-    }
-
-    public static PageInfo fromPage(Page<? extends Entity> page) {
-        PageInfo info = new PageInfo();
-        info.pageNumber = page.getNumber();
-        info.pageSize = page.getSize();
-        info.totalElements = page.getTotalElements();
-        info.totalPages = page.getTotalPages();
-        info.hasNext = page.hasNext();
-        info.hasPrevious = page.hasPrevious();
-        info.isFirst = page.isFirst();
-        info.isLast = page.isLast();
-        return info;
     }
 
 }

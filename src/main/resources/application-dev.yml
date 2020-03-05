@@ -24,4 +24,4 @@ graphiql:
 
 logging:
   level:
-    org.neo4j.ogm.drivers.bolt.request.BoltRequest: ERROR
+    de.bentrm.datacat: DEBUG

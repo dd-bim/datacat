@@ -8,8 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface NamedEntityRepository<T extends NamedEntity> extends EntityRepository<T> {
 
-    boolean existsById(String id);
-
     @Query("MATCH (n)<-[:IS_NAME_OF]-(name:XtdName) " +
             "WHERE {label} IN labels(n) " +
             "WITH n, name ORDER BY name.sortOrder ASC, toLower(name.value) ASC, name.value DESC " +
