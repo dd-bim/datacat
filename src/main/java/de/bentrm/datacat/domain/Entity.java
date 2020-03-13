@@ -1,9 +1,9 @@
 package de.bentrm.datacat.domain;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.neo4j.ogm.annotation.*;
-import org.neo4j.ogm.id.IdStrategy;
-import org.neo4j.ogm.id.UuidStrategy;
+import org.neo4j.ogm.annotation.GeneratedValue;
+import org.neo4j.ogm.annotation.Id;
+import org.neo4j.ogm.annotation.Version;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -14,7 +14,7 @@ public abstract class Entity {
 	public static final String PREFIX = "Xtd";
 
 	@Id
-	@GeneratedValue(strategy = GuidStrategy.class)
+	@GeneratedValue(strategy = IfcGuidStrategy.class)
 	protected String id;
 
 	@Version
