@@ -32,15 +32,14 @@ public class XtdNameTests {
 
     @Test
     void equalityIsDetected() {
-        XtdLanguage lang = new XtdLanguage();
         XtdName a = new XtdName();
         a.setId("A");
-        a.setLanguageName(lang);
+        a.setLanguageName("de");
         a.setName("Test");
 
         XtdName b = new XtdName();
         b.setId("B");
-        b.setLanguageName(lang);
+        b.setLanguageName("de");
         b.setName("Test");
 
         assertEquals(a, b);
@@ -51,7 +50,7 @@ public class XtdNameTests {
         b.setName("Test");
         assertEquals(a, b);
 
-        b.setLanguageName(new XtdLanguage());
+        b.setLanguageName("es");
         assertNotEquals(a, b);
 
 
@@ -60,18 +59,17 @@ public class XtdNameTests {
 
     @Test
     void worksWithTreeSets() {
-        XtdLanguage lang = new XtdLanguage();
         SortedSet<XtdName> names = new TreeSet<>();
 
         var a = new XtdName();
-        a.setLanguageName(lang);
+        a.setLanguageName("de");
         a.setName("a");
         names.add(a);
 
         assertTrue(names.contains(a));
 
         var b = new XtdName();
-        b.setLanguageName(lang);
+        b.setLanguageName("de");
         b.setName("a");
 
         assertEquals(a, b);
@@ -87,7 +85,7 @@ public class XtdNameTests {
         assertEquals(a, b);
         assertTrue(names.contains(b));
 
-        b.setLanguageName(new XtdLanguage());
+        b.setLanguageName("es");
         assertNotEquals(a, b);
         assertFalse(names.contains(b));
 

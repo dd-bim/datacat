@@ -4,12 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.bentrm.datacat.domain.collection.XtdBag;
 import de.bentrm.datacat.domain.collection.XtdCollection;
 import de.bentrm.datacat.domain.collection.XtdNest;
-import de.bentrm.datacat.dto.SearchOptionsDto;
 import de.bentrm.datacat.graphql.Connection;
+import de.bentrm.datacat.graphql.dto.PagingOptions;
 import de.bentrm.datacat.graphql.resolver.XtdCollectionTypeResolver;
 import de.bentrm.datacat.service.XtdCollectionService;
 import graphql.schema.DataFetcher;
 import graphql.schema.GraphQLCodeRegistry;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 
 import java.util.Map;
@@ -21,7 +22,7 @@ import static graphql.schema.GraphQLCodeRegistry.newCodeRegistry;
 //@Configuration
 public class XtdCollectionDataFetchers {
 
-//    @Autowired
+    @Autowired
     private XtdCollectionService collectionService;
 
 //    @Bean("collectionCodeRegistry")
@@ -46,14 +47,8 @@ public class XtdCollectionDataFetchers {
         return environment -> {
             Map<String, Object> input = environment.getArgument("options");
             ObjectMapper mapper = new ObjectMapper();
-            SearchOptionsDto dto = mapper.convertValue(input, SearchOptionsDto.class);
-
-            if (dto == null) {
-                dto = new SearchOptionsDto();
-                dto.setPageNumber(0);
-                dto.setPageSize(10);
-            }
-
+            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
+            if (dto == null) dto = PagingOptions.defaults();
             Page<XtdCollection> page = collectionService.findAll(label, dto.getPageNumber(), dto.getPageSize());
             return new Connection<>(page);
         };

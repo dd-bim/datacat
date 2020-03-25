@@ -1,11 +1,10 @@
 package de.bentrm.datacat.graphql;
 
-import de.bentrm.datacat.domain.Entity;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-public class Connection<T extends Entity> {
+public class Connection<T> {
 
     private List<T> nodes;
     private PageInfo page;

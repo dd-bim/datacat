@@ -1,7 +1,5 @@
 package de.bentrm.datacat.domain;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.neo4j.ogm.annotation.NodeEntity;
 
@@ -20,20 +18,25 @@ public class XtdName extends XtdLanguageRepresentation {
     @NotBlank
     private String name;
 
+    public XtdName() {}
+
+    public XtdName(String id, String languageName, String name) {
+        this.setId(id);
+        this.setLanguageName(languageName);
+        this.name = name;
+    }
+
+    public XtdName(String languageName, String name) {
+        this.setLanguageName(languageName);
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .appendSuper(super.hashCode())
-                .append(name)
-                .toHashCode();
     }
 
     @Override

@@ -1,14 +1,13 @@
 package de.bentrm.datacat.repository.relationship;
 
-import de.bentrm.datacat.domain.XtdSubject;
 import de.bentrm.datacat.domain.relationship.XtdRelDocuments;
-import de.bentrm.datacat.repository.NamedEntityRepository;
 import org.springframework.data.neo4j.annotation.Query;
+import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RelDocumentsRepository extends NamedEntityRepository<XtdRelDocuments> {
+public interface RelDocumentsRepository extends Neo4jRepository<XtdRelDocuments, String> {
 
     @Query(
             "MATCH (name:XtdName)-[:IS_NAME_OF]->(document:XtdExternalDocument) " +

@@ -4,7 +4,7 @@ import de.bentrm.datacat.domain.XtdObject;
 import org.springframework.data.domain.Page;
 
 @Deprecated
-public interface XtdObjectService extends NamedEntityService<XtdObject> {
+public interface XtdObjectService extends EntityService<XtdObject> {
 
     Page<XtdObject> findAll(String label, int pageNumber, int pageSize);
 

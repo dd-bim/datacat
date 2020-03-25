@@ -1,7 +1,8 @@
 package de.bentrm.datacat.service.impl;
 
-import de.bentrm.datacat.domain.XtdObject;
-import de.bentrm.datacat.repository.ObjectRepository;
+import de.bentrm.datacat.domain.XtdRoot;
+import de.bentrm.datacat.domain.relationship.XtdRelGroups;
+import de.bentrm.datacat.repository.relationship.RelGroupsRepository;
 import de.bentrm.datacat.service.ObjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,20 +13,34 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
 public class ObjectServiceImpl implements ObjectService {
 
     @Autowired
-    private ObjectRepository objectRepository;
+    private RelGroupsRepository relGroupsRepository;
 
     @Override
     @Transactional(readOnly = true)
-    public Page<XtdObject> findByRelGroupsId(String id, Pageable pageable) {
-        Iterable<XtdObject> objects = objectRepository.findByRelGroupsId(id, pageable.getOffset(), pageable.getPageSize());
-        List<XtdObject> content = new ArrayList<>();
-        objects.forEach(content::add);
-        return PageableExecutionUtils.getPage(content, pageable, () -> objectRepository.countByRelGroupsId(id));
+    public Page<XtdRoot> findByRelGroupsId(String id, Pageable pageable) {
+        Optional<XtdRelGroups> result = relGroupsRepository.findById(id);
+        if (result.isEmpty()) {
+            throw new IllegalArgumentException("No relationship with id " + id + " found.");
+        }
+        XtdRelGroups relation = result.get();
+        List<XtdRoot> content = new ArrayList<>();
+        int i = 0;
+        for (XtdRoot relatedObject : relation.getRelatedThings()) {
+            if (i >= (pageable.getOffset() + pageable.getPageSize())) {
+                break;
+            }
+            if (i >= pageable.getOffset()) {
+                content.add(relatedObject);
+            }
+            i++;
+        }
+        return PageableExecutionUtils.getPage(content, pageable, () -> relation.getRelatedThings().size());
     }
 }

@@ -1,9 +1,7 @@
 package de.bentrm.datacat.repository;
 
 import de.bentrm.datacat.domain.XtdRoot;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.neo4j.repository.Neo4jRepository;
 
-@Repository
-public interface RootRepository extends NamedEntityRepository<XtdRoot> {
-
+public interface RootRepository extends Neo4jRepository<XtdRoot, String> {
 }

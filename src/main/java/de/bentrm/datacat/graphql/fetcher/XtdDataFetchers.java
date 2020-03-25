@@ -4,10 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.bentrm.datacat.domain.XtdExternalDocument;
 import de.bentrm.datacat.domain.XtdLanguage;
 import de.bentrm.datacat.domain.XtdLanguageRepresentation;
-import de.bentrm.datacat.dto.ExternalDocumentInputDto;
-import de.bentrm.datacat.dto.LanguageInputDto;
-import de.bentrm.datacat.dto.SearchOptionsDto;
 import de.bentrm.datacat.graphql.Connection;
+import de.bentrm.datacat.graphql.dto.ExternalDocumentInput;
+import de.bentrm.datacat.graphql.dto.PagingOptions;
 import de.bentrm.datacat.service.ExternalDocumentService;
 import de.bentrm.datacat.service.LanguageService;
 import graphql.schema.DataFetcher;
@@ -27,55 +26,18 @@ public class XtdDataFetchers {
     @Autowired
     private ExternalDocumentService externalDocumentService;
 
-    public DataFetcher<XtdLanguage> createLanguage() {
-        return environment -> {
-            Map<String, Object> input = environment.getArgument("language");
-            ObjectMapper mapper = new ObjectMapper();
-            LanguageInputDto dto = mapper.convertValue(input, LanguageInputDto.class);
-            return languageService.create(dto);
-        };
-    }
-
-    public DataFetcher<Optional<XtdLanguage>> deleteLanguage() {
-        return environment -> {
-            String id = environment.getArgument("id");
-            return languageService.delete(id);
-        };
-    }
-
-    public DataFetcher<Optional<XtdLanguage>> languageById() {
-        return environment -> {
-            String id = environment.getArgument("id");
-            return languageService.findById(id);
-        };
-    }
-
-    public DataFetcher<Connection<XtdLanguage>> languageBySearch() {
-        return environment -> {
-            Map<String, Object> input = environment.getArgument("options");
-
-            ObjectMapper mapper = new ObjectMapper();
-            SearchOptionsDto dto = mapper.convertValue(input, SearchOptionsDto.class);
-
-            if (dto == null) dto = SearchOptionsDto.defaults();
-
-            Page<XtdLanguage> page = languageService.findAll(dto.getPageble());
-            return new Connection<>(page);
-        };
-    }
-
-    public DataFetcher<Optional<XtdLanguage>> languageByLanguageRepresentationId() {
+    public DataFetcher<Optional<XtdLanguage>> languageByLanguageRepresentation() {
         return environment -> {
             XtdLanguageRepresentation value = environment.getSource();
-            return languageService.findByLanguageRepresentationId(value.getId());
+            return languageService.findByLanguage(value.getLanguageName());
         };
     }
 
     public DataFetcher<XtdExternalDocument> createExternalDocument() {
         return environment -> {
-            Map<String, Object> input = environment.getArgument("document");
+            Map<String, Object> input = environment.getArgument("input");
             ObjectMapper mapper = new ObjectMapper();
-            ExternalDocumentInputDto dto = mapper.convertValue(input, ExternalDocumentInputDto.class);
+            ExternalDocumentInput dto = mapper.convertValue(input, ExternalDocumentInput.class);
             return externalDocumentService.create(dto);
         };
     }
@@ -98,15 +60,13 @@ public class XtdDataFetchers {
         return environment -> {
             Map<String, Object> input = environment.getArgument("options");
             ObjectMapper mapper = new ObjectMapper();
-            SearchOptionsDto dto = mapper.convertValue(input, SearchOptionsDto.class);
-
-            if (dto == null) {
-                dto = SearchOptionsDto.defaults();
-            }
+            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
+            if (dto == null) dto = PagingOptions.defaults();
 
             Page<XtdExternalDocument> page;
-            if (dto.hasTerm()) {
-                page = externalDocumentService.findByTerm(dto.getTerm(), dto.getPageble());
+            String term = environment.getArgument("term");
+            if (term != null && !term.isBlank()) {
+                page = externalDocumentService.findByTerm(term.trim(), dto.getPageble());
             } else {
                 page = externalDocumentService.findAll(dto.getPageble());
             }

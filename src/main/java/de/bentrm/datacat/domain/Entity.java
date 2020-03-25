@@ -1,5 +1,7 @@
 package de.bentrm.datacat.domain;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.neo4j.ogm.annotation.GeneratedValue;
 import org.neo4j.ogm.annotation.Id;
@@ -56,6 +58,26 @@ public abstract class Entity {
 
 	public void setLastModified(LocalDateTime lastModified) {
 		this.lastModified = lastModified;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Entity entity = (Entity) o;
+
+		return new EqualsBuilder()
+				.append(id, entity.id)
+				.isEquals();
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(17, 37)
+				.append(id)
+				.toHashCode();
 	}
 
 	@Override

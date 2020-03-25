@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import java.util.Optional;
 
 @Deprecated
-public interface XtdCollectionService extends NamedEntityService<XtdCollection> {
+public interface XtdCollectionService extends EntityService<XtdCollection> {
 
     Optional<XtdCollection> findById(String id);
 

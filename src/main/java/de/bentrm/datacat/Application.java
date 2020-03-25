@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 public class Application {
 
+	// CALL db.index.fulltext.createNodeIndex("namesAndDescriptions",["XtdName", "XtdDescription"],["name", "description"]);
+
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}

@@ -5,18 +5,21 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvParser;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
-import de.bentrm.datacat.domain.*;
+import de.bentrm.datacat.domain.XtdDescription;
+import de.bentrm.datacat.domain.XtdExternalDocument;
+import de.bentrm.datacat.domain.XtdName;
+import de.bentrm.datacat.domain.XtdSubject;
 import de.bentrm.datacat.domain.collection.XtdBag;
 import de.bentrm.datacat.domain.relationship.XtdRelCollects;
 import de.bentrm.datacat.domain.relationship.XtdRelDocuments;
 import de.bentrm.datacat.domain.relationship.XtdRelGroups;
 import de.bentrm.datacat.repository.ExternalDocumentRepository;
-import de.bentrm.datacat.repository.LanguageRepository;
-import de.bentrm.datacat.repository.SubjectRepository;
 import de.bentrm.datacat.repository.collection.BagRepository;
+import de.bentrm.datacat.repository.object.SubjectRepository;
 import de.bentrm.datacat.repository.relationship.RelCollectsRepository;
 import de.bentrm.datacat.repository.relationship.RelDocumentsRepository;
 import de.bentrm.datacat.repository.relationship.RelGroupsRepository;
+import de.bentrm.datacat.service.AdminService;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,10 +34,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 // TODO: Refactor import logic into separate class using application scoped services
 @Component
@@ -42,13 +42,26 @@ public class DataImporter implements ResourceLoaderAware {
 
     protected Logger logger = LoggerFactory.getLogger(DataImporter.class);
 
-    @Autowired private LanguageRepository languageRepository;
-    @Autowired private ExternalDocumentRepository externalDocumentRepository;
-    @Autowired private SubjectRepository subjectRepository;
-    @Autowired private BagRepository bagRepository;
-    @Autowired private RelDocumentsRepository relDocumentsRepository;
-    @Autowired private RelCollectsRepository relCollectsRepository;
-    @Autowired private RelGroupsRepository relGroupsRepository;
+    @Autowired
+    private AdminService adminService;
+
+    @Autowired
+    private ExternalDocumentRepository externalDocumentRepository;
+
+    @Autowired
+    private SubjectRepository subjectRepository;
+
+    @Autowired
+    private BagRepository bagRepository;
+
+    @Autowired
+    private RelDocumentsRepository relDocumentsRepository;
+
+    @Autowired
+    private RelCollectsRepository relCollectsRepository;
+
+    @Autowired
+    private RelGroupsRepository relGroupsRepository;
 
     private ResourceLoader resourceLoader;
 
@@ -65,8 +78,7 @@ public class DataImporter implements ResourceLoaderAware {
     @Transactional
     public CommandLineRunner importInitialData() {
         return (args) -> {
-            pruneDatabase();
-            initAdminData();
+            adminService.purgeDatabase();
 
             if (importFilePath == null) {
                 logger.info("No import file provided..");
@@ -118,25 +130,8 @@ public class DataImporter implements ResourceLoaderAware {
     }
 
     @Transactional
-    protected void pruneDatabase() {
-        languageRepository.pruneDatabase();
-        logger.info("Pruning database..");
-    }
-
-    @Transactional
-    protected void initAdminData() {
-        var german = new XtdLanguage();
-        german.setId("de");
-        german.setLanguageNameInEnglish("German");
-        german.setLanguageNameInSelf("Deutsch");
-        languageRepository.save(german);
-        logger.info("Initializing admin data..");
-    }
-
-    @Transactional
     protected  void importCollectionNodes(List<String[]> rows) {
         var lineNumber = 0;
-        var german = languageRepository.findById("de");
 
         for (String[] properties : rows) {
             if (lineNumber > 0) {
@@ -149,7 +144,7 @@ public class DataImporter implements ResourceLoaderAware {
                     for (int i = 0; i < split.length; i++) {
                         String name = split[i];
                         XtdName newName = new XtdName();
-                        newName.setLanguageName(german.get());
+                        newName.setLanguageName("de");
                         newName.setName(name);
                         newName.setSortOrder(i);
                         newBag.getNames().add(newName);
@@ -169,7 +164,6 @@ public class DataImporter implements ResourceLoaderAware {
     @Transactional
     protected void importGroupNodes(List<String[]> rows)  {
         var lineNumber = 0;
-        var german = languageRepository.findById("de");
 
         for (String[] properties : rows) {
             if (lineNumber > 0) {
@@ -181,7 +175,7 @@ public class DataImporter implements ResourceLoaderAware {
                     for (int i = 0; i < split.length; i++) {
                         String name = split[i];
                         XtdName newName = new XtdName();
-                        newName.setLanguageName(german.get());
+                        newName.setLanguageName("de");
                         newName.setName(name);
                         newName.setSortOrder(i);
                         newSubject.getNames().add(newName);
@@ -199,7 +193,6 @@ public class DataImporter implements ResourceLoaderAware {
 
     @Transactional
     void importSubjectNodes(List<String[]> rows) {
-        var german = languageRepository.findById("de");
         var lineNumber = 0;
 
         for (String[] properties : rows) {
@@ -212,7 +205,7 @@ public class DataImporter implements ResourceLoaderAware {
                     for (int i = 0; i < split.length; i++) {
                         String name = split[i];
                         XtdName newName = new XtdName();
-                        newName.setLanguageName(german.get());
+                        newName.setLanguageName("de");
                         newName.setName(name);
                         newName.setSortOrder(i);
                         newSubject.getNames().add(newName);
@@ -230,7 +223,6 @@ public class DataImporter implements ResourceLoaderAware {
 
     @Transactional
     protected void importSubjectDescriptions(List<String[]> rows) {
-        var german = languageRepository.findById("de");
 
         int lineNumber = 0;
         for (String[] line : rows) {
@@ -242,14 +234,15 @@ public class DataImporter implements ResourceLoaderAware {
                     continue;
                 }
 
-                var persistentSubject = subjectRepository.findById(entityIds.get(subjectName));
+                String subjectUid = entityIds.get(subjectName);
+                var persistentSubject = subjectRepository.findById(subjectUid);
                 persistentSubject.ifPresentOrElse(subject -> {
                     var descriptionEntity = new XtdDescription();
-                    descriptionEntity.setLanguageName(german.get());
+                    descriptionEntity.setLanguageName("de");
                     descriptionEntity.setDescription(desc);
                     subject.addDescription(descriptionEntity);
                     subjectRepository.save(subject);
-                }, () -> System.out.println("No subject found with name: " + subjectName));
+                }, () -> logger.info("No subject found with name: " + subjectName));
             }
             lineNumber++;
         }
@@ -258,16 +251,19 @@ public class DataImporter implements ResourceLoaderAware {
 
     @Transactional
     protected void importDocuments() {
-        var german = languageRepository.findById("de");
         var buildingSmart = new XtdExternalDocument();
-        var name = new XtdName();
-        name.setName("BuildingSMART FG");
-        name.setLanguageName(german.get());
-        buildingSmart.getNames().add(name);
+        var documentName = new XtdName();
+        documentName.setName("BuildingSMART FG");
+        documentName.setLanguageName("de");
+        buildingSmart.getNames().add(documentName);
 
         externalDocumentRepository.save(buildingSmart);
 
         var relationship = new XtdRelDocuments();
+        var relationshipName = new XtdName();
+        relationshipName.setName("BuildingSMART FG");
+        relationshipName.setLanguageName("de");
+        relationship.getNames().add(relationshipName);
         relationship.setRelatingDocument(buildingSmart);
         subjectRepository.findAll().forEach(subject ->relationship.getRelatedThings().add(subject));
         relDocumentsRepository.save(relationship);
@@ -296,7 +292,10 @@ public class DataImporter implements ResourceLoaderAware {
                     }
 
                     relationship = new XtdRelCollects();
-                    relationship.setRelatingCollection(bagRepository.findById(entityIds.get((curRelatingCollectionName))).get());
+                    String collectionId = entityIds.get((curRelatingCollectionName));
+                    Optional<XtdBag> currentBag = bagRepository.findById(collectionId);
+                    relationship.getNames().add(new XtdName("de", curRelatingCollectionName));
+                    relationship.setRelatingCollection(currentBag.get());
                 }
 
                 if (!subjectName.isBlank() && !subjectName.equals(curRelatedThing)) {
@@ -336,12 +335,15 @@ public class DataImporter implements ResourceLoaderAware {
                         relGroupsRepository.save(relationship);
                     }
 
-                    var relatingObject = subjectRepository.findById(entityIds.get((curGroupName))).get();
+                    String groupUid = entityIds.get((curGroupName));
+                    Optional<XtdSubject> subject = subjectRepository.findById(groupUid);
+                    var relatingObject = subject.get();
                     if (!relatingObject.getGroups().isEmpty()) {
                         relationship = relatingObject.getGroups().iterator().next();
                     } else {
                         relationship = new XtdRelGroups();
-                        relationship.setRelatingObject(relatingObject);
+                        relationship.getNames().add(new XtdName("de", curGroupName));
+                        relationship.setRelatingThing(relatingObject);
                     }
 
                 }
@@ -350,7 +352,7 @@ public class DataImporter implements ResourceLoaderAware {
                     curGroupMemberName = subjectName;
 
                     var subject = subjectRepository.findById(entityIds.get(curGroupMemberName));
-                    relationship.getRelatedObjects().add(subject.get());
+                    relationship.getRelatedThings().add(subject.get());
                 }
             }
             lineNumber++;

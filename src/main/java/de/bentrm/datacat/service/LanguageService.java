@@ -1,14 +1,12 @@
 package de.bentrm.datacat.service;
 
 import de.bentrm.datacat.domain.XtdLanguage;
-import de.bentrm.datacat.dto.LanguageInputDto;
 
 import java.util.Optional;
 
-public interface LanguageService extends EntityService<XtdLanguage> {
+public interface LanguageService {
 
-    XtdLanguage create(LanguageInputDto dto);
-    Optional<XtdLanguage> delete(String id);
-    Optional<XtdLanguage> findByLanguageRepresentationId(String id);
+    boolean isValidLanguage(String language);
+    Optional<XtdLanguage> findByLanguage(String language);
 
 }

@@ -1,6 +1,7 @@
 package de.bentrm.datacat.domain.relationship;
 
 import de.bentrm.datacat.domain.XtdObject;
+import de.bentrm.datacat.domain.XtdRoot;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
@@ -14,25 +15,25 @@ public class XtdRelGroups extends XtdRelationship {
     public static final String RELATIONSHIP_TYPE = "GROUPS";
 
     @Relationship(type = RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
-    private XtdObject relatingObject;
+    private XtdRoot relatingThing;
 
     @Relationship(type = RELATIONSHIP_TYPE)
-    private Set<XtdObject> relatedObjects = new HashSet<>();
+    private Set<XtdRoot> relatedThings = new HashSet<XtdRoot>();
 
-    public XtdObject getRelatingObject() {
-        return relatingObject;
+    public XtdRoot getRelatingThing() {
+        return relatingThing;
     }
 
-    public void setRelatingObject(XtdObject relatingObject) {
-        this.relatingObject = relatingObject;
+    public void setRelatingThing(XtdObject relatingThing) {
+        this.relatingThing = relatingThing;
     }
 
-    public Set<XtdObject> getRelatedObjects() {
-        return relatedObjects;
+    public Set<XtdRoot> getRelatedThings() {
+        return relatedThings;
     }
 
-    public void setRelatedObjects(Set<XtdObject> relatedObjects) {
-        this.relatedObjects = relatedObjects;
+    public void setRelatedThings(Set<XtdRoot> relatedThings) {
+        this.relatedThings = relatedThings;
     }
 
 }

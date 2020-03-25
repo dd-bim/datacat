@@ -7,10 +7,9 @@ import de.bentrm.datacat.domain.XtdSubject;
 import de.bentrm.datacat.domain.relationship.XtdRelDocuments;
 import de.bentrm.datacat.domain.relationship.XtdRelGroups;
 import de.bentrm.datacat.domain.relationship.XtdRelationship;
-import de.bentrm.datacat.dto.SearchOptionsDto;
-import de.bentrm.datacat.dto.XtdRelGroupsInputDto;
-import de.bentrm.datacat.dto.XtdRelGroupsSearchOptionsDto;
 import de.bentrm.datacat.graphql.Connection;
+import de.bentrm.datacat.graphql.dto.PagingOptions;
+import de.bentrm.datacat.graphql.dto.XtdRelGroupsInput;
 import de.bentrm.datacat.graphql.resolver.XtdRelationshipTypeResolver;
 import de.bentrm.datacat.service.XtdObjectService;
 import de.bentrm.datacat.service.XtdRelationshipService;
@@ -63,9 +62,8 @@ public class XtdRelationshipDataFetchers {
         return environment -> {
             Map<String, Object> input = environment.getArgument("options");
             ObjectMapper mapper = new ObjectMapper();
-            SearchOptionsDto dto = mapper.convertValue(input, SearchOptionsDto.class);
-
-            if (dto == null) dto = SearchOptionsDto.defaults();
+            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
+            if (dto == null) dto = PagingOptions.defaults();
 
             Page<XtdRelDocuments> page = relationshipService.findAllRelDocuments(dto.getPageNumber(), dto.getPageSize());
 
@@ -79,9 +77,8 @@ public class XtdRelationshipDataFetchers {
             XtdRelDocuments relationship = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
             ObjectMapper mapper = new ObjectMapper();
-            SearchOptionsDto dto = mapper.convertValue(input, SearchOptionsDto.class);
-
-            if (dto == null) dto = SearchOptionsDto.defaults();
+            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
+            if (dto == null) dto = PagingOptions.defaults();
 
             Page<XtdObject> page = objectService.findByRelDocumentsId(relationship.getId(), dto.getPageNumber(), dto.getPageSize());
 
@@ -94,9 +91,9 @@ public class XtdRelationshipDataFetchers {
             XtdExternalDocument document = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
             ObjectMapper mapper = new ObjectMapper();
-            SearchOptionsDto dto = mapper.convertValue(input, SearchOptionsDto.class);
+            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
 
-            if (dto == null) dto = SearchOptionsDto.defaults();
+            if (dto == null) dto = PagingOptions.defaults();
 
             Page<XtdRelDocuments> page = relationshipService.findRelDocumentsByRelatingDocument(document.getId(), dto.getPageNumber(), dto.getPageSize());
 
@@ -108,7 +105,7 @@ public class XtdRelationshipDataFetchers {
         return environment -> {
             Map<String, Object> input = environment.getArgument("input");
             ObjectMapper mapper = new ObjectMapper();
-            XtdRelGroupsInputDto dto = mapper.convertValue(input, XtdRelGroupsInputDto.class);
+            XtdRelGroupsInput dto = mapper.convertValue(input, XtdRelGroupsInput.class);
             return relationshipService.createRelGroups(dto);
         };
     }
@@ -124,16 +121,16 @@ public class XtdRelationshipDataFetchers {
         return environment -> {
             Map<String, Object> input = environment.getArgument("options");
             ObjectMapper mapper = new ObjectMapper();
-            XtdRelGroupsSearchOptionsDto dto = mapper.convertValue(input, XtdRelGroupsSearchOptionsDto.class);
+            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
 
-            if (dto == null) dto = new XtdRelGroupsSearchOptionsDto();
+            if (dto == null) dto = new PagingOptions();
 
             Page<XtdRelGroups> page;
-            if (dto.hasRelatingObject()) {
-                page = relationshipService.findRelGroupsByRelatingObjectId(dto.getRelatingObject(), dto.getPageNumber(), dto.getPageSize());
-            } else {
+//            if (dto.hasRelatingObject()) {
+//                page = relationshipService.findRelGroupsByRelatingObjectId(dto.getRelatingObject(), dto.getPageNumber(), dto.getPageSize());
+//            } else {
                 page = relationshipService.findAllRelGroups(dto.getPageNumber(), dto.getPageSize());
-            }
+//            }
 
             return new Connection<>(page);
         };
@@ -144,11 +141,9 @@ public class XtdRelationshipDataFetchers {
             XtdObject parent = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
             ObjectMapper mapper = new ObjectMapper();
-            SearchOptionsDto dto = mapper.convertValue(input, SearchOptionsDto.class);
+            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
 
-            if (dto == null) dto = SearchOptionsDto.defaults();
-
-            System.out.println(parent.getId());
+            if (dto == null) dto = PagingOptions.defaults();
 
             Page<XtdRelGroups> page = relationshipService.findRelGroupsByRelatingObjectId(parent.getId(), dto.getPageNumber(), dto.getPageSize());
 
@@ -161,9 +156,9 @@ public class XtdRelationshipDataFetchers {
             XtdRelGroups relationship = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
             ObjectMapper mapper = new ObjectMapper();
-            SearchOptionsDto dto = mapper.convertValue(input, SearchOptionsDto.class);
+            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
 
-            if (dto == null) dto = SearchOptionsDto.defaults();
+            if (dto == null) dto = PagingOptions.defaults();
 
             Page<XtdObject> page = objectService.findByRelGroupsId(relationship.getId(), dto.getPageNumber(), dto.getPageSize());
 

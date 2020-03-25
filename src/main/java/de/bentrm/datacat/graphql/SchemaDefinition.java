@@ -1,9 +1,8 @@
 package de.bentrm.datacat.graphql;
 
-import de.bentrm.datacat.graphql.fetcher.RelGroupsDataFetchers;
-import de.bentrm.datacat.graphql.fetcher.SubjectDataFetchers;
+import de.bentrm.datacat.graphql.fetcher.RelGroupsDataFetcherProvider;
+import de.bentrm.datacat.graphql.fetcher.SubjectDataFetcherProvider;
 import de.bentrm.datacat.graphql.fetcher.XtdDataFetchers;
-import de.bentrm.datacat.graphql.fetcher.XtdObjectDataFetchers;
 import de.bentrm.datacat.graphql.resolver.*;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.RuntimeWiring;
@@ -11,8 +10,6 @@ import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.Bean;
@@ -28,21 +25,28 @@ import java.io.InputStreamReader;
 @Configuration
 public class SchemaDefinition implements ResourceLoaderAware {
 
-    Logger logger = LoggerFactory.getLogger(SchemaDefinition.class);
-
     private ResourceLoader resourceLoader;
+
+    @Autowired
+    private XtdLanguageRepresentationTypeResolver languageRepresentationTypeResolver;
+
+    @Autowired
+    private XtdRootTypeResolver rootTypeResolver;
+
+    @Autowired
+    private XtdCollectionTypeResolver collectionTypeResolver;
+
+    @Autowired
+    private XtdRelationshipTypeResolver relationshipTypeResolver;
 
     @Autowired
     private XtdDataFetchers dataFetchers;
 
     @Autowired
-    private XtdObjectDataFetchers objectDataFetchers;
+    private SubjectDataFetcherProvider subjectProvider;
 
     @Autowired
-    private SubjectDataFetchers subjectDataFetchers;
-
-    @Autowired
-    private RelGroupsDataFetchers relGroupsDataFetchers;
+    private RelGroupsDataFetcherProvider relGroupsProvider;
 
     @Bean
     GraphQLSchema schema() throws IOException {
@@ -54,56 +58,31 @@ public class SchemaDefinition implements ResourceLoaderAware {
         BufferedReader reader = new BufferedReader(inputStreamReader);
         TypeDefinitionRegistry typeRegistry = schemaParser.parse(reader);
         RuntimeWiring wiring = RuntimeWiring.newRuntimeWiring()
-                .type("XtdLanguageRepresentation", typeWiring -> typeWiring
-                        .typeResolver(new XtdLanguageRepresentationTypeResolver())
-                )
-                .type("XtdRoot", typeWiring -> typeWiring
-                        .typeResolver(new XtdRootTypeResolver())
-                )
+                .type("XtdLanguageRepresentation", typeWiring -> typeWiring.typeResolver(languageRepresentationTypeResolver))
+                .type("XtdName", typeWiring -> typeWiring
+                        .dataFetcher("languageName", dataFetchers.languageByLanguageRepresentation()))
+                .type("XtdDescription", typeWiring -> typeWiring
+                        .dataFetcher("languageName", dataFetchers.languageByLanguageRepresentation()))
+                .type("XtdRoot", typeWiring -> typeWiring.typeResolver(rootTypeResolver))
                 .type("XtdObject", typeWiring -> typeWiring
-                        .typeResolver(new XtdObjectTypeResolver())
-                )
-                .type("XtdCollection", typeWiring -> typeWiring
-                        .typeResolver(new XtdCollectionTypeResolver())
-                )
-                .type("XtdRelationship", typeWiring -> typeWiring
-                       .typeResolver(new XtdRelationshipTypeResolver())
-                )
+                        .typeResolver(new XtdObjectTypeResolver()))
+                .type("XtdSubject", typeWiring -> typeWiring
+                        .dataFetchers(relGroupsProvider.getRootDataFetchers()))
+                .type("XtdCollection", typeWiring -> typeWiring.typeResolver(collectionTypeResolver))
+                .type("XtdRelationship", typeWiring -> typeWiring.typeResolver(relationshipTypeResolver))
+                .type("XtdRelGroups", typeWiring -> typeWiring
+                        .dataFetchers(relGroupsProvider.getRootDataFetchers())
+                        .dataFetchers(relGroupsProvider.getRelGroupsDataFetchers()))
                 .type("Query", typeWiring -> typeWiring
-                        .dataFetcher("language", dataFetchers.languageById())
-                        .dataFetcher("languages", dataFetchers.languageBySearch())
                         .dataFetcher("document", dataFetchers.externalDocumentById())
                         .dataFetcher("documents", dataFetchers.externalDocumentBySearch())
-                        .dataFetcher("subject", objectDataFetchers.subjectById())
-                        .dataFetcher("subjects", objectDataFetchers.subjectsByMatch())
-                        .dataFetcher("groupsRelation", relGroupsDataFetchers.byId())
-                        .dataFetcher("groupsRelations", relGroupsDataFetchers.bySearchOptions())
-                )
-                .type("XtdName", typeWiring -> typeWiring
-                        .dataFetcher("languageName", dataFetchers.languageByLanguageRepresentationId())
-                )
-                .type("XtdDescription", typeWiring -> typeWiring
-                        .dataFetcher("languageName", dataFetchers.languageByLanguageRepresentationId())
-                )
-                .type("XtdSubject", typeWiring -> typeWiring
-                        .dataFetcher("groups", subjectDataFetchers.groups())
-                        .dataFetcher("groupedBy", subjectDataFetchers.groupedBy())
-                )
-                .type("XtdRelGroups", typeWiring -> typeWiring
-                        .dataFetcher("relatedObjects", relGroupsDataFetchers.relatedObjects())
-                )
+                        .dataFetchers(subjectProvider.getQueryDataFetchers())
+                        .dataFetchers(relGroupsProvider.getQueryDataFetchers()))
                 .type("Mutation", typeWiring -> typeWiring
-                        .dataFetcher("createLanguage", dataFetchers.createLanguage())
-                        .dataFetcher("deleteLanguage", dataFetchers.deleteLanguage())
                         .dataFetcher("createDocument", dataFetchers.createExternalDocument())
                         .dataFetcher("deleteDocument", dataFetchers.deleteExternalDocument())
-                        .dataFetcher("createSubject", objectDataFetchers.addSubject())
-                        .dataFetcher("deleteSubject", objectDataFetchers.deleteSubject())
-                        .dataFetcher("createGroupsRelation", relGroupsDataFetchers.create())
-                        .dataFetcher("addRelatedObjectsToGroupsRelation", relGroupsDataFetchers.addRelatedObjects())
-                        .dataFetcher("removeRelatedObjectsFromGroupsRelation", relGroupsDataFetchers.removeRelatedObjects())
-                        .dataFetcher("deleteGroupsRelation", relGroupsDataFetchers.delete())
-                )
+                        .dataFetchers(subjectProvider.getMutationDataFetchers())
+                        .dataFetchers(relGroupsProvider.getMutationDataFetchers()))
                 .build();
         return schemaGenerator.makeExecutableSchema(typeRegistry, wiring);
     }

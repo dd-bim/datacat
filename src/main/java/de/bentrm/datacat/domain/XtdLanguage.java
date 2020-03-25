@@ -1,42 +1,44 @@
 package de.bentrm.datacat.domain;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.neo4j.ogm.annotation.NodeEntity;
 
-@NodeEntity(label = XtdLanguage.LABEL)
-public class XtdLanguage extends Entity {
+import java.util.Locale;
 
-    public static final String TITLE = "Language";
-    public static final String TITLE_PLURAL = "Languages";
-    public static final String LABEL = PREFIX + TITLE;
-    public static final String RELATIONSHIP_TYPE = "IN_LANGUAGE";
+public class XtdLanguage {
 
+    private String id;
+    private String languageCode;
     private String languageNameInEnglish;
-
     private String languageNameInSelf;
+
+    public XtdLanguage(Locale locale) {
+        this.id = locale.getLanguage();
+        this.languageCode = locale.getLanguage();
+        this.languageNameInEnglish = locale.getDisplayLanguage(Locale.ENGLISH);
+        this.languageNameInSelf = locale.getDisplayLanguage(locale);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getLanguageCode() {
+        return languageCode;
+    }
 
     public String getLanguageNameInEnglish() {
         return languageNameInEnglish;
-    }
-
-    public void setLanguageNameInEnglish(String languageNameInEnglish) {
-        this.languageNameInEnglish = languageNameInEnglish;
     }
 
     public String getLanguageNameInSelf() {
         return languageNameInSelf;
     }
 
-    public void setLanguageNameInSelf(String languageNameInSelf) {
-        this.languageNameInSelf = languageNameInSelf;
-    }
-
-
-
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .appendSuper(super.toString())
+                .append("id", id)
+                .append("languageCode", languageCode)
                 .append("languageNameInEnglish", languageNameInEnglish)
                 .append("languageNameInSelf", languageNameInSelf)
                 .toString();

@@ -1,13 +1,15 @@
 package de.bentrm.datacat.service.impl;
 
+import de.bentrm.datacat.domain.XtdDescription;
 import de.bentrm.datacat.domain.XtdName;
+import de.bentrm.datacat.domain.XtdObject;
 import de.bentrm.datacat.domain.relationship.XtdRelGroups;
-import de.bentrm.datacat.dto.RootInputDto;
-import de.bentrm.datacat.repository.LanguageRepository;
-import de.bentrm.datacat.repository.ObjectRepository;
+import de.bentrm.datacat.graphql.dto.RelationshipInput;
+import de.bentrm.datacat.graphql.dto.RootUpdateInput;
+import de.bentrm.datacat.graphql.dto.TextInput;
+import de.bentrm.datacat.repository.object.ObjectRepository;
 import de.bentrm.datacat.repository.relationship.RelGroupsRepository;
 import de.bentrm.datacat.service.RelGroupsService;
-import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,142 +18,255 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Validated
+@Transactional(readOnly = true)
 public class RelGroupsServiceImpl implements RelGroupsService {
 
     Logger logger = LoggerFactory.getLogger(RelGroupsServiceImpl.class);
 
     @Autowired
-    private Validator validator;
-
-    @Autowired
-    private LanguageRepository languageRepository;
+    private RelGroupsRepository entityRepository;
 
     @Autowired
     private ObjectRepository objectRepository;
 
-    @Autowired
-    private RelGroupsRepository relGroupsRepository;
-
     @Override
-    @Transactional(readOnly = true)
-    public Optional<XtdRelGroups> findById(String id) {
-        return relGroupsRepository.findById(id, 2);
+    public XtdRelGroups create(@Valid RelationshipInput dto) {
+        XtdRelGroups entity = toEntity(dto);
+        return entityRepository.save(entity);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Page<XtdRelGroups> findAll(Pageable pageable) {
-        Iterable<XtdRelGroups> nodes = relGroupsRepository.findAllOrderedByRelatingObjectName(pageable.getOffset(), pageable.getPageSize());
-        List<XtdRelGroups> resultList = new ArrayList<>();
-        nodes.forEach(resultList::add);
-        return PageableExecutionUtils.getPage(resultList, pageable, relGroupsRepository::count);
-    }
+    public XtdRelGroups update(@Valid RootUpdateInput dto) {
+        XtdRelGroups entity = entityRepository
+                .findByUID(dto.getId())
+                .orElseThrow(() -> new IllegalArgumentException("No Object with id " + dto.getId() + " not found."));
 
-    @Override
-    @Transactional(readOnly = true)
-    public Page<XtdRelGroups> findByTerm(String match, Pageable pageable) {
-        throw new NotImplementedException("Missing repository method.");
-    }
+        logger.debug("Updating entity {}", entity);
 
-    @Override
-    public XtdRelGroups create(String relatingObjectId, Set<String> relatedObjectsIds, RootInputDto dto) {
-        Set<ConstraintViolation<RootInputDto>> violations = validator.validate(dto);
-        if (!violations.isEmpty()) {
-            for (ConstraintViolation<RootInputDto> violation : violations) {
-                logger.error(violation.getMessage());
-            }
-            throw new ConstraintViolationException(violations);
-        }
+        // general infos
+        entity.setVersionId(dto.getVersionId());
+        entity.setVersionDate(dto.getVersionDate());
 
-        XtdRelGroups newGroup = new XtdRelGroups();
-        for (int i = 0; i < dto.getNames().size(); i++) {
-            var nameDto = dto.getNames().get(i);
-            XtdName newName = new XtdName();
-            newName.setId(nameDto.getId());
-            languageRepository.findById(nameDto.getLanguageCode()).ifPresentOrElse(
-                    newName::setLanguageName,
-                    () -> {
-                        throw new IllegalArgumentException("Unsupported language code: " + nameDto.getLanguageCode());
-                    }
-            );
-            newName.setName(nameDto.getValue());
+        List<TextInput> nameDtos = dto.getNames();
+        List<String> nameIds = nameDtos.stream().map(TextInput::getId).collect(Collectors.toList());
+        List<XtdName> names = new ArrayList<>(entity.getNames());
+
+        // empty current set to prepare for updates
+        entity.getNames().clear();
+
+        // remove deleted descriptions temporary list
+        names.removeIf(x ->  nameIds.indexOf(x.getId()) == -1);
+
+        for (int i = 0; i < nameDtos.size(); i++) {
+            TextInput input = nameDtos.get(i);
+            XtdName newName = toName(input);
             newName.setSortOrder(i);
-            newGroup.getNames().add(newName);
+
+            logger.debug("Transient name {}", newName);
+
+            int index = names.indexOf(newName);
+            if (input.getId() != null && (index > -1)) {
+                // Update of an existing name entity
+                XtdName oldName = names.get(index);
+
+                logger.debug("Persistent name to be updated: {}", oldName);
+
+                if (!oldName.getLanguageName().equals(newName.getLanguageName())) {
+                    // Update of languageName is not allowed
+                    throw new IllegalArgumentException("Update of languageName of name with id " + newName.getId() + " is not allowed.");
+                }
+
+                oldName.setName(newName.getName());
+                oldName.setSortOrder(newName.getSortOrder());
+
+                logger.debug("Updated persistent name: {}" , oldName);
+
+                entity.getNames().add(oldName);
+            } else {
+                // New entity with no given id or preset id
+                entity.getNames().add(newName);
+            }
         }
 
-        objectRepository
-                .findById(relatingObjectId)
-                .ifPresentOrElse(newGroup::setRelatingObject, () -> {
-                    throw new IllegalArgumentException("Relating object " + relatingObjectId + " not found.");
-                });
+        List<TextInput> descriptionDtos = dto.getDescriptions();
+        List<String> descriptionIds = descriptionDtos.stream().map(TextInput::getId).collect(Collectors.toList());
+        List<XtdDescription> descriptions = new ArrayList<>(entity.getDescriptions());
 
-        relatedObjectsIds.forEach(id -> {
-            objectRepository.findById(id).ifPresentOrElse(
-                    obj -> newGroup.getRelatedObjects().add(obj),
-                    () -> {
-                        throw new IllegalArgumentException("Related object with id " + id + " not found.");
-                    }
-            );
-        });
+        // empty current set to prepare for updates
+        entity.getDescriptions().clear();
 
-        return relGroupsRepository.save(newGroup);
+        // remove deleted descriptions temporary list
+        descriptions.removeIf(x -> descriptionIds.indexOf(x.getId()) == -1);
+
+        for (int i = 0; i < descriptionDtos.size(); i++) {
+            TextInput input = descriptionDtos.get(i);
+            XtdDescription newDescription = toDescription(input);
+            newDescription.setSortOrder(i);
+
+            logger.debug("Transient description {}", newDescription);
+
+            int index = descriptions.indexOf(newDescription);
+            if (input.getId() != null && (index > -1)) {
+                // Update of an existing entity
+                XtdDescription oldDescription = descriptions.get(index);
+                logger.debug("Persistent description to be updated: {}", oldDescription);
+
+                if (!oldDescription.getLanguageName().equals(newDescription.getLanguageName())) {
+                    // Update of languageName is not allowed
+                    throw new IllegalArgumentException("Update of languageName of description with id " + newDescription.getId() + " is not allowed.");
+                }
+
+                oldDescription.setDescription(newDescription.getDescription());
+                oldDescription.setSortOrder(newDescription.getSortOrder());
+
+                logger.debug("Updated persistent description: {}" , oldDescription);
+
+                entity.getDescriptions().add(oldDescription);
+            } else {
+                // New entity with no given id
+                entity.getDescriptions().add(newDescription);
+            }
+        }
+
+        logger.debug("New state {}", entity);
+
+        return entityRepository.save(entity);
     }
 
     @Override
-    public Optional<XtdRelGroups> delete(String id) {
-        return Optional.empty();
+    public Optional<XtdRelGroups> delete(@NotNull String id) {
+        Optional<XtdRelGroups> entity = entityRepository.findByUID(id);
+        entity.ifPresent(x -> entityRepository.delete(x));
+        return entity;
     }
 
     @Override
     public XtdRelGroups addRelatedObjects(String id, List<String> relatedObjectsIds) {
-        Optional<XtdRelGroups> result = relGroupsRepository.findById(id, 2);
-        XtdRelGroups groups = result.orElseThrow(() -> new IllegalArgumentException("No relation found with id " + id));
+        XtdRelGroups relation = findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No relation with id " + id + " found."));
 
-        relatedObjectsIds.forEach(relatedObjectId -> objectRepository
-                .findById(relatedObjectId)
-                .ifPresentOrElse(
-                        obj -> groups.getRelatedObjects().add(obj),
-                        () -> {
-                            throw new IllegalArgumentException("No object with id " + relatedObjectId + " found.");
-                        }
-                )
-        );
+        for (String relatedObjectId : relatedObjectsIds) {
+            XtdObject relatedObject = objectRepository
+                    .findByUID(relatedObjectId)
+                    .orElseThrow(() -> new IllegalArgumentException("No relatable object with id " + relatedObjectId + " found."));
 
-        return relGroupsRepository.save(groups);
+            // TODO: Throw if related object is already in persistent set
+            relation.getRelatedThings().add(relatedObject);
+        }
+
+        return entityRepository.save(relation);
     }
 
     @Override
     public XtdRelGroups removeRelatedObjects(String id, List<String> relatedObjectsIds) {
-        Optional<XtdRelGroups> result = relGroupsRepository.findById(id);
-        XtdRelGroups groups = result.orElseThrow(() -> new IllegalArgumentException("No relation found with id " + id));
-        groups.getRelatedObjects().removeIf(x -> relatedObjectsIds.contains(x.getId()));
-        return relGroupsRepository.save(groups);
+        XtdRelGroups relation = findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No relation with id " + id + " found."));
+
+        for (String relatedObjectId : relatedObjectsIds) {
+            XtdObject relatedObject = objectRepository
+                    .findByUID(relatedObjectId)
+                    .orElseThrow(() -> new IllegalArgumentException("No relatable object with id " + relatedObjectId + " found."));
+
+            if (!relation.getRelatedThings().remove(relatedObject)) {
+                throw new IllegalArgumentException("Object with id " + relatedObjectId + " is not related in relation " + id);
+            }
+        }
+
+        if (relation.getRelatedThings().isEmpty()) {
+            throw new IllegalArgumentException("Relation may not be empty");
+        }
+
+        return entityRepository.save(relation);
     }
 
     @Override
-    public Page<XtdRelGroups> findByRelatingObjectId(String id, Pageable pageable) {
-        Iterable<XtdRelGroups> nodes = relGroupsRepository.findByRelatingObjectOrderedByRelatingObjectName(id, pageable.getOffset(), pageable.getPageSize());
-        List<XtdRelGroups> resultList = new ArrayList<>();
-        nodes.forEach(resultList::add);
-        return PageableExecutionUtils.getPage(resultList, pageable, () -> relGroupsRepository.countByRelatingObject(id));
+    public @NotNull Optional<XtdRelGroups> findById(@NotNull String id) {
+        return entityRepository.findByUID(id);
     }
 
     @Override
-    public Page<XtdRelGroups> findByRelatedObjectId(String id, Pageable pageable) {
-        Iterable<XtdRelGroups> nodes = relGroupsRepository.findByRelatedObject(id, pageable.getOffset(), pageable.getPageSize());
+    public @NotNull Page<XtdRelGroups> findByIds(@NotNull List<String> ids, @NotNull Pageable pageable) {
+        return entityRepository.findByUIDs(ids, pageable);
+    }
+
+    @Override
+    public @NotNull Page<XtdRelGroups> findAll(@NotNull Pageable pageable) {
+        Iterable<XtdRelGroups> nodes = entityRepository.findAll(pageable);
         List<XtdRelGroups> resultList = new ArrayList<>();
         nodes.forEach(resultList::add);
-        return PageableExecutionUtils.getPage(resultList, pageable, () -> relGroupsRepository.countByRelatedObject(id));
+        return PageableExecutionUtils.getPage(resultList, pageable, entityRepository::count);
+    }
+
+    @Override
+    public @NotNull Page<XtdRelGroups> findByTerm(@NotBlank String term, @NotNull Pageable pageable) {
+        return entityRepository.findByTerm(term, pageable);
+    }
+
+    @Override
+    public Page<XtdRelGroups> findByRelatingObjectId(@NotBlank String relatingObjectId, Pageable pageable) {
+        return entityRepository.findByRelatingObjectId(relatingObjectId, pageable);
+    }
+
+    @Override
+    public @NotNull Page<XtdRelGroups> findByRelatedObjectId(@NotBlank String relatedObjectId, Pageable pageable) {
+        return entityRepository.findByRelatedObjectId(relatedObjectId, pageable);
+    }
+
+    protected XtdRelGroups toEntity(RelationshipInput input) {
+        XtdRelGroups entity = new XtdRelGroups();
+        entity.setId(input.getId());
+        entity.setVersionId(input.getVersionId());
+        entity.setVersionDate(input.getVersionDate());
+
+        XtdObject relating = objectRepository
+                .findByUID(input.getRelating())
+                .orElseThrow(() -> new IllegalArgumentException("No Object with id " + input.getRelating() + " found."));
+        entity.setRelatingThing(relating);
+
+        objectRepository.findByUIDs(input.getRelated(), null);
+
+        List<TextInput> names = input.getNames();
+        for (int i = 0; i < names.size(); i++) {
+            TextInput name = names.get(i);
+            XtdName newName = toName(name);
+            newName.setSortOrder(i);
+            entity.getNames().add(newName);
+        }
+
+        List<TextInput> descriptions = input.getDescriptions();
+        for (int i = 0; i < descriptions.size(); i++) {
+            TextInput description = descriptions.get(i);
+            XtdDescription newDescription = toDescription(description);
+            newDescription.setSortOrder(i);
+            entity.getDescriptions().add(newDescription);
+        }
+
+        return entity;
+    }
+
+    protected XtdName toName(TextInput input) {
+        if (input.getId() != null) {
+            return new XtdName(input.getId(), input.getLanguageCode(), input.getValue());
+        }
+        return new XtdName(input.getLanguageCode(), input.getValue());
+    }
+
+    protected XtdDescription toDescription(TextInput input) {
+        if (input.getId() != null) {
+            return new XtdDescription(input.getId(), input.getLanguageCode(), input.getValue());
+        }
+        return new XtdDescription(input.getLanguageCode(), input.getValue());
     }
 }

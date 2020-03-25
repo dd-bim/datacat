@@ -1,12 +1,16 @@
 package de.bentrm.datacat.service;
 
 import de.bentrm.datacat.domain.XtdRoot;
-import de.bentrm.datacat.dto.RootInputDto;
+import de.bentrm.datacat.graphql.dto.RootInput;
+import de.bentrm.datacat.graphql.dto.RootUpdateInput;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
-public interface RootService<T extends XtdRoot> extends EntityService<T>, NamedEntityService<T> {
+public interface RootService<T extends XtdRoot> extends EntityService<T> {
 
-    T create(RootInputDto dto);
-    Optional<T> delete(String id);
+    @NotNull T create(@Valid RootInput dto);
+    @NotNull T update(@Valid RootUpdateInput dto);
+    Optional<T> delete(@NotNull String id);
 }

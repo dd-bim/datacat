@@ -12,10 +12,23 @@ type Page {
     isLast: Boolean!
 }
 
+#enum CommentStatus {
+#    SPAM
+#    OPEN
+#    CLOSED
+#}
+#
+#type Comment {
+#    id: String!
+#    created: String!
+#    lastModified: String!
+#    status: CommentStatus!
+#    body: String!
+#}
+
 type XtdLanguage {
     id: ID!
-    created: String!
-    lastModified: String!
+    languageCode: String!
     languageNameInEnglish: String!
     languageNameInSelf: String!
 }
@@ -25,23 +38,32 @@ type XtdLanguageConnection {
     page: Page!
 }
 
-type XtdName {
+interface XtdLanguageRepresentation {
+    id: ID!
+    created: String!
+    lastModified: String!
+    value: String!
+    languageCode: ID!
+    languageName: XtdLanguage!
+}
+
+type XtdName implements XtdLanguageRepresentation {
     id: ID!
     created: String!
     lastModified: String!
     value: String! @fetch(from: "name")
+    languageCode: ID! @fetch(from: "languageName")
     languageName: XtdLanguage!
 }
 
-type XtdDescription {
+type XtdDescription implements XtdLanguageRepresentation {
     id: ID!
     created: String!
     lastModified: String!
     value: String! @fetch(from: "description")
+    languageCode: ID! @fetch(from: "languageName")
     languageName: XtdLanguage!
 }
-
-union XtdLanguageRepresentation = XtdName | XtdDescription
 
 type XtdExternalDocument {
     id: ID!
@@ -65,6 +87,12 @@ interface XtdRoot {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
+#    comments: [Comment!]!
+    documentedBy: XtdRelDocumentsConnection!
+    associates: XtdRelAssociatesConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    groups(options: PagingOptions): XtdRelGroupsConnection!
+    groupedBy(options: PagingOptions): XtdRelGroupsConnection!
 }
 
 type XtdRootConnection {
@@ -102,6 +130,11 @@ interface XtdCollection {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
+    documentedBy: XtdRelDocumentsConnection!
+    associates: XtdRelAssociatesConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    groups(options: PagingOptions): XtdRelGroupsConnection!
+    groupedBy(options: PagingOptions): XtdRelGroupsConnection!
 }
 
 type XtdCollectionConnection {
@@ -118,6 +151,11 @@ interface XtdRelationship {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
+    documentedBy: XtdRelDocumentsConnection!
+    associates: XtdRelAssociatesConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    groups(options: PagingOptions): XtdRelGroupsConnection!
+    groupedBy(options: PagingOptions): XtdRelGroupsConnection!
 }
 
 type XtdRelationshipConnection {
@@ -134,6 +172,7 @@ type XtdActivity implements XtdRoot, XtdObject {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
+#    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
     associates: XtdRelAssociatesConnection!
     associatedBy: XtdRelAssociatesConnection!
@@ -155,6 +194,7 @@ type XtdActor implements XtdRoot, XtdObject  {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
+#    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
     associates: XtdRelAssociatesConnection!
     associatedBy: XtdRelAssociatesConnection!
@@ -176,6 +216,7 @@ type XtdClassification implements XtdRoot, XtdObject {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
+#    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
     associates: XtdRelAssociatesConnection!
     associatedBy: XtdRelAssociatesConnection!
@@ -197,6 +238,7 @@ type XtdMeasureWithUnit implements XtdRoot, XtdObject {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
+#    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
     associates: XtdRelAssociatesConnection!
     associatedBy: XtdRelAssociatesConnection!
@@ -218,6 +260,7 @@ type XtdProperty implements XtdRoot, XtdObject {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
+#    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
     associates: XtdRelAssociatesConnection!
     associatedBy: XtdRelAssociatesConnection!
@@ -239,6 +282,7 @@ type XtdSubject implements XtdRoot, XtdObject {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
+#    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
     associates: XtdRelAssociatesConnection!
     associatedBy: XtdRelAssociatesConnection!
@@ -260,6 +304,7 @@ type XtdUnit implements XtdRoot, XtdObject {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
+#    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
     associates: XtdRelAssociatesConnection!
     associatedBy: XtdRelAssociatesConnection!
@@ -281,6 +326,7 @@ type XtdValue implements XtdRoot, XtdObject {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
+#    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
     associates: XtdRelAssociatesConnection!
     associatedBy: XtdRelAssociatesConnection!
@@ -302,6 +348,12 @@ type XtdBag implements XtdRoot, XtdCollection {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
+#    comments: [Comment!]!
+    documentedBy: XtdRelDocumentsConnection!
+    associates: XtdRelAssociatesConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    groups(options: PagingOptions): XtdRelGroupsConnection!
+    groupedBy(options: PagingOptions): XtdRelGroupsConnection!
 }
 
 type XtdBagConnection {
@@ -318,6 +370,12 @@ type XtdNest implements XtdRoot, XtdCollection {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
+#    comments: [Comment!]!
+    documentedBy: XtdRelDocumentsConnection!
+    associates: XtdRelAssociatesConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    groups(options: PagingOptions): XtdRelGroupsConnection!
+    groupedBy(options: PagingOptions): XtdRelGroupsConnection!
 }
 
 type XtdNestConnection {
@@ -334,8 +392,14 @@ type XtdRelDocuments implements XtdRoot, XtdRelationship {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
+#    comments: [Comment!]!
     relatingDocument: XtdExternalDocument!
     relatedObjects(options: PagingOptions): XtdObjectConnection!
+    documentedBy: XtdRelDocumentsConnection!
+    associates: XtdRelAssociatesConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    groups(options: PagingOptions): XtdRelGroupsConnection!
+    groupedBy(options: PagingOptions): XtdRelGroupsConnection!
 }
 
 type XtdRelDocumentsConnection {
@@ -352,8 +416,14 @@ type XtdRelAssociates implements XtdRoot, XtdRelationship {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
-    relatingObject: XtdObject!
+#    comments: [Comment!]!
+    relatingThing: XtdObject!
     relatedObjects(options: PagingOptions): XtdObjectConnection!
+    documentedBy: XtdRelDocumentsConnection!
+    associates: XtdRelAssociatesConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    groups(options: PagingOptions): XtdRelGroupsConnection!
+    groupedBy(options: PagingOptions): XtdRelGroupsConnection!
 }
 
 type XtdRelAssociatesConnection {
@@ -370,8 +440,14 @@ type XtdRelGroups implements XtdRoot, XtdRelationship {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
-    relatingObject: XtdObject!
-    relatedObjects(options: PagingOptions): XtdObjectConnection!
+#    comments: [Comment!]!
+    relatingThing: XtdRoot!
+    relatedThings(options: PagingOptions): XtdRootConnection!
+    documentedBy: XtdRelDocumentsConnection!
+    associates: XtdRelAssociatesConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    groups(options: PagingOptions): XtdRelGroupsConnection!
+    groupedBy(options: PagingOptions): XtdRelGroupsConnection!
 }
 
 type XtdRelGroupsConnection {
@@ -384,64 +460,53 @@ input PagingOptions {
     pageNumber: Int
 }
 
-input SearchOptions {
-    term: String
-    pageSize: Int
-    pageNumber: Int
-}
-
 type Query {
-    language(id: ID!): XtdLanguage
-    languages(options: SearchOptions): XtdLanguageConnection
-
     document(id: ID!): XtdExternalDocument
-    documents(options: SearchOptions): XtdExternalDocumentConnection
+    documents(term: String, options: PagingOptions): XtdExternalDocumentConnection
 
     actor(id: ID!): XtdActor
-    actors(options: SearchOptions): XtdActorConnection
+    actors(term: String, options: PagingOptions): XtdActorConnection
 
     activity(id: ID!): XtdActivity
-    activities(options: SearchOptions): XtdActivityConnection
+    activities(term: String, options: PagingOptions): XtdActivityConnection
 
     classification(id: ID!): XtdClassification
-    classifications(options: SearchOptions): XtdClassificationConnection
+    classifications(term: String, options: PagingOptions): XtdClassificationConnection
 
     measure(id: ID!): XtdExternalDocument
-    measures(options: SearchOptions): XtdMeasureWithUnitConnection
+    measures(term: String, options: PagingOptions): XtdMeasureWithUnitConnection
 
     property(id: ID!): XtdProperty
-    properies(options: SearchOptions): XtdPropertyConnection
+    properies(term: String, options: PagingOptions): XtdPropertyConnection
 
     subject(id: ID!): XtdSubject
-    subjects(options: SearchOptions): XtdSubjectConnection
+    subjects(term: String, options: PagingOptions): XtdSubjectConnection
 
     unit(id: ID!): XtdUnit
-    units(options: SearchOptions): XtdUnitConnection
+    units(term: String, options: PagingOptions): XtdUnitConnection
 
     value(id: ID!): XtdValue
-    values(options: SearchOptions): XtdValueConnection
+    values(term: String, options: PagingOptions): XtdValueConnection
 
     bag(id: ID!): XtdBag
-    bags(options: SearchOptions): XtdBagConnection
+    bags(term: String, options: PagingOptions): XtdBagConnection
 
     nest(id: ID!): XtdNest
-    nests(options: SearchOptions): XtdNestConnection
+    nests(term: String, options: PagingOptions): XtdNestConnection
 
     documentsRelation(id: ID!): XtdRelDocuments
-    documentsRelations(options: SearchOptions): XtdRelDocumentsConnection
+    documentsRelations(term: String, options: PagingOptions): XtdRelDocumentsConnection
 
     associatesRelation(id: ID!): XtdRelAssociates
-    associatesRelations(options: SearchOptions): XtdRelAssociatesConnection
+    associatesRelations(term: String, options: PagingOptions): XtdRelAssociatesConnection
 
     groupsRelation(id: ID!): XtdRelGroups
-    groupsRelations(relatingObject: ID, relatedObject: ID, options: SearchOptions): XtdRelGroupsConnection
+    groupsRelations(term: String, options: PagingOptions): XtdRelGroupsConnection
 }
 
-input LanguageInput {
-    id: ID!
-    languageNameInEnglish: String!
-    languageNameInSelf: String!
-}
+#input CommentInput {
+#    body: String!
+#}
 
 input TextInput {
     id: ID
@@ -462,46 +527,54 @@ input RootInput {
     descriptions: [TextInput!]
 }
 
-type Mutation {
-    createLanguage(language: LanguageInput!): XtdLanguage
-    deleteLanguage(id: ID!): XtdLanguage
+input RootUpdateInput {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [TextInput!]!
+    descriptions: [TextInput!]!
+}
 
-    createDocument(document: ExternalDocumentInput!): XtdExternalDocument
+type Mutation {
+    createDocument(input: ExternalDocumentInput!): XtdExternalDocument
     deleteDocument(id: ID!): XtdExternalDocument
 
-    createActor(actor: RootInput!): XtdActor
+    createActor(input: RootInput!): XtdActor
     deleteActor(id: ID!): XtdActor
 
-    createActivity(activity: RootInput!): XtdActivity
+    createActivity(input: RootInput!): XtdActivity
     deleteActivity(id: ID!): XtdActivity
 
-    createClassification(classification: RootInput!): XtdClassification
+    createClassification(input: RootInput!): XtdClassification
     delXtdClassification(id: ID!): XtdClassification
 
-    createMeasure(measure: RootInput!): XtdMeasureWithUnit
+    createMeasure(input: RootInput!): XtdMeasureWithUnit
     deleteMeasure(id: ID!): XtdMeasureWithUnit
 
-    createProperty(property: RootInput!): XtdProperty
+    createProperty(input: RootInput!): XtdProperty
     deleteProperty(id: ID!): XtdProperty
 
-    createSubject(subject: RootInput!): XtdSubject
+    createSubject(input: RootInput!): XtdSubject
+    updateSubject(input: RootUpdateInput!): XtdSubject
     deleteSubject(id: ID!): XtdSubject
+#    addSubjectComment(id: ID!, comment: CommentInput): XtdSubject
+#    updateSubjectCommentStatus
 
-    createUnit(unit: RootInput!): XtdUnit
+    createUnit(input: RootInput!): XtdUnit
     deleteUnit(id: ID!): XtdUnit
 
-    createValue(value: RootInput!): XtdValue
+    createValue(input: RootInput!): XtdValue
     deleteValue(id: ID!): XtdValue
 
-    createDocumentsRelation(relatingDocument: ID!, relatedObjects: [ID!]!, relation: RootInput!): XtdRelDocuments
+    createDocumentsRelation(relatingDocument: ID!, relatedObjects: [ID!]!, input: RootInput!): XtdRelDocuments
     deleteDocumentsRelation(id: ID!): XtdRelDocuments
 
-    createAssociatesRelation(relatingObject: ID!, relatedObjects: [ID!]!, relation: RootInput!): XtdRelAssociates
+    createAssociatesRelation(relatingThing: ID!, relatedThings: [ID!]!, input: RootInput!): XtdRelAssociates
     deleteAssociatesRelation(id: ID!): XtdRelAssociates
 
-    createGroupsRelation(relatingObject: ID!, relatedObjects: [ID!]!, relation: RootInput!): XtdRelGroups
-    addRelatedObjectsToGroupsRelation(id: ID!, relatedObjects: [ID!]!): XtdRelGroups
-    removeRelatedObjectsFromGroupsRelation(id: ID!, relatedObjects: [ID!]!): XtdRelGroups
+    createGroupsRelation(relatingThing: ID!, relatedThings: [ID!]!, input: RootInput!): XtdRelGroups
+    addRelatedObjectsToGroupsRelation(id: ID!, relatedThings: [ID!]!): XtdRelGroups
+    removeRelatedObjectsFromGroupsRelation(id: ID!, relatedThings: [ID!]!): XtdRelGroups
     deleteGroupsRelation(id: ID!): XtdRelGroups
 }
 
