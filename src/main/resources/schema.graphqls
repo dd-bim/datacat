@@ -521,8 +521,8 @@ input ExternalDocumentInput {
 
 input RootInput {
     id: ID
-    versionId: String
-    versionDate: String
+    versionId: String!
+    versionDate: String!
     names: [TextInput!]!
     descriptions: [TextInput!]
 }
