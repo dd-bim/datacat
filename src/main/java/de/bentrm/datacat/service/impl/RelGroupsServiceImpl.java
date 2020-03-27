@@ -4,8 +4,8 @@ import de.bentrm.datacat.domain.XtdDescription;
 import de.bentrm.datacat.domain.XtdName;
 import de.bentrm.datacat.domain.XtdObject;
 import de.bentrm.datacat.domain.relationship.XtdRelGroups;
-import de.bentrm.datacat.graphql.dto.RelationshipInput;
-import de.bentrm.datacat.graphql.dto.RootUpdateInput;
+import de.bentrm.datacat.graphql.dto.AssociationInput;
+import de.bentrm.datacat.graphql.dto.AssociationUpdateInput;
 import de.bentrm.datacat.graphql.dto.TextInput;
 import de.bentrm.datacat.repository.object.ObjectRepository;
 import de.bentrm.datacat.repository.relationship.RelGroupsRepository;
@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
@@ -41,19 +42,32 @@ public class RelGroupsServiceImpl implements RelGroupsService {
     @Autowired
     private ObjectRepository objectRepository;
 
+    @Transactional
     @Override
-    public XtdRelGroups create(@Valid RelationshipInput dto) {
+    public XtdRelGroups create(@Valid AssociationInput dto) {
         XtdRelGroups entity = toEntity(dto);
         return entityRepository.save(entity);
     }
 
+    @Transactional
     @Override
-    public XtdRelGroups update(@Valid RootUpdateInput dto) {
+    public XtdRelGroups update(@Valid AssociationUpdateInput dto) {
         XtdRelGroups entity = entityRepository
                 .findByUID(dto.getId())
                 .orElseThrow(() -> new IllegalArgumentException("No Object with id " + dto.getId() + " not found."));
 
         logger.debug("Updating entity {}", entity);
+
+        if (!dto.getRelatingThing().equals(entity.getRelatingThing().getId())) {
+            throw new IllegalArgumentException("Relating side of relationship can't be changed. Create a new relationship instead.'");
+        }
+
+        // remove things no longer in this relationship
+        entity.getRelatedThings().removeIf(thing -> !dto.getRelatedThings().contains(thing.getId()));
+
+        // add new things to this relationship
+        Page<XtdObject> relatedThings = objectRepository.findByUIDs(dto.getRelatedThings(), PageRequest.of(0, 1000));
+        entity.getRelatedThings().addAll(relatedThings.getContent());
 
         // general infos
         entity.setVersionId(dto.getVersionId());
@@ -224,18 +238,19 @@ public class RelGroupsServiceImpl implements RelGroupsService {
         return entityRepository.findByRelatedObjectId(relatedObjectId, pageable);
     }
 
-    protected XtdRelGroups toEntity(RelationshipInput input) {
+    protected XtdRelGroups toEntity(@Valid AssociationInput input) {
         XtdRelGroups entity = new XtdRelGroups();
         entity.setId(input.getId());
         entity.setVersionId(input.getVersionId());
         entity.setVersionDate(input.getVersionDate());
 
         XtdObject relating = objectRepository
-                .findByUID(input.getRelating())
-                .orElseThrow(() -> new IllegalArgumentException("No Object with id " + input.getRelating() + " found."));
+                .findByUID(input.getRelatingThing())
+                .orElseThrow(() -> new IllegalArgumentException("No Object with id " + input.getRelatingThing() + " found."));
         entity.setRelatingThing(relating);
 
-        objectRepository.findByUIDs(input.getRelated(), null);
+        Page<XtdObject> relatedThings = objectRepository.findByUIDs(input.getRelatedThings(), PageRequest.of(0, 1000));
+        entity.getRelatedThings().addAll(relatedThings.getContent());
 
         List<TextInput> names = input.getNames();
         for (int i = 0; i < names.size(); i++) {

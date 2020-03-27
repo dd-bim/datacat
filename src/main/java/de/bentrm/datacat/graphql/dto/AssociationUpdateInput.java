@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RootUpdateInput {
+public class AssociationUpdateInput {
 
     @NotBlank @IdConstraint
     private String id;
@@ -20,13 +20,18 @@ public class RootUpdateInput {
     @NotNull
     private String versionDate;
 
-    public String getId() {
-        return id;
-    }
-
     private @NotEmpty List<@Valid @NotNull TextInput> names = new ArrayList<>();
 
     private List<@Valid @NotNull TextInput> descriptions = new ArrayList<>();
+
+    @NotBlank @IdConstraint
+    private String relatingThing;
+
+    private @NotNull List<@NotBlank @IdConstraint String> relatedThings = new ArrayList<>();
+
+    public String getId() {
+        return id;
+    }
 
     public String getVersionId() {
         return versionId;
@@ -44,4 +49,11 @@ public class RootUpdateInput {
         return descriptions;
     }
 
+    public String getRelatingThing() {
+        return relatingThing;
+    }
+
+    public List<String> getRelatedThings() {
+        return relatedThings;
+    }
 }

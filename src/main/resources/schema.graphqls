@@ -535,6 +535,26 @@ input RootUpdateInput {
     descriptions: [TextInput!]!
 }
 
+input AssociationInput {
+    id: ID
+    versionId: String!
+    versionDate: String!
+    names: [TextInput!]!
+    descriptions: [TextInput!]
+    relatingThing: ID!
+    relatedThings: [ID!]!
+}
+
+input AssociationUpdateInput {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [TextInput!]!
+    descriptions: [TextInput!]
+    relatingThing: ID!
+    relatedThings: [ID!]!
+}
+
 type Mutation {
     createDocument(input: ExternalDocumentInput!): XtdExternalDocument
     deleteDocument(id: ID!): XtdExternalDocument
@@ -569,12 +589,11 @@ type Mutation {
     createDocumentsRelation(relatingDocument: ID!, relatedObjects: [ID!]!, input: RootInput!): XtdRelDocuments
     deleteDocumentsRelation(id: ID!): XtdRelDocuments
 
-    createAssociatesRelation(relatingThing: ID!, relatedThings: [ID!]!, input: RootInput!): XtdRelAssociates
+    createAssociatesRelation(input: AssociationInput!): XtdRelAssociates
     deleteAssociatesRelation(id: ID!): XtdRelAssociates
 
-    createGroupsRelation(relatingThing: ID!, relatedThings: [ID!]!, input: RootInput!): XtdRelGroups
-    addRelatedObjectsToGroupsRelation(id: ID!, relatedThings: [ID!]!): XtdRelGroups
-    removeRelatedObjectsFromGroupsRelation(id: ID!, relatedThings: [ID!]!): XtdRelGroups
+    createGroupsRelation(input: AssociationInput!): XtdRelGroups
+    updateGroupsRelation(input: AssociationUpdateInput!): XtdRelGroups
     deleteGroupsRelation(id: ID!): XtdRelGroups
 }
 

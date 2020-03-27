@@ -5,9 +5,9 @@ import de.bentrm.datacat.domain.XtdObject;
 import de.bentrm.datacat.domain.XtdRoot;
 import de.bentrm.datacat.domain.relationship.XtdRelGroups;
 import de.bentrm.datacat.graphql.Connection;
+import de.bentrm.datacat.graphql.dto.AssociationInput;
+import de.bentrm.datacat.graphql.dto.AssociationUpdateInput;
 import de.bentrm.datacat.graphql.dto.PagingOptions;
-import de.bentrm.datacat.graphql.dto.RelationshipInput;
-import de.bentrm.datacat.graphql.dto.RootUpdateInput;
 import de.bentrm.datacat.service.RelGroupsService;
 import graphql.schema.DataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +62,7 @@ public class RelGroupsDataFetcherProvider implements EntityDataFetcherProvider<X
         return environment -> {
             Map<String, Object> input = environment.getArgument("input");
             ObjectMapper mapper = new ObjectMapper();
-            RelationshipInput dto = mapper.convertValue(input, RelationshipInput.class);
+            AssociationInput dto = mapper.convertValue(input, AssociationInput.class);
             return relGroupsService.create(dto);
         };
     }
@@ -72,7 +72,7 @@ public class RelGroupsDataFetcherProvider implements EntityDataFetcherProvider<X
         return environment -> {
             Map<String, Object> input = environment.getArgument("input");
             ObjectMapper mapper = new ObjectMapper();
-            RootUpdateInput dto = mapper.convertValue(input, RootUpdateInput.class);
+            AssociationUpdateInput dto = mapper.convertValue(input, AssociationUpdateInput.class);
             return relGroupsService.update(dto);
         };
     }
