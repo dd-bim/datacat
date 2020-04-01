@@ -13,12 +13,7 @@ import de.bentrm.datacat.domain.collection.XtdBag;
 import de.bentrm.datacat.domain.relationship.XtdRelCollects;
 import de.bentrm.datacat.domain.relationship.XtdRelDocuments;
 import de.bentrm.datacat.domain.relationship.XtdRelGroups;
-import de.bentrm.datacat.repository.ExternalDocumentRepository;
-import de.bentrm.datacat.repository.collection.BagRepository;
-import de.bentrm.datacat.repository.object.SubjectRepository;
-import de.bentrm.datacat.repository.relationship.RelCollectsRepository;
-import de.bentrm.datacat.repository.relationship.RelDocumentsRepository;
-import de.bentrm.datacat.repository.relationship.RelGroupsRepository;
+import de.bentrm.datacat.repository.*;
 import de.bentrm.datacat.service.AdminService;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -30,6 +25,7 @@ import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -265,7 +261,7 @@ public class DataImporter implements ResourceLoaderAware {
         relationshipName.setLanguageName("de");
         relationship.getNames().add(relationshipName);
         relationship.setRelatingDocument(buildingSmart);
-        subjectRepository.findAll().forEach(subject ->relationship.getRelatedThings().add(subject));
+        subjectRepository.findAll(PageRequest.of(1, 1000)).forEach(subject ->relationship.getRelatedThings().add(subject));
         relDocumentsRepository.save(relationship);
 
         logger.info("Imported documents..");

@@ -6,7 +6,7 @@ import de.bentrm.datacat.domain.XtdSubject;
 import de.bentrm.datacat.graphql.dto.RootInput;
 import de.bentrm.datacat.graphql.dto.RootUpdateInput;
 import de.bentrm.datacat.graphql.dto.TextInput;
-import de.bentrm.datacat.repository.object.SubjectRepository;
+import de.bentrm.datacat.repository.SubjectRepository;
 import de.bentrm.datacat.service.SubjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +45,7 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     public XtdSubject update(@Valid RootUpdateInput dto) {
         XtdSubject subject = subjectRepository
-                .findByUID(dto.getId())
+                .findById(dto.getId())
                 .orElseThrow(() -> new IllegalArgumentException("No Object with id " + dto.getId() + " not found."));
 
         logger.debug("Updating entity {}", subject);
@@ -143,19 +143,19 @@ public class SubjectServiceImpl implements SubjectService {
     @Transactional
     @Override
     public Optional<XtdSubject> delete(String id) {
-        Optional<XtdSubject> subject = subjectRepository.findByUID(id);
+        Optional<XtdSubject> subject = subjectRepository.findById(id);
         subject.ifPresent(x -> subjectRepository.delete(x));
         return subject;
     }
 
     @Override
     public Optional<XtdSubject> findById(String id) {
-        return subjectRepository.findByUID(id);
+        return subjectRepository.findById(id);
     }
 
     @Override
     public Page<XtdSubject> findByIds(List<String> ids, Pageable pageable) {
-        return subjectRepository.findByUIDs(ids, pageable);
+		return subjectRepository.findAllById(ids, pageable);
     }
 
     @Override
@@ -168,41 +168,8 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public Page<XtdSubject> findByTerm(String term, Pageable pageable) {
-        return subjectRepository.findByTerm(term, pageable);
+        return subjectRepository.findAllByTerm(term, pageable);
     }
-
-//    @Transactional
-//    @Override
-//    public XtdSubject addComment(String id, CommentInput input) {
-//        Optional<XtdSubject> result = subjectRepository.findByUID(id);
-//        if (result.isEmpty()) {
-//            throw new IllegalArgumentException("No Object with id " + id + " not found.");
-//        }
-//
-//        XtdSubject subject = result.get();
-//        Comment newComment = new Comment();
-//        newComment.setStatus(Comment.Status.OPEN);
-//        newComment.setBody(input.getBody());
-//        subject.getComments().add(newComment);
-//        return subjectRepository.save(subject);
-//    }
-//
-//    @Transactional
-//    @Override
-//    public XtdSubject setCommentStatus(String subjectId, String commentId, Comment.Status newStatus) {
-//        Optional<XtdSubject> result = subjectRepository.findByUID(subjectId);
-//        if (result.isEmpty()) {
-//            throw new IllegalArgumentException("No Object with id " + subjectId + " not found.");
-//        }
-//
-//        XtdSubject subject = result.get();
-//        subject.getComments().forEach(comment -> {
-//            if (comment.getId().equals(commentId)) {
-//                comment.setStatus(newStatus);
-//            }
-//        });
-//        return subjectRepository.save(subject);
-//    }
 
     protected XtdSubject toEntity(RootInput input) {
         XtdSubject subject = new XtdSubject();

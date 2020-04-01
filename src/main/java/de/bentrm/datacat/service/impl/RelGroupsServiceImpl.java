@@ -7,8 +7,8 @@ import de.bentrm.datacat.domain.relationship.XtdRelGroups;
 import de.bentrm.datacat.graphql.dto.AssociationInput;
 import de.bentrm.datacat.graphql.dto.AssociationUpdateInput;
 import de.bentrm.datacat.graphql.dto.TextInput;
-import de.bentrm.datacat.repository.object.ObjectRepository;
-import de.bentrm.datacat.repository.relationship.RelGroupsRepository;
+import de.bentrm.datacat.repository.ObjectRepository;
+import de.bentrm.datacat.repository.RelGroupsRepository;
 import de.bentrm.datacat.service.RelGroupsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +53,7 @@ public class RelGroupsServiceImpl implements RelGroupsService {
     @Override
     public XtdRelGroups update(@Valid AssociationUpdateInput dto) {
         XtdRelGroups entity = entityRepository
-                .findByUID(dto.getId())
+                .findById(dto.getId())
                 .orElseThrow(() -> new IllegalArgumentException("No Object with id " + dto.getId() + " not found."));
 
         logger.debug("Updating entity {}", entity);
@@ -66,7 +66,7 @@ public class RelGroupsServiceImpl implements RelGroupsService {
         entity.getRelatedThings().removeIf(thing -> !dto.getRelatedThings().contains(thing.getId()));
 
         // add new things to this relationship
-        Page<XtdObject> relatedThings = objectRepository.findByUIDs(dto.getRelatedThings(), PageRequest.of(0, 1000));
+        Page<XtdObject> relatedThings = objectRepository.findAllById(dto.getRelatedThings(), PageRequest.of(0, 1000));
         entity.getRelatedThings().addAll(relatedThings.getContent());
 
         // general infos
@@ -161,7 +161,7 @@ public class RelGroupsServiceImpl implements RelGroupsService {
 
     @Override
     public Optional<XtdRelGroups> delete(@NotNull String id) {
-        Optional<XtdRelGroups> entity = entityRepository.findByUID(id);
+        Optional<XtdRelGroups> entity = entityRepository.findById(id);
         entity.ifPresent(x -> entityRepository.delete(x));
         return entity;
     }
@@ -173,7 +173,7 @@ public class RelGroupsServiceImpl implements RelGroupsService {
 
         for (String relatedObjectId : relatedObjectsIds) {
             XtdObject relatedObject = objectRepository
-                    .findByUID(relatedObjectId)
+                    .findById(relatedObjectId)
                     .orElseThrow(() -> new IllegalArgumentException("No relatable object with id " + relatedObjectId + " found."));
 
             // TODO: Throw if related object is already in persistent set
@@ -190,7 +190,7 @@ public class RelGroupsServiceImpl implements RelGroupsService {
 
         for (String relatedObjectId : relatedObjectsIds) {
             XtdObject relatedObject = objectRepository
-                    .findByUID(relatedObjectId)
+                    .findById(relatedObjectId)
                     .orElseThrow(() -> new IllegalArgumentException("No relatable object with id " + relatedObjectId + " found."));
 
             if (!relation.getRelatedThings().remove(relatedObject)) {
@@ -207,12 +207,12 @@ public class RelGroupsServiceImpl implements RelGroupsService {
 
     @Override
     public @NotNull Optional<XtdRelGroups> findById(@NotNull String id) {
-        return entityRepository.findByUID(id);
+        return entityRepository.findById(id);
     }
 
     @Override
     public @NotNull Page<XtdRelGroups> findByIds(@NotNull List<String> ids, @NotNull Pageable pageable) {
-        return entityRepository.findByUIDs(ids, pageable);
+        return entityRepository.findAllById(ids, pageable);
     }
 
     @Override
@@ -225,17 +225,17 @@ public class RelGroupsServiceImpl implements RelGroupsService {
 
     @Override
     public @NotNull Page<XtdRelGroups> findByTerm(@NotBlank String term, @NotNull Pageable pageable) {
-        return entityRepository.findByTerm(term, pageable);
+        return entityRepository.findAllByTerm(term, pageable);
     }
 
     @Override
     public Page<XtdRelGroups> findByRelatingObjectId(@NotBlank String relatingObjectId, Pageable pageable) {
-        return entityRepository.findByRelatingObjectId(relatingObjectId, pageable);
+        return entityRepository.findAllGroupedBy(relatingObjectId, pageable);
     }
 
     @Override
     public @NotNull Page<XtdRelGroups> findByRelatedObjectId(@NotBlank String relatedObjectId, Pageable pageable) {
-        return entityRepository.findByRelatedObjectId(relatedObjectId, pageable);
+        return entityRepository.findAllGrouping(relatedObjectId, pageable);
     }
 
     protected XtdRelGroups toEntity(@Valid AssociationInput input) {
@@ -245,11 +245,11 @@ public class RelGroupsServiceImpl implements RelGroupsService {
         entity.setVersionDate(input.getVersionDate());
 
         XtdObject relating = objectRepository
-                .findByUID(input.getRelatingThing())
+                .findById(input.getRelatingThing())
                 .orElseThrow(() -> new IllegalArgumentException("No Object with id " + input.getRelatingThing() + " found."));
         entity.setRelatingThing(relating);
 
-        Page<XtdObject> relatedThings = objectRepository.findByUIDs(input.getRelatedThings(), PageRequest.of(0, 1000));
+        Page<XtdObject> relatedThings = objectRepository.findAllById(input.getRelatedThings(), PageRequest.of(0, 1000));
         entity.getRelatedThings().addAll(relatedThings.getContent());
 
         List<TextInput> names = input.getNames();

@@ -2,7 +2,7 @@ package de.bentrm.datacat.service.impl;
 
 import de.bentrm.datacat.domain.XtdRoot;
 import de.bentrm.datacat.domain.relationship.XtdRelGroups;
-import de.bentrm.datacat.repository.relationship.RelGroupsRepository;
+import de.bentrm.datacat.repository.RelGroupsRepository;
 import de.bentrm.datacat.service.ObjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

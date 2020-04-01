@@ -1,4 +1,4 @@
-package de.bentrm.datacat.repository.relationship;
+package de.bentrm.datacat.repository;
 
 import de.bentrm.datacat.domain.relationship.XtdRelDocuments;
 import org.springframework.data.neo4j.annotation.Query;
