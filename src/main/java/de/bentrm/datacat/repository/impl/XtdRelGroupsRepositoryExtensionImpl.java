@@ -1,10 +1,11 @@
-package de.bentrm.datacat.repository;
+package de.bentrm.datacat.repository.impl;
 
 import de.bentrm.datacat.domain.relationship.XtdRelGroups;
 import de.bentrm.datacat.query.CountAllGroupedByQuery;
 import de.bentrm.datacat.query.CountAllGroupingQuery;
 import de.bentrm.datacat.query.FindAllGroupedByQuery;
 import de.bentrm.datacat.query.FindAllGroupingQuery;
+import de.bentrm.datacat.repository.XtdRelGroupsRepositoryExtension;
 import org.neo4j.ogm.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

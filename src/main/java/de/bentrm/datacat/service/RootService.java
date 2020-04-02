@@ -11,6 +11,9 @@ import java.util.Optional;
 public interface RootService<T extends XtdRoot> extends EntityService<T> {
 
     @NotNull T create(@Valid RootInput dto);
+
     @NotNull T update(@Valid RootUpdateInput dto);
+
     Optional<T> delete(@NotNull String id);
+
 }

@@ -12,8 +12,11 @@ import java.util.Optional;
 public interface EntityService<T extends Entity> {
 
     @NotNull Optional<T> findById(@NotNull String id);
+
     @NotNull Page<T> findByIds(@NotNull List<String> ids, @NotNull Pageable pageable);
+
     @NotNull Page<T> findAll(@NotNull Pageable pageable);
+
     @NotNull Page<T> findByTerm(@NotBlank String term, @NotNull Pageable pageable);
 
 }
