@@ -18,7 +18,7 @@ public class XtdRelGroups extends XtdRelationship {
     private XtdRoot relatingThing;
 
     @Relationship(type = RELATIONSHIP_TYPE)
-    private Set<XtdRoot> relatedThings = new HashSet<XtdRoot>();
+    private Set<XtdRoot> relatedThings = new HashSet<>();
 
     public XtdRoot getRelatingThing() {
         return relatingThing;
