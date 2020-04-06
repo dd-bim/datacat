@@ -159,6 +159,7 @@ public class RelGroupsServiceImpl implements RelGroupsService {
         return entityRepository.save(entity);
     }
 
+    @Transactional
     @Override
     public Optional<XtdRelGroups> delete(@NotNull String id) {
         Optional<XtdRelGroups> entity = entityRepository.findById(id);
@@ -166,6 +167,7 @@ public class RelGroupsServiceImpl implements RelGroupsService {
         return entity;
     }
 
+    @Transactional
     @Override
     public XtdRelGroups addRelatedObjects(String id, List<String> relatedObjectsIds) {
         XtdRelGroups relation = findById(id)
@@ -183,6 +185,7 @@ public class RelGroupsServiceImpl implements RelGroupsService {
         return entityRepository.save(relation);
     }
 
+    @Transactional
     @Override
     public XtdRelGroups removeRelatedObjects(String id, List<String> relatedObjectsIds) {
         XtdRelGroups relation = findById(id)
