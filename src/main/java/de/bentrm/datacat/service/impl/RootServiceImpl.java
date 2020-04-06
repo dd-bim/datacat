@@ -7,9 +7,11 @@ import de.bentrm.datacat.graphql.dto.RootInput;
 import de.bentrm.datacat.graphql.dto.RootUpdateInput;
 import de.bentrm.datacat.graphql.dto.TextInput;
 import de.bentrm.datacat.repository.GraphEntityRepository;
+import de.bentrm.datacat.service.RelGroupsService;
 import de.bentrm.datacat.service.RootService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.support.PageableExecutionUtils;
@@ -32,6 +34,9 @@ public abstract class RootServiceImpl<T extends XtdRoot, R extends GraphEntityRe
 	Logger logger = LoggerFactory.getLogger(SubjectServiceImpl.class);
 
 	private R repository;
+
+	@Autowired
+	private RelGroupsService relGroupsService;
 
 	public RootServiceImpl(R repository) {
 		this.repository = repository;
@@ -167,9 +172,21 @@ public abstract class RootServiceImpl<T extends XtdRoot, R extends GraphEntityRe
 	@Transactional
 	@Override
 	public Optional<T> delete(@NotNull String id) {
-		Optional<T> entity = repository.findById(id);
-		entity.ifPresent(x -> repository.delete(x));
-		return entity;
+		Optional<T> result = repository.findById(id);
+
+		if (result.isPresent()) {
+			T entity = result.get();
+
+			// delete groups relationships of this entity
+			entity.getGroups().forEach(relation -> {
+				logger.debug("Deleting Relationship {}", relation);
+				relGroupsService.delete(relation.getId());
+			});
+
+			repository.delete(entity);
+		}
+
+		return result;
 	}
 
 	@Override
