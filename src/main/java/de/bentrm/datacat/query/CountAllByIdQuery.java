@@ -7,20 +7,20 @@ import java.io.Serializable;
 
 public class CountAllByIdQuery<T, ID extends Serializable> extends AbstractCustomQuery<T> implements CountQuery<T> {
 
-	private static final String COUNT_FIND_ALL_BY_ID_QUERY_TEMPLATE = "MATCH (root:${label}) WHERE root.id IN {ids} RETURN COUNT(root)";
+    private static final String COUNT_FIND_ALL_BY_ID_QUERY_TEMPLATE = "MATCH (root:${label}) WHERE root.id IN {ids} RETURN COUNT(root)";
 
-	public CountAllByIdQuery(Class<T> entityType, Session session, Iterable<ID> ids) {
-		super(entityType, session);
-		this.queryParameters.put("ids", ids);
-	}
+    public CountAllByIdQuery(Class<T> entityType, Session session, Iterable<ID> ids) {
+        super(entityType, session);
+        this.queryParameters.put("ids", ids);
+    }
 
-	@Override
-	public @NotNull String getQueryTemplate() {
-		return COUNT_FIND_ALL_BY_ID_QUERY_TEMPLATE;
-	}
+    @Override
+    public @NotNull String getQueryTemplate() {
+        return COUNT_FIND_ALL_BY_ID_QUERY_TEMPLATE;
+    }
 
-	@Override
-	public long execute() {
-		return session.queryForObject(Long.class, this.prepareCypherQuery(), this.queryParameters);
-	}
+    @Override
+    public long execute() {
+        return session.queryForObject(Long.class, this.prepareCypherQuery(), this.queryParameters);
+    }
 }

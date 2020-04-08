@@ -4,7 +4,8 @@ import javax.validation.constraints.NotNull;
 
 public interface CustomQuery {
 
-	@NotNull String getQueryTemplate();
-	@NotNull String getPropertyAggregations();
+    @NotNull String getQueryTemplate();
+
+    @NotNull String getPropertyAggregations();
 
 }

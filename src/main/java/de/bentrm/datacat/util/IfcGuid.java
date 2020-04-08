@@ -61,7 +61,7 @@ public class IfcGuid {
             int endIndex = 6 + 4 * i;
             int digit = decode(value.substring(beginIndex, endIndex));
             for (int j = 0; j < 3; j++) {
-                digits[digitIndex] = (byte) ((digit >> (8 * (2 - j))) % 256);;
+                digits[digitIndex] = (byte) ((digit >> (8 * (2 - j))) % 256);
                 digitIndex++;
             }
         }

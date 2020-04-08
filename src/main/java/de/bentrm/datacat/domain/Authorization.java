@@ -7,7 +7,7 @@ public class Authorization {
 
     public enum Type {
         READ,
-        WRITE;
+        WRITE
     }
 
     private Type type;

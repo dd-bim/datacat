@@ -5,6 +5,6 @@ import java.util.Optional;
 
 public interface EntityQuery<T> {
 
-	@NotNull Optional<T> execute();
+    @NotNull Optional<T> execute();
 
 }

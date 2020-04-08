@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class GraphQLCacheInitializer implements ApplicationRunner {
     protected final Log logger = LogFactory.getLog(GraphQLCacheInitializer.class);
 
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) {
         PropertyDataFetcher.clearReflectionCache();
         logger.info("GraphQL PropertyDataFetcher cache has been cleared..");
     }

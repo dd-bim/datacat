@@ -44,7 +44,7 @@ public class SchemaDefinition implements ResourceLoaderAware {
     private XtdDataFetchers dataFetchers;
 
     @Autowired
-	private ActorDataFetcherProvider actorProvider;
+    private ActorDataFetcherProvider actorProvider;
 
     @Autowired
     private SubjectDataFetcherProvider subjectProvider;
@@ -70,8 +70,8 @@ public class SchemaDefinition implements ResourceLoaderAware {
                 .type("XtdRoot", typeWiring -> typeWiring.typeResolver(rootTypeResolver))
                 .type("XtdObject", typeWiring -> typeWiring
                         .typeResolver(new XtdObjectTypeResolver()))
-				.type("XtdActor", typeWiring -> typeWiring
-						.dataFetchers(relGroupsProvider.getRootDataFetchers()))
+                .type("XtdActor", typeWiring -> typeWiring
+                        .dataFetchers(relGroupsProvider.getRootDataFetchers()))
                 .type("XtdSubject", typeWiring -> typeWiring
                         .dataFetchers(relGroupsProvider.getRootDataFetchers()))
                 .type("XtdCollection", typeWiring -> typeWiring.typeResolver(collectionTypeResolver))
@@ -82,13 +82,13 @@ public class SchemaDefinition implements ResourceLoaderAware {
                 .type("Query", typeWiring -> typeWiring
                         .dataFetcher("document", dataFetchers.externalDocumentById())
                         .dataFetcher("documents", dataFetchers.externalDocumentBySearch())
-						.dataFetchers(actorProvider.getQueryDataFetchers())
+                        .dataFetchers(actorProvider.getQueryDataFetchers())
                         .dataFetchers(subjectProvider.getQueryDataFetchers())
                         .dataFetchers(relGroupsProvider.getQueryDataFetchers()))
                 .type("Mutation", typeWiring -> typeWiring
                         .dataFetcher("createDocument", dataFetchers.createExternalDocument())
                         .dataFetcher("deleteDocument", dataFetchers.deleteExternalDocument())
-						.dataFetchers(actorProvider.getMutationDataFetchers())
+                        .dataFetchers(actorProvider.getMutationDataFetchers())
                         .dataFetchers(subjectProvider.getMutationDataFetchers())
                         .dataFetchers(relGroupsProvider.getMutationDataFetchers()))
                 .build();

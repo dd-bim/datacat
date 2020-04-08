@@ -1,6 +1,7 @@
 package de.bentrm.datacat.repository.impl;
 
 import de.bentrm.datacat.repository.GraphEntityRepository;
+import org.jetbrains.annotations.NotNull;
 import org.neo4j.ogm.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,61 +19,60 @@ import org.springframework.util.Assert;
 import java.io.Serializable;
 
 public class GraphEntityRepositoryFactoryBean<R extends GraphEntityRepository<T, ID>, T, ID extends Serializable>
-		extends TransactionalRepositoryFactoryBeanSupport<R, T, ID> {
+        extends TransactionalRepositoryFactoryBeanSupport<R, T, ID> {
 
-	private static final Logger logger = LoggerFactory.getLogger(GraphEntityRepositoryFactoryBean.class);
+    private static final Logger logger = LoggerFactory.getLogger(GraphEntityRepositoryFactoryBean.class);
 
-	private Session session;
-	private Neo4jMappingContext mappingContext;
+    private Session session;
+    private Neo4jMappingContext mappingContext;
 
-	public GraphEntityRepositoryFactoryBean(Class<? extends R> repositoryInterface) {
-		super(repositoryInterface);
-		logger.debug("New GraphEntityRepositoryFactoryBean for interface {} initialized.", repositoryInterface);
-	}
+    public GraphEntityRepositoryFactoryBean(Class<? extends R> repositoryInterface) {
+        super(repositoryInterface);
+        logger.debug("New GraphEntityRepositoryFactoryBean for interface {} initialized.", repositoryInterface);
+    }
 
-	@Autowired
-	public void setSession(Session session) {
-		this.session = session;
-	}
+    @Autowired
+    public void setSession(Session session) {
+        this.session = session;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport#setMappingContext(org.springframework.data.mapping.context.MappingContext)
-	 */
-	@Override
-	public void setMappingContext(MappingContext<?, ?> mappingContext) {
-		super.setMappingContext(mappingContext);
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport#setMappingContext(org.springframework.data.mapping.context.MappingContext)
+     */
+    @Override
+    public void setMappingContext(MappingContext<?, ?> mappingContext) {
+        super.setMappingContext(mappingContext);
 
-		if (mappingContext instanceof Neo4jMappingContext) {
-			this.mappingContext = (Neo4jMappingContext) mappingContext;
-		}
-	}
+        if (mappingContext instanceof Neo4jMappingContext) {
+            this.mappingContext = (Neo4jMappingContext) mappingContext;
+        }
+    }
 
-	@Override
-	public void afterPropertiesSet() {
-		Assert.notNull(session, "Session must not be null!");
-		super.afterPropertiesSet();
-	}
+    @Override
+    public void afterPropertiesSet() {
+        Assert.notNull(session, "Session must not be null!");
+        super.afterPropertiesSet();
+    }
 
-	@Override
-	protected RepositoryFactorySupport doCreateRepositoryFactory() {
-		return new GraphEntityRepositoryFactory(session, mappingContext);
-	}
+    @NotNull
+    @Override
+    protected RepositoryFactorySupport doCreateRepositoryFactory() {
+        return new GraphEntityRepositoryFactory(session, mappingContext);
+    }
 
-	private static class GraphEntityRepositoryFactory extends Neo4jRepositoryFactory {
+    private static class GraphEntityRepositoryFactory extends Neo4jRepositoryFactory {
 
-		public GraphEntityRepositoryFactory(Session session, MappingContext<Neo4jPersistentEntity<?>, Neo4jPersistentProperty> mappingContext) {
-			super(session, mappingContext);
-			logger.debug("New GraphEntityRepositoryFactory initialized from session {} and mapping context {}", session, mappingContext);
-		}
+        public GraphEntityRepositoryFactory(Session session, MappingContext<Neo4jPersistentEntity<?>, Neo4jPersistentProperty> mappingContext) {
+            super(session, mappingContext);
+            logger.debug("New GraphEntityRepositoryFactory initialized from session {} and mapping context {}", session, mappingContext);
+        }
 
-		@Override
-		protected Class<?> getRepositoryBaseClass(RepositoryMetadata repositoryMetadata) {
-			return GraphEntityRepositoryBaseClass.class;
-		}
-
-
+        @Override
+        protected Class<?> getRepositoryBaseClass(RepositoryMetadata repositoryMetadata) {
+            return GraphEntityRepositoryBaseClass.class;
+        }
 
 
-	}
+    }
 }

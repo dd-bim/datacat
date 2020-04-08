@@ -17,22 +17,22 @@ import java.util.List;
 
 public class XtdRelGroupsRepositoryExtensionImpl implements XtdRelGroupsRepositoryExtension {
 
-	@Autowired
-	private Session session;
+    @Autowired
+    private Session session;
 
-	@Override
-	public Page<XtdRelGroups> findAllGroupedBy(String relatingThingId, Pageable pageable) {
-		Iterable<XtdRelGroups> results = new FindAllGroupedByQuery<>(XtdRelGroups.class, session, relatingThingId, pageable).execute();
-		List<XtdRelGroups> content = new ArrayList<>();
-		results.forEach(content::add);
-		return PageableExecutionUtils.getPage(content, pageable, () -> new CountAllGroupedByQuery<>(XtdRelGroups.class, session, relatingThingId).execute());
-	}
+    @Override
+    public Page<XtdRelGroups> findAllGroupedBy(String relatingThingId, Pageable pageable) {
+        Iterable<XtdRelGroups> results = new FindAllGroupedByQuery<>(XtdRelGroups.class, session, relatingThingId, pageable).execute();
+        List<XtdRelGroups> content = new ArrayList<>();
+        results.forEach(content::add);
+        return PageableExecutionUtils.getPage(content, pageable, () -> new CountAllGroupedByQuery<>(XtdRelGroups.class, session, relatingThingId).execute());
+    }
 
-	@Override
-	public Page<XtdRelGroups> findAllGrouping(String relatedThingId, Pageable pageable) {
-		Iterable<XtdRelGroups> results = new FindAllGroupingQuery<>(XtdRelGroups.class, session, relatedThingId, pageable).execute();
-		List<XtdRelGroups> content = new ArrayList<>();
-		results.forEach(content::add);
-		return PageableExecutionUtils.getPage(content, pageable, () -> new CountAllGroupingQuery<>(XtdRelGroups.class, session, relatedThingId).execute());
-	}
+    @Override
+    public Page<XtdRelGroups> findAllGrouping(String relatedThingId, Pageable pageable) {
+        Iterable<XtdRelGroups> results = new FindAllGroupingQuery<>(XtdRelGroups.class, session, relatedThingId, pageable).execute();
+        List<XtdRelGroups> content = new ArrayList<>();
+        results.forEach(content::add);
+        return PageableExecutionUtils.getPage(content, pageable, () -> new CountAllGroupingQuery<>(XtdRelGroups.class, session, relatedThingId).execute());
+    }
 }

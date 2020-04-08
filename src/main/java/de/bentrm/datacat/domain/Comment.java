@@ -16,7 +16,7 @@ public class Comment extends Entity implements Comparable<Comment> {
     public enum Status {
         OPEN,
         CLOSED,
-        SPAM;
+        SPAM
     }
 
     @NotNull
