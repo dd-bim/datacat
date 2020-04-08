@@ -47,6 +47,9 @@ public class SchemaDefinition implements ResourceLoaderAware {
     private ActivityDataFetcherProvider activityProvider;
 
     @Autowired
+    private PropertyDataFetcherProvider propertyProvider;
+
+    @Autowired
     private SubjectDataFetcherProvider subjectProvider;
 
     @Autowired
@@ -87,6 +90,7 @@ public class SchemaDefinition implements ResourceLoaderAware {
                         .dataFetcher("documents", dataFetchers.externalDocumentBySearch())
                         .dataFetchers(actorProvider.getQueryDataFetchers())
                         .dataFetchers(activityProvider.getQueryDataFetchers())
+                        .dataFetchers(propertyProvider.getQueryDataFetchers())
                         .dataFetchers(subjectProvider.getQueryDataFetchers())
                         .dataFetchers(unitProvider.getQueryDataFetchers())
                         .dataFetchers(relGroupsProvider.getQueryDataFetchers()))
@@ -95,6 +99,7 @@ public class SchemaDefinition implements ResourceLoaderAware {
                         .dataFetcher("deleteDocument", dataFetchers.deleteExternalDocument())
                         .dataFetchers(actorProvider.getMutationDataFetchers())
                         .dataFetchers(activityProvider.getMutationDataFetchers())
+                        .dataFetchers(propertyProvider.getMutationDataFetchers())
                         .dataFetchers(subjectProvider.getMutationDataFetchers())
                         .dataFetchers(unitProvider.getMutationDataFetchers())
                         .dataFetchers(relGroupsProvider.getMutationDataFetchers()))
