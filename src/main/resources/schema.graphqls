@@ -477,7 +477,7 @@ type Query {
     measures(term: String, options: PagingOptions): XtdMeasureWithUnitConnection
 
     property(id: ID!): XtdProperty
-    properies(term: String, options: PagingOptions): XtdPropertyConnection
+    properties(term: String, options: PagingOptions): XtdPropertyConnection
 
     subject(id: ID!): XtdSubject
     subjects(term: String, options: PagingOptions): XtdSubjectConnection
