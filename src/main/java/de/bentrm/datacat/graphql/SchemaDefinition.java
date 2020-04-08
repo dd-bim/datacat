@@ -1,9 +1,6 @@
 package de.bentrm.datacat.graphql;
 
-import de.bentrm.datacat.graphql.fetcher.ActorDataFetcherProvider;
-import de.bentrm.datacat.graphql.fetcher.RelGroupsDataFetcherProvider;
-import de.bentrm.datacat.graphql.fetcher.SubjectDataFetcherProvider;
-import de.bentrm.datacat.graphql.fetcher.XtdDataFetchers;
+import de.bentrm.datacat.graphql.fetcher.*;
 import de.bentrm.datacat.graphql.resolver.*;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.RuntimeWiring;
@@ -47,6 +44,9 @@ public class SchemaDefinition implements ResourceLoaderAware {
     private ActorDataFetcherProvider actorProvider;
 
     @Autowired
+    private ActivityDataFetcherProvider activityProvider;
+
+    @Autowired
     private SubjectDataFetcherProvider subjectProvider;
 
     @Autowired
@@ -83,12 +83,14 @@ public class SchemaDefinition implements ResourceLoaderAware {
                         .dataFetcher("document", dataFetchers.externalDocumentById())
                         .dataFetcher("documents", dataFetchers.externalDocumentBySearch())
                         .dataFetchers(actorProvider.getQueryDataFetchers())
+                        .dataFetchers(activityProvider.getQueryDataFetchers())
                         .dataFetchers(subjectProvider.getQueryDataFetchers())
                         .dataFetchers(relGroupsProvider.getQueryDataFetchers()))
                 .type("Mutation", typeWiring -> typeWiring
                         .dataFetcher("createDocument", dataFetchers.createExternalDocument())
                         .dataFetcher("deleteDocument", dataFetchers.deleteExternalDocument())
                         .dataFetchers(actorProvider.getMutationDataFetchers())
+                        .dataFetchers(activityProvider.getMutationDataFetchers())
                         .dataFetchers(subjectProvider.getMutationDataFetchers())
                         .dataFetchers(relGroupsProvider.getMutationDataFetchers()))
                 .build();
