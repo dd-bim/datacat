@@ -1,6 +1,8 @@
 package de.bentrm.datacat.graphql.fetcher;
 
 import de.bentrm.datacat.domain.XtdActivity;
+import de.bentrm.datacat.graphql.dto.RootInput;
+import de.bentrm.datacat.graphql.dto.RootUpdateInput;
 import de.bentrm.datacat.service.ActivityService;
 import graphql.schema.DataFetcher;
 import org.springframework.stereotype.Component;
@@ -9,11 +11,11 @@ import java.util.Map;
 
 @Component
 public class ActivityDataFetcherProvider
-        extends EntityDataFetcherProviderImpl<XtdActivity, ActivityService>
+        extends EntityDataFetcherProviderImpl<XtdActivity, RootInput, RootUpdateInput, ActivityService>
         implements EntityDataFetcherProvider<XtdActivity> {
 
     public ActivityDataFetcherProvider(ActivityService entityService) {
-        super(entityService);
+        super(RootInput.class, RootUpdateInput.class, entityService);
     }
 
     @Override

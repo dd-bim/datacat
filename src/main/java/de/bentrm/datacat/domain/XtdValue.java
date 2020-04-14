@@ -9,17 +9,17 @@ public class XtdValue extends XtdObject {
     public static final String TITLE_PLURAL = "Values";
     public static final String LABEL = PREFIX + TITLE;
 
+    private XtdToleranceTypeEnum toleranceType;
+
     private String lowerTolerance;
 
     private String upperTolerance;
 
     private XtdValueRoleEnum valueRole;
 
-    private String nominalValue;
-
-    private XtdToleranceTypeEnum toleranceValue;
-
     private XtdValueTypeEnum valueType;
+
+    private String nominalValue;
 
     public String getLowerTolerance() {
         return lowerTolerance;
@@ -57,12 +57,12 @@ public class XtdValue extends XtdObject {
         return this;
     }
 
-    public XtdToleranceTypeEnum getToleranceValue() {
-        return toleranceValue;
+    public XtdToleranceTypeEnum getToleranceType() {
+        return toleranceType;
     }
 
-    public XtdValue setToleranceValue(XtdToleranceTypeEnum toleranceValue) {
-        this.toleranceValue = toleranceValue;
+    public XtdValue setToleranceType(XtdToleranceTypeEnum toleranceType) {
+        this.toleranceType = toleranceType;
         return this;
     }
 

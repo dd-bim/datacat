@@ -28,15 +28,18 @@ import java.util.stream.Collectors;
 
 @Validated
 @Transactional(readOnly = true)
-public abstract class RootServiceImpl<T extends XtdRoot, R extends GraphEntityRepository<T, String>>
-		implements RootService<T> {
+public abstract class RootServiceImpl<
+		T extends XtdRoot,
+		C extends RootInput,
+		U extends RootUpdateInput, R extends GraphEntityRepository<T, String>>
+		implements RootService<T, C, U> {
 
 	Logger logger = LoggerFactory.getLogger(SubjectServiceImpl.class);
 
-	private R repository;
+	protected final R repository;
 
 	@Autowired
-	private RelGroupsService relGroupsService;
+	protected RelGroupsService relGroupsService;
 
 	public RootServiceImpl(R repository) {
 		this.repository = repository;
@@ -44,19 +47,23 @@ public abstract class RootServiceImpl<T extends XtdRoot, R extends GraphEntityRe
 
 	@Transactional
 	@Override
-	public T create(@Valid RootInput dto) {
+	public T create(@Valid C dto) {
 		T newEntity = newEntityInstance();
+		setEntityProperties(newEntity, dto);
+		return repository.save(newEntity);
+	}
 
-		newEntity.setId(dto.getId());
-		newEntity.setVersionId(dto.getVersionId());
-		newEntity.setVersionDate(dto.getVersionDate());
+	protected void setEntityProperties(T entity, C dto) {
+		entity.setId(dto.getId());
+		entity.setVersionId(dto.getVersionId());
+		entity.setVersionDate(dto.getVersionDate());
 
 		List<TextInput> names = dto.getNames();
 		for (int i = 0; i < names.size(); i++) {
 			TextInput name = names.get(i);
 			XtdName newName = newNameInstance(name);
 			newName.setSortOrder(i);
-			newEntity.getNames().add(newName);
+			entity.getNames().add(newName);
 		}
 
 		List<TextInput> descriptions = dto.getDescriptions();
@@ -64,19 +71,23 @@ public abstract class RootServiceImpl<T extends XtdRoot, R extends GraphEntityRe
 			TextInput description = descriptions.get(i);
 			XtdDescription newDescription = newDescriptionInstance(description);
 			newDescription.setSortOrder(i);
-			newEntity.getDescriptions().add(newDescription);
+			entity.getDescriptions().add(newDescription);
 		}
-
-		return repository.save(newEntity);
 	}
 
 	@Transactional
 	@Override
-	public T update(@Valid RootUpdateInput dto) {
+	public T update(@Valid U dto) {
 		T entity = repository
 				.findById(dto.getId())
 				.orElseThrow(() -> new IllegalArgumentException("No Object with id " + dto.getId() + " not found."));
 
+		updateEntityProperties(entity, dto);
+
+		return repository.save(entity);
+	}
+
+	protected void updateEntityProperties(T entity, U dto) {
 		logger.debug("Updating entity {}", entity);
 
 		// general infos
@@ -165,8 +176,6 @@ public abstract class RootServiceImpl<T extends XtdRoot, R extends GraphEntityRe
 		}
 
 		logger.debug("New state {}", entity);
-
-		return repository.save(entity);
 	}
 
 	@Transactional
@@ -214,14 +223,14 @@ public abstract class RootServiceImpl<T extends XtdRoot, R extends GraphEntityRe
 
 	protected abstract T newEntityInstance();
 
-	private XtdName newNameInstance(TextInput input) {
+	protected XtdName newNameInstance(TextInput input) {
 		if (input.getId() != null) {
 			return new XtdName(input.getId(), input.getLanguageCode(), input.getValue());
 		}
 		return new XtdName(input.getLanguageCode(), input.getValue());
 	}
 
-	private XtdDescription newDescriptionInstance(TextInput input) {
+	protected XtdDescription newDescriptionInstance(TextInput input) {
 		if (input.getId() != null) {
 			return new XtdDescription(input.getId(), input.getLanguageCode(), input.getValue());
 		}

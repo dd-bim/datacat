@@ -1,6 +1,8 @@
 package de.bentrm.datacat.graphql.fetcher;
 
 import de.bentrm.datacat.domain.XtdActor;
+import de.bentrm.datacat.graphql.dto.RootInput;
+import de.bentrm.datacat.graphql.dto.RootUpdateInput;
 import de.bentrm.datacat.service.ActorService;
 import graphql.schema.DataFetcher;
 import org.springframework.stereotype.Component;
@@ -9,11 +11,11 @@ import java.util.Map;
 
 @Component
 public class ActorDataFetcherProvider
-		extends EntityDataFetcherProviderImpl<XtdActor, ActorService>
+		extends EntityDataFetcherProviderImpl<XtdActor, RootInput, RootUpdateInput, ActorService>
 		implements EntityDataFetcherProvider<XtdActor> {
 
 	public ActorDataFetcherProvider(ActorService entityService) {
-		super(entityService);
+		super(RootInput.class, RootUpdateInput.class, entityService);
 	}
 
 	@Override

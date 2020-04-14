@@ -1,6 +1,8 @@
 package de.bentrm.datacat.graphql.fetcher;
 
 import de.bentrm.datacat.domain.XtdProperty;
+import de.bentrm.datacat.graphql.dto.RootInput;
+import de.bentrm.datacat.graphql.dto.RootUpdateInput;
 import de.bentrm.datacat.service.PropertyService;
 import graphql.schema.DataFetcher;
 import org.springframework.stereotype.Component;
@@ -9,11 +11,11 @@ import java.util.Map;
 
 @Component
 public class PropertyDataFetcherProvider
-        extends EntityDataFetcherProviderImpl<XtdProperty, PropertyService>
+        extends EntityDataFetcherProviderImpl<XtdProperty, RootInput, RootUpdateInput, PropertyService>
         implements EntityDataFetcherProvider<XtdProperty> {
 
     public PropertyDataFetcherProvider(PropertyService entityService) {
-        super(entityService);
+        super(RootInput.class, RootUpdateInput.class, entityService);
     }
 
     @Override
