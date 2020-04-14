@@ -59,6 +59,9 @@ public class SchemaDefinition implements ResourceLoaderAware {
     private ValueDataFetcherProvider valueProvider;
 
     @Autowired
+    private MeasureWithUnitDataFetcherProvider measureProvider;
+
+    @Autowired
     private RelGroupsDataFetcherProvider relGroupsProvider;
 
     @Bean
@@ -97,6 +100,7 @@ public class SchemaDefinition implements ResourceLoaderAware {
                         .dataFetchers(subjectProvider.getQueryDataFetchers())
                         .dataFetchers(unitProvider.getQueryDataFetchers())
                         .dataFetchers(valueProvider.getQueryDataFetchers())
+                        .dataFetchers(measureProvider.getQueryDataFetchers())
                         .dataFetchers(relGroupsProvider.getQueryDataFetchers()))
                 .type("Mutation", typeWiring -> typeWiring
                         .dataFetcher("createDocument", dataFetchers.createExternalDocument())
@@ -107,6 +111,7 @@ public class SchemaDefinition implements ResourceLoaderAware {
                         .dataFetchers(subjectProvider.getMutationDataFetchers())
                         .dataFetchers(unitProvider.getMutationDataFetchers())
                         .dataFetchers(valueProvider.getMutationDataFetchers())
+                        .dataFetchers(measureProvider.getMutationDataFetchers())
                         .dataFetchers(relGroupsProvider.getMutationDataFetchers()))
                 .build();
         return schemaGenerator.makeExecutableSchema(typeRegistry, wiring);

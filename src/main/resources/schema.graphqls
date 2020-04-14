@@ -614,27 +614,31 @@ type Mutation {
     deleteDocument(id: ID!): XtdExternalDocument
 
     createActor(input: RootInput!): XtdActor
+    updateActor(input: RootUpdateInput!): XtdActor
     deleteActor(id: ID!): XtdActor
 
     createActivity(input: RootInput!): XtdActivity
+    updateActivity(input: RootUpdateInput!): XtdActivity
     deleteActivity(id: ID!): XtdActivity
 
     createClassification(input: RootInput!): XtdClassification
+    updateClassification(input: RootUpdateInput!): XtdClassification
     delXtdClassification(id: ID!): XtdClassification
 
-    createMeasure(input: RootInput!): XtdMeasureWithUnit
+    createMeasure(input: ValueInput!): XtdMeasureWithUnit
+    updateMeasure(input: ValueUpdateInput!): XtdMeasureWithUnit
     deleteMeasure(id: ID!): XtdMeasureWithUnit
 
     createProperty(input: RootInput!): XtdProperty
+    updateProperty(input: RootUpdateInput!): XtdProperty
     deleteProperty(id: ID!): XtdProperty
 
     createSubject(input: RootInput!): XtdSubject
     updateSubject(input: RootUpdateInput!): XtdSubject
     deleteSubject(id: ID!): XtdSubject
-#    addSubjectComment(id: ID!, comment: CommentInput): XtdSubject
-#    updateSubjectCommentStatus
 
     createUnit(input: RootInput!): XtdUnit
+    updateUnit(input: RootUpdateInput!): XtdUnit
     deleteUnit(id: ID!): XtdUnit
 
     createValue(input: ValueInput!): XtdValue
