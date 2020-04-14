@@ -317,6 +317,26 @@ type XtdUnitConnection {
     page: Page!
 }
 
+enum XtdValueTypeEnum {
+    XtdString
+    XtdNumber
+    XtdInteger
+    XtdReal
+    XtdBoolean
+    XtdLogical
+}
+
+enum XtdToleranceTypeEnum {
+    Realvalue
+    Percentage
+}
+
+enum XtdValueRoleEnum {
+    Nominal
+    Maximum
+    Minimum
+}
+
 type XtdValue implements XtdRoot, XtdObject {
     id: ID!
     created: String!
@@ -326,6 +346,12 @@ type XtdValue implements XtdRoot, XtdObject {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
+    toleranceType: XtdToleranceTypeEnum
+    lowerTolerance: String
+    upperTolerance: String
+    valueRole: XtdValueRoleEnum
+    valueType: XtdValueTypeEnum
+    nominalValue: String
 #    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
     associates: XtdRelAssociatesConnection!
@@ -535,6 +561,34 @@ input RootUpdateInput {
     descriptions: [TextInput!]!
 }
 
+input ValueInput {
+    id: ID
+    versionId: String!
+    versionDate: String!
+    names: [TextInput!]!
+    descriptions: [TextInput!]
+    toleranceType: XtdToleranceTypeEnum
+    lowerTolerance: String
+    upperTolerance: String
+    valueRole: XtdValueRoleEnum
+    valueType: XtdValueTypeEnum
+    nominalValue: String
+}
+
+input ValueUpdateInput {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [TextInput!]!
+    descriptions: [TextInput!]!
+    toleranceType: XtdToleranceTypeEnum
+    lowerTolerance: String
+    upperTolerance: String
+    valueRole: XtdValueRoleEnum
+    valueType: XtdValueTypeEnum
+    nominalValue: String
+}
+
 input AssociationInput {
     id: ID
     versionId: String!
@@ -583,7 +637,8 @@ type Mutation {
     createUnit(input: RootInput!): XtdUnit
     deleteUnit(id: ID!): XtdUnit
 
-    createValue(input: RootInput!): XtdValue
+    createValue(input: ValueInput!): XtdValue
+    updateValue(input: ValueUpdateInput!): XtdValue
     deleteValue(id: ID!): XtdValue
 
     createDocumentsRelation(relatingDocument: ID!, relatedObjects: [ID!]!, input: RootInput!): XtdRelDocuments
