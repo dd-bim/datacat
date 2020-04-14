@@ -25,53 +25,47 @@ public class XtdValue extends XtdObject {
         return lowerTolerance;
     }
 
-    public XtdValue setLowerTolerance(String lowerTolerance) {
+    public void setLowerTolerance(String lowerTolerance) {
         this.lowerTolerance = lowerTolerance;
-        return this;
     }
 
     public String getUpperTolerance() {
         return upperTolerance;
     }
 
-    public XtdValue setUpperTolerance(String upperTolerance) {
+    public void setUpperTolerance(String upperTolerance) {
         this.upperTolerance = upperTolerance;
-        return this;
     }
 
     public XtdValueRoleEnum getValueRole() {
         return valueRole;
     }
 
-    public XtdValue setValueRole(XtdValueRoleEnum valueRole) {
+    public void setValueRole(XtdValueRoleEnum valueRole) {
         this.valueRole = valueRole;
-        return this;
     }
 
     public String getNominalValue() {
         return nominalValue;
     }
 
-    public XtdValue setNominalValue(String nominalValue) {
+    public void setNominalValue(String nominalValue) {
         this.nominalValue = nominalValue;
-        return this;
     }
 
     public XtdToleranceTypeEnum getToleranceType() {
         return toleranceType;
     }
 
-    public XtdValue setToleranceType(XtdToleranceTypeEnum toleranceType) {
+    public void setToleranceType(XtdToleranceTypeEnum toleranceType) {
         this.toleranceType = toleranceType;
-        return this;
     }
 
     public XtdValueTypeEnum getValueType() {
         return valueType;
     }
 
-    public XtdValue setValueType(XtdValueTypeEnum valueType) {
+    public void setValueType(XtdValueTypeEnum valueType) {
         this.valueType = valueType;
-        return this;
     }
 }
