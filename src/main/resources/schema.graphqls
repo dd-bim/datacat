@@ -65,10 +65,19 @@ type XtdDescription implements XtdLanguageRepresentation {
     languageName: XtdLanguage!
 }
 
-type XtdExternalDocument {
+interface XtdEntity {
     id: ID!
     created: String!
     lastModified: String!
+    label: String!
+    names: [XtdName!]!
+}
+
+type XtdExternalDocument implements XtdEntity {
+    id: ID!
+    created: String!
+    lastModified: String!
+    label: String!
     names: [XtdName!]!
     documents: XtdRelDocumentsConnection!
 }

@@ -3,9 +3,10 @@ package de.bentrm.datacat.domain;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.neo4j.ogm.annotation.Relationship;
 
-import java.util.*;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
-public abstract class NamedEntity extends Entity {
+public abstract class XtdEntity extends Entity {
 
     @Relationship(type = XtdName.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
     protected SortedSet<XtdName> names = new TreeSet<>();

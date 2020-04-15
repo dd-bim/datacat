@@ -29,6 +29,9 @@ public class SchemaDefinition implements ResourceLoaderAware {
     private XtdLanguageRepresentationTypeResolver languageRepresentationTypeResolver;
 
     @Autowired
+    private XtdEntityTypeResolver entityTypeResolver;
+
+    @Autowired
     private XtdRootTypeResolver rootTypeResolver;
 
     @Autowired
@@ -77,11 +80,13 @@ public class SchemaDefinition implements ResourceLoaderAware {
         BufferedReader reader = new BufferedReader(inputStreamReader);
         TypeDefinitionRegistry typeRegistry = schemaParser.parse(reader);
         RuntimeWiring wiring = RuntimeWiring.newRuntimeWiring()
-                .type("XtdLanguageRepresentation", typeWiring -> typeWiring.typeResolver(languageRepresentationTypeResolver))
+                .type("XtdLanguageRepresentation", typeWiring -> typeWiring
+                        .typeResolver(languageRepresentationTypeResolver))
                 .type("XtdName", typeWiring -> typeWiring
                         .dataFetcher("languageName", dataFetchers.languageByLanguageRepresentation()))
                 .type("XtdDescription", typeWiring -> typeWiring
                         .dataFetcher("languageName", dataFetchers.languageByLanguageRepresentation()))
+                .type("XtdEntity", typeWiring -> typeWiring.typeResolver(entityTypeResolver))
                 .type("XtdRoot", typeWiring -> typeWiring.typeResolver(rootTypeResolver))
                 .type("XtdObject", typeWiring -> typeWiring
                         .typeResolver(new XtdObjectTypeResolver()))

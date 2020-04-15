@@ -19,7 +19,7 @@ import java.util.TreeSet;
 		"(root)-[:ASSOCIATES]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF|COMMENTS*0..1]-()",
 		"(root)-[:GROUPS]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF|COMMENTS*0..1]-()"
 })
-public abstract class XtdRoot extends NamedEntity implements Commented {
+public abstract class XtdRoot extends XtdEntity implements Commented {
 
 	public static final String TITLE = "Root";
 	public static final String TITLE_PLURAL = "Roots";

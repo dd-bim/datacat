@@ -11,7 +11,7 @@ import java.util.TreeSet;
 
 @NodeEntity(label = XtdExternalDocument.LABEL)
 @PropertyQueryHint("(root)<-[:IS_NAME_OF|COMMENTS*0..1]-()")
-public class XtdExternalDocument extends NamedEntity implements Commented {
+public class XtdExternalDocument extends XtdEntity implements Commented {
 
     public static final String TITLE = "ExternalDocument";
     public static final String TITLE_PLURAL = "ExternalDocuments";
