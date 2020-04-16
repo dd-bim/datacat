@@ -1,24 +1,28 @@
 package de.bentrm.datacat.query;
 
+import de.bentrm.datacat.domain.relationship.Association;
+import org.neo4j.ogm.annotation.Relationship;
 import org.neo4j.ogm.session.Session;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.util.Map;
 
-public class FindAllGroupedByQuery<T, ID extends Serializable>
+public class FindAllAssociatedByQuery<T extends Association, ID extends Serializable>
         extends AbstractCustomQuery<T>
         implements IterableQuery<T> {
 
     private static final String QUERY =
-            "MATCH (name:XtdName)-[:IS_NAME_OF]->(root:${label})<-[:GROUPS]-(relatingThing) " +
+            "MATCH (name:XtdName)-[:IS_NAME_OF]->(root:${label})<-[:${associationLabel}]-(relatingThing) " +
             "WHERE relatingThing.id = {relatingThingId} " +
             "WITH root, name ORDER BY name.sortOrder, toLower(name.name) ASC, name.name DESC " +
             "WITH DISTINCT root SKIP {skip} LIMIT {limit} " +
             "RETURN root, ${propertyAggregations}, ID(root)";
 
-    public FindAllGroupedByQuery(Class<T> entityType, Session session, String relatingThingId, Pageable pageable) {
+    public FindAllAssociatedByQuery(Class<T> entityType, Session session, String relatingThingId, Pageable pageable) {
         super(entityType, session);
 
         if (pageable.isUnpaged()) {
@@ -34,6 +38,21 @@ public class FindAllGroupedByQuery<T, ID extends Serializable>
     @Override
     public @NotNull String getQueryTemplate() {
         return QUERY;
+    }
+
+    @Override
+    public @NotNull Map<String, Object> getSubstitutionParameters() {
+        @NotNull final Map<String, Object> substitutionParameters = super.getSubstitutionParameters();
+
+        try {
+            final Field field = this.entityType.getDeclaredField("relatingThing");
+            final Relationship annotation = field.getAnnotation(Relationship.class);
+            substitutionParameters.put("associationLabel", annotation.type());
+        } catch (NoSuchFieldException e) {
+            throw new IllegalStateException("Invalid access to association relationship type");
+        }
+
+        return substitutionParameters;
     }
 
     @Override
