@@ -2,13 +2,13 @@ package de.bentrm.datacat.service.impl;
 
 import de.bentrm.datacat.domain.XtdDescription;
 import de.bentrm.datacat.domain.XtdName;
-import de.bentrm.datacat.domain.XtdObject;
+import de.bentrm.datacat.domain.XtdRoot;
 import de.bentrm.datacat.domain.relationship.XtdRelGroups;
 import de.bentrm.datacat.graphql.dto.AssociationInput;
 import de.bentrm.datacat.graphql.dto.AssociationUpdateInput;
 import de.bentrm.datacat.graphql.dto.TextInput;
-import de.bentrm.datacat.repository.ObjectRepository;
 import de.bentrm.datacat.repository.RelGroupsRepository;
+import de.bentrm.datacat.repository.RootRepository;
 import de.bentrm.datacat.service.RelGroupsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +40,7 @@ public class RelGroupsServiceImpl implements RelGroupsService {
     private RelGroupsRepository entityRepository;
 
     @Autowired
-    private ObjectRepository objectRepository;
+    private RootRepository thingRepository;
 
     @Transactional
     @Override
@@ -66,7 +66,7 @@ public class RelGroupsServiceImpl implements RelGroupsService {
         entity.getRelatedThings().removeIf(thing -> !dto.getRelatedThings().contains(thing.getId()));
 
         // add new things to this relationship
-        Page<XtdObject> relatedThings = objectRepository.findAllById(dto.getRelatedThings(), PageRequest.of(0, 1000));
+        Page<XtdRoot> relatedThings = thingRepository.findAllById(dto.getRelatedThings(), PageRequest.of(0, 1000));
         entity.getRelatedThings().addAll(relatedThings.getContent());
 
         // general infos
@@ -174,11 +174,11 @@ public class RelGroupsServiceImpl implements RelGroupsService {
                 .orElseThrow(() -> new IllegalArgumentException("No relation with id " + id + " found."));
 
         for (String relatedObjectId : relatedObjectsIds) {
-            XtdObject relatedObject = objectRepository
+            XtdRoot relatedObject = thingRepository
                     .findById(relatedObjectId)
                     .orElseThrow(() -> new IllegalArgumentException("No relatable object with id " + relatedObjectId + " found."));
 
-            // TODO: Throw if related object is already in persistent set
+            // TODO: Throw if related thing is already in persistent set
             relation.getRelatedThings().add(relatedObject);
         }
 
@@ -192,11 +192,11 @@ public class RelGroupsServiceImpl implements RelGroupsService {
                 .orElseThrow(() -> new IllegalArgumentException("No relation with id " + id + " found."));
 
         for (String relatedObjectId : relatedObjectsIds) {
-            XtdObject relatedObject = objectRepository
+            XtdRoot relatedThing = thingRepository
                     .findById(relatedObjectId)
                     .orElseThrow(() -> new IllegalArgumentException("No relatable object with id " + relatedObjectId + " found."));
 
-            if (!relation.getRelatedThings().remove(relatedObject)) {
+            if (!relation.getRelatedThings().remove(relatedThing)) {
                 throw new IllegalArgumentException("Object with id " + relatedObjectId + " is not related in relation " + id);
             }
         }
@@ -247,12 +247,12 @@ public class RelGroupsServiceImpl implements RelGroupsService {
         entity.setVersionId(input.getVersionId());
         entity.setVersionDate(input.getVersionDate());
 
-        XtdObject relating = objectRepository
+        XtdRoot relating = thingRepository
                 .findById(input.getRelatingThing())
                 .orElseThrow(() -> new IllegalArgumentException("No Object with id " + input.getRelatingThing() + " found."));
         entity.setRelatingThing(relating);
 
-        Page<XtdObject> relatedThings = objectRepository.findAllById(input.getRelatedThings(), PageRequest.of(0, 1000));
+        Page<XtdRoot> relatedThings = thingRepository.findAllById(input.getRelatedThings(), PageRequest.of(0, 1000));
         entity.getRelatedThings().addAll(relatedThings.getContent());
 
         List<TextInput> names = input.getNames();

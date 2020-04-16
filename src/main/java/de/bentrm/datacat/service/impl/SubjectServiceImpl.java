@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @Transactional(readOnly = true)
 public class SubjectServiceImpl
-        extends RootServiceImpl<XtdSubject, RootInput, RootUpdateInput, SubjectRepository>
+        extends AbstractRootServiceImpl<XtdSubject, RootInput, RootUpdateInput, SubjectRepository>
         implements SubjectService {
 
     public SubjectServiceImpl(SubjectRepository repository) {

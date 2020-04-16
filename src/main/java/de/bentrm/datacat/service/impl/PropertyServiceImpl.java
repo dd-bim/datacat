@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @Transactional(readOnly = true)
 public class PropertyServiceImpl
-        extends RootServiceImpl<XtdProperty, RootInput, RootUpdateInput, PropertyRepository>
+        extends AbstractRootServiceImpl<XtdProperty, RootInput, RootUpdateInput, PropertyRepository>
         implements PropertyService {
 
     public PropertyServiceImpl(PropertyRepository repository) {

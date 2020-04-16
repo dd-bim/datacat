@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 @Validated
 @Transactional(readOnly = true)
-public abstract class RootServiceImpl<
+public abstract class AbstractRootServiceImpl<
 		T extends XtdRoot,
 		C extends RootInput,
 		U extends RootUpdateInput, R extends GraphEntityRepository<T, String>>
@@ -41,7 +41,7 @@ public abstract class RootServiceImpl<
 	@Autowired
 	protected RelGroupsService relGroupsService;
 
-	public RootServiceImpl(R repository) {
+	public AbstractRootServiceImpl(R repository) {
 		this.repository = repository;
 	}
 
