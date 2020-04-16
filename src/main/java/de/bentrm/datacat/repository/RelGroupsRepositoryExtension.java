@@ -4,7 +4,7 @@ import de.bentrm.datacat.domain.relationship.XtdRelGroups;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface XtdRelGroupsRepositoryExtension {
+public interface RelGroupsRepositoryExtension {
 
 	Page<XtdRelGroups> findAllGroupedBy(String relatingThingId, Pageable pageable);
 
