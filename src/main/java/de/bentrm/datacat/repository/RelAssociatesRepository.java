@@ -4,5 +4,5 @@ import de.bentrm.datacat.domain.relationship.XtdRelAssociates;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RelAssociatesRepository extends GraphEntityRepository<XtdRelAssociates, String> {
+public interface RelAssociatesRepository extends GraphEntityRepository<XtdRelAssociates, String>, RelAssociatesRepositoryExtension {
 }

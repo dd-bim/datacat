@@ -1,7 +1,9 @@
 package de.bentrm.datacat.repository;
 
-import java.io.Serializable;
+import de.bentrm.datacat.domain.relationship.XtdRelationship;
+import org.springframework.stereotype.Repository;
 
-public interface RelationshipRepository<T, ID extends Serializable> extends GraphEntityRepository<T, ID> {
+@Repository
+public interface RelationshipRepository extends GraphEntityRepository<XtdRelationship, String> {
 
 }
