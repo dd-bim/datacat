@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @Transactional(readOnly = true)
 public class UnitServiceImpl
-        extends AbstractRootServiceImpl<XtdUnit, RootInput, RootUpdateInput, UnitRepository>
+        extends CrudEntityServiceImpl<XtdUnit, RootInput, RootUpdateInput, UnitRepository>
         implements UnitService {
 
     public UnitServiceImpl(UnitRepository repository) {

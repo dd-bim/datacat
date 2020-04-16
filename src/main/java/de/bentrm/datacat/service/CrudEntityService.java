@@ -6,7 +6,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
-public interface RootService<T extends XtdRoot, C, U> extends EntityService<T> {
+public interface CrudEntityService<T extends XtdRoot, C, U> extends EntityService<T> {
 
     @NotNull T create(@Valid C dto);
 

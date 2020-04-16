@@ -1,15 +1,9 @@
 package de.bentrm.datacat.service;
 
 import de.bentrm.datacat.domain.relationship.XtdRelGroups;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import de.bentrm.datacat.graphql.dto.AssociationInput;
+import de.bentrm.datacat.graphql.dto.AssociationUpdateInput;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
-public interface RelGroupsService extends RelationshipService<XtdRelGroups> {
-
-    @NotNull Page<XtdRelGroups> findByRelatingObjectId(@NotBlank String relatingObjectId, Pageable pageable);
-    @NotNull Page<XtdRelGroups> findByRelatedObjectId(@NotBlank String relatedObjectId, Pageable pageable);
+public interface RelGroupsService extends CrudEntityService<XtdRelGroups, AssociationInput, AssociationUpdateInput>, AssociationService<XtdRelGroups> {
 
 }

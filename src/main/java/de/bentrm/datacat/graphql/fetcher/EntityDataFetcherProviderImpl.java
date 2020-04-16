@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.bentrm.datacat.domain.XtdRoot;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.dto.PagingOptions;
-import de.bentrm.datacat.service.RootService;
+import de.bentrm.datacat.service.CrudEntityService;
 import graphql.schema.DataFetcher;
 import org.springframework.data.domain.Page;
 
@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public abstract class EntityDataFetcherProviderImpl<
 			T extends XtdRoot, C, U,
-			S extends RootService<T, C, U>
+			S extends CrudEntityService<T, C, U>
 		>
 		implements EntityDataFetcherProvider<T> {
 

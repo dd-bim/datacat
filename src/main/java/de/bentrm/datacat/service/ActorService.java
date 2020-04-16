@@ -4,5 +4,5 @@ import de.bentrm.datacat.domain.XtdActor;
 import de.bentrm.datacat.graphql.dto.RootInput;
 import de.bentrm.datacat.graphql.dto.RootUpdateInput;
 
-public interface ActorService extends RootService<XtdActor, RootInput, RootUpdateInput> {
+public interface ActorService extends CrudEntityService<XtdActor, RootInput, RootUpdateInput> {
 }

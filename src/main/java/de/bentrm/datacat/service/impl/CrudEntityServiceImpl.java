@@ -7,11 +7,12 @@ import de.bentrm.datacat.graphql.dto.RootInput;
 import de.bentrm.datacat.graphql.dto.RootUpdateInput;
 import de.bentrm.datacat.graphql.dto.TextInput;
 import de.bentrm.datacat.repository.GraphEntityRepository;
+import de.bentrm.datacat.service.CrudEntityService;
 import de.bentrm.datacat.service.RelGroupsService;
-import de.bentrm.datacat.service.RootService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.support.PageableExecutionUtils;
@@ -28,20 +29,21 @@ import java.util.stream.Collectors;
 
 @Validated
 @Transactional(readOnly = true)
-public abstract class AbstractRootServiceImpl<
+public abstract class CrudEntityServiceImpl<
 		T extends XtdRoot,
 		C extends RootInput,
-		U extends RootUpdateInput, R extends GraphEntityRepository<T, String>>
-		implements RootService<T, C, U> {
+		U extends RootUpdateInput,
+		R extends GraphEntityRepository<T, String>>
+		implements CrudEntityService<T, C, U> {
 
 	Logger logger = LoggerFactory.getLogger(SubjectServiceImpl.class);
 
 	protected final R repository;
 
-	@Autowired
+	@Autowired @Lazy
 	protected RelGroupsService relGroupsService;
 
-	public AbstractRootServiceImpl(R repository) {
+	public CrudEntityServiceImpl(R repository) {
 		this.repository = repository;
 	}
 

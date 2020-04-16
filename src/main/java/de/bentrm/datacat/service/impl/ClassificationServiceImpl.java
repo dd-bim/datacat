@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @Transactional(readOnly = true)
 public class ClassificationServiceImpl
-        extends AbstractRootServiceImpl<XtdClassification, RootInput, RootUpdateInput, ClassificationRepository>
+        extends CrudEntityServiceImpl<XtdClassification, RootInput, RootUpdateInput, ClassificationRepository>
         implements ClassificationService {
 
     public ClassificationServiceImpl(ClassificationRepository repository) {

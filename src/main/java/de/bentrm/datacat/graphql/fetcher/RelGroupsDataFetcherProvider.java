@@ -168,7 +168,7 @@ public class RelGroupsDataFetcherProvider implements EntityDataFetcherProvider<X
             PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
             if (dto == null) dto = PagingOptions.defaults();
 
-            Page<XtdRelGroups> page = relGroupsService.findByRelatingObjectId(source.getId(), dto.getPageble());
+            Page<XtdRelGroups> page = relGroupsService.findByRelatingThingId(source.getId(), dto.getPageble());
             return new Connection<>(page);
         };
     }
@@ -181,7 +181,7 @@ public class RelGroupsDataFetcherProvider implements EntityDataFetcherProvider<X
             PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
             if (dto == null) dto = PagingOptions.defaults();
 
-            Page<XtdRelGroups> page = relGroupsService.findByRelatedObjectId(source.getId(), dto.getPageble());
+            Page<XtdRelGroups> page = relGroupsService.findByRelatedThingId(source.getId(), dto.getPageble());
             return new Connection<>(page);
         };
     }
