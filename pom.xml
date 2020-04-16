@@ -6,7 +6,7 @@
 
 	<groupId>de.bentrm</groupId>
 	<artifactId>datacat</artifactId>
-	<version>0.0.4-SNAPSHOT</version>
+	<version>0.0.5-SNAPSHOT</version>
 	<name>Data Catalog</name>
 	<description>A generic data catalog implementation based on ISO 12006-3.</description>
 
