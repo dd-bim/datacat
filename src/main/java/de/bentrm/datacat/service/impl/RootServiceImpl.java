@@ -102,7 +102,7 @@ public abstract class RootServiceImpl<
 		entity.getNames().clear();
 
 		// remove deleted descriptions temporary list
-		names.removeIf(x ->  nameIds.indexOf(x.getId()) == -1);
+		names.removeIf(x -> !nameIds.contains(x.getId()));
 
 		for (int i = 0; i < nameDtos.size(); i++) {
 			TextInput input = nameDtos.get(i);
@@ -143,7 +143,7 @@ public abstract class RootServiceImpl<
 		entity.getDescriptions().clear();
 
 		// remove deleted descriptions temporary list
-		descriptions.removeIf(x -> descriptionIds.indexOf(x.getId()) == -1);
+		descriptions.removeIf(x -> !descriptionIds.contains(x.getId()));
 
 		for (int i = 0; i < descriptionDtos.size(); i++) {
 			TextInput input = descriptionDtos.get(i);

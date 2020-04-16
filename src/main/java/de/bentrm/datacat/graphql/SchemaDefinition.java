@@ -90,9 +90,13 @@ public class SchemaDefinition implements ResourceLoaderAware {
                 .type("XtdRoot", typeWiring -> typeWiring.typeResolver(rootTypeResolver))
                 .type("XtdObject", typeWiring -> typeWiring
                         .typeResolver(new XtdObjectTypeResolver()))
+                .type("XtdActivity", typeWiring -> typeWiring
+                        .dataFetchers(relGroupsProvider.getRootDataFetchers()))
                 .type("XtdActor", typeWiring -> typeWiring
                         .dataFetchers(relGroupsProvider.getRootDataFetchers()))
                 .type("XtdSubject", typeWiring -> typeWiring
+                        .dataFetchers(relGroupsProvider.getRootDataFetchers()))
+                .type("XtdUnit", typeWiring -> typeWiring
                         .dataFetchers(relGroupsProvider.getRootDataFetchers()))
                 .type("XtdCollection", typeWiring -> typeWiring.typeResolver(collectionTypeResolver))
                 .type("XtdRelationship", typeWiring -> typeWiring.typeResolver(relationshipTypeResolver))
