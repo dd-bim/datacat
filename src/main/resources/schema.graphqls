@@ -98,8 +98,8 @@ interface XtdRoot {
     descriptions: [XtdDescription!]!
 #    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
-    associates: XtdRelAssociatesConnection!
-    associatedBy: XtdRelAssociatesConnection!
+    associates(options: PagingOptions): XtdRelAssociatesConnection!
+    associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
 }
@@ -119,8 +119,8 @@ interface XtdObject {
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
     documentedBy: XtdRelDocumentsConnection!
-    associates: XtdRelAssociatesConnection!
-    associatedBy: XtdRelAssociatesConnection!
+    associates(options: PagingOptions): XtdRelAssociatesConnection!
+    associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
 }
@@ -140,8 +140,8 @@ interface XtdCollection {
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
     documentedBy: XtdRelDocumentsConnection!
-    associates: XtdRelAssociatesConnection!
-    associatedBy: XtdRelAssociatesConnection!
+    associates(options: PagingOptions): XtdRelAssociatesConnection!
+    associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
 }
@@ -161,8 +161,8 @@ interface XtdRelationship {
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
     documentedBy: XtdRelDocumentsConnection!
-    associates: XtdRelAssociatesConnection!
-    associatedBy: XtdRelAssociatesConnection!
+    associates(options: PagingOptions): XtdRelAssociatesConnection!
+    associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
 }
@@ -183,8 +183,8 @@ type XtdActivity implements XtdRoot, XtdObject {
     descriptions: [XtdDescription!]!
 #    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
-    associates: XtdRelAssociatesConnection!
-    associatedBy: XtdRelAssociatesConnection!
+    associates(options: PagingOptions): XtdRelAssociatesConnection!
+    associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
 }
@@ -205,8 +205,8 @@ type XtdActor implements XtdRoot, XtdObject  {
     descriptions: [XtdDescription!]!
 #    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
-    associates: XtdRelAssociatesConnection!
-    associatedBy: XtdRelAssociatesConnection!
+    associates(options: PagingOptions): XtdRelAssociatesConnection!
+    associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
 }
@@ -227,8 +227,8 @@ type XtdClassification implements XtdRoot, XtdObject {
     descriptions: [XtdDescription!]!
 #    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
-    associates: XtdRelAssociatesConnection!
-    associatedBy: XtdRelAssociatesConnection!
+    associates(options: PagingOptions): XtdRelAssociatesConnection!
+    associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
 }
@@ -249,8 +249,8 @@ type XtdMeasureWithUnit implements XtdRoot, XtdObject {
     descriptions: [XtdDescription!]!
 #    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
-    associates: XtdRelAssociatesConnection!
-    associatedBy: XtdRelAssociatesConnection!
+    associates(options: PagingOptions): XtdRelAssociatesConnection!
+    associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
 }
@@ -271,8 +271,8 @@ type XtdProperty implements XtdRoot, XtdObject {
     descriptions: [XtdDescription!]!
 #    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
-    associates: XtdRelAssociatesConnection!
-    associatedBy: XtdRelAssociatesConnection!
+    associates(options: PagingOptions): XtdRelAssociatesConnection!
+    associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
 }
@@ -293,8 +293,8 @@ type XtdSubject implements XtdRoot, XtdObject {
     descriptions: [XtdDescription!]!
 #    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
-    associates: XtdRelAssociatesConnection!
-    associatedBy: XtdRelAssociatesConnection!
+    associates(options: PagingOptions): XtdRelAssociatesConnection!
+    associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
 }
@@ -315,8 +315,8 @@ type XtdUnit implements XtdRoot, XtdObject {
     descriptions: [XtdDescription!]!
 #    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
-    associates: XtdRelAssociatesConnection!
-    associatedBy: XtdRelAssociatesConnection!
+    associates(options: PagingOptions): XtdRelAssociatesConnection!
+    associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
 }
@@ -363,8 +363,8 @@ type XtdValue implements XtdRoot, XtdObject {
     nominalValue: String
 #    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
-    associates: XtdRelAssociatesConnection!
-    associatedBy: XtdRelAssociatesConnection!
+    associates(options: PagingOptions): XtdRelAssociatesConnection!
+    associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
 }
@@ -385,8 +385,8 @@ type XtdBag implements XtdRoot, XtdCollection {
     descriptions: [XtdDescription!]!
 #    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
-    associates: XtdRelAssociatesConnection!
-    associatedBy: XtdRelAssociatesConnection!
+    associates(options: PagingOptions): XtdRelAssociatesConnection!
+    associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
 }
@@ -407,8 +407,8 @@ type XtdNest implements XtdRoot, XtdCollection {
     descriptions: [XtdDescription!]!
 #    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
-    associates: XtdRelAssociatesConnection!
-    associatedBy: XtdRelAssociatesConnection!
+    associates(options: PagingOptions): XtdRelAssociatesConnection!
+    associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
 }
@@ -431,8 +431,8 @@ type XtdRelDocuments implements XtdRoot, XtdRelationship {
     relatingDocument: XtdExternalDocument!
     relatedObjects(options: PagingOptions): XtdObjectConnection!
     documentedBy: XtdRelDocumentsConnection!
-    associates: XtdRelAssociatesConnection!
-    associatedBy: XtdRelAssociatesConnection!
+    associates(options: PagingOptions): XtdRelAssociatesConnection!
+    associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
 }
@@ -453,10 +453,10 @@ type XtdRelAssociates implements XtdRoot, XtdRelationship {
     descriptions: [XtdDescription!]!
 #    comments: [Comment!]!
     relatingThing: XtdObject!
-    relatedObjects(options: PagingOptions): XtdObjectConnection!
+    relatedThings(options: PagingOptions): XtdObjectConnection!
     documentedBy: XtdRelDocumentsConnection!
-    associates: XtdRelAssociatesConnection!
-    associatedBy: XtdRelAssociatesConnection!
+    associates(options: PagingOptions): XtdRelAssociatesConnection!
+    associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
 }
@@ -479,8 +479,8 @@ type XtdRelGroups implements XtdRoot, XtdRelationship {
     relatingThing: XtdRoot!
     relatedThings(options: PagingOptions): XtdRootConnection!
     documentedBy: XtdRelDocumentsConnection!
-    associates: XtdRelAssociatesConnection!
-    associatedBy: XtdRelAssociatesConnection!
+    associates(options: PagingOptions): XtdRelAssociatesConnection!
+    associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
 }
@@ -658,6 +658,7 @@ type Mutation {
     deleteDocumentsRelation(id: ID!): XtdRelDocuments
 
     createAssociatesRelation(input: AssociationInput!): XtdRelAssociates
+    updateAssociatesRelation(input: AssociationUpdateInput!): XtdRelAssociates
     deleteAssociatesRelation(id: ID!): XtdRelAssociates
 
     createGroupsRelation(input: AssociationInput!): XtdRelGroups
