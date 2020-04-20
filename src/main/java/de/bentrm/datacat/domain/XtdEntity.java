@@ -1,11 +1,16 @@
 package de.bentrm.datacat.domain;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+@NodeEntity(label = "XtdEntity")
+@PropertyQueryHint(
+        "(root)<-[:IS_NAME_OF*0..1]-()"
+)
 public abstract class XtdEntity extends Entity {
 
     @Relationship(type = XtdName.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)

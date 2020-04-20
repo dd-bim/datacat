@@ -43,6 +43,9 @@ public class XtdRelationshipTypeResolver implements TypeResolver {
         if (obj instanceof XtdRelCollects) {
             return schema.getObjectType(XtdRelCollects.LABEL);
         }
+        if (obj instanceof XtdRelAssociates) {
+            return schema.getObjectType(XtdRelAssociates.LABEL);
+        }
         if (obj instanceof XtdRelComposes) {
             return schema.getObjectType(XtdRelComposes.LABEL);
         }

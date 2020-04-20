@@ -172,7 +172,7 @@ type XtdRelationshipConnection {
     page: Page!
 }
 
-type XtdActivity implements XtdRoot, XtdObject {
+type XtdActivity implements XtdEntity, XtdRoot, XtdObject {
     id: ID!
     created: String!
     lastModified: String!
@@ -194,7 +194,7 @@ type XtdActivityConnection {
     page: Page!
 }
 
-type XtdActor implements XtdRoot, XtdObject  {
+type XtdActor implements XtdEntity, XtdRoot, XtdObject  {
     id: ID!
     created: String!
     lastModified: String!
@@ -216,7 +216,7 @@ type XtdActorConnection {
     page: Page!
 }
 
-type XtdClassification implements XtdRoot, XtdObject {
+type XtdClassification implements XtdEntity, XtdRoot, XtdObject {
     id: ID!
     created: String!
     lastModified: String!
@@ -238,7 +238,7 @@ type XtdClassificationConnection {
     page: Page!
 }
 
-type XtdMeasureWithUnit implements XtdRoot, XtdObject {
+type XtdMeasureWithUnit implements XtdEntity, XtdRoot, XtdObject {
     id: ID!
     created: String!
     lastModified: String!
@@ -260,7 +260,7 @@ type XtdMeasureWithUnitConnection {
     page: Page!
 }
 
-type XtdProperty implements XtdRoot, XtdObject {
+type XtdProperty implements XtdEntity, XtdRoot, XtdObject {
     id: ID!
     created: String!
     lastModified: String!
@@ -282,7 +282,7 @@ type XtdPropertyConnection {
     page: Page!
 }
 
-type XtdSubject implements XtdRoot, XtdObject {
+type XtdSubject implements XtdEntity, XtdRoot, XtdObject {
     id: ID!
     created: String!
     lastModified: String!
@@ -304,7 +304,7 @@ type XtdSubjectConnection {
     page: Page!
 }
 
-type XtdUnit implements XtdRoot, XtdObject {
+type XtdUnit implements XtdEntity, XtdRoot, XtdObject {
     id: ID!
     created: String!
     lastModified: String!
@@ -346,7 +346,7 @@ enum XtdValueRoleEnum {
     Minimum
 }
 
-type XtdValue implements XtdRoot, XtdObject {
+type XtdValue implements XtdEntity, XtdRoot, XtdObject {
     id: ID!
     created: String!
     lastModified: String!
@@ -374,7 +374,7 @@ type XtdValueConnection {
     page: Page!
 }
 
-type XtdBag implements XtdRoot, XtdCollection {
+type XtdBag implements XtdEntity, XtdRoot, XtdCollection {
     id: ID!
     created: String!
     lastModified: String!
@@ -396,7 +396,7 @@ type XtdBagConnection {
     page: Page!
 }
 
-type XtdNest implements XtdRoot, XtdCollection {
+type XtdNest implements XtdEntity, XtdRoot, XtdCollection {
     id: ID!
     created: String!
     lastModified: String!
@@ -418,7 +418,7 @@ type XtdNestConnection {
     page: Page!
 }
 
-type XtdRelDocuments implements XtdRoot, XtdRelationship {
+type XtdRelDocuments implements XtdEntity, XtdRoot, XtdRelationship {
     id: ID!
     created: String!
     lastModified: String!
@@ -442,7 +442,7 @@ type XtdRelDocumentsConnection {
     page: Page!
 }
 
-type XtdRelAssociates implements XtdRoot, XtdRelationship {
+type XtdRelAssociates implements XtdEntity, XtdRoot, XtdRelationship {
     id: ID!
     created: String!
     lastModified: String!
@@ -466,7 +466,7 @@ type XtdRelAssociatesConnection {
     page: Page!
 }
 
-type XtdRelGroups implements XtdRoot, XtdRelationship {
+type XtdRelGroups implements XtdEntity, XtdRoot, XtdRelationship {
     id: ID!
     created: String!
     lastModified: String!
@@ -495,7 +495,36 @@ input PagingOptions {
     pageNumber: Int
 }
 
+enum EntityTypes {
+    XtdActivity
+    XtdActor
+    XtdBag
+    XtdClassification
+    XtdExternalDocument
+    XtdMeasureWithUnit
+    XtdNest
+    XtdProperty
+    XtdRelAssociates
+    XtdRelGroups
+    XtdSubject
+    XtdUnit
+    XtdValue
+}
+
+input SearchInput {
+    term: String
+    labels: [EntityTypes!]
+    excludeIds: [ID!]
+}
+
+type SearchConnection {
+    nodes: [XtdEntity!]!
+    page: Page!
+}
+
 type Query {
+    search(options: SearchInput, paging: PagingOptions): SearchConnection
+
     document(id: ID!): XtdExternalDocument
     documents(term: String, options: PagingOptions): XtdExternalDocumentConnection
 

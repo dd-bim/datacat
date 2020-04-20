@@ -35,6 +35,9 @@ public class SchemaDefinition implements ResourceLoaderAware {
     private XtdRootTypeResolver rootTypeResolver;
 
     @Autowired
+    private XtdObjectTypeResolver objectTypeResolver;
+
+    @Autowired
     private XtdCollectionTypeResolver collectionTypeResolver;
 
     @Autowired
@@ -73,6 +76,9 @@ public class SchemaDefinition implements ResourceLoaderAware {
     @Autowired
     private RelGroupsDataFetcherProvider relGroupsProvider;
 
+    @Autowired
+    private SearchDataFetcherProvider searchProvider;
+
     @Bean
     GraphQLSchema schema() throws IOException {
         SchemaParser schemaParser = new SchemaParser();
@@ -88,7 +94,7 @@ public class SchemaDefinition implements ResourceLoaderAware {
                 .type("XtdDescription", typeWiring -> typeWiring.dataFetcher("languageName", dataFetchers.languageByLanguageRepresentation()))
                 .type("XtdEntity", typeWiring -> typeWiring.typeResolver(entityTypeResolver))
                 .type("XtdRoot", typeWiring -> typeWiring.typeResolver(rootTypeResolver))
-                .type("XtdObject", typeWiring -> typeWiring.typeResolver(new XtdObjectTypeResolver()))
+                .type("XtdObject", typeWiring -> typeWiring.typeResolver(objectTypeResolver))
                 .type("XtdActivity", typeWiring -> typeWiring
                         .dataFetchers(associatesProvider.getRootDataFetchers())
                         .dataFetchers(relGroupsProvider.getRootDataFetchers()))
@@ -115,6 +121,7 @@ public class SchemaDefinition implements ResourceLoaderAware {
                         .dataFetchers(relGroupsProvider.getRootDataFetchers())
                         .dataFetchers(relGroupsProvider.getRelGroupsDataFetchers()))
                 .type("Query", typeWiring -> typeWiring
+                        .dataFetchers(searchProvider.getQueryDataFetchers())
                         .dataFetcher("document", dataFetchers.externalDocumentById())
                         .dataFetcher("documents", dataFetchers.externalDocumentBySearch())
                         .dataFetchers(actorProvider.getQueryDataFetchers())
