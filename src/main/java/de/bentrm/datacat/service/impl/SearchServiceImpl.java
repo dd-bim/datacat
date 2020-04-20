@@ -1,7 +1,6 @@
 package de.bentrm.datacat.service.impl;
 
 import de.bentrm.datacat.domain.XtdEntity;
-import de.bentrm.datacat.query.FilterOptions;
 import de.bentrm.datacat.query.SearchOptions;
 import de.bentrm.datacat.repository.EntityRepository;
 import de.bentrm.datacat.service.SearchService;
@@ -22,7 +21,6 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public Page<XtdEntity> search(SearchOptions<String> searchOptions, Pageable pageable) {
-        final FilterOptions<String> filterOptions = new FilterOptions<>(searchOptions.getLabels(), searchOptions.getExcludedLabels(), searchOptions.getExcludedIds());
-        return repository.findAll(filterOptions, pageable);
+        return repository.search(searchOptions, pageable);
     }
 }

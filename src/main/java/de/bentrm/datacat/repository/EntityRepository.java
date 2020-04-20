@@ -4,5 +4,5 @@ import de.bentrm.datacat.domain.XtdEntity;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface EntityRepository extends GraphEntityRepository<XtdEntity, String> {
+public interface EntityRepository extends GraphEntityRepository<XtdEntity, String>, EntityRepositoryExtension {
 }

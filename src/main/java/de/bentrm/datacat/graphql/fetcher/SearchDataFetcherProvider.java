@@ -31,12 +31,13 @@ public class SearchDataFetcherProvider {
 
             Map<String, Object> optionsInput = environment.getArgument("options");
             SearchOptions<String> searchOptions = mapper.convertValue(optionsInput, SearchOptions.class);
+            if (searchOptions == null) searchOptions = new SearchOptions<>();
 
             Map<String, Object> pagingInput = environment.getArgument("paging");
-            PagingOptions dto = mapper.convertValue(pagingInput, PagingOptions.class);
-            if (dto == null) dto = PagingOptions.defaults();
+            PagingOptions pagingOptions = mapper.convertValue(pagingInput, PagingOptions.class);
+            if (pagingOptions == null) pagingOptions = PagingOptions.defaults();
 
-            Page<XtdEntity> page = searchService.search(searchOptions, dto.getPageble());
+            Page<XtdEntity> page = searchService.search(searchOptions, pagingOptions.getPageble());
             return new Connection<>(page);
         };
     }

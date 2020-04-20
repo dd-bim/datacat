@@ -22,6 +22,8 @@ public class XtdEntityTypeResolver implements TypeResolver {
         XtdEntity obj = env.getObject();
         GraphQLSchema schema = env.getSchema();
 
+        System.out.println(String.format("Resolving: %s", obj));
+
         if (obj instanceof XtdExternalDocument) {
             return schema.getObjectType(XtdExternalDocument.LABEL);
         }
