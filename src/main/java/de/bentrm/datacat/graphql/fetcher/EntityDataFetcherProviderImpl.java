@@ -4,10 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.bentrm.datacat.domain.XtdRoot;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.dto.PagingOptions;
+import de.bentrm.datacat.query.FilterOptions;
 import de.bentrm.datacat.service.CrudEntityService;
 import graphql.schema.DataFetcher;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -17,9 +19,9 @@ public abstract class EntityDataFetcherProviderImpl<
 		>
 		implements EntityDataFetcherProvider<T> {
 
-	private Class<C> inputClass;
-	private Class<U> updateClass;
-	private S entityService;
+	private final Class<C> inputClass;
+	private final Class<U> updateClass;
+	private final S entityService;
 
 	public EntityDataFetcherProviderImpl(Class<C> inputClass, Class<U> updateClass, S entityService) {
 		this.inputClass = inputClass;
@@ -74,10 +76,11 @@ public abstract class EntityDataFetcherProviderImpl<
 
 			Page<T> page;
 			String term = environment.getArgument("term");
+			List<String> excludedIds = environment.getArgument("excludedIds");
 			if (term != null && !term.isBlank()) {
 				page = entityService.findByTerm(term.trim(), dto.getPageble());
 			} else {
-				page = entityService.findAll(dto.getPageble());
+				page = entityService.findAll(new FilterOptions<>(null, null, excludedIds), dto.getPageble());
 			}
 
 			return new Connection<>(page);

@@ -5,7 +5,7 @@ import de.bentrm.datacat.domain.XtdExternalDocument;
 import de.bentrm.datacat.domain.XtdLanguage;
 import de.bentrm.datacat.domain.XtdLanguageRepresentation;
 import de.bentrm.datacat.graphql.Connection;
-import de.bentrm.datacat.graphql.dto.ExternalDocumentInput;
+import de.bentrm.datacat.graphql.dto.EntityInput;
 import de.bentrm.datacat.graphql.dto.PagingOptions;
 import de.bentrm.datacat.service.ExternalDocumentService;
 import de.bentrm.datacat.service.LanguageService;
@@ -37,7 +37,7 @@ public class XtdDataFetchers {
         return environment -> {
             Map<String, Object> input = environment.getArgument("input");
             ObjectMapper mapper = new ObjectMapper();
-            ExternalDocumentInput dto = mapper.convertValue(input, ExternalDocumentInput.class);
+            EntityInput dto = mapper.convertValue(input, EntityInput.class);
             return externalDocumentService.create(dto);
         };
     }

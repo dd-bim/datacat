@@ -515,7 +515,7 @@ type Query {
     properties(term: String, options: PagingOptions): XtdPropertyConnection
 
     subject(id: ID!): XtdSubject
-    subjects(term: String, options: PagingOptions): XtdSubjectConnection
+    subjects(term: String, excludedIds: [String!], options: PagingOptions): XtdSubjectConnection
 
     unit(id: ID!): XtdUnit
     units(term: String, options: PagingOptions): XtdUnitConnection
