@@ -1,30 +1,17 @@
 package de.bentrm.datacat.graphql.dto;
 
-import de.bentrm.datacat.validation.IdConstraint;
-
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RootUpdateInput {
-
-    @NotBlank @IdConstraint
-    private String id;
+public class RootUpdateInput extends EntityUpdateInput {
 
     @NotNull
     private String versionId;
 
     @NotNull
     private String versionDate;
-
-    public String getId() {
-        return id;
-    }
-
-    private @NotEmpty List<@Valid @NotNull TextInput> names = new ArrayList<>();
 
     private List<@Valid @NotNull TextInput> descriptions = new ArrayList<>();
 
@@ -34,10 +21,6 @@ public class RootUpdateInput {
 
     public String getVersionDate() {
         return versionDate;
-    }
-
-    public List<TextInput> getNames() {
-        return names;
     }
 
     public List<TextInput> getDescriptions() {
