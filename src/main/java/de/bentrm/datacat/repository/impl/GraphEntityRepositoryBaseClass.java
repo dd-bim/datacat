@@ -59,6 +59,14 @@ public class GraphEntityRepositoryBaseClass<T, ID extends Serializable>
     }
 
     @Override
+    public Page<T> findAll(FilterOptions<ID> filterOptions, Pageable pageable) {
+        Iterable<T> results = new FindAllQuery<>(entityType, session, pageable, filterOptions).execute();
+        List<T> content = new ArrayList<>();
+        results.forEach(content::add);
+        return PageableExecutionUtils.getPage(content, pageable, () -> new CountAllQuery<>(entityType, session, filterOptions).execute());
+    }
+
+    @Override
     public Page<T> findAllByTerm(String term, Pageable pageable) {
         Iterable<T> results = new FindAllByTermQuery<>(entityType, session, term, pageable).execute();
         List<T> content = new ArrayList<>();

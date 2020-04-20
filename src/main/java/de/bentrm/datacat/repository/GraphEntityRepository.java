@@ -1,5 +1,6 @@
 package de.bentrm.datacat.repository;
 
+import de.bentrm.datacat.query.FilterOptions;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
@@ -24,6 +25,8 @@ public interface GraphEntityRepository<T, ID extends Serializable> extends Repos
 	long count();
 
 	Page<T> findAll(Pageable pageable);
+
+	Page<T> findAll(FilterOptions<ID> filterOptions, Pageable pageable);
 
 	Page<T> findAllByTerm(String term, Pageable pageable);
 
