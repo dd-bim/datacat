@@ -1,11 +1,11 @@
 package de.bentrm.datacat.service.impl;
 
-import de.bentrm.datacat.domain.XtdDescription;
+import de.bentrm.datacat.domain.XtdEntity;
 import de.bentrm.datacat.domain.XtdName;
-import de.bentrm.datacat.domain.XtdRoot;
-import de.bentrm.datacat.graphql.dto.RootInput;
-import de.bentrm.datacat.graphql.dto.RootUpdateInput;
+import de.bentrm.datacat.graphql.dto.EntityInput;
+import de.bentrm.datacat.graphql.dto.EntityUpdateInput;
 import de.bentrm.datacat.graphql.dto.TextInput;
+import de.bentrm.datacat.query.FilterOptions;
 import de.bentrm.datacat.repository.GraphEntityRepository;
 import de.bentrm.datacat.service.CrudEntityService;
 import de.bentrm.datacat.service.RelGroupsService;
@@ -30,9 +30,9 @@ import java.util.stream.Collectors;
 @Validated
 @Transactional(readOnly = true)
 public abstract class CrudEntityServiceImpl<
-		T extends XtdRoot,
-		C extends RootInput,
-		U extends RootUpdateInput,
+		T extends XtdEntity,
+		C extends EntityInput,
+		U extends EntityUpdateInput,
 		R extends GraphEntityRepository<T, String>>
 		implements CrudEntityService<T, C, U> {
 
@@ -57,8 +57,6 @@ public abstract class CrudEntityServiceImpl<
 
 	protected void setEntityProperties(T entity, C dto) {
 		entity.setId(dto.getId());
-		entity.setVersionId(dto.getVersionId());
-		entity.setVersionDate(dto.getVersionDate());
 
 		List<TextInput> names = dto.getNames();
 		for (int i = 0; i < names.size(); i++) {
@@ -66,14 +64,6 @@ public abstract class CrudEntityServiceImpl<
 			XtdName newName = newNameInstance(name);
 			newName.setSortOrder(i);
 			entity.getNames().add(newName);
-		}
-
-		List<TextInput> descriptions = dto.getDescriptions();
-		for (int i = 0; i < descriptions.size(); i++) {
-			TextInput description = descriptions.get(i);
-			XtdDescription newDescription = newDescriptionInstance(description);
-			newDescription.setSortOrder(i);
-			entity.getDescriptions().add(newDescription);
 		}
 	}
 
@@ -91,10 +81,6 @@ public abstract class CrudEntityServiceImpl<
 
 	protected void updateEntityProperties(T entity, U dto) {
 		logger.debug("Updating entity {}", entity);
-
-		// general infos
-		entity.setVersionId(dto.getVersionId());
-		entity.setVersionDate(dto.getVersionDate());
 
 		List<TextInput> nameDtos = dto.getNames();
 		List<String> nameIds = nameDtos.stream().map(TextInput::getId).collect(Collectors.toList());
@@ -137,46 +123,6 @@ public abstract class CrudEntityServiceImpl<
 			}
 		}
 
-		List<TextInput> descriptionDtos = dto.getDescriptions();
-		List<String> descriptionIds = descriptionDtos.stream().map(TextInput::getId).collect(Collectors.toList());
-		List<XtdDescription> descriptions = new ArrayList<>(entity.getDescriptions());
-
-		// empty current set to prepare for updates
-		entity.getDescriptions().clear();
-
-		// remove deleted descriptions temporary list
-		descriptions.removeIf(x -> !descriptionIds.contains(x.getId()));
-
-		for (int i = 0; i < descriptionDtos.size(); i++) {
-			TextInput input = descriptionDtos.get(i);
-			XtdDescription newDescription = newDescriptionInstance(input);
-			newDescription.setSortOrder(i);
-
-			logger.debug("Transient description {}", newDescription);
-
-			int index = descriptions.indexOf(newDescription);
-			if (input.getId() != null && (index > -1)) {
-				// Update of an existing entity
-				XtdDescription oldDescription = descriptions.get(index);
-				logger.debug("Persistent description to be updated: {}", oldDescription);
-
-				if (!oldDescription.getLanguageName().equals(newDescription.getLanguageName())) {
-					// Update of languageName is not allowed
-					throw new IllegalArgumentException("Update of languageName of description with id " + newDescription.getId() + " is not allowed.");
-				}
-
-				oldDescription.setDescription(newDescription.getDescription());
-				oldDescription.setSortOrder(newDescription.getSortOrder());
-
-				logger.debug("Updated persistent description: {}" , oldDescription);
-
-				entity.getDescriptions().add(oldDescription);
-			} else {
-				// New entity with no given id
-				entity.getDescriptions().add(newDescription);
-			}
-		}
-
 		logger.debug("New state {}", entity);
 	}
 
@@ -184,19 +130,7 @@ public abstract class CrudEntityServiceImpl<
 	@Override
 	public Optional<T> delete(@NotNull String id) {
 		Optional<T> result = repository.findById(id);
-
-		if (result.isPresent()) {
-			T entity = result.get();
-
-			// delete groups relationships of this entity
-			entity.getGroups().forEach(relation -> {
-				logger.debug("Deleting Relationship {}", relation);
-				relGroupsService.delete(relation.getId());
-			});
-
-			repository.delete(entity);
-		}
-
+		result.ifPresent(repository::delete);
 		return result;
 	}
 
@@ -219,6 +153,11 @@ public abstract class CrudEntityServiceImpl<
 	}
 
 	@Override
+	public @NotNull Page<T> findAll(@NotNull FilterOptions<String> filterOptions, @NotNull Pageable pageable) {
+		return repository.findAll(filterOptions, pageable);
+	}
+
+	@Override
 	public @NotNull Page<T> findByTerm(@NotBlank String term, @NotNull Pageable pageable) {
 		return repository.findAllByTerm(term, pageable);
 	}
@@ -230,12 +169,5 @@ public abstract class CrudEntityServiceImpl<
 			return new XtdName(input.getId(), input.getLanguageCode(), input.getValue());
 		}
 		return new XtdName(input.getLanguageCode(), input.getValue());
-	}
-
-	protected XtdDescription newDescriptionInstance(TextInput input) {
-		if (input.getId() != null) {
-			return new XtdDescription(input.getId(), input.getLanguageCode(), input.getValue());
-		}
-		return new XtdDescription(input.getLanguageCode(), input.getValue());
 	}
 }

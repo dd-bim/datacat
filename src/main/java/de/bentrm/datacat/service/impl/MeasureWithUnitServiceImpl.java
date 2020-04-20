@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @Transactional(readOnly = true)
 public class MeasureWithUnitServiceImpl
-        extends CrudEntityServiceImpl<XtdMeasureWithUnit, RootInput, RootUpdateInput, MeasureWithUnitRepository>
+        extends CrudRootServiceImpl<XtdMeasureWithUnit, RootInput, RootUpdateInput, MeasureWithUnitRepository>
         implements MeasureWithUnitService {
 
     public MeasureWithUnitServiceImpl(MeasureWithUnitRepository repository) {

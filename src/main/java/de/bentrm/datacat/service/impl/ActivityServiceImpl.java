@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @Transactional(readOnly = true)
 public class ActivityServiceImpl
-        extends CrudEntityServiceImpl<XtdActivity, RootInput, RootUpdateInput, ActivityRepository>
+        extends CrudRootServiceImpl<XtdActivity, RootInput, RootUpdateInput, ActivityRepository>
         implements ActivityService {
 
     public ActivityServiceImpl(ActivityRepository repository) {

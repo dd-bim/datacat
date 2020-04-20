@@ -24,7 +24,7 @@ import java.util.List;
 @Validated
 @Transactional(readOnly = true)
 public class RelGroupsServiceImpl
-        extends CrudEntityServiceImpl<XtdRelGroups, AssociationInput, AssociationUpdateInput, RelGroupsRepository>
+        extends CrudRootServiceImpl<XtdRelGroups, AssociationInput, AssociationUpdateInput, RelGroupsRepository>
         implements RelGroupsService {
 
     Logger logger = LoggerFactory.getLogger(RelGroupsServiceImpl.class);

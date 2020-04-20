@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @Transactional(readOnly = true)
 public class ActorServiceImpl
-		extends CrudEntityServiceImpl<XtdActor, RootInput, RootUpdateInput, ActorRepository>
+		extends CrudRootServiceImpl<XtdActor, RootInput, RootUpdateInput, ActorRepository>
 		implements ActorService {
 
 	public ActorServiceImpl(ActorRepository repository) {

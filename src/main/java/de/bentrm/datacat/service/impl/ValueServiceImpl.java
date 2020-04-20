@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @Transactional(readOnly = true)
 public class ValueServiceImpl
-        extends CrudEntityServiceImpl<XtdValue, ValueInput, ValueUpdateInput, ValueRepository>
+        extends CrudRootServiceImpl<XtdValue, ValueInput, ValueUpdateInput, ValueRepository>
         implements ValueService {
 
     public ValueServiceImpl(ValueRepository repository) {
