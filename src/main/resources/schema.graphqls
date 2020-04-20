@@ -96,7 +96,6 @@ interface XtdRoot {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
-#    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
@@ -181,7 +180,6 @@ type XtdActivity implements XtdEntity, XtdRoot, XtdObject {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
-#    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
@@ -203,7 +201,6 @@ type XtdActor implements XtdEntity, XtdRoot, XtdObject  {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
-#    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
@@ -225,7 +222,6 @@ type XtdClassification implements XtdEntity, XtdRoot, XtdObject {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
-#    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
@@ -247,7 +243,6 @@ type XtdMeasureWithUnit implements XtdEntity, XtdRoot, XtdObject {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
-#    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
@@ -269,7 +264,6 @@ type XtdProperty implements XtdEntity, XtdRoot, XtdObject {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
-#    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
@@ -291,7 +285,6 @@ type XtdSubject implements XtdEntity, XtdRoot, XtdObject {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
-#    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
@@ -313,7 +306,6 @@ type XtdUnit implements XtdEntity, XtdRoot, XtdObject {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
-#    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
@@ -361,7 +353,6 @@ type XtdValue implements XtdEntity, XtdRoot, XtdObject {
     valueRole: XtdValueRoleEnum
     valueType: XtdValueTypeEnum
     nominalValue: String
-#    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
@@ -383,7 +374,6 @@ type XtdBag implements XtdEntity, XtdRoot, XtdCollection {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
-#    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
@@ -405,7 +395,6 @@ type XtdNest implements XtdEntity, XtdRoot, XtdCollection {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
-#    comments: [Comment!]!
     documentedBy: XtdRelDocumentsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
@@ -418,6 +407,29 @@ type XtdNestConnection {
     page: Page!
 }
 
+type XtdRelCollects implements XtdEntity, XtdRoot, XtdRelationship {
+    id: ID!
+    created: String!
+    lastModified: String!
+    versionId: String!
+    versionDate: String!
+    label: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    relatingDocument: XtdExternalDocument!
+    relatedObjects(options: PagingOptions): XtdObjectConnection!
+    documentedBy: XtdRelDocumentsConnection!
+    associates(options: PagingOptions): XtdRelAssociatesConnection!
+    associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
+    groups(options: PagingOptions): XtdRelGroupsConnection!
+    groupedBy(options: PagingOptions): XtdRelGroupsConnection!
+}
+
+type XtdRelCollectsConnection {
+    nodes: [XtdRelCollects!]!
+    page: Page!
+}
+
 type XtdRelDocuments implements XtdEntity, XtdRoot, XtdRelationship {
     id: ID!
     created: String!
@@ -427,7 +439,6 @@ type XtdRelDocuments implements XtdEntity, XtdRoot, XtdRelationship {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
-#    comments: [Comment!]!
     relatingDocument: XtdExternalDocument!
     relatedObjects(options: PagingOptions): XtdObjectConnection!
     documentedBy: XtdRelDocumentsConnection!
@@ -451,7 +462,6 @@ type XtdRelAssociates implements XtdEntity, XtdRoot, XtdRelationship {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
-#    comments: [Comment!]!
     relatingThing: XtdObject!
     relatedThings(options: PagingOptions): XtdObjectConnection!
     documentedBy: XtdRelDocumentsConnection!
@@ -475,7 +485,6 @@ type XtdRelGroups implements XtdEntity, XtdRoot, XtdRelationship {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
-#    comments: [Comment!]!
     relatingThing: XtdRoot!
     relatedThings(options: PagingOptions): XtdRootConnection!
     documentedBy: XtdRelDocumentsConnection!
@@ -514,7 +523,8 @@ enum EntityTypes {
 input SearchInput {
     term: String
     labels: [EntityTypes!]
-    excludeIds: [ID!]
+    excludedLabels: [EntityTypes!]
+    excludedIds: [ID!]
 }
 
 type SearchConnection {
