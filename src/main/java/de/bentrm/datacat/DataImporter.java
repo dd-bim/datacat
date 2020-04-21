@@ -22,16 +22,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ResourceLoaderAware;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.*;
 
 // TODO: Refactor import logic into separate class using application scoped services
-//@Component
+@Component
 public class DataImporter implements ResourceLoaderAware {
 
     protected Logger logger = LoggerFactory.getLogger(DataImporter.class);
@@ -65,10 +67,10 @@ public class DataImporter implements ResourceLoaderAware {
     @Value("${import.descriptions}")
     private String descriptionFilePath;
 
-    private Map<String, String> entityIds = new HashMap<>();
+    private final Map<String, String> entityIds = new HashMap<>();
 
 
-//    @Bean
+    @Bean
     @Transactional
     public CommandLineRunner importInitialData() {
         return (args) -> {
@@ -336,7 +338,7 @@ public class DataImporter implements ResourceLoaderAware {
                         relationship = relatingObject.getGroups().iterator().next();
                     } else {
                         relationship = new XtdRelGroups();
-                        relationship.getNames().add(new XtdName("de", curGroupName));
+                        relationship.getNames().add(new XtdName("de", "Gruppe " + curGroupName));
                         relationship.setRelatingThing(relatingObject);
                     }
 
