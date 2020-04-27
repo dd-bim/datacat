@@ -1,9 +1,6 @@
 package de.bentrm.datacat.domain;
 
-import de.bentrm.datacat.domain.relationship.XtdRelAssociates;
-import de.bentrm.datacat.domain.relationship.XtdRelCollects;
-import de.bentrm.datacat.domain.relationship.XtdRelDocuments;
-import de.bentrm.datacat.domain.relationship.XtdRelGroups;
+import de.bentrm.datacat.domain.relationship.*;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
@@ -44,19 +41,25 @@ public abstract class XtdRoot extends XtdEntity implements Commented {
 	private Set<XtdRelCollects> collectedIn = new HashSet<>();
 
 	@Relationship(type = XtdRelDocuments.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
-	private Set<XtdRelDocuments> documentedBy = new HashSet<>();
+	private final Set<XtdRelDocuments> documentedBy = new HashSet<>();
 
 	@Relationship(type = XtdRelAssociates.RELATIONSHIP_TYPE)
-	private Set<XtdRelAssociates> associates = new HashSet<>();
+	private final Set<XtdRelAssociates> associates = new HashSet<>();
 
 	@Relationship(type = XtdRelAssociates.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
-	private Set<XtdRelAssociates> associatedBy = new HashSet<>();
+	private final Set<XtdRelAssociates> associatedBy = new HashSet<>();
 
 	@Relationship(type = XtdRelGroups.RELATIONSHIP_TYPE)
-	private Set<XtdRelGroups> groups = new HashSet<>();
+	private final Set<XtdRelGroups> groups = new HashSet<>();
 
 	@Relationship(type = XtdRelGroups.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
-	private Set<XtdRelGroups> groupedBy = new HashSet<>();
+	private final Set<XtdRelGroups> groupedBy = new HashSet<>();
+
+	@Relationship(type = XtdRelSpecializes.RELATIONSHIP_TYPE)
+	private final Set<XtdRelSpecializes> specializes = new HashSet<>();
+
+	@Relationship(type = XtdRelSpecializes.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
+	private final Set<XtdRelSpecializes> specializedBy = new HashSet<>();
 
 	public String getVersionId() {
 		return versionId;
@@ -128,6 +131,14 @@ public abstract class XtdRoot extends XtdEntity implements Commented {
 
 	public Set<XtdRelGroups> getGroupedBy() {
 		return groupedBy;
+	}
+
+	public Set<XtdRelSpecializes> getSpecializes() {
+		return specializes;
+	}
+
+	public Set<XtdRelSpecializes> getSpecializedBy() {
+		return specializedBy;
 	}
 
 	@Override
