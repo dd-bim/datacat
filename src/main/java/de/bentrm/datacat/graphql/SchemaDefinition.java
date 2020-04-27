@@ -77,6 +77,9 @@ public class SchemaDefinition implements ResourceLoaderAware {
     private RelGroupsDataFetcherProvider relGroupsProvider;
 
     @Autowired
+    private RelSpecializesDataFetcherProvider relSpecializesProvider;
+
+    @Autowired
     private SearchDataFetcherProvider searchProvider;
 
     @Bean
@@ -97,16 +100,20 @@ public class SchemaDefinition implements ResourceLoaderAware {
                 .type("XtdObject", typeWiring -> typeWiring.typeResolver(objectTypeResolver))
                 .type("XtdActivity", typeWiring -> typeWiring
                         .dataFetchers(associatesProvider.getRootDataFetchers())
-                        .dataFetchers(relGroupsProvider.getRootDataFetchers()))
+                        .dataFetchers(relGroupsProvider.getRootDataFetchers())
+                        .dataFetchers(relSpecializesProvider.getRootDataFetchers()))
                 .type("XtdActor", typeWiring -> typeWiring
                         .dataFetchers(associatesProvider.getRootDataFetchers())
-                        .dataFetchers(relGroupsProvider.getRootDataFetchers()))
+                        .dataFetchers(relGroupsProvider.getRootDataFetchers())
+                        .dataFetchers(relSpecializesProvider.getRootDataFetchers()))
                 .type("XtdSubject", typeWiring -> typeWiring
                         .dataFetchers(associatesProvider.getRootDataFetchers())
-                        .dataFetchers(relGroupsProvider.getRootDataFetchers()))
+                        .dataFetchers(relGroupsProvider.getRootDataFetchers())
+                        .dataFetchers(relSpecializesProvider.getRootDataFetchers()))
                 .type("XtdUnit", typeWiring -> typeWiring
                         .dataFetchers(associatesProvider.getRootDataFetchers())
-                        .dataFetchers(relGroupsProvider.getRootDataFetchers()))
+                        .dataFetchers(relGroupsProvider.getRootDataFetchers())
+                        .dataFetchers(relSpecializesProvider.getRootDataFetchers()))
                 .type("XtdProperty", typeWiring -> typeWiring
                         .dataFetchers(associatesProvider.getRootDataFetchers())
                         .dataFetchers(relGroupsProvider.getRootDataFetchers()))
@@ -115,11 +122,18 @@ public class SchemaDefinition implements ResourceLoaderAware {
                 .type("XtdRelAssociates", typeWiring -> typeWiring
                         .dataFetchers(associatesProvider.getRootDataFetchers())
                         .dataFetchers(relGroupsProvider.getRootDataFetchers())
+                        .dataFetchers(relSpecializesProvider.getRootDataFetchers())
                         .dataFetchers(associatesProvider.getRelAssociatesDataFetchers()))
                 .type("XtdRelGroups", typeWiring -> typeWiring
                         .dataFetchers(associatesProvider.getRootDataFetchers())
                         .dataFetchers(relGroupsProvider.getRootDataFetchers())
+                        .dataFetchers(relSpecializesProvider.getRootDataFetchers())
                         .dataFetchers(relGroupsProvider.getRelGroupsDataFetchers()))
+                .type("XtdRelSpecializes", typeWiring -> typeWiring
+                        .dataFetchers(associatesProvider.getRootDataFetchers())
+                        .dataFetchers(relGroupsProvider.getRootDataFetchers())
+                        .dataFetchers(relSpecializesProvider.getRootDataFetchers())
+                        .dataFetchers(relSpecializesProvider.getRelSpecializesDataFetchers()))
                 .type("Query", typeWiring -> typeWiring
                         .dataFetchers(searchProvider.getQueryDataFetchers())
                         .dataFetcher("document", dataFetchers.externalDocumentById())
@@ -133,7 +147,8 @@ public class SchemaDefinition implements ResourceLoaderAware {
                         .dataFetchers(valueProvider.getQueryDataFetchers())
                         .dataFetchers(measureProvider.getQueryDataFetchers())
                         .dataFetchers(associatesProvider.getQueryDataFetchers())
-                        .dataFetchers(relGroupsProvider.getQueryDataFetchers()))
+                        .dataFetchers(relGroupsProvider.getQueryDataFetchers())
+                        .dataFetchers(relSpecializesProvider.getQueryDataFetchers()))
                 .type("Mutation", typeWiring -> typeWiring
                         .dataFetcher("createDocument", dataFetchers.createExternalDocument())
                         .dataFetcher("deleteDocument", dataFetchers.deleteExternalDocument())
@@ -146,7 +161,8 @@ public class SchemaDefinition implements ResourceLoaderAware {
                         .dataFetchers(valueProvider.getMutationDataFetchers())
                         .dataFetchers(measureProvider.getMutationDataFetchers())
                         .dataFetchers(associatesProvider.getMutationDataFetchers())
-                        .dataFetchers(relGroupsProvider.getMutationDataFetchers()))
+                        .dataFetchers(relGroupsProvider.getMutationDataFetchers())
+                        .dataFetchers(relSpecializesProvider.getMutationDataFetchers()))
                 .build();
         return schemaGenerator.makeExecutableSchema(typeRegistry, wiring);
     }
