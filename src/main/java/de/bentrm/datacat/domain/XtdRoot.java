@@ -62,10 +62,10 @@ public abstract class XtdRoot extends XtdEntity implements Commented {
     private final Set<XtdRelSpecializes> specializedBy = new HashSet<>();
 
     @Relationship(type = XtdRelComposes.RELATIONSHIP_TYPE)
-    private final Set<XtdRelSpecializes> composes = new HashSet<>();
+    private final Set<XtdRelComposes> composes = new HashSet<>();
 
-    @Relationship(type = XtdRelSpecializes.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
-    private final Set<XtdRelSpecializes> composedBy = new HashSet<>();
+    @Relationship(type = XtdRelComposes.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
+    private final Set<XtdRelComposes> composedBy = new HashSet<>();
 
     public String getVersionId() {
         return versionId;
@@ -147,11 +147,11 @@ public abstract class XtdRoot extends XtdEntity implements Commented {
         return specializedBy;
     }
 
-    public Set<XtdRelSpecializes> getComposes() {
+    public Set<XtdRelComposes> getComposes() {
         return composes;
     }
 
-    public Set<XtdRelSpecializes> getComposedBy() {
+    public Set<XtdRelComposes> getComposedBy() {
         return composedBy;
     }
 
