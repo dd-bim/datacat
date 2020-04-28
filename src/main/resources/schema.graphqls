@@ -103,6 +103,8 @@ interface XtdRoot {
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
     specializes(options: PagingOptions): XtdRelSpecializesConnection!
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
+    composes(options: PagingOptions): XtdRelComposesConnection!
+    composedBy(options: PagingOptions): XtdRelComposesConnection!
 }
 
 type XtdRootConnection {
@@ -126,6 +128,8 @@ interface XtdObject {
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
     specializes(options: PagingOptions): XtdRelSpecializesConnection!
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
+    composes(options: PagingOptions): XtdRelComposesConnection!
+    composedBy(options: PagingOptions): XtdRelComposesConnection!
 }
 
 type XtdObjectConnection {
@@ -149,6 +153,8 @@ interface XtdCollection {
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
     specializes(options: PagingOptions): XtdRelSpecializesConnection!
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
+    composes(options: PagingOptions): XtdRelComposesConnection!
+    composedBy(options: PagingOptions): XtdRelComposesConnection!
 }
 
 type XtdCollectionConnection {
@@ -172,6 +178,8 @@ interface XtdRelationship {
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
     specializes(options: PagingOptions): XtdRelSpecializesConnection!
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
+    composes(options: PagingOptions): XtdRelComposesConnection!
+    composedBy(options: PagingOptions): XtdRelComposesConnection!
 }
 
 type XtdRelationshipConnection {
@@ -195,6 +203,8 @@ type XtdActivity implements XtdEntity, XtdRoot, XtdObject {
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
     specializes(options: PagingOptions): XtdRelSpecializesConnection!
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
+    composes(options: PagingOptions): XtdRelComposesConnection!
+    composedBy(options: PagingOptions): XtdRelComposesConnection!
 }
 
 type XtdActivityConnection {
@@ -218,6 +228,8 @@ type XtdActor implements XtdEntity, XtdRoot, XtdObject  {
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
     specializes(options: PagingOptions): XtdRelSpecializesConnection!
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
+    composes(options: PagingOptions): XtdRelComposesConnection!
+    composedBy(options: PagingOptions): XtdRelComposesConnection!
 }
 
 type XtdActorConnection {
@@ -241,6 +253,8 @@ type XtdClassification implements XtdEntity, XtdRoot, XtdObject {
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
     specializes(options: PagingOptions): XtdRelSpecializesConnection!
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
+    composes(options: PagingOptions): XtdRelComposesConnection!
+    composedBy(options: PagingOptions): XtdRelComposesConnection!
 }
 
 type XtdClassificationConnection {
@@ -264,6 +278,8 @@ type XtdMeasureWithUnit implements XtdEntity, XtdRoot, XtdObject {
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
     specializes(options: PagingOptions): XtdRelSpecializesConnection!
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
+    composes(options: PagingOptions): XtdRelComposesConnection!
+    composedBy(options: PagingOptions): XtdRelComposesConnection!
 }
 
 type XtdMeasureWithUnitConnection {
@@ -287,6 +303,8 @@ type XtdProperty implements XtdEntity, XtdRoot, XtdObject {
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
     specializes(options: PagingOptions): XtdRelSpecializesConnection!
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
+    composes(options: PagingOptions): XtdRelComposesConnection!
+    composedBy(options: PagingOptions): XtdRelComposesConnection!
 }
 
 type XtdPropertyConnection {
@@ -310,6 +328,8 @@ type XtdSubject implements XtdEntity, XtdRoot, XtdObject {
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
     specializes(options: PagingOptions): XtdRelSpecializesConnection!
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
+    composes(options: PagingOptions): XtdRelComposesConnection!
+    composedBy(options: PagingOptions): XtdRelComposesConnection!
 }
 
 type XtdSubjectConnection {
@@ -333,6 +353,8 @@ type XtdUnit implements XtdEntity, XtdRoot, XtdObject {
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
     specializes(options: PagingOptions): XtdRelSpecializesConnection!
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
+    composes(options: PagingOptions): XtdRelComposesConnection!
+    composedBy(options: PagingOptions): XtdRelComposesConnection!
 }
 
 type XtdUnitConnection {
@@ -382,6 +404,8 @@ type XtdValue implements XtdEntity, XtdRoot, XtdObject {
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
     specializes(options: PagingOptions): XtdRelSpecializesConnection!
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
+    composes(options: PagingOptions): XtdRelComposesConnection!
+    composedBy(options: PagingOptions): XtdRelComposesConnection!
 }
 
 type XtdValueConnection {
@@ -405,6 +429,8 @@ type XtdBag implements XtdEntity, XtdRoot, XtdCollection {
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
     specializes(options: PagingOptions): XtdRelSpecializesConnection!
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
+    composes(options: PagingOptions): XtdRelComposesConnection!
+    composedBy(options: PagingOptions): XtdRelComposesConnection!
 }
 
 type XtdBagConnection {
@@ -428,6 +454,8 @@ type XtdNest implements XtdEntity, XtdRoot, XtdCollection {
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
     specializes(options: PagingOptions): XtdRelSpecializesConnection!
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
+    composes(options: PagingOptions): XtdRelComposesConnection!
+    composedBy(options: PagingOptions): XtdRelComposesConnection!
 }
 
 type XtdNestConnection {
@@ -453,6 +481,8 @@ type XtdRelCollects implements XtdEntity, XtdRoot, XtdRelationship {
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
     specializes(options: PagingOptions): XtdRelSpecializesConnection!
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
+    composes(options: PagingOptions): XtdRelComposesConnection!
+    composedBy(options: PagingOptions): XtdRelComposesConnection!
 }
 
 type XtdRelCollectsConnection {
@@ -478,6 +508,8 @@ type XtdRelDocuments implements XtdEntity, XtdRoot, XtdRelationship {
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
     specializes(options: PagingOptions): XtdRelSpecializesConnection!
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
+    composes(options: PagingOptions): XtdRelComposesConnection!
+    composedBy(options: PagingOptions): XtdRelComposesConnection!
 }
 
 type XtdRelDocumentsConnection {
@@ -503,6 +535,8 @@ type XtdRelAssociates implements XtdEntity, XtdRoot, XtdRelationship {
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
     specializes(options: PagingOptions): XtdRelSpecializesConnection!
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
+    composes(options: PagingOptions): XtdRelComposesConnection!
+    composedBy(options: PagingOptions): XtdRelComposesConnection!
 }
 
 type XtdRelAssociatesConnection {
@@ -528,6 +562,8 @@ type XtdRelGroups implements XtdEntity, XtdRoot, XtdRelationship {
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
     specializes(options: PagingOptions): XtdRelSpecializesConnection!
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
+    composes(options: PagingOptions): XtdRelComposesConnection!
+    composedBy(options: PagingOptions): XtdRelComposesConnection!
 }
 
 type XtdRelGroupsConnection {
@@ -553,10 +589,39 @@ type XtdRelSpecializes implements XtdEntity, XtdRoot, XtdRelationship {
     groupedBy(options: PagingOptions): XtdRelGroupsConnection!
     specializes(options: PagingOptions): XtdRelSpecializesConnection!
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
+    composes(options: PagingOptions): XtdRelComposesConnection!
+    composedBy(options: PagingOptions): XtdRelComposesConnection!
 }
 
 type XtdRelSpecializesConnection {
     nodes: [XtdRelSpecializes!]!
+    page: Page!
+}
+
+type XtdRelComposes implements XtdEntity, XtdRoot, XtdRelationship {
+    id: ID!
+    created: String!
+    lastModified: String!
+    versionId: String!
+    versionDate: String!
+    label: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    relatingThing: XtdRoot!
+    relatedThings(options: PagingOptions): XtdRootConnection!
+    documentedBy: XtdRelDocumentsConnection!
+    associates(options: PagingOptions): XtdRelAssociatesConnection!
+    associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
+    groups(options: PagingOptions): XtdRelGroupsConnection!
+    groupedBy(options: PagingOptions): XtdRelGroupsConnection!
+    specializes(options: PagingOptions): XtdRelSpecializesConnection!
+    specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
+    composes(options: PagingOptions): XtdRelComposesConnection!
+    composedBy(options: PagingOptions): XtdRelComposesConnection!
+}
+
+type XtdRelComposesConnection {
+    nodes: [XtdRelComposes!]!
     page: Page!
 }
 
@@ -576,6 +641,8 @@ enum EntityTypes {
     XtdProperty
     XtdRelAssociates
     XtdRelGroups
+    XtdRelSpecializes
+    XtdRelComposes
     XtdSubject
     XtdUnit
     XtdValue
@@ -640,6 +707,9 @@ type Query {
 
     specializesRelation(id: ID!): XtdRelSpecializes
     specializesRelations(term: String, options: PagingOptions): XtdRelSpecializesConnection!
+
+    composesRelation(id: ID!): XtdRelComposes
+    composesRelations(term: String, options: PagingOptions): XtdRelComposesConnection!
 }
 
 #input CommentInput {
@@ -771,6 +841,10 @@ type Mutation {
     createSpecializesRelation(input: AssociationInput!): XtdRelSpecializes
     updateSpecializesRelation(input: AssociationUpdateInput!): XtdRelSpecializes
     deleteSpecializesRelation(id: ID!): XtdRelSpecializes
+
+    createComposesRelation(input: AssociationInput!): XtdRelComposes
+    updateComposesRelation(input: AssociationUpdateInput!): XtdRelComposes
+    deleteComposesRelation(id: ID!): XtdRelComposes
 }
 
 schema {

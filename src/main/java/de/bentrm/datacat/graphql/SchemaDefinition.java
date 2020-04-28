@@ -71,13 +71,16 @@ public class SchemaDefinition implements ResourceLoaderAware {
     private MeasureWithUnitDataFetcherProvider measureProvider;
 
     @Autowired
-    private RelAssociatesDataFetcherProvider associatesProvider;
+    private RelAssociatesDataFetcherProvider relAssociatesProvider;
 
     @Autowired
     private RelGroupsDataFetcherProvider relGroupsProvider;
 
     @Autowired
     private RelSpecializesDataFetcherProvider relSpecializesProvider;
+
+    @Autowired
+    private RelComposesDataFetcherProvider relComposesProvider;
 
     @Autowired
     private SearchDataFetcherProvider searchProvider;
@@ -99,41 +102,56 @@ public class SchemaDefinition implements ResourceLoaderAware {
                 .type("XtdRoot", typeWiring -> typeWiring.typeResolver(rootTypeResolver))
                 .type("XtdObject", typeWiring -> typeWiring.typeResolver(objectTypeResolver))
                 .type("XtdActivity", typeWiring -> typeWiring
-                        .dataFetchers(associatesProvider.getRootDataFetchers())
+                        .dataFetchers(relAssociatesProvider.getRootDataFetchers())
                         .dataFetchers(relGroupsProvider.getRootDataFetchers())
-                        .dataFetchers(relSpecializesProvider.getRootDataFetchers()))
+                        .dataFetchers(relSpecializesProvider.getRootDataFetchers())
+                        .dataFetchers(relComposesProvider.getRootDataFetchers()))
                 .type("XtdActor", typeWiring -> typeWiring
-                        .dataFetchers(associatesProvider.getRootDataFetchers())
+                        .dataFetchers(relAssociatesProvider.getRootDataFetchers())
                         .dataFetchers(relGroupsProvider.getRootDataFetchers())
-                        .dataFetchers(relSpecializesProvider.getRootDataFetchers()))
+                        .dataFetchers(relSpecializesProvider.getRootDataFetchers())
+                        .dataFetchers(relComposesProvider.getRootDataFetchers()))
                 .type("XtdSubject", typeWiring -> typeWiring
-                        .dataFetchers(associatesProvider.getRootDataFetchers())
+                        .dataFetchers(relAssociatesProvider.getRootDataFetchers())
                         .dataFetchers(relGroupsProvider.getRootDataFetchers())
-                        .dataFetchers(relSpecializesProvider.getRootDataFetchers()))
+                        .dataFetchers(relSpecializesProvider.getRootDataFetchers())
+                        .dataFetchers(relComposesProvider.getRootDataFetchers()))
                 .type("XtdUnit", typeWiring -> typeWiring
-                        .dataFetchers(associatesProvider.getRootDataFetchers())
+                        .dataFetchers(relAssociatesProvider.getRootDataFetchers())
                         .dataFetchers(relGroupsProvider.getRootDataFetchers())
-                        .dataFetchers(relSpecializesProvider.getRootDataFetchers()))
+                        .dataFetchers(relSpecializesProvider.getRootDataFetchers())
+                        .dataFetchers(relComposesProvider.getRootDataFetchers()))
                 .type("XtdProperty", typeWiring -> typeWiring
-                        .dataFetchers(associatesProvider.getRootDataFetchers())
-                        .dataFetchers(relGroupsProvider.getRootDataFetchers()))
+                        .dataFetchers(relAssociatesProvider.getRootDataFetchers())
+                        .dataFetchers(relGroupsProvider.getRootDataFetchers())
+                        .dataFetchers(relSpecializesProvider.getRootDataFetchers())
+                        .dataFetchers(relComposesProvider.getRootDataFetchers()))
                 .type("XtdCollection", typeWiring -> typeWiring.typeResolver(collectionTypeResolver))
                 .type("XtdRelationship", typeWiring -> typeWiring.typeResolver(relationshipTypeResolver))
                 .type("XtdRelAssociates", typeWiring -> typeWiring
-                        .dataFetchers(associatesProvider.getRootDataFetchers())
+                        .dataFetchers(relAssociatesProvider.getRootDataFetchers())
                         .dataFetchers(relGroupsProvider.getRootDataFetchers())
                         .dataFetchers(relSpecializesProvider.getRootDataFetchers())
-                        .dataFetchers(associatesProvider.getRelAssociatesDataFetchers()))
+                        .dataFetchers(relComposesProvider.getRootDataFetchers())
+                        .dataFetchers(relAssociatesProvider.getRelAssociatesDataFetchers()))
                 .type("XtdRelGroups", typeWiring -> typeWiring
-                        .dataFetchers(associatesProvider.getRootDataFetchers())
+                        .dataFetchers(relAssociatesProvider.getRootDataFetchers())
                         .dataFetchers(relGroupsProvider.getRootDataFetchers())
                         .dataFetchers(relSpecializesProvider.getRootDataFetchers())
+                        .dataFetchers(relComposesProvider.getRootDataFetchers())
                         .dataFetchers(relGroupsProvider.getRelGroupsDataFetchers()))
                 .type("XtdRelSpecializes", typeWiring -> typeWiring
-                        .dataFetchers(associatesProvider.getRootDataFetchers())
+                        .dataFetchers(relAssociatesProvider.getRootDataFetchers())
                         .dataFetchers(relGroupsProvider.getRootDataFetchers())
                         .dataFetchers(relSpecializesProvider.getRootDataFetchers())
+                        .dataFetchers(relComposesProvider.getRootDataFetchers())
                         .dataFetchers(relSpecializesProvider.getRelSpecializesDataFetchers()))
+                .type("XtdRelComposes", typeWiring -> typeWiring
+                        .dataFetchers(relAssociatesProvider.getRootDataFetchers())
+                        .dataFetchers(relGroupsProvider.getRootDataFetchers())
+                        .dataFetchers(relSpecializesProvider.getRootDataFetchers())
+                        .dataFetchers(relComposesProvider.getRootDataFetchers())
+                        .dataFetchers(relComposesProvider.getRelComposesDataFetchers()))
                 .type("Query", typeWiring -> typeWiring
                         .dataFetchers(searchProvider.getQueryDataFetchers())
                         .dataFetcher("document", dataFetchers.externalDocumentById())
@@ -146,9 +164,10 @@ public class SchemaDefinition implements ResourceLoaderAware {
                         .dataFetchers(unitProvider.getQueryDataFetchers())
                         .dataFetchers(valueProvider.getQueryDataFetchers())
                         .dataFetchers(measureProvider.getQueryDataFetchers())
-                        .dataFetchers(associatesProvider.getQueryDataFetchers())
+                        .dataFetchers(relAssociatesProvider.getQueryDataFetchers())
                         .dataFetchers(relGroupsProvider.getQueryDataFetchers())
-                        .dataFetchers(relSpecializesProvider.getQueryDataFetchers()))
+                        .dataFetchers(relSpecializesProvider.getQueryDataFetchers())
+                        .dataFetchers(relComposesProvider.getQueryDataFetchers()))
                 .type("Mutation", typeWiring -> typeWiring
                         .dataFetcher("createDocument", dataFetchers.createExternalDocument())
                         .dataFetcher("deleteDocument", dataFetchers.deleteExternalDocument())
@@ -160,9 +179,10 @@ public class SchemaDefinition implements ResourceLoaderAware {
                         .dataFetchers(unitProvider.getMutationDataFetchers())
                         .dataFetchers(valueProvider.getMutationDataFetchers())
                         .dataFetchers(measureProvider.getMutationDataFetchers())
-                        .dataFetchers(associatesProvider.getMutationDataFetchers())
+                        .dataFetchers(relAssociatesProvider.getMutationDataFetchers())
                         .dataFetchers(relGroupsProvider.getMutationDataFetchers())
-                        .dataFetchers(relSpecializesProvider.getMutationDataFetchers()))
+                        .dataFetchers(relSpecializesProvider.getMutationDataFetchers())
+                        .dataFetchers(relComposesProvider.getMutationDataFetchers()))
                 .build();
         return schemaGenerator.makeExecutableSchema(typeRegistry, wiring);
     }
