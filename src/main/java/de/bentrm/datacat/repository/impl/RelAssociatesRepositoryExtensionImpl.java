@@ -1,8 +1,8 @@
 package de.bentrm.datacat.repository.impl;
 
 import de.bentrm.datacat.domain.relationship.XtdRelAssociates;
-import de.bentrm.datacat.query.CountAllGroupedByQuery;
-import de.bentrm.datacat.query.CountAllGroupingQuery;
+import de.bentrm.datacat.query.CountAllAssociatedByQuery;
+import de.bentrm.datacat.query.CountAllAssociatingQuery;
 import de.bentrm.datacat.query.FindAllAssociatedByQuery;
 import de.bentrm.datacat.query.FindAllAssociatingQuery;
 import de.bentrm.datacat.repository.RelAssociatesRepositoryExtension;
@@ -25,7 +25,7 @@ public class RelAssociatesRepositoryExtensionImpl implements RelAssociatesReposi
         Iterable<XtdRelAssociates> results = new FindAllAssociatedByQuery<>(XtdRelAssociates.class, session, relatingThingId, pageable).execute();
         List<XtdRelAssociates> content = new ArrayList<>();
         results.forEach(content::add);
-        return PageableExecutionUtils.getPage(content, pageable, () -> new CountAllGroupedByQuery<>(XtdRelAssociates.class, session, relatingThingId).execute());
+        return PageableExecutionUtils.getPage(content, pageable, () -> new CountAllAssociatedByQuery<>(XtdRelAssociates.class, session, relatingThingId).execute());
     }
 
     @Override
@@ -33,6 +33,6 @@ public class RelAssociatesRepositoryExtensionImpl implements RelAssociatesReposi
         Iterable<XtdRelAssociates> results = new FindAllAssociatingQuery<>(XtdRelAssociates.class, session, relatedThingId, pageable).execute();
         List<XtdRelAssociates> content = new ArrayList<>();
         results.forEach(content::add);
-        return PageableExecutionUtils.getPage(content, pageable, () -> new CountAllGroupingQuery<>(XtdRelAssociates.class, session, relatedThingId).execute());
+        return PageableExecutionUtils.getPage(content, pageable, () -> new CountAllAssociatingQuery<>(XtdRelAssociates.class, session, relatedThingId).execute());
     }
 }

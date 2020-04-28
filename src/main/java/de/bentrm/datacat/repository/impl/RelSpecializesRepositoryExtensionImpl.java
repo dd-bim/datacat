@@ -1,8 +1,8 @@
 package de.bentrm.datacat.repository.impl;
 
 import de.bentrm.datacat.domain.relationship.XtdRelSpecializes;
-import de.bentrm.datacat.query.CountAllGroupedByQuery;
-import de.bentrm.datacat.query.CountAllGroupingQuery;
+import de.bentrm.datacat.query.CountAllAssociatedByQuery;
+import de.bentrm.datacat.query.CountAllAssociatingQuery;
 import de.bentrm.datacat.query.FindAllAssociatedByQuery;
 import de.bentrm.datacat.query.FindAllAssociatingQuery;
 import de.bentrm.datacat.repository.RelSpecializesRepositoryExtension;
@@ -25,7 +25,7 @@ public class RelSpecializesRepositoryExtensionImpl implements RelSpecializesRepo
         Iterable<XtdRelSpecializes> results = new FindAllAssociatedByQuery<>(XtdRelSpecializes.class, session, relatingThingId, pageable).execute();
         List<XtdRelSpecializes> content = new ArrayList<>();
         results.forEach(content::add);
-        return PageableExecutionUtils.getPage(content, pageable, () -> new CountAllGroupedByQuery<>(XtdRelSpecializes.class, session, relatingThingId).execute());
+        return PageableExecutionUtils.getPage(content, pageable, () -> new CountAllAssociatedByQuery<>(XtdRelSpecializes.class, session, relatingThingId).execute());
     }
 
     @Override
@@ -33,6 +33,6 @@ public class RelSpecializesRepositoryExtensionImpl implements RelSpecializesRepo
         Iterable<XtdRelSpecializes> results = new FindAllAssociatingQuery<>(XtdRelSpecializes.class, session, relatedThingId, pageable).execute();
         List<XtdRelSpecializes> content = new ArrayList<>();
         results.forEach(content::add);
-        return PageableExecutionUtils.getPage(content, pageable, () -> new CountAllGroupingQuery<>(XtdRelSpecializes.class, session, relatedThingId).execute());
+        return PageableExecutionUtils.getPage(content, pageable, () -> new CountAllAssociatingQuery<>(XtdRelSpecializes.class, session, relatedThingId).execute());
     }
 }
