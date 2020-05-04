@@ -30,31 +30,31 @@ public class SearchQuery<T, ID extends Serializable> extends AbstractCustomQuery
             "WITH DISTINCT root SKIP {skip} LIMIT {limit} " +
             "RETURN root, ${propertyAggregations}, ID(root)";
 
-    public SearchQuery(Class<T> entityType, Session session, @NotNull SearchOptions<ID> options, @NotNull Pageable pageable) {
+    public SearchQuery(Class<T> entityType, Session session, @NotNull FilterOptions<ID> filterOptions, @NotNull Pageable pageable) {
         super(entityType, session);
 
         if (pageable.isUnpaged()) {
             pageable = PageRequest.of(DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, pageable.getSortOr(DEFAULT_SORT_ORDER));
         }
 
-        for (String label : options.getLabels()) {
-            if (options.getExcludedLabels().contains(label)) {
+        for (String label : filterOptions.getLabels()) {
+            if (filterOptions.getExcludedLabels().contains(label)) {
                 throw new IllegalStateException(String.format("Requested label '%s' is excluded from result set.", label));
             }
         }
 
-        if (options.getTerm() != null && !options.getTerm().isBlank()) {
-            this.queryParameters.put("term", options.getTerm());
+        if (filterOptions.getTerm() != null && !filterOptions.getTerm().isBlank()) {
+            this.queryParameters.put("term", filterOptions.getTerm());
         }
 
-        if (!options.getLabels().isEmpty()) {
-            this.queryParameters.put("labels", options.getLabels());
+        if (!filterOptions.getLabels().isEmpty()) {
+            this.queryParameters.put("labels", filterOptions.getLabels());
         } else {
             this.queryParameters.put("labels", Set.of("XtdEntity"));
         }
 
-        this.queryParameters.put("excludedLabels", options.getExcludedLabels());
-        this.queryParameters.put("excludedIds", options.getExcludedIds());
+        this.queryParameters.put("excludedLabels", filterOptions.getExcludedLabels());
+        this.queryParameters.put("excludedIds", filterOptions.getExcludedIds());
         this.queryParameters.put("skip", pageable.getOffset());
         this.queryParameters.put("limit", pageable.getPageSize());
     }

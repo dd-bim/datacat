@@ -25,7 +25,7 @@ public class CountSearchQuery<T, ID extends Serializable> extends AbstractCustom
                 "AND NOT root.id IN {excludedIds} " +
             "RETURN count(DISTINCT root)";
 
-    public CountSearchQuery(Class<T> entityType, Session session, SearchOptions<ID> options) {
+    public CountSearchQuery(Class<T> entityType, Session session, FilterOptions<ID> options) {
         super(entityType, session);
 
         final Set<String> labels = options.getLabels();
