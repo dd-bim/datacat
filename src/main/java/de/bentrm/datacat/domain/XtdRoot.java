@@ -11,13 +11,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 @NodeEntity(label = XtdRoot.LABEL)
-@PropertyQueryHint({
-        "(root)<-[:IS_NAME_OF|IS_DESCRIPTION_OF|COMMENTS*0..1]-()",
-        "(root)-[:ASSOCIATES]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF|COMMENTS*0..1]-()",
-        "(root)-[:GROUPS]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF|COMMENTS*0..1]-()",
-        "(root)-[:SPECIALIZES]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF|COMMENTS*0..1]-()",
-        "(root)-[:ACTS_UPON]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF|COMMENTS*0..1]-()"
-})
 public abstract class XtdRoot extends XtdEntity implements Commented {
 
     public static final String TITLE = "Root";
@@ -66,6 +59,12 @@ public abstract class XtdRoot extends XtdEntity implements Commented {
 
     @Relationship(type = XtdRelComposes.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
     private final Set<XtdRelComposes> composedBy = new HashSet<>();
+
+    @Relationship(type = XtdRelActsUpon.RELATIONSHIP_TYPE)
+    private final Set<XtdRelActsUpon> actsUpon = new HashSet<>();
+
+    @Relationship(type = XtdRelActsUpon.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
+    private final Set<XtdRelActsUpon> actedUponBy = new HashSet<>();
 
     public String getVersionId() {
         return versionId;
@@ -153,6 +152,14 @@ public abstract class XtdRoot extends XtdEntity implements Commented {
 
     public Set<XtdRelComposes> getComposedBy() {
         return composedBy;
+    }
+
+    public Set<XtdRelActsUpon> getActsUpon() {
+        return actsUpon;
+    }
+
+    public Set<XtdRelActsUpon> getActedUponBy() {
+        return actedUponBy;
     }
 
     @Override
