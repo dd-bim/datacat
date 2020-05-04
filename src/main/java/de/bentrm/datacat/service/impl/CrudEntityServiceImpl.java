@@ -153,8 +153,18 @@ public abstract class CrudEntityServiceImpl<
 	}
 
 	@Override
+	public @NotNull long countAll() {
+		return repository.count();
+	}
+
+	@Override
 	public @NotNull Page<T> findAll(@NotNull FilterOptions<String> filterOptions, @NotNull Pageable pageable) {
 		return repository.findAll(filterOptions, pageable);
+	}
+
+	@Override
+	public @NotNull long countAll(@NotNull FilterOptions<String> filterOptions) {
+		return repository.count(filterOptions);
 	}
 
 	@Override

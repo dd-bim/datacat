@@ -24,6 +24,8 @@ public interface GraphEntityRepository<T, ID extends Serializable> extends Repos
 
 	long count();
 
+	long count(FilterOptions<ID> filterOptions);
+
 	Page<T> findAll(Pageable pageable);
 
 	Page<T> findAll(FilterOptions<ID> filterOptions, Pageable pageable);

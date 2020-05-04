@@ -51,6 +51,11 @@ public class GraphEntityRepositoryBaseClass<T, ID extends Serializable>
     }
 
     @Override
+    public long count(FilterOptions<ID> filterOptions) {
+        return new CountAllQuery<>(entityType, session, filterOptions).execute();
+    }
+
+    @Override
     public Page<T> findAll(Pageable pageable) {
         Iterable<T> results = new FindAllQuery<>(entityType, session, pageable).execute();
         List<T> content = new ArrayList<>();

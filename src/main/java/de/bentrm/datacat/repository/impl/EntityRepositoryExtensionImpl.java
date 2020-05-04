@@ -2,7 +2,7 @@ package de.bentrm.datacat.repository.impl;
 
 import de.bentrm.datacat.domain.XtdEntity;
 import de.bentrm.datacat.query.CountSearchQuery;
-import de.bentrm.datacat.query.SearchOptions;
+import de.bentrm.datacat.query.FilterOptions;
 import de.bentrm.datacat.query.SearchQuery;
 import de.bentrm.datacat.repository.EntityRepositoryExtension;
 import org.neo4j.ogm.session.Session;
@@ -20,7 +20,7 @@ public class EntityRepositoryExtensionImpl implements EntityRepositoryExtension 
     private Session session;
 
     @Override
-    public Page<XtdEntity> search(SearchOptions<String> searchOptions, Pageable pageable) {
+    public Page<XtdEntity> search(FilterOptions<String> searchOptions, Pageable pageable) {
         Iterable<XtdEntity> results = new SearchQuery<>(XtdEntity.class, session, searchOptions, pageable).execute();
         List<XtdEntity> content = new ArrayList<>();
         results.forEach(content::add);

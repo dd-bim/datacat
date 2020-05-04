@@ -18,7 +18,11 @@ public interface EntityService<T extends Entity> {
 
     @NotNull Page<T> findAll(@NotNull Pageable pageable);
 
+    @NotNull long countAll();
+
     @NotNull Page<T> findAll(@NotNull FilterOptions<String> filterOptions, @NotNull Pageable pageable);
+
+    @NotNull long countAll(@NotNull FilterOptions<String> filterOptions);
 
     @NotNull Page<T> findByTerm(@NotBlank String term, @NotNull Pageable pageable);
 
