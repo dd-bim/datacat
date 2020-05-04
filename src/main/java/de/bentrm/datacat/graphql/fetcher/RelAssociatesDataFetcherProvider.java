@@ -5,6 +5,7 @@ import de.bentrm.datacat.domain.XtdObject;
 import de.bentrm.datacat.domain.XtdRoot;
 import de.bentrm.datacat.domain.relationship.XtdRelAssociates;
 import de.bentrm.datacat.graphql.Connection;
+import de.bentrm.datacat.graphql.PageInfo;
 import de.bentrm.datacat.graphql.dto.AssociationInput;
 import de.bentrm.datacat.graphql.dto.AssociationUpdateInput;
 import de.bentrm.datacat.graphql.dto.PagingOptions;
@@ -22,15 +23,16 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-public class RelAssociatesDataFetcherProvider implements EntityDataFetcherProvider<XtdRelAssociates> {
+public class RelAssociatesDataFetcherProvider implements QueryDataFetcherProvider, RootDataFetcherProvider, MutationDataFetcherProvider {
 
     @Autowired
     private RelAssociatesService relAssociatesService;
 
+    private ObjectMapper mapper = new ObjectMapper();
+
     @Override
     public Map<String, DataFetcher> getQueryDataFetchers() {
         return Map.ofEntries(
-                Map.entry("associatesRelation", getOne()),
                 Map.entry("associatesRelations", getAll())
         );
     }
@@ -57,27 +59,22 @@ public class RelAssociatesDataFetcherProvider implements EntityDataFetcherProvid
         );
     }
 
-    @Override
     public DataFetcher<XtdRelAssociates> add() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("input");
-            ObjectMapper mapper = new ObjectMapper();
             AssociationInput dto = mapper.convertValue(input, AssociationInput.class);
             return relAssociatesService.create(dto);
         };
     }
 
-    @Override
     public DataFetcher<XtdRelAssociates> update() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("input");
-            ObjectMapper mapper = new ObjectMapper();
             AssociationUpdateInput dto = mapper.convertValue(input, AssociationUpdateInput.class);
             return relAssociatesService.update(dto);
         };
     }
 
-    @Override
     public DataFetcher<Optional<XtdRelAssociates>> remove() {
         return environment -> {
             String id = environment.getArgument("id");
@@ -85,7 +82,6 @@ public class RelAssociatesDataFetcherProvider implements EntityDataFetcherProvid
         };
     }
 
-    @Override
     public DataFetcher<Optional<XtdRelAssociates>> getOne() {
         return environment -> {
             String id = environment.getArgument("id");
@@ -93,11 +89,9 @@ public class RelAssociatesDataFetcherProvider implements EntityDataFetcherProvid
         };
     }
 
-    @Override
     public DataFetcher<Connection<XtdRelAssociates>> getAll() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("options");
-            ObjectMapper mapper = new ObjectMapper();
             PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
             if (dto == null) dto = PagingOptions.defaults();
 
@@ -109,7 +103,7 @@ public class RelAssociatesDataFetcherProvider implements EntityDataFetcherProvid
                 page = relAssociatesService.findAll(dto.getPageble());
             }
 
-            return new Connection<>(page);
+            return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }
 
@@ -117,7 +111,6 @@ public class RelAssociatesDataFetcherProvider implements EntityDataFetcherProvid
         return environment -> {
             XtdRoot root = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
-            ObjectMapper mapper = new ObjectMapper();
             PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
 
             if (dto == null) dto = PagingOptions.defaults();
@@ -125,7 +118,7 @@ public class RelAssociatesDataFetcherProvider implements EntityDataFetcherProvid
             List<String> ids = root.getAssociates().stream().map(XtdRelAssociates::getId).collect(Collectors.toList());
             Page<XtdRelAssociates> page = relAssociatesService.findByIds(ids, dto.getPageble());
 
-            return new Connection<>(page);
+            return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }
 
@@ -133,7 +126,6 @@ public class RelAssociatesDataFetcherProvider implements EntityDataFetcherProvid
         return environment -> {
             XtdRoot source = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
-            ObjectMapper mapper = new ObjectMapper();
             PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
 
             if (dto == null) dto = PagingOptions.defaults();
@@ -141,7 +133,7 @@ public class RelAssociatesDataFetcherProvider implements EntityDataFetcherProvid
             List<String> ids = source.getAssociatedBy().stream().map(XtdRelAssociates::getId).collect(Collectors.toList());
             Page<XtdRelAssociates> page = relAssociatesService.findByIds(ids, dto.getPageble());
 
-            return new Connection<>(page);
+            return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }
 
@@ -149,14 +141,13 @@ public class RelAssociatesDataFetcherProvider implements EntityDataFetcherProvid
         return environment -> {
             XtdRelAssociates source = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
-            ObjectMapper mapper = new ObjectMapper();
             PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
 
             if (dto == null) dto = PagingOptions.defaults();
 
             List<XtdRoot> content = new ArrayList<>(source.getRelatedThings());
             Page<XtdRoot> page = PageableExecutionUtils.getPage(content, dto.getPageble(), () -> source.getRelatedThings().size());
-            return new Connection<>(page);
+            return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }
 
@@ -164,12 +155,11 @@ public class RelAssociatesDataFetcherProvider implements EntityDataFetcherProvid
         return environment -> {
             XtdRoot source = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
-            ObjectMapper mapper = new ObjectMapper();
             PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
             if (dto == null) dto = PagingOptions.defaults();
 
             Page<XtdRelAssociates> page = relAssociatesService.findByRelatingThingId(source.getId(), dto.getPageble());
-            return new Connection<>(page);
+            return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }
 
@@ -177,12 +167,11 @@ public class RelAssociatesDataFetcherProvider implements EntityDataFetcherProvid
         return environment -> {
             XtdObject source = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
-            ObjectMapper mapper = new ObjectMapper();
             PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
             if (dto == null) dto = PagingOptions.defaults();
 
             Page<XtdRelAssociates> page = relAssociatesService.findByRelatedThingId(source.getId(), dto.getPageble());
-            return new Connection<>(page);
+            return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }
 }

@@ -3,13 +3,13 @@ package de.bentrm.datacat.graphql.fetcher;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.bentrm.datacat.domain.XtdObject;
 import de.bentrm.datacat.domain.XtdRoot;
-import de.bentrm.datacat.domain.relationship.XtdRelComposes;
+import de.bentrm.datacat.domain.relationship.XtdRelActsUpon;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.PageInfo;
 import de.bentrm.datacat.graphql.dto.AssociationInput;
 import de.bentrm.datacat.graphql.dto.AssociationUpdateInput;
 import de.bentrm.datacat.graphql.dto.PagingOptions;
-import de.bentrm.datacat.service.RelComposesService;
+import de.bentrm.datacat.service.RelActsUponService;
 import graphql.schema.DataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,27 +23,27 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-public class RelComposesDataFetcherProvider implements QueryDataFetcherProvider, RootDataFetcherProvider, MutationDataFetcherProvider {
+public class RelActsUponDataFetcherProvider implements QueryDataFetcherProvider, RootDataFetcherProvider, MutationDataFetcherProvider {
 
     ObjectMapper mapper = new ObjectMapper();
     @Autowired
-    private RelComposesService relComposesService;
+    private RelActsUponService relActsUponService;
 
     @Override
     public Map<String, DataFetcher> getQueryDataFetchers() {
         return Map.ofEntries(
-                Map.entry("composesRelations", getAll())
+                Map.entry("actsUponRelations", getAll())
         );
     }
 
     public Map<String, DataFetcher> getRootDataFetchers() {
         return Map.ofEntries(
-                Map.entry("composes", composes()),
-                Map.entry("composedBy", composedBy())
+                Map.entry("actsUpon", actsUpon()),
+                Map.entry("actedUponBy", actedUponBy())
         );
     }
 
-    public Map<String, DataFetcher> getRelComposesDataFetchers() {
+    public Map<String, DataFetcher> getRelActsUponDataFetchers() {
         return Map.ofEntries(
                 Map.entry("relatedThings", relatedThings())
         );
@@ -52,61 +52,61 @@ public class RelComposesDataFetcherProvider implements QueryDataFetcherProvider,
     @Override
     public Map<String, DataFetcher> getMutationDataFetchers() {
         return Map.ofEntries(
-                Map.entry("createComposesRelation", add()),
-                Map.entry("updateComposesRelation", update()),
-                Map.entry("deleteComposesRelation", remove())
+                Map.entry("createActsUponRelation", add()),
+                Map.entry("updateActsUponRelation", update()),
+                Map.entry("deleteActsUponRelation", remove())
         );
     }
 
-    public DataFetcher<XtdRelComposes> add() {
+    public DataFetcher<XtdRelActsUpon> add() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("input");
             AssociationInput dto = mapper.convertValue(input, AssociationInput.class);
-            return relComposesService.create(dto);
+            return relActsUponService.create(dto);
         };
     }
 
-    public DataFetcher<XtdRelComposes> update() {
+    public DataFetcher<XtdRelActsUpon> update() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("input");
             AssociationUpdateInput dto = mapper.convertValue(input, AssociationUpdateInput.class);
-            return relComposesService.update(dto);
+            return relActsUponService.update(dto);
         };
     }
 
-    public DataFetcher<Optional<XtdRelComposes>> remove() {
+    public DataFetcher<Optional<XtdRelActsUpon>> remove() {
         return environment -> {
             String id = environment.getArgument("id");
-            return relComposesService.delete(id);
+            return relActsUponService.delete(id);
         };
     }
 
-    public DataFetcher<Optional<XtdRelComposes>> getOne() {
+    public DataFetcher<Optional<XtdRelActsUpon>> getOne() {
         return environment -> {
             String id = environment.getArgument("id");
-            return relComposesService.findById(id);
+            return relActsUponService.findById(id);
         };
     }
 
-    public DataFetcher<Connection<XtdRelComposes>> getAll() {
+    public DataFetcher<Connection<XtdRelActsUpon>> getAll() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("options");
             PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
             if (dto == null) dto = PagingOptions.defaults();
 
-            Page<XtdRelComposes> page;
+            Page<XtdRelActsUpon> page;
             String term = environment.getArgument("term");
             if (term != null && !term.isBlank()) {
-                page = relComposesService.findByTerm(term.trim(), dto.getPageble());
+                page = relActsUponService.findByTerm(term.trim(), dto.getPageble());
             } else {
-                page = relComposesService.findAll(dto.getPageble());
+                page = relActsUponService.findAll(dto.getPageble());
             }
 
             return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }
 
-    public DataFetcher<Connection<XtdRelComposes>> composes() {
+    public DataFetcher<Connection<XtdRelActsUpon>> actsUpon() {
         return environment -> {
             XtdRoot root = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
@@ -114,14 +114,14 @@ public class RelComposesDataFetcherProvider implements QueryDataFetcherProvider,
 
             if (dto == null) dto = PagingOptions.defaults();
 
-            List<String> ids = root.getComposes().stream().map(XtdRelComposes::getId).collect(Collectors.toList());
-            Page<XtdRelComposes> page = relComposesService.findByIds(ids, dto.getPageble());
+            List<String> ids = root.getActsUpon().stream().map(XtdRelActsUpon::getId).collect(Collectors.toList());
+            Page<XtdRelActsUpon> page = relActsUponService.findByIds(ids, dto.getPageble());
 
             return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }
 
-    public DataFetcher<Connection<XtdRelComposes>> composedBy() {
+    public DataFetcher<Connection<XtdRelActsUpon>> actedUponBy() {
         return environment -> {
             XtdRoot source = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
@@ -129,8 +129,8 @@ public class RelComposesDataFetcherProvider implements QueryDataFetcherProvider,
 
             if (dto == null) dto = PagingOptions.defaults();
 
-            List<String> ids = source.getComposedBy().stream().map(XtdRelComposes::getId).collect(Collectors.toList());
-            Page<XtdRelComposes> page = relComposesService.findByIds(ids, dto.getPageble());
+            List<String> ids = source.getActedUponBy().stream().map(XtdRelActsUpon::getId).collect(Collectors.toList());
+            Page<XtdRelActsUpon> page = relActsUponService.findByIds(ids, dto.getPageble());
 
             return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
@@ -138,7 +138,7 @@ public class RelComposesDataFetcherProvider implements QueryDataFetcherProvider,
 
     public DataFetcher<Connection<XtdRoot>> relatedThings() {
         return environment -> {
-            XtdRelComposes source = environment.getSource();
+            XtdRelActsUpon source = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
             PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
 
@@ -150,26 +150,26 @@ public class RelComposesDataFetcherProvider implements QueryDataFetcherProvider,
         };
     }
 
-    public DataFetcher<Connection<XtdRelComposes>> getByRelatingObjectId() {
+    public DataFetcher<Connection<XtdRelActsUpon>> getByRelatingObjectId() {
         return environment -> {
             XtdRoot source = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
             PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
             if (dto == null) dto = PagingOptions.defaults();
 
-            Page<XtdRelComposes> page = relComposesService.findByRelatingThingId(source.getId(), dto.getPageble());
+            Page<XtdRelActsUpon> page = relActsUponService.findByRelatingThingId(source.getId(), dto.getPageble());
             return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }
 
-    public DataFetcher<Connection<XtdRelComposes>> getByRelatedObjectId() {
+    public DataFetcher<Connection<XtdRelActsUpon>> getByRelatedObjectId() {
         return environment -> {
             XtdObject source = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
             PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
             if (dto == null) dto = PagingOptions.defaults();
 
-            Page<XtdRelComposes> page = relComposesService.findByRelatedThingId(source.getId(), dto.getPageble());
+            Page<XtdRelActsUpon> page = relActsUponService.findByRelatedThingId(source.getId(), dto.getPageble());
             return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }

@@ -11,17 +11,16 @@ import java.util.Map;
 
 @Component
 public class SubjectDataFetcherProvider
-		extends EntityDataFetcherProviderImpl<XtdSubject, RootInput, RootUpdateInput, SubjectService>
-		implements EntityDataFetcherProvider<XtdSubject> {
+        extends EntityDataFetcherProviderImpl<XtdSubject, RootInput, RootUpdateInput, SubjectService>
+        implements QueryDataFetcherProvider, MutationDataFetcherProvider {
 
-	public SubjectDataFetcherProvider(SubjectService entityService) {
-		super(RootInput.class, RootUpdateInput.class, entityService);
-	}
+    public SubjectDataFetcherProvider(SubjectService entityService) {
+        super(RootInput.class, RootUpdateInput.class, entityService);
+    }
 
-	@Override
+    @Override
     public Map<String, DataFetcher> getQueryDataFetchers() {
         return Map.ofEntries(
-                Map.entry("subject", getOne()),
                 Map.entry("subjects", getAll())
         );
     }

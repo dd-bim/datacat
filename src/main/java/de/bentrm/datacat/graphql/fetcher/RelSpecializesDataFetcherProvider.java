@@ -5,6 +5,7 @@ import de.bentrm.datacat.domain.XtdObject;
 import de.bentrm.datacat.domain.XtdRoot;
 import de.bentrm.datacat.domain.relationship.XtdRelSpecializes;
 import de.bentrm.datacat.graphql.Connection;
+import de.bentrm.datacat.graphql.PageInfo;
 import de.bentrm.datacat.graphql.dto.AssociationInput;
 import de.bentrm.datacat.graphql.dto.AssociationUpdateInput;
 import de.bentrm.datacat.graphql.dto.PagingOptions;
@@ -22,7 +23,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-public class RelSpecializesDataFetcherProvider implements EntityDataFetcherProvider<XtdRelSpecializes> {
+public class RelSpecializesDataFetcherProvider implements QueryDataFetcherProvider, RootDataFetcherProvider, MutationDataFetcherProvider {
 
     @Autowired
     private RelSpecializesService relSpecializesService;
@@ -30,7 +31,6 @@ public class RelSpecializesDataFetcherProvider implements EntityDataFetcherProvi
     @Override
     public Map<String, DataFetcher> getQueryDataFetchers() {
         return Map.ofEntries(
-                Map.entry("specializesRelation", getOne()),
                 Map.entry("specializesRelations", getAll())
         );
     }
@@ -57,7 +57,6 @@ public class RelSpecializesDataFetcherProvider implements EntityDataFetcherProvi
         );
     }
 
-    @Override
     public DataFetcher<XtdRelSpecializes> add() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("input");
@@ -67,7 +66,6 @@ public class RelSpecializesDataFetcherProvider implements EntityDataFetcherProvi
         };
     }
 
-    @Override
     public DataFetcher<XtdRelSpecializes> update() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("input");
@@ -77,7 +75,6 @@ public class RelSpecializesDataFetcherProvider implements EntityDataFetcherProvi
         };
     }
 
-    @Override
     public DataFetcher<Optional<XtdRelSpecializes>> remove() {
         return environment -> {
             String id = environment.getArgument("id");
@@ -85,7 +82,6 @@ public class RelSpecializesDataFetcherProvider implements EntityDataFetcherProvi
         };
     }
 
-    @Override
     public DataFetcher<Optional<XtdRelSpecializes>> getOne() {
         return environment -> {
             String id = environment.getArgument("id");
@@ -93,7 +89,6 @@ public class RelSpecializesDataFetcherProvider implements EntityDataFetcherProvi
         };
     }
 
-    @Override
     public DataFetcher<Connection<XtdRelSpecializes>> getAll() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("options");
@@ -109,7 +104,7 @@ public class RelSpecializesDataFetcherProvider implements EntityDataFetcherProvi
                 page = relSpecializesService.findAll(dto.getPageble());
             }
 
-            return new Connection<>(page);
+            return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }
 
@@ -125,7 +120,7 @@ public class RelSpecializesDataFetcherProvider implements EntityDataFetcherProvi
             List<String> ids = root.getSpecializes().stream().map(XtdRelSpecializes::getId).collect(Collectors.toList());
             Page<XtdRelSpecializes> page = relSpecializesService.findByIds(ids, dto.getPageble());
 
-            return new Connection<>(page);
+            return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }
 
@@ -141,7 +136,7 @@ public class RelSpecializesDataFetcherProvider implements EntityDataFetcherProvi
             List<String> ids = source.getSpecializedBy().stream().map(XtdRelSpecializes::getId).collect(Collectors.toList());
             Page<XtdRelSpecializes> page = relSpecializesService.findByIds(ids, dto.getPageble());
 
-            return new Connection<>(page);
+            return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }
 
@@ -156,7 +151,7 @@ public class RelSpecializesDataFetcherProvider implements EntityDataFetcherProvi
 
             List<XtdRoot> content = new ArrayList<>(source.getRelatedThings());
             Page<XtdRoot> page = PageableExecutionUtils.getPage(content, dto.getPageble(), () -> source.getRelatedThings().size());
-            return new Connection<>(page);
+            return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }
 
@@ -169,7 +164,7 @@ public class RelSpecializesDataFetcherProvider implements EntityDataFetcherProvi
             if (dto == null) dto = PagingOptions.defaults();
 
             Page<XtdRelSpecializes> page = relSpecializesService.findByRelatingThingId(source.getId(), dto.getPageble());
-            return new Connection<>(page);
+            return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }
 
@@ -182,7 +177,7 @@ public class RelSpecializesDataFetcherProvider implements EntityDataFetcherProvi
             if (dto == null) dto = PagingOptions.defaults();
 
             Page<XtdRelSpecializes> page = relSpecializesService.findByRelatedThingId(source.getId(), dto.getPageble());
-            return new Connection<>(page);
+            return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }
 }

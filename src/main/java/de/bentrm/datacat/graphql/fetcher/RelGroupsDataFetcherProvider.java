@@ -5,11 +5,13 @@ import de.bentrm.datacat.domain.XtdObject;
 import de.bentrm.datacat.domain.XtdRoot;
 import de.bentrm.datacat.domain.relationship.XtdRelGroups;
 import de.bentrm.datacat.graphql.Connection;
+import de.bentrm.datacat.graphql.PageInfo;
 import de.bentrm.datacat.graphql.dto.AssociationInput;
 import de.bentrm.datacat.graphql.dto.AssociationUpdateInput;
 import de.bentrm.datacat.graphql.dto.PagingOptions;
 import de.bentrm.datacat.service.RelGroupsService;
 import graphql.schema.DataFetcher;
+import graphql.schema.DataFetchingFieldSelectionSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.support.PageableExecutionUtils;
@@ -22,15 +24,15 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-public class RelGroupsDataFetcherProvider implements EntityDataFetcherProvider<XtdRelGroups> {
+public class RelGroupsDataFetcherProvider implements QueryDataFetcherProvider, RootDataFetcherProvider, MutationDataFetcherProvider {
 
     @Autowired
     private RelGroupsService relGroupsService;
 
-    @Override
+    private ObjectMapper mapper = new ObjectMapper();
+
     public Map<String, DataFetcher> getQueryDataFetchers() {
         return Map.ofEntries(
-                Map.entry("groupsRelation", getOne()),
                 Map.entry("groupsRelations", getAll())
         );
     }
@@ -48,7 +50,6 @@ public class RelGroupsDataFetcherProvider implements EntityDataFetcherProvider<X
         );
     }
 
-    @Override
     public Map<String, DataFetcher> getMutationDataFetchers() {
         return Map.ofEntries(
                 Map.entry("createGroupsRelation", add()),
@@ -57,7 +58,6 @@ public class RelGroupsDataFetcherProvider implements EntityDataFetcherProvider<X
         );
     }
 
-    @Override
     public DataFetcher<XtdRelGroups> add() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("input");
@@ -67,7 +67,6 @@ public class RelGroupsDataFetcherProvider implements EntityDataFetcherProvider<X
         };
     }
 
-    @Override
     public DataFetcher<XtdRelGroups> update() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("input");
@@ -77,7 +76,6 @@ public class RelGroupsDataFetcherProvider implements EntityDataFetcherProvider<X
         };
     }
 
-    @Override
     public DataFetcher<Optional<XtdRelGroups>> remove() {
         return environment -> {
             String id = environment.getArgument("id");
@@ -85,7 +83,6 @@ public class RelGroupsDataFetcherProvider implements EntityDataFetcherProvider<X
         };
     }
 
-    @Override
     public DataFetcher<Optional<XtdRelGroups>> getOne() {
         return environment -> {
             String id = environment.getArgument("id");
@@ -93,11 +90,9 @@ public class RelGroupsDataFetcherProvider implements EntityDataFetcherProvider<X
         };
     }
 
-    @Override
     public DataFetcher<Connection<XtdRelGroups>> getAll() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("options");
-            ObjectMapper mapper = new ObjectMapper();
             PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
             if (dto == null) dto = PagingOptions.defaults();
 
@@ -109,23 +104,26 @@ public class RelGroupsDataFetcherProvider implements EntityDataFetcherProvider<X
                 page = relGroupsService.findAll(dto.getPageble());
             }
 
-            return new Connection<>(page);
+            return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }
 
     public DataFetcher<Connection<XtdRelGroups>> groups() {
         return environment -> {
             XtdRoot root = environment.getSource();
-            Map<String, Object> input = environment.getArgument("options");
-            ObjectMapper mapper = new ObjectMapper();
-            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
 
+            Map<String, Object> input = environment.getArgument("options");
+            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
             if (dto == null) dto = PagingOptions.defaults();
 
-            List<String> ids = root.getGroups().stream().map(XtdRelGroups::getId).collect(Collectors.toList());
-            Page<XtdRelGroups> page = relGroupsService.findByIds(ids, dto.getPageble());
-
-            return new Connection<>(page);
+            DataFetchingFieldSelectionSet selectionSet = environment.getSelectionSet();
+            if (selectionSet.containsAnyOf("nodes/*", "pageInfo/*")) {
+                List<String> ids = root.getGroups().stream().map(XtdRelGroups::getId).collect(Collectors.toList());
+                Page<XtdRelGroups> page = relGroupsService.findByIds(ids, dto.getPageble());
+                return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
+            } else {
+                return new Connection<>(null, null, (long) root.getGroups().size());
+            }
         };
     }
 
@@ -133,7 +131,6 @@ public class RelGroupsDataFetcherProvider implements EntityDataFetcherProvider<X
         return environment -> {
             XtdRoot source = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
-            ObjectMapper mapper = new ObjectMapper();
             PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
 
             if (dto == null) dto = PagingOptions.defaults();
@@ -141,7 +138,7 @@ public class RelGroupsDataFetcherProvider implements EntityDataFetcherProvider<X
             List<String> ids = source.getGroupedBy().stream().map(XtdRelGroups::getId).collect(Collectors.toList());
             Page<XtdRelGroups> page = relGroupsService.findByIds(ids, dto.getPageble());
 
-            return new Connection<>(page);
+            return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }
 
@@ -149,14 +146,13 @@ public class RelGroupsDataFetcherProvider implements EntityDataFetcherProvider<X
         return environment -> {
             XtdRelGroups source = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
-            ObjectMapper mapper = new ObjectMapper();
             PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
 
             if (dto == null) dto = PagingOptions.defaults();
 
             List<XtdRoot> content = new ArrayList<>(source.getRelatedThings());
             Page<XtdRoot> page = PageableExecutionUtils.getPage(content, dto.getPageble(), () -> source.getRelatedThings().size());
-            return new Connection<>(page);
+            return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }
 
@@ -164,12 +160,11 @@ public class RelGroupsDataFetcherProvider implements EntityDataFetcherProvider<X
         return environment -> {
             XtdRoot source = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
-            ObjectMapper mapper = new ObjectMapper();
             PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
             if (dto == null) dto = PagingOptions.defaults();
 
             Page<XtdRelGroups> page = relGroupsService.findByRelatingThingId(source.getId(), dto.getPageble());
-            return new Connection<>(page);
+            return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }
 
@@ -177,12 +172,11 @@ public class RelGroupsDataFetcherProvider implements EntityDataFetcherProvider<X
         return environment -> {
             XtdObject source = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
-            ObjectMapper mapper = new ObjectMapper();
             PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
             if (dto == null) dto = PagingOptions.defaults();
 
             Page<XtdRelGroups> page = relGroupsService.findByRelatedThingId(source.getId(), dto.getPageble());
-            return new Connection<>(page);
+            return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }
 }

@@ -1,12 +1,8 @@
 package de.bentrm.datacat.graphql;
 
 import de.bentrm.datacat.graphql.fetcher.*;
-import de.bentrm.datacat.graphql.resolver.*;
 import graphql.schema.GraphQLSchema;
-import graphql.schema.idl.RuntimeWiring;
-import graphql.schema.idl.SchemaGenerator;
-import graphql.schema.idl.SchemaParser;
-import graphql.schema.idl.TypeDefinitionRegistry;
+import graphql.schema.idl.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ResourceLoaderAware;
@@ -19,6 +15,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
+import java.util.function.UnaryOperator;
 
 @Configuration
 public class SchemaDefinition implements ResourceLoaderAware {
@@ -26,49 +24,19 @@ public class SchemaDefinition implements ResourceLoaderAware {
     private ResourceLoader resourceLoader;
 
     @Autowired
-    private XtdLanguageRepresentationTypeResolver languageRepresentationTypeResolver;
+    private TypeResolvers typeResolvers;
 
     @Autowired
-    private XtdEntityTypeResolver entityTypeResolver;
+    private BaseDataFetcherProvider dataFetchers;
 
     @Autowired
-    private XtdRootTypeResolver rootTypeResolver;
+    private List<QueryDataFetcherProvider> queryDataFetcherProviders;
 
     @Autowired
-    private XtdObjectTypeResolver objectTypeResolver;
+    private List<RootDataFetcherProvider> rootDataFetcherProviders;
 
     @Autowired
-    private XtdCollectionTypeResolver collectionTypeResolver;
-
-    @Autowired
-    private XtdRelationshipTypeResolver relationshipTypeResolver;
-
-    @Autowired
-    private XtdDataFetchers dataFetchers;
-
-    @Autowired
-    private ActorDataFetcherProvider actorProvider;
-
-    @Autowired
-    private ActivityDataFetcherProvider activityProvider;
-
-    @Autowired
-    private ClassificationDataFetcherProvider classificationProvider;
-
-    @Autowired
-    private PropertyDataFetcherProvider propertyProvider;
-
-    @Autowired
-    private SubjectDataFetcherProvider subjectProvider;
-
-    @Autowired
-    private UnitDataFetcherProvider unitProvider;
-
-    @Autowired
-    private ValueDataFetcherProvider valueProvider;
-
-    @Autowired
-    private MeasureWithUnitDataFetcherProvider measureProvider;
+    private List<MutationDataFetcherProvider> mutationDataFetcherProviders;
 
     @Autowired
     private RelAssociatesDataFetcherProvider relAssociatesProvider;
@@ -83,106 +51,61 @@ public class SchemaDefinition implements ResourceLoaderAware {
     private RelComposesDataFetcherProvider relComposesProvider;
 
     @Autowired
-    private SearchDataFetcherProvider searchProvider;
+    private RelActsUponDataFetcherProvider relActsUponProvider;
 
     @Bean
     GraphQLSchema schema() throws IOException {
         SchemaParser schemaParser = new SchemaParser();
         SchemaGenerator schemaGenerator = new SchemaGenerator();
 
-        InputStream input = loadSchema("classpath:schema.graphqls").getInputStream();
-        InputStreamReader inputStreamReader = new InputStreamReader(input);
+        InputStream interfaces = loadSchema("classpath:interfaces.graphqls").getInputStream();
+        InputStreamReader interfacesInputStream = new InputStreamReader(interfaces);
+        BufferedReader interfacesReader = new BufferedReader(interfacesInputStream);
+        TypeDefinitionRegistry typeRegistry = schemaParser.parse(interfacesReader);
+
+        InputStream schema = loadSchema("classpath:schema.graphqls").getInputStream();
+        InputStreamReader inputStreamReader = new InputStreamReader(schema);
         BufferedReader reader = new BufferedReader(inputStreamReader);
-        TypeDefinitionRegistry typeRegistry = schemaParser.parse(reader);
-        RuntimeWiring wiring = RuntimeWiring.newRuntimeWiring()
-                .type("XtdLanguageRepresentation", typeWiring -> typeWiring.typeResolver(languageRepresentationTypeResolver))
+        typeRegistry.merge(schemaParser.parse(reader));
+
+        final RuntimeWiring.Builder builder = RuntimeWiring.newRuntimeWiring();
+        typeResolvers.mapTypeResolvers(builder);
+        final UnaryOperator<TypeRuntimeWiring.Builder> rootDataFetchers = typeWiring -> {
+            rootDataFetcherProviders.forEach(provider -> typeWiring.dataFetchers(provider.getRootDataFetchers()));
+            return typeWiring;
+        };
+
+        RuntimeWiring wiring = builder
                 .type("XtdName", typeWiring -> typeWiring.dataFetcher("languageName", dataFetchers.languageByLanguageRepresentation()))
                 .type("XtdDescription", typeWiring -> typeWiring.dataFetcher("languageName", dataFetchers.languageByLanguageRepresentation()))
-                .type("XtdEntity", typeWiring -> typeWiring.typeResolver(entityTypeResolver))
-                .type("XtdRoot", typeWiring -> typeWiring.typeResolver(rootTypeResolver))
-                .type("XtdObject", typeWiring -> typeWiring.typeResolver(objectTypeResolver))
-                .type("XtdActivity", typeWiring -> typeWiring
-                        .dataFetchers(relAssociatesProvider.getRootDataFetchers())
-                        .dataFetchers(relGroupsProvider.getRootDataFetchers())
-                        .dataFetchers(relSpecializesProvider.getRootDataFetchers())
-                        .dataFetchers(relComposesProvider.getRootDataFetchers()))
-                .type("XtdActor", typeWiring -> typeWiring
-                        .dataFetchers(relAssociatesProvider.getRootDataFetchers())
-                        .dataFetchers(relGroupsProvider.getRootDataFetchers())
-                        .dataFetchers(relSpecializesProvider.getRootDataFetchers())
-                        .dataFetchers(relComposesProvider.getRootDataFetchers()))
-                .type("XtdSubject", typeWiring -> typeWiring
-                        .dataFetchers(relAssociatesProvider.getRootDataFetchers())
-                        .dataFetchers(relGroupsProvider.getRootDataFetchers())
-                        .dataFetchers(relSpecializesProvider.getRootDataFetchers())
-                        .dataFetchers(relComposesProvider.getRootDataFetchers()))
-                .type("XtdUnit", typeWiring -> typeWiring
-                        .dataFetchers(relAssociatesProvider.getRootDataFetchers())
-                        .dataFetchers(relGroupsProvider.getRootDataFetchers())
-                        .dataFetchers(relSpecializesProvider.getRootDataFetchers())
-                        .dataFetchers(relComposesProvider.getRootDataFetchers()))
-                .type("XtdProperty", typeWiring -> typeWiring
-                        .dataFetchers(relAssociatesProvider.getRootDataFetchers())
-                        .dataFetchers(relGroupsProvider.getRootDataFetchers())
-                        .dataFetchers(relSpecializesProvider.getRootDataFetchers())
-                        .dataFetchers(relComposesProvider.getRootDataFetchers()))
-                .type("XtdCollection", typeWiring -> typeWiring.typeResolver(collectionTypeResolver))
-                .type("XtdRelationship", typeWiring -> typeWiring.typeResolver(relationshipTypeResolver))
-                .type("XtdRelAssociates", typeWiring -> typeWiring
-                        .dataFetchers(relAssociatesProvider.getRootDataFetchers())
-                        .dataFetchers(relGroupsProvider.getRootDataFetchers())
-                        .dataFetchers(relSpecializesProvider.getRootDataFetchers())
-                        .dataFetchers(relComposesProvider.getRootDataFetchers())
+                .type("XtdActivity", rootDataFetchers)
+                .type("XtdActor", rootDataFetchers)
+                .type("XtdSubject", rootDataFetchers)
+                .type("XtdUnit", rootDataFetchers)
+                .type("XtdProperty", rootDataFetchers)
+                .type("XtdRelAssociates", typeWiring -> rootDataFetchers
+                        .apply(typeWiring)
                         .dataFetchers(relAssociatesProvider.getRelAssociatesDataFetchers()))
-                .type("XtdRelGroups", typeWiring -> typeWiring
-                        .dataFetchers(relAssociatesProvider.getRootDataFetchers())
-                        .dataFetchers(relGroupsProvider.getRootDataFetchers())
-                        .dataFetchers(relSpecializesProvider.getRootDataFetchers())
-                        .dataFetchers(relComposesProvider.getRootDataFetchers())
+                .type("XtdRelGroups", typeWiring -> rootDataFetchers
+                        .apply(typeWiring)
                         .dataFetchers(relGroupsProvider.getRelGroupsDataFetchers()))
-                .type("XtdRelSpecializes", typeWiring -> typeWiring
-                        .dataFetchers(relAssociatesProvider.getRootDataFetchers())
-                        .dataFetchers(relGroupsProvider.getRootDataFetchers())
-                        .dataFetchers(relSpecializesProvider.getRootDataFetchers())
-                        .dataFetchers(relComposesProvider.getRootDataFetchers())
+                .type("XtdRelSpecializes", typeWiring -> rootDataFetchers
+                        .apply(typeWiring)
                         .dataFetchers(relSpecializesProvider.getRelSpecializesDataFetchers()))
-                .type("XtdRelComposes", typeWiring -> typeWiring
-                        .dataFetchers(relAssociatesProvider.getRootDataFetchers())
-                        .dataFetchers(relGroupsProvider.getRootDataFetchers())
-                        .dataFetchers(relSpecializesProvider.getRootDataFetchers())
-                        .dataFetchers(relComposesProvider.getRootDataFetchers())
+                .type("XtdRelComposes", typeWiring -> rootDataFetchers
+                        .apply(typeWiring)
                         .dataFetchers(relComposesProvider.getRelComposesDataFetchers()))
-                .type("Query", typeWiring -> typeWiring
-                        .dataFetchers(searchProvider.getQueryDataFetchers())
-                        .dataFetcher("document", dataFetchers.externalDocumentById())
-                        .dataFetcher("documents", dataFetchers.externalDocumentBySearch())
-                        .dataFetchers(actorProvider.getQueryDataFetchers())
-                        .dataFetchers(activityProvider.getQueryDataFetchers())
-                        .dataFetchers(classificationProvider.getQueryDataFetchers())
-                        .dataFetchers(propertyProvider.getQueryDataFetchers())
-                        .dataFetchers(subjectProvider.getQueryDataFetchers())
-                        .dataFetchers(unitProvider.getQueryDataFetchers())
-                        .dataFetchers(valueProvider.getQueryDataFetchers())
-                        .dataFetchers(measureProvider.getQueryDataFetchers())
-                        .dataFetchers(relAssociatesProvider.getQueryDataFetchers())
-                        .dataFetchers(relGroupsProvider.getQueryDataFetchers())
-                        .dataFetchers(relSpecializesProvider.getQueryDataFetchers())
-                        .dataFetchers(relComposesProvider.getQueryDataFetchers()))
-                .type("Mutation", typeWiring -> typeWiring
-                        .dataFetcher("createDocument", dataFetchers.createExternalDocument())
-                        .dataFetcher("deleteDocument", dataFetchers.deleteExternalDocument())
-                        .dataFetchers(actorProvider.getMutationDataFetchers())
-                        .dataFetchers(activityProvider.getMutationDataFetchers())
-                        .dataFetchers(classificationProvider.getMutationDataFetchers())
-                        .dataFetchers(propertyProvider.getMutationDataFetchers())
-                        .dataFetchers(subjectProvider.getMutationDataFetchers())
-                        .dataFetchers(unitProvider.getMutationDataFetchers())
-                        .dataFetchers(valueProvider.getMutationDataFetchers())
-                        .dataFetchers(measureProvider.getMutationDataFetchers())
-                        .dataFetchers(relAssociatesProvider.getMutationDataFetchers())
-                        .dataFetchers(relGroupsProvider.getMutationDataFetchers())
-                        .dataFetchers(relSpecializesProvider.getMutationDataFetchers())
-                        .dataFetchers(relComposesProvider.getMutationDataFetchers()))
+                .type("XtdRelActsUpon", typeWiring -> rootDataFetchers
+                        .apply(typeWiring)
+                        .dataFetchers(relActsUponProvider.getRelActsUponDataFetchers()))
+                .type("Query", typeWiring -> {
+                    queryDataFetcherProviders.forEach(provider -> typeWiring.dataFetchers(provider.getQueryDataFetchers()));
+                    return typeWiring;
+                })
+                .type("Mutation", typeWiring -> {
+                    mutationDataFetcherProviders.forEach(provider -> typeWiring.dataFetchers(provider.getMutationDataFetchers()));
+                    return typeWiring;
+                })
                 .build();
         return schemaGenerator.makeExecutableSchema(typeRegistry, wiring);
     }

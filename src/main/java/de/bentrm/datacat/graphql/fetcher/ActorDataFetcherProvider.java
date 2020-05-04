@@ -11,27 +11,26 @@ import java.util.Map;
 
 @Component
 public class ActorDataFetcherProvider
-		extends EntityDataFetcherProviderImpl<XtdActor, RootInput, RootUpdateInput, ActorService>
-		implements EntityDataFetcherProvider<XtdActor> {
+        extends EntityDataFetcherProviderImpl<XtdActor, RootInput, RootUpdateInput, ActorService>
+        implements QueryDataFetcherProvider, MutationDataFetcherProvider {
 
-	public ActorDataFetcherProvider(ActorService entityService) {
-		super(RootInput.class, RootUpdateInput.class, entityService);
-	}
+    public ActorDataFetcherProvider(ActorService entityService) {
+        super(RootInput.class, RootUpdateInput.class, entityService);
+    }
 
-	@Override
-	public Map<String, DataFetcher> getQueryDataFetchers() {
-		return Map.ofEntries(
-				Map.entry("actor", getOne()),
-				Map.entry("actors", getAll())
-		);
-	}
+    @Override
+    public Map<String, DataFetcher> getQueryDataFetchers() {
+        return Map.ofEntries(
+                Map.entry("actors", getAll())
+        );
+    }
 
-	@Override
-	public Map<String, DataFetcher> getMutationDataFetchers() {
-		return Map.ofEntries(
-				Map.entry("createActor", add()),
-				Map.entry("updateActor", update()),
-				Map.entry("deleteActor", remove())
-		);
-	}
+    @Override
+    public Map<String, DataFetcher> getMutationDataFetchers() {
+        return Map.ofEntries(
+                Map.entry("createActor", add()),
+                Map.entry("updateActor", update()),
+                Map.entry("deleteActor", remove())
+        );
+    }
 }

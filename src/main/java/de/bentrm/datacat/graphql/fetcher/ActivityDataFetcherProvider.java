@@ -12,7 +12,7 @@ import java.util.Map;
 @Component
 public class ActivityDataFetcherProvider
         extends EntityDataFetcherProviderImpl<XtdActivity, RootInput, RootUpdateInput, ActivityService>
-        implements EntityDataFetcherProvider<XtdActivity> {
+        implements QueryDataFetcherProvider, MutationDataFetcherProvider {
 
     public ActivityDataFetcherProvider(ActivityService entityService) {
         super(RootInput.class, RootUpdateInput.class, entityService);
@@ -21,7 +21,6 @@ public class ActivityDataFetcherProvider
     @Override
     public Map<String, DataFetcher> getQueryDataFetchers() {
         return Map.ofEntries(
-                Map.entry("activity", getOne()),
                 Map.entry("activities", getAll())
         );
     }

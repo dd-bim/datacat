@@ -11,17 +11,16 @@ import java.util.Map;
 
 @Component
 public class MeasureWithUnitDataFetcherProvider
-		extends EntityDataFetcherProviderImpl<XtdMeasureWithUnit, RootInput, RootUpdateInput, MeasureWithUnitService>
-		implements EntityDataFetcherProvider<XtdMeasureWithUnit> {
+        extends EntityDataFetcherProviderImpl<XtdMeasureWithUnit, RootInput, RootUpdateInput, MeasureWithUnitService>
+        implements QueryDataFetcherProvider, MutationDataFetcherProvider {
 
-	public MeasureWithUnitDataFetcherProvider(MeasureWithUnitService entityService) {
-		super(RootInput.class, RootUpdateInput.class, entityService);
-	}
+    public MeasureWithUnitDataFetcherProvider(MeasureWithUnitService entityService) {
+        super(RootInput.class, RootUpdateInput.class, entityService);
+    }
 
-	@Override
+    @Override
     public Map<String, DataFetcher> getQueryDataFetchers() {
         return Map.ofEntries(
-                Map.entry("measure", getOne()),
                 Map.entry("measures", getAll())
         );
     }

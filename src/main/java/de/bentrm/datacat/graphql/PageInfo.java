@@ -4,26 +4,20 @@ import org.springframework.data.domain.Page;
 
 public class PageInfo {
 
-    private long pageNumber;
-    private long pageSize;
-    private int pageElements;
-    private int totalPages;
-    private long totalElements;
-    private boolean hasNext;
-    private boolean hasPrevious;
-    private boolean isFirst;
-    private boolean isLast;
+    private final long pageNumber;
+    private final long pageSize;
+    private final long pageElements;
+    private final long totalPages;
 
-    public PageInfo(Page page) {
-        this.pageNumber = page.getNumber();
-        this.pageSize = page.getSize();
-        this.pageElements = page.getNumberOfElements();
-        this.totalPages = page.getTotalPages();
-        this.totalElements = page.getTotalElements();
-        this.hasNext = page.hasNext();
-        this.hasPrevious = page.hasPrevious();
-        this.isFirst = page.isFirst();
-        this.isLast = page.isLast();
+    public PageInfo(long pageNumber, long pageSize, long pageElements, long totalPages) {
+        this.pageNumber = pageNumber;
+        this.pageSize = pageSize;
+        this.pageElements = pageElements;
+        this.totalPages = totalPages;
+    }
+
+    public static PageInfo of(Page page) {
+        return new PageInfo(page.getNumber(), page.getSize(), page.getContent().size(), page.getTotalPages());
     }
 
     public long getPageNumber() {
@@ -34,32 +28,28 @@ public class PageInfo {
         return pageSize;
     }
 
-    public int getPageElements() {
+    public long getPageElements() {
         return pageElements;
     }
 
-    public int getTotalPages() {
+    public long getTotalPages() {
         return totalPages;
     }
 
-    public long getTotalElements() {
-        return totalElements;
-    }
-
     public boolean isHasNext() {
-        return hasNext;
+        return this.pageNumber < this.totalPages;
     }
 
     public boolean isHasPrevious() {
-        return hasPrevious;
+        return this.pageNumber != 0;
     }
 
     public boolean isFirst() {
-        return isFirst;
+        return pageNumber == 0;
     }
 
     public boolean isLast() {
-        return isLast;
+        return this.pageNumber == this.totalPages;
     }
 
 }

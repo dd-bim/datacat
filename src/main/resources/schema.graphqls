@@ -1,32 +1,6 @@
-directive @fetch(from : String!) on FIELD_DEFINITION
+directive @fetch(from: String!) on FIELD_DEFINITION
 
-type Page {
-    pageNumber: Int!
-    pageSize: Int!
-    pageElements: Int!
-    totalPages: Int!
-    totalElements: Int!
-    hasNext: Boolean!
-    hasPrevious: Boolean!
-    isFirst: Boolean!
-    isLast: Boolean!
-}
-
-#enum CommentStatus {
-#    SPAM
-#    OPEN
-#    CLOSED
-#}
-#
-#type Comment {
-#    id: String!
-#    created: String!
-#    lastModified: String!
-#    status: CommentStatus!
-#    body: String!
-#}
-
-type XtdLanguage {
+type XtdLanguage implements Node {
     id: ID!
     languageCode: String!
     languageNameInEnglish: String!
@@ -35,19 +9,11 @@ type XtdLanguage {
 
 type XtdLanguageConnection {
     nodes: [XtdLanguage!]!
-    page: Page!
+    pageInfo: PageInfo!
+    totalElements: Int!
 }
 
-interface XtdLanguageRepresentation {
-    id: ID!
-    created: String!
-    lastModified: String!
-    value: String!
-    languageCode: ID!
-    languageName: XtdLanguage!
-}
-
-type XtdName implements XtdLanguageRepresentation {
+type XtdName implements Node, XtdLanguageRepresentation {
     id: ID!
     created: String!
     lastModified: String!
@@ -56,7 +22,7 @@ type XtdName implements XtdLanguageRepresentation {
     languageName: XtdLanguage!
 }
 
-type XtdDescription implements XtdLanguageRepresentation {
+type XtdDescription implements Node, XtdLanguageRepresentation {
     id: ID!
     created: String!
     lastModified: String!
@@ -65,15 +31,7 @@ type XtdDescription implements XtdLanguageRepresentation {
     languageName: XtdLanguage!
 }
 
-interface XtdEntity {
-    id: ID!
-    created: String!
-    lastModified: String!
-    label: String!
-    names: [XtdName!]!
-}
-
-type XtdExternalDocument implements XtdEntity {
+type XtdExternalDocument implements Node, XtdEntity {
     id: ID!
     created: String!
     lastModified: String!
@@ -84,10 +42,11 @@ type XtdExternalDocument implements XtdEntity {
 
 type XtdExternalDocumentConnection {
     nodes: [XtdExternalDocument!]!
-    page: Page!
+    pageInfo: PageInfo!
+    totalElements: Int!
 }
 
-interface XtdRoot {
+type XtdActivity implements Node, XtdEntity, XtdRoot, XtdObject {
     id: ID!
     created: String!
     lastModified: String!
@@ -105,114 +64,17 @@ interface XtdRoot {
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
     composes(options: PagingOptions): XtdRelComposesConnection!
     composedBy(options: PagingOptions): XtdRelComposesConnection!
-}
-
-type XtdRootConnection {
-    nodes: [XtdRoot!]!
-    page: Page!
-}
-
-interface XtdObject {
-    id: ID!
-    created: String!
-    lastModified: String!
-    versionId: String!
-    versionDate: String!
-    label: String!
-    names: [XtdName!]!
-    descriptions: [XtdDescription!]!
-    documentedBy: XtdRelDocumentsConnection!
-    associates(options: PagingOptions): XtdRelAssociatesConnection!
-    associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
-    groups(options: PagingOptions): XtdRelGroupsConnection!
-    groupedBy(options: PagingOptions): XtdRelGroupsConnection!
-    specializes(options: PagingOptions): XtdRelSpecializesConnection!
-    specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
-    composes(options: PagingOptions): XtdRelComposesConnection!
-    composedBy(options: PagingOptions): XtdRelComposesConnection!
-}
-
-type XtdObjectConnection {
-    nodes: [XtdObject!]!
-    page: Page!
-}
-
-interface XtdCollection {
-    id: ID!
-    created: String!
-    lastModified: String!
-    versionId: String!
-    versionDate: String!
-    label: String!
-    names: [XtdName!]!
-    descriptions: [XtdDescription!]!
-    documentedBy: XtdRelDocumentsConnection!
-    associates(options: PagingOptions): XtdRelAssociatesConnection!
-    associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
-    groups(options: PagingOptions): XtdRelGroupsConnection!
-    groupedBy(options: PagingOptions): XtdRelGroupsConnection!
-    specializes(options: PagingOptions): XtdRelSpecializesConnection!
-    specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
-    composes(options: PagingOptions): XtdRelComposesConnection!
-    composedBy(options: PagingOptions): XtdRelComposesConnection!
-}
-
-type XtdCollectionConnection {
-    nodes: [XtdCollection!]!
-    page: Page!
-}
-
-interface XtdRelationship {
-    id: ID!
-    created: String!
-    lastModified: String!
-    versionId: String!
-    versionDate: String!
-    label: String!
-    names: [XtdName!]!
-    descriptions: [XtdDescription!]!
-    documentedBy: XtdRelDocumentsConnection!
-    associates(options: PagingOptions): XtdRelAssociatesConnection!
-    associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
-    groups(options: PagingOptions): XtdRelGroupsConnection!
-    groupedBy(options: PagingOptions): XtdRelGroupsConnection!
-    specializes(options: PagingOptions): XtdRelSpecializesConnection!
-    specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
-    composes(options: PagingOptions): XtdRelComposesConnection!
-    composedBy(options: PagingOptions): XtdRelComposesConnection!
-}
-
-type XtdRelationshipConnection {
-    nodes: [XtdRelationship!]!
-    page: Page!
-}
-
-type XtdActivity implements XtdEntity, XtdRoot, XtdObject {
-    id: ID!
-    created: String!
-    lastModified: String!
-    versionId: String!
-    versionDate: String!
-    label: String!
-    names: [XtdName!]!
-    descriptions: [XtdDescription!]!
-    documentedBy: XtdRelDocumentsConnection!
-    associates(options: PagingOptions): XtdRelAssociatesConnection!
-    associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
-    groups(options: PagingOptions): XtdRelGroupsConnection!
-    groupedBy(options: PagingOptions): XtdRelGroupsConnection!
-    specializes(options: PagingOptions): XtdRelSpecializesConnection!
-    specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
-    composes(options: PagingOptions): XtdRelComposesConnection!
-    composedBy(options: PagingOptions): XtdRelComposesConnection!
+    actsUpon(options: PagingOptions): XtdRelActsUponConnection!
+    actedUpon(options: PagingOptions): XtdRelActsUponConnection!
 }
 
 type XtdActivityConnection {
     nodes: [XtdActivity!]!
-    page: Page!
+    pageInfo: PageInfo!
+    totalElements: Int!
 }
 
-type XtdActor implements XtdEntity, XtdRoot, XtdObject  {
+type XtdActor implements Node, XtdEntity, XtdRoot, XtdObject  {
     id: ID!
     created: String!
     lastModified: String!
@@ -230,14 +92,17 @@ type XtdActor implements XtdEntity, XtdRoot, XtdObject  {
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
     composes(options: PagingOptions): XtdRelComposesConnection!
     composedBy(options: PagingOptions): XtdRelComposesConnection!
+    actsUpon(options: PagingOptions): XtdRelActsUponConnection!
+    actedUpon(options: PagingOptions): XtdRelActsUponConnection!
 }
 
 type XtdActorConnection {
     nodes: [XtdActor!]!
-    page: Page!
+    pageInfo: PageInfo!
+    totalElements: Int!
 }
 
-type XtdClassification implements XtdEntity, XtdRoot, XtdObject {
+type XtdClassification implements Node, XtdEntity, XtdRoot, XtdObject {
     id: ID!
     created: String!
     lastModified: String!
@@ -255,14 +120,17 @@ type XtdClassification implements XtdEntity, XtdRoot, XtdObject {
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
     composes(options: PagingOptions): XtdRelComposesConnection!
     composedBy(options: PagingOptions): XtdRelComposesConnection!
+    actsUpon(options: PagingOptions): XtdRelActsUponConnection!
+    actedUpon(options: PagingOptions): XtdRelActsUponConnection!
 }
 
 type XtdClassificationConnection {
     nodes: [XtdClassification!]!
-    page: Page!
+    pageInfo: PageInfo!
+    totalElements: Int!
 }
 
-type XtdMeasureWithUnit implements XtdEntity, XtdRoot, XtdObject {
+type XtdMeasureWithUnit implements Node, XtdEntity, XtdRoot, XtdObject {
     id: ID!
     created: String!
     lastModified: String!
@@ -280,14 +148,17 @@ type XtdMeasureWithUnit implements XtdEntity, XtdRoot, XtdObject {
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
     composes(options: PagingOptions): XtdRelComposesConnection!
     composedBy(options: PagingOptions): XtdRelComposesConnection!
+    actsUpon(options: PagingOptions): XtdRelActsUponConnection!
+    actedUpon(options: PagingOptions): XtdRelActsUponConnection!
 }
 
 type XtdMeasureWithUnitConnection {
     nodes: [XtdMeasureWithUnit!]!
-    page: Page!
+    pageInfo: PageInfo!
+    totalElements: Int!
 }
 
-type XtdProperty implements XtdEntity, XtdRoot, XtdObject {
+type XtdProperty implements Node, XtdEntity, XtdRoot, XtdObject {
     id: ID!
     created: String!
     lastModified: String!
@@ -305,14 +176,17 @@ type XtdProperty implements XtdEntity, XtdRoot, XtdObject {
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
     composes(options: PagingOptions): XtdRelComposesConnection!
     composedBy(options: PagingOptions): XtdRelComposesConnection!
+    actsUpon(options: PagingOptions): XtdRelActsUponConnection!
+    actedUpon(options: PagingOptions): XtdRelActsUponConnection!
 }
 
 type XtdPropertyConnection {
     nodes: [XtdProperty!]!
-    page: Page!
+    pageInfo: PageInfo!
+    totalElements: Int!
 }
 
-type XtdSubject implements XtdEntity, XtdRoot, XtdObject {
+type XtdSubject implements Node, XtdEntity, XtdRoot, XtdObject {
     id: ID!
     created: String!
     lastModified: String!
@@ -330,14 +204,17 @@ type XtdSubject implements XtdEntity, XtdRoot, XtdObject {
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
     composes(options: PagingOptions): XtdRelComposesConnection!
     composedBy(options: PagingOptions): XtdRelComposesConnection!
+    actsUpon(options: PagingOptions): XtdRelActsUponConnection!
+    actedUpon(options: PagingOptions): XtdRelActsUponConnection!
 }
 
 type XtdSubjectConnection {
     nodes: [XtdSubject!]!
-    page: Page!
+    pageInfo: PageInfo!
+    totalElements: Int!
 }
 
-type XtdUnit implements XtdEntity, XtdRoot, XtdObject {
+type XtdUnit implements Node, XtdEntity, XtdRoot, XtdObject {
     id: ID!
     created: String!
     lastModified: String!
@@ -355,11 +232,14 @@ type XtdUnit implements XtdEntity, XtdRoot, XtdObject {
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
     composes(options: PagingOptions): XtdRelComposesConnection!
     composedBy(options: PagingOptions): XtdRelComposesConnection!
+    actsUpon(options: PagingOptions): XtdRelActsUponConnection!
+    actedUpon(options: PagingOptions): XtdRelActsUponConnection!
 }
 
 type XtdUnitConnection {
     nodes: [XtdUnit!]!
-    page: Page!
+    pageInfo: PageInfo!
+    totalElements: Int!
 }
 
 enum XtdValueTypeEnum {
@@ -382,7 +262,7 @@ enum XtdValueRoleEnum {
     Minimum
 }
 
-type XtdValue implements XtdEntity, XtdRoot, XtdObject {
+type XtdValue implements Node, XtdEntity, XtdRoot, XtdObject {
     id: ID!
     created: String!
     lastModified: String!
@@ -406,14 +286,17 @@ type XtdValue implements XtdEntity, XtdRoot, XtdObject {
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
     composes(options: PagingOptions): XtdRelComposesConnection!
     composedBy(options: PagingOptions): XtdRelComposesConnection!
+    actsUpon(options: PagingOptions): XtdRelActsUponConnection!
+    actedUpon(options: PagingOptions): XtdRelActsUponConnection!
 }
 
 type XtdValueConnection {
     nodes: [XtdValue!]!
-    page: Page!
+    pageInfo: PageInfo!
+    totalElements: Int!
 }
 
-type XtdBag implements XtdEntity, XtdRoot, XtdCollection {
+type XtdBag implements Node, XtdEntity, XtdRoot, XtdCollection {
     id: ID!
     created: String!
     lastModified: String!
@@ -431,14 +314,17 @@ type XtdBag implements XtdEntity, XtdRoot, XtdCollection {
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
     composes(options: PagingOptions): XtdRelComposesConnection!
     composedBy(options: PagingOptions): XtdRelComposesConnection!
+    actsUpon(options: PagingOptions): XtdRelActsUponConnection!
+    actedUpon(options: PagingOptions): XtdRelActsUponConnection!
 }
 
 type XtdBagConnection {
     nodes: [XtdBag!]!
-    page: Page!
+    pageInfo: PageInfo!
+    totalElements: Int!
 }
 
-type XtdNest implements XtdEntity, XtdRoot, XtdCollection {
+type XtdNest implements Node, XtdEntity, XtdRoot, XtdCollection {
     id: ID!
     created: String!
     lastModified: String!
@@ -456,14 +342,17 @@ type XtdNest implements XtdEntity, XtdRoot, XtdCollection {
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
     composes(options: PagingOptions): XtdRelComposesConnection!
     composedBy(options: PagingOptions): XtdRelComposesConnection!
+    actsUpon(options: PagingOptions): XtdRelActsUponConnection!
+    actedUpon(options: PagingOptions): XtdRelActsUponConnection!
 }
 
 type XtdNestConnection {
     nodes: [XtdNest!]!
-    page: Page!
+    pageInfo: PageInfo!
+    totalElements: Int!
 }
 
-type XtdRelCollects implements XtdEntity, XtdRoot, XtdRelationship {
+type XtdRelCollects implements Node, XtdEntity, XtdRoot, XtdRelationship {
     id: ID!
     created: String!
     lastModified: String!
@@ -483,14 +372,17 @@ type XtdRelCollects implements XtdEntity, XtdRoot, XtdRelationship {
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
     composes(options: PagingOptions): XtdRelComposesConnection!
     composedBy(options: PagingOptions): XtdRelComposesConnection!
+    actsUpon(options: PagingOptions): XtdRelActsUponConnection!
+    actedUpon(options: PagingOptions): XtdRelActsUponConnection!
 }
 
 type XtdRelCollectsConnection {
     nodes: [XtdRelCollects!]!
-    page: Page!
+    pageInfo: PageInfo!
+    totalElements: Int!
 }
 
-type XtdRelDocuments implements XtdEntity, XtdRoot, XtdRelationship {
+type XtdRelDocuments implements Node, XtdEntity, XtdRoot, XtdRelationship {
     id: ID!
     created: String!
     lastModified: String!
@@ -510,14 +402,17 @@ type XtdRelDocuments implements XtdEntity, XtdRoot, XtdRelationship {
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
     composes(options: PagingOptions): XtdRelComposesConnection!
     composedBy(options: PagingOptions): XtdRelComposesConnection!
+    actsUpon(options: PagingOptions): XtdRelActsUponConnection!
+    actedUpon(options: PagingOptions): XtdRelActsUponConnection!
 }
 
 type XtdRelDocumentsConnection {
     nodes: [XtdRelDocuments!]!
-    page: Page!
+    pageInfo: PageInfo!
+    totalElements: Int!
 }
 
-type XtdRelAssociates implements XtdEntity, XtdRoot, XtdRelationship {
+type XtdRelAssociates implements Node, XtdEntity, XtdRoot, XtdRelationship {
     id: ID!
     created: String!
     lastModified: String!
@@ -537,14 +432,17 @@ type XtdRelAssociates implements XtdEntity, XtdRoot, XtdRelationship {
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
     composes(options: PagingOptions): XtdRelComposesConnection!
     composedBy(options: PagingOptions): XtdRelComposesConnection!
+    actsUpon(options: PagingOptions): XtdRelActsUponConnection!
+    actedUpon(options: PagingOptions): XtdRelActsUponConnection!
 }
 
 type XtdRelAssociatesConnection {
     nodes: [XtdRelAssociates!]!
-    page: Page!
+    pageInfo: PageInfo!
+    totalElements: Int!
 }
 
-type XtdRelGroups implements XtdEntity, XtdRoot, XtdRelationship {
+type XtdRelGroups implements Node, XtdEntity, XtdRoot, XtdRelationship {
     id: ID!
     created: String!
     lastModified: String!
@@ -564,14 +462,17 @@ type XtdRelGroups implements XtdEntity, XtdRoot, XtdRelationship {
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
     composes(options: PagingOptions): XtdRelComposesConnection!
     composedBy(options: PagingOptions): XtdRelComposesConnection!
+    actsUpon(options: PagingOptions): XtdRelActsUponConnection!
+    actedUpon(options: PagingOptions): XtdRelActsUponConnection!
 }
 
 type XtdRelGroupsConnection {
     nodes: [XtdRelGroups!]!
-    page: Page!
+    pageInfo: PageInfo!
+    totalElements: Int!
 }
 
-type XtdRelSpecializes implements XtdEntity, XtdRoot, XtdRelationship {
+type XtdRelSpecializes implements Node, XtdEntity, XtdRoot, XtdRelationship {
     id: ID!
     created: String!
     lastModified: String!
@@ -591,14 +492,17 @@ type XtdRelSpecializes implements XtdEntity, XtdRoot, XtdRelationship {
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
     composes(options: PagingOptions): XtdRelComposesConnection!
     composedBy(options: PagingOptions): XtdRelComposesConnection!
+    actsUpon(options: PagingOptions): XtdRelActsUponConnection!
+    actedUpon(options: PagingOptions): XtdRelActsUponConnection!
 }
 
 type XtdRelSpecializesConnection {
     nodes: [XtdRelSpecializes!]!
-    page: Page!
+    pageInfo: PageInfo!
+    totalElements: Int!
 }
 
-type XtdRelComposes implements XtdEntity, XtdRoot, XtdRelationship {
+type XtdRelComposes implements Node, XtdEntity, XtdRoot, XtdRelationship {
     id: ID!
     created: String!
     lastModified: String!
@@ -618,11 +522,44 @@ type XtdRelComposes implements XtdEntity, XtdRoot, XtdRelationship {
     specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
     composes(options: PagingOptions): XtdRelComposesConnection!
     composedBy(options: PagingOptions): XtdRelComposesConnection!
+    actsUpon(options: PagingOptions): XtdRelActsUponConnection!
+    actedUpon(options: PagingOptions): XtdRelActsUponConnection!
 }
 
 type XtdRelComposesConnection {
     nodes: [XtdRelComposes!]!
-    page: Page!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+type XtdRelActsUpon implements Node, XtdEntity, XtdRoot, XtdRelationship {
+    id: ID!
+    created: String!
+    lastModified: String!
+    versionId: String!
+    versionDate: String!
+    label: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    relatingThing: XtdRoot!
+    relatedThings(options: PagingOptions): XtdRootConnection!
+    documentedBy: XtdRelDocumentsConnection!
+    associates(options: PagingOptions): XtdRelAssociatesConnection!
+    associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
+    groups(options: PagingOptions): XtdRelGroupsConnection!
+    groupedBy(options: PagingOptions): XtdRelGroupsConnection!
+    specializes(options: PagingOptions): XtdRelSpecializesConnection!
+    specializedBy(options: PagingOptions): XtdRelSpecializesConnection!
+    composes(options: PagingOptions): XtdRelComposesConnection!
+    composedBy(options: PagingOptions): XtdRelComposesConnection!
+    actsUpon(options: PagingOptions): XtdRelActsUponConnection!
+    actedUpon(options: PagingOptions): XtdRelActsUponConnection!
+}
+
+type XtdRelActsUponConnection {
+    nodes: [XtdRelActsUpon!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
 }
 
 input PagingOptions {
@@ -657,64 +594,31 @@ input SearchInput {
 
 type SearchConnection {
     nodes: [XtdEntity!]!
-    page: Page!
+    pageInfo: PageInfo!
+    totalElements: Int!
 }
 
 type Query {
+    node(id: ID!): Node
     search(options: SearchInput, paging: PagingOptions): SearchConnection!
-
-    document(id: ID!): XtdExternalDocument
     documents(term: String, options: PagingOptions): XtdExternalDocumentConnection!
-
-    actor(id: ID!): XtdActor
     actors(term: String, options: PagingOptions): XtdActorConnection!
-
-    activity(id: ID!): XtdActivity
     activities(term: String, options: PagingOptions): XtdActivityConnection!
-
-    classification(id: ID!): XtdClassification
     classifications(term: String, options: PagingOptions): XtdClassificationConnection!
-
-    measure(id: ID!): XtdExternalDocument
     measures(term: String, options: PagingOptions): XtdMeasureWithUnitConnection!
-
-    property(id: ID!): XtdProperty
     properties(term: String, options: PagingOptions): XtdPropertyConnection!
-
-    subject(id: ID!): XtdSubject
     subjects(term: String, excludedIds: [String!], options: PagingOptions): XtdSubjectConnection!
-
-    unit(id: ID!): XtdUnit
     units(term: String, options: PagingOptions): XtdUnitConnection!
-
-    value(id: ID!): XtdValue
     values(term: String, options: PagingOptions): XtdValueConnection!
-
-    bag(id: ID!): XtdBag
     bags(term: String, options: PagingOptions): XtdBagConnection!
-
-    nest(id: ID!): XtdNest
     nests(term: String, options: PagingOptions): XtdNestConnection!
-
-    documentsRelation(id: ID!): XtdRelDocuments
     documentsRelations(term: String, options: PagingOptions): XtdRelDocumentsConnection!
-
-    associatesRelation(id: ID!): XtdRelAssociates
     associatesRelations(term: String, options: PagingOptions): XtdRelAssociatesConnection!
-
-    groupsRelation(id: ID!): XtdRelGroups
     groupsRelations(term: String, options: PagingOptions): XtdRelGroupsConnection!
-
-    specializesRelation(id: ID!): XtdRelSpecializes
     specializesRelations(term: String, options: PagingOptions): XtdRelSpecializesConnection!
-
-    composesRelation(id: ID!): XtdRelComposes
     composesRelations(term: String, options: PagingOptions): XtdRelComposesConnection!
+    actsUponRelations(term: String, options: PagingOptions): XtdRelActsUponConnection!
 }
-
-#input CommentInput {
-#    body: String!
-#}
 
 input TextInput {
     id: ID
@@ -845,6 +749,10 @@ type Mutation {
     createComposesRelation(input: AssociationInput!): XtdRelComposes
     updateComposesRelation(input: AssociationUpdateInput!): XtdRelComposes
     deleteComposesRelation(id: ID!): XtdRelComposes
+
+    createActsUponRelation(input: AssociationInput!): XtdRelActsUpon
+    updateActsUponRelation(input: AssociationUpdateInput!): XtdRelActsUpon
+    deleteActsUponRelation(id: ID!): XtdRelActsUpon
 }
 
 schema {

@@ -1,6 +1,7 @@
 package de.bentrm.datacat.graphql.resolver;
 
 import de.bentrm.datacat.domain.XtdDescription;
+import de.bentrm.datacat.domain.XtdLanguageRepresentation;
 import de.bentrm.datacat.domain.XtdName;
 import graphql.TypeResolutionEnvironment;
 import graphql.schema.GraphQLObjectType;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class XtdLanguageRepresentationTypeResolver implements TypeResolver {
     @Override
     public GraphQLObjectType getType(TypeResolutionEnvironment env) {
-        Object obj = env.getObject();
+        XtdLanguageRepresentation obj = env.getObject();
 
         if (obj instanceof XtdName) {
             return env.getSchema().getObjectType(XtdName.LABEL);

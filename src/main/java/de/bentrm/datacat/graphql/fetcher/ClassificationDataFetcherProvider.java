@@ -11,17 +11,16 @@ import java.util.Map;
 
 @Component
 public class ClassificationDataFetcherProvider
-		extends EntityDataFetcherProviderImpl<XtdClassification, RootInput, RootUpdateInput, ClassificationService>
-		implements EntityDataFetcherProvider<XtdClassification> {
+        extends EntityDataFetcherProviderImpl<XtdClassification, RootInput, RootUpdateInput, ClassificationService>
+        implements QueryDataFetcherProvider, MutationDataFetcherProvider {
 
-	public ClassificationDataFetcherProvider(ClassificationService entityService) {
-		super(RootInput.class, RootUpdateInput.class, entityService);
-	}
+    public ClassificationDataFetcherProvider(ClassificationService entityService) {
+        super(RootInput.class, RootUpdateInput.class, entityService);
+    }
 
-	@Override
+    @Override
     public Map<String, DataFetcher> getQueryDataFetchers() {
         return Map.ofEntries(
-                Map.entry("classification", getOne()),
                 Map.entry("classifications", getAll())
         );
     }

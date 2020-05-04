@@ -13,7 +13,7 @@ public class XtdRelationshipTypeResolver implements TypeResolver {
 
     @Override
     public GraphQLObjectType getType(TypeResolutionEnvironment env) {
-        Object obj = env.getObject();
+        XtdRelationship obj = env.getObject();
         GraphQLSchema schema = env.getSchema();
 
         if (obj instanceof XtdRelActsUpon) {

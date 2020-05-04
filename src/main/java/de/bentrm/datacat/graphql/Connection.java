@@ -1,24 +1,28 @@
 package de.bentrm.datacat.graphql;
 
-import org.springframework.data.domain.Page;
-
 import java.util.List;
 
 public class Connection<T> {
 
-    private List<T> nodes;
-    private PageInfo page;
+    private final List<T> nodes;
+    private final PageInfo pageInfo;
+    private final Long totalElements;
 
-    public Connection(Page<T> page) {
-        this.nodes = page.getContent();
-        this.page = new PageInfo(page);
+    public Connection(List<T> nodes, PageInfo pageInfo, Long totalElements) {
+        this.nodes = nodes;
+        this.pageInfo = pageInfo;
+        this.totalElements = totalElements;
     }
 
     public List<T> getNodes() {
         return nodes;
     }
 
-    public PageInfo getPage() {
-        return page;
+    public PageInfo getPageInfo() {
+        return pageInfo;
+    }
+
+    public long getTotalElements() {
+        return totalElements;
     }
 }

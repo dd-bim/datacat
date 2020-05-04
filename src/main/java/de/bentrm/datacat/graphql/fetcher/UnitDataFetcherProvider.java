@@ -12,7 +12,7 @@ import java.util.Map;
 @Component
 public class UnitDataFetcherProvider
         extends EntityDataFetcherProviderImpl<XtdUnit, RootInput, RootUpdateInput, UnitService>
-        implements EntityDataFetcherProvider<XtdUnit> {
+        implements QueryDataFetcherProvider, MutationDataFetcherProvider {
 
     public UnitDataFetcherProvider(UnitService entityService) {
         super(RootInput.class, RootUpdateInput.class, entityService);
@@ -21,7 +21,6 @@ public class UnitDataFetcherProvider
     @Override
     public Map<String, DataFetcher> getQueryDataFetchers() {
         return Map.ofEntries(
-                Map.entry("unit", getOne()),
                 Map.entry("units", getAll())
         );
     }
