@@ -11,6 +11,7 @@ import java.util.TreeSet;
 @PropertyQueryHint({
         "(root)<-[:IS_NAME_OF|IS_DESCRIPTION_OF|COMMENTS*0..1]-()",
         "(root)-[:ASSOCIATES]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF|COMMENTS*0..1]-()",
+        "(root)-[:COMPOSES]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF|COMMENTS*0..1]-()",
         "(root)-[:GROUPS]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF|COMMENTS*0..1]-()",
         "(root)-[:SPECIALIZES]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF|COMMENTS*0..1]-()",
         "(root)-[:ACTS_UPON]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF|COMMENTS*0..1]-()"
