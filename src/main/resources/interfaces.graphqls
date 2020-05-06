@@ -49,7 +49,7 @@ interface XtdRoot {
     composes(options: PagingOptions): XtdRelComposesConnection!
     composedBy(options: PagingOptions): XtdRelComposesConnection!
     actsUpon(options: PagingOptions): XtdRelActsUponConnection!
-    actedUpon(options: PagingOptions): XtdRelActsUponConnection!
+    actedUponBy(options: PagingOptions): XtdRelActsUponConnection!
 }
 
 type XtdRootConnection {
