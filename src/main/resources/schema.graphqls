@@ -695,7 +695,37 @@ input AssociationUpdateInput {
     relatedThings: [ID!]!
 }
 
+type UserProfile {
+    username: String!
+    firstName: String!
+    lastName: String!
+    email: String!
+    organization: String!
+}
+
+type UserAuthentication {
+    token: String
+    user: UserProfile!
+}
+
+input SignupInput {
+    username: String!
+    password: String!
+    firstName: String!
+    lastName: String!
+    email: String!
+    organization: String!
+}
+
+input LoginInput {
+    username: String!
+    password: String!
+}
+
 type Mutation {
+    signup(input: SignupInput!): UserAuthentication
+    login(input: LoginInput!): UserAuthentication
+
     createDocument(input: ExternalDocumentInput!): XtdExternalDocument
     deleteDocument(id: ID!): XtdExternalDocument
 
