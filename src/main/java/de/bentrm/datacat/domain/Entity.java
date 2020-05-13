@@ -6,10 +6,12 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.neo4j.ogm.annotation.GeneratedValue;
 import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.annotation.Version;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public abstract class Entity {
 
@@ -23,10 +25,16 @@ public abstract class Entity {
 	protected Long version;
 
 	@CreatedDate
-	protected LocalDateTime created;
+	protected Instant created;
+
+	@CreatedBy
+	protected String createdBy;
 
 	@LastModifiedDate
-	protected LocalDateTime lastModified;
+	protected Instant lastModified;
+
+	@LastModifiedBy
+	protected String lastModifiedBy;
 
 	public String getId() {
 		return id;
@@ -44,20 +52,36 @@ public abstract class Entity {
 		this.version = version;
 	}
 
-	public LocalDateTime getCreated() {
+	public Instant getCreated() {
 		return created;
 	}
 
-	public void setCreated(LocalDateTime created) {
+	public void setCreated(Instant created) {
 		this.created = created;
 	}
 
-	public LocalDateTime getLastModified() {
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Instant getLastModified() {
 		return lastModified;
 	}
 
-	public void setLastModified(LocalDateTime lastModified) {
+	public void setLastModified(Instant lastModified) {
 		this.lastModified = lastModified;
+	}
+
+	public String getLastModifiedBy() {
+		return lastModifiedBy;
+	}
+
+	public void setLastModifiedBy(String lastModifiedBy) {
+		this.lastModifiedBy = lastModifiedBy;
 	}
 
 	@Override
@@ -86,7 +110,9 @@ public abstract class Entity {
 				.append("id", id)
 				.append("version", version)
 				.append("created", created)
+				.append("createdBy", createdBy)
 				.append("lastModified", lastModified)
+				.append("lastModifiedBy", lastModifiedBy)
 				.toString();
 	}
 }

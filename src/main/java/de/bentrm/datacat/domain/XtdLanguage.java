@@ -6,10 +6,10 @@ import java.util.Locale;
 
 public class XtdLanguage {
 
-    private String id;
-    private String languageCode;
-    private String languageNameInEnglish;
-    private String languageNameInSelf;
+    private final String id;
+    private final String languageCode;
+    private final String languageNameInEnglish;
+    private final String languageNameInSelf;
 
     public XtdLanguage(Locale locale) {
         this.id = locale.getLanguage();

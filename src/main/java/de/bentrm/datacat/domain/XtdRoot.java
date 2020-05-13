@@ -11,7 +11,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 @NodeEntity(label = XtdRoot.LABEL)
-public abstract class XtdRoot extends XtdEntity implements Commented {
+public abstract class XtdRoot extends XtdEntity {
 
     public static final String TITLE = "Root";
     public static final String TITLE_PLURAL = "Roots";
@@ -22,10 +22,7 @@ public abstract class XtdRoot extends XtdEntity implements Commented {
     private String versionDate;
 
     @Relationship(type = XtdDescription.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
-    private SortedSet<XtdDescription> descriptions = new TreeSet<>();
-
-    @Relationship(type = Comment.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
-    private SortedSet<Comment> comments = new TreeSet<>();
+    private final SortedSet<XtdDescription> descriptions = new TreeSet<>();
 
     @Relationship(type = XtdRelCollects.RELATIONSHIP_TYPE)
     private Set<XtdRelCollects> collects = new HashSet<>();
@@ -92,14 +89,6 @@ public abstract class XtdRoot extends XtdEntity implements Commented {
 
     public boolean removeDescription(XtdDescription description) {
         return this.descriptions.remove(description);
-    }
-
-    public SortedSet<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(SortedSet<Comment> comments) {
-        this.comments = comments;
     }
 
     public Set<XtdRelCollects> getCollects() {
