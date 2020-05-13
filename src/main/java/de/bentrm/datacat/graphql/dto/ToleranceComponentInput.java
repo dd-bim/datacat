@@ -4,9 +4,9 @@ import de.bentrm.datacat.domain.XtdToleranceTypeEnum;
 
 public interface ToleranceComponentInput {
 
-    public XtdToleranceTypeEnum getToleranceType();
+    XtdToleranceTypeEnum getToleranceType();
 
-    public String getLowerTolerance();
+    String getLowerTolerance();
 
-    public String getUpperTolerance();
+    String getUpperTolerance();
 }

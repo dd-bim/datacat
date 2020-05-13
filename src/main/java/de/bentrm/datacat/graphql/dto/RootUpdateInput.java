@@ -13,7 +13,7 @@ public class RootUpdateInput extends EntityUpdateInput {
     @NotNull
     private String versionDate;
 
-    private List<@Valid @NotNull TextInput> descriptions = new ArrayList<>();
+    private final List<@Valid @NotNull TextInput> descriptions = new ArrayList<>();
 
     public String getVersionId() {
         return versionId;

@@ -13,7 +13,8 @@ public class EntityInput {
     @IdConstraint
     private String id;
 
-    private @NotEmpty List<@Valid @NotNull TextInput> names = new ArrayList<>();
+    private @NotEmpty
+    final List<@Valid @NotNull TextInput> names = new ArrayList<>();
 
     public String getId() {
         return id;

@@ -28,7 +28,7 @@ public class RelAssociatesDataFetcherProvider implements QueryDataFetcherProvide
     @Autowired
     private RelAssociatesService relAssociatesService;
 
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public Map<String, DataFetcher> getQueryDataFetchers() {

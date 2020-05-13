@@ -8,8 +8,8 @@ import java.util.List;
 public class XtdRelGroupsInput {
 
     private String id;
-    private List<TextInput> names = new ArrayList<>();
-    private List<TextInput> descriptions = new ArrayList<>();
+    private final List<TextInput> names = new ArrayList<>();
+    private final List<TextInput> descriptions = new ArrayList<>();
     private String relatingObjectId;
     private List<String> relatedObjectsIds;
 

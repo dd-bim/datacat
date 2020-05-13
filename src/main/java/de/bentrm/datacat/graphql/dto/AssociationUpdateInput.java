@@ -12,7 +12,8 @@ public class AssociationUpdateInput extends RootUpdateInput {
     @NotBlank @IdConstraint
     private String relatingThing;
 
-    private @NotNull List<@NotBlank @IdConstraint String> relatedThings = new ArrayList<>();
+    private @NotNull
+    final List<@NotBlank @IdConstraint String> relatedThings = new ArrayList<>();
 
     public String getRelatingThing() {
         return relatingThing;

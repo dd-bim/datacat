@@ -29,7 +29,7 @@ public class RelGroupsDataFetcherProvider implements QueryDataFetcherProvider, R
     @Autowired
     private RelGroupsService relGroupsService;
 
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     public Map<String, DataFetcher> getQueryDataFetchers() {
         return Map.ofEntries(
