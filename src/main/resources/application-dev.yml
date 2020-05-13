@@ -1,3 +1,10 @@
+de.bentrm.datacat.auth:
+  secret: my-secret
+  issuer: datacat-demo
+  admin:
+    username: admin
+    password: s3cret
+
 spring:
   data:
     neo4j:
@@ -24,4 +31,7 @@ graphiql:
 
 logging:
   level:
-    de.bentrm.datacat: DEBUG
+    de.bentrm.datacat:
+      auth: DEBUG
+      graphql: DEBUG
+      service: DEBUG
