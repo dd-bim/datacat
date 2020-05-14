@@ -16,7 +16,9 @@ type XtdLanguageConnection {
 type XtdName implements Node, XtdLanguageRepresentation {
     id: ID!
     created: String!
+    createdBy: String!
     lastModified: String!
+    lastModifiedBy: String!
     value: String! @fetch(from: "name")
     languageCode: ID! @fetch(from: "languageName")
     languageName: XtdLanguage!
@@ -25,7 +27,9 @@ type XtdName implements Node, XtdLanguageRepresentation {
 type XtdDescription implements Node, XtdLanguageRepresentation {
     id: ID!
     created: String!
+    createdBy: String!
     lastModified: String!
+    lastModifiedBy: String!
     value: String! @fetch(from: "description")
     languageCode: ID! @fetch(from: "languageName")
     languageName: XtdLanguage!
@@ -34,7 +38,9 @@ type XtdDescription implements Node, XtdLanguageRepresentation {
 type XtdExternalDocument implements Node, XtdEntity {
     id: ID!
     created: String!
+    createdBy: String!
     lastModified: String!
+    lastModifiedBy: String!
     label: String!
     names: [XtdName!]!
     documents: XtdRelDocumentsConnection!
@@ -49,13 +55,16 @@ type XtdExternalDocumentConnection {
 type XtdActivity implements Node, XtdEntity, XtdRoot, XtdObject {
     id: ID!
     created: String!
+    createdBy: String!
     lastModified: String!
+    lastModifiedBy: String!
     versionId: String!
     versionDate: String!
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
     documentedBy: XtdRelDocumentsConnection!
+    collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
@@ -77,13 +86,16 @@ type XtdActivityConnection {
 type XtdActor implements Node, XtdEntity, XtdRoot, XtdObject  {
     id: ID!
     created: String!
+    createdBy: String!
     lastModified: String!
+    lastModifiedBy: String!
     versionId: String!
     versionDate: String!
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
     documentedBy: XtdRelDocumentsConnection!
+    collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
@@ -105,13 +117,16 @@ type XtdActorConnection {
 type XtdClassification implements Node, XtdEntity, XtdRoot, XtdObject {
     id: ID!
     created: String!
+    createdBy: String!
     lastModified: String!
+    lastModifiedBy: String!
     versionId: String!
     versionDate: String!
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
     documentedBy: XtdRelDocumentsConnection!
+    collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
@@ -133,13 +148,16 @@ type XtdClassificationConnection {
 type XtdMeasureWithUnit implements Node, XtdEntity, XtdRoot, XtdObject {
     id: ID!
     created: String!
+    createdBy: String!
     lastModified: String!
+    lastModifiedBy: String!
     versionId: String!
     versionDate: String!
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
     documentedBy: XtdRelDocumentsConnection!
+    collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
@@ -161,13 +179,16 @@ type XtdMeasureWithUnitConnection {
 type XtdProperty implements Node, XtdEntity, XtdRoot, XtdObject {
     id: ID!
     created: String!
+    createdBy: String!
     lastModified: String!
+    lastModifiedBy: String!
     versionId: String!
     versionDate: String!
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
     documentedBy: XtdRelDocumentsConnection!
+    collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
@@ -189,13 +210,16 @@ type XtdPropertyConnection {
 type XtdSubject implements Node, XtdEntity, XtdRoot, XtdObject {
     id: ID!
     created: String!
+    createdBy: String!
     lastModified: String!
+    lastModifiedBy: String!
     versionId: String!
     versionDate: String!
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
     documentedBy: XtdRelDocumentsConnection!
+    collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
@@ -217,13 +241,16 @@ type XtdSubjectConnection {
 type XtdUnit implements Node, XtdEntity, XtdRoot, XtdObject {
     id: ID!
     created: String!
+    createdBy: String!
     lastModified: String!
+    lastModifiedBy: String!
     versionId: String!
     versionDate: String!
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
     documentedBy: XtdRelDocumentsConnection!
+    collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
@@ -265,7 +292,9 @@ enum XtdValueRoleEnum {
 type XtdValue implements Node, XtdEntity, XtdRoot, XtdObject {
     id: ID!
     created: String!
+    createdBy: String!
     lastModified: String!
+    lastModifiedBy: String!
     versionId: String!
     versionDate: String!
     label: String!
@@ -278,6 +307,7 @@ type XtdValue implements Node, XtdEntity, XtdRoot, XtdObject {
     valueType: XtdValueTypeEnum
     nominalValue: String
     documentedBy: XtdRelDocumentsConnection!
+    collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
@@ -299,13 +329,17 @@ type XtdValueConnection {
 type XtdBag implements Node, XtdEntity, XtdRoot, XtdCollection {
     id: ID!
     created: String!
+    createdBy: String!
     lastModified: String!
+    lastModifiedBy: String!
     versionId: String!
     versionDate: String!
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
     documentedBy: XtdRelDocumentsConnection!
+    collects: XtdRelCollectsConnection!
+    collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
@@ -327,13 +361,17 @@ type XtdBagConnection {
 type XtdNest implements Node, XtdEntity, XtdRoot, XtdCollection {
     id: ID!
     created: String!
+    createdBy: String!
     lastModified: String!
+    lastModifiedBy: String!
     versionId: String!
     versionDate: String!
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
     documentedBy: XtdRelDocumentsConnection!
+    collects: XtdRelCollectsConnection!
+    collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
@@ -355,15 +393,18 @@ type XtdNestConnection {
 type XtdRelCollects implements Node, XtdEntity, XtdRoot, XtdRelationship {
     id: ID!
     created: String!
+    createdBy: String!
     lastModified: String!
+    lastModifiedBy: String!
     versionId: String!
     versionDate: String!
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
-    relatingDocument: XtdExternalDocument!
-    relatedObjects(options: PagingOptions): XtdObjectConnection!
+    relatingCollection: XtdCollection!
+    relatedThings(options: PagingOptions): XtdRootConnection!
     documentedBy: XtdRelDocumentsConnection!
+    collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
@@ -385,7 +426,9 @@ type XtdRelCollectsConnection {
 type XtdRelDocuments implements Node, XtdEntity, XtdRoot, XtdRelationship {
     id: ID!
     created: String!
+    createdBy: String!
     lastModified: String!
+    lastModifiedBy: String!
     versionId: String!
     versionDate: String!
     label: String!
@@ -394,6 +437,7 @@ type XtdRelDocuments implements Node, XtdEntity, XtdRoot, XtdRelationship {
     relatingDocument: XtdExternalDocument!
     relatedObjects(options: PagingOptions): XtdObjectConnection!
     documentedBy: XtdRelDocumentsConnection!
+    collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
@@ -415,7 +459,9 @@ type XtdRelDocumentsConnection {
 type XtdRelAssociates implements Node, XtdEntity, XtdRoot, XtdRelationship {
     id: ID!
     created: String!
+    createdBy: String!
     lastModified: String!
+    lastModifiedBy: String!
     versionId: String!
     versionDate: String!
     label: String!
@@ -424,6 +470,7 @@ type XtdRelAssociates implements Node, XtdEntity, XtdRoot, XtdRelationship {
     relatingThing: XtdObject!
     relatedThings(options: PagingOptions): XtdObjectConnection!
     documentedBy: XtdRelDocumentsConnection!
+    collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
@@ -445,7 +492,9 @@ type XtdRelAssociatesConnection {
 type XtdRelGroups implements Node, XtdEntity, XtdRoot, XtdRelationship {
     id: ID!
     created: String!
+    createdBy: String!
     lastModified: String!
+    lastModifiedBy: String!
     versionId: String!
     versionDate: String!
     label: String!
@@ -454,6 +503,7 @@ type XtdRelGroups implements Node, XtdEntity, XtdRoot, XtdRelationship {
     relatingThing: XtdRoot!
     relatedThings(options: PagingOptions): XtdRootConnection!
     documentedBy: XtdRelDocumentsConnection!
+    collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
@@ -475,7 +525,9 @@ type XtdRelGroupsConnection {
 type XtdRelSpecializes implements Node, XtdEntity, XtdRoot, XtdRelationship {
     id: ID!
     created: String!
+    createdBy: String!
     lastModified: String!
+    lastModifiedBy: String!
     versionId: String!
     versionDate: String!
     label: String!
@@ -484,6 +536,7 @@ type XtdRelSpecializes implements Node, XtdEntity, XtdRoot, XtdRelationship {
     relatingThing: XtdRoot!
     relatedThings(options: PagingOptions): XtdRootConnection!
     documentedBy: XtdRelDocumentsConnection!
+    collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
@@ -505,7 +558,9 @@ type XtdRelSpecializesConnection {
 type XtdRelComposes implements Node, XtdEntity, XtdRoot, XtdRelationship {
     id: ID!
     created: String!
+    createdBy: String!
     lastModified: String!
+    lastModifiedBy: String!
     versionId: String!
     versionDate: String!
     label: String!
@@ -514,6 +569,7 @@ type XtdRelComposes implements Node, XtdEntity, XtdRoot, XtdRelationship {
     relatingThing: XtdRoot!
     relatedThings(options: PagingOptions): XtdRootConnection!
     documentedBy: XtdRelDocumentsConnection!
+    collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
@@ -535,7 +591,9 @@ type XtdRelComposesConnection {
 type XtdRelActsUpon implements Node, XtdEntity, XtdRoot, XtdRelationship {
     id: ID!
     created: String!
+    createdBy: String!
     lastModified: String!
+    lastModifiedBy: String!
     versionId: String!
     versionDate: String!
     label: String!
@@ -544,6 +602,7 @@ type XtdRelActsUpon implements Node, XtdEntity, XtdRoot, XtdRelationship {
     relatingThing: XtdRoot!
     relatedThings(options: PagingOptions): XtdRootConnection!
     documentedBy: XtdRelDocumentsConnection!
+    collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
@@ -613,6 +672,7 @@ type Query {
     bags(term: String, options: PagingOptions): XtdBagConnection!
     nests(term: String, options: PagingOptions): XtdNestConnection!
     documentsRelations(term: String, options: PagingOptions): XtdRelDocumentsConnection!
+    collectsRelations(term: String, options: PagingOptions): XtdRelCollectsConnection!
     associatesRelations(term: String, options: PagingOptions): XtdRelAssociatesConnection!
     groupsRelations(term: String, options: PagingOptions): XtdRelGroupsConnection!
     specializesRelations(term: String, options: PagingOptions): XtdRelSpecializesConnection!
@@ -673,6 +733,26 @@ input ValueUpdateInput {
     valueRole: XtdValueRoleEnum
     valueType: XtdValueTypeEnum
     nominalValue: String
+}
+
+input CollectsInput {
+    id: ID
+    versionId: String!
+    versionDate: String!
+    names: [TextInput!]!
+    descriptions: [TextInput!]
+    relatingCollection: ID!
+    relatedThings: [ID!]!
+}
+
+input CollectsUpdateInput {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [TextInput!]!
+    descriptions: [TextInput!]
+    relatingCollection: ID!
+    relatedThings: [ID!]!
 }
 
 input AssociationInput {
@@ -761,8 +841,16 @@ type Mutation {
     updateValue(input: ValueUpdateInput!): XtdValue
     deleteValue(id: ID!): XtdValue
 
+    createBag(input: RootInput!): XtdBag
+    updateBag(input: RootUpdateInput!): XtdBag
+    deleteBag(id: ID!): XtdBag
+
     createDocumentsRelation(relatingDocument: ID!, relatedObjects: [ID!]!, input: RootInput!): XtdRelDocuments
     deleteDocumentsRelation(id: ID!): XtdRelDocuments
+
+    createCollectsRelation(input: CollectsInput!): XtdRelCollects
+    updateCollectsRelation(input: CollectsUpdateInput!): XtdRelCollects
+    deleteCollectsRelation(id: ID!): XtdRelCollects
 
     createAssociatesRelation(input: AssociationInput!): XtdRelAssociates
     updateAssociatesRelation(input: AssociationUpdateInput!): XtdRelAssociates

@@ -16,7 +16,9 @@ type PageInfo {
 interface XtdLanguageRepresentation {
     id: ID!
     created: String!
+    createdBy: String!
     lastModified: String!
+    lastModifiedBy: String!
     value: String!
     languageCode: ID!
     languageName: XtdLanguage!
@@ -25,7 +27,9 @@ interface XtdLanguageRepresentation {
 interface XtdEntity {
     id: ID!
     created: String!
+    createdBy: String!
     lastModified: String!
+    lastModifiedBy: String!
     label: String!
     names: [XtdName!]!
 }
@@ -33,13 +37,16 @@ interface XtdEntity {
 interface XtdRoot {
     id: ID!
     created: String!
+    createdBy: String!
     lastModified: String!
+    lastModifiedBy: String!
     versionId: String!
     versionDate: String!
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
     documentedBy: XtdRelDocumentsConnection!
+    collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
@@ -61,7 +68,9 @@ type XtdRootConnection {
 interface XtdObject {
     id: ID!
     created: String!
+    createdBy: String!
     lastModified: String!
+    lastModifiedBy: String!
     versionId: String!
     versionDate: String!
     label: String!
@@ -87,13 +96,17 @@ type XtdObjectConnection {
 interface XtdCollection {
     id: ID!
     created: String!
+    createdBy: String!
     lastModified: String!
+    lastModifiedBy: String!
     versionId: String!
     versionDate: String!
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
     documentedBy: XtdRelDocumentsConnection!
+    collects: XtdRelCollectsConnection!
+    collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!
@@ -113,7 +126,9 @@ type XtdCollectionConnection {
 interface XtdRelationship {
     id: ID!
     created: String!
+    createdBy: String!
     lastModified: String!
+    lastModifiedBy: String!
     versionId: String!
     versionDate: String!
     label: String!
