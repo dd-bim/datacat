@@ -82,13 +82,6 @@ public class RelAssociatesDataFetcherProvider implements QueryDataFetcherProvide
         };
     }
 
-    public DataFetcher<Optional<XtdRelAssociates>> getOne() {
-        return environment -> {
-            String id = environment.getArgument("id");
-            return relAssociatesService.findById(id);
-        };
-    }
-
     public DataFetcher<Connection<XtdRelAssociates>> getAll() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("options");
