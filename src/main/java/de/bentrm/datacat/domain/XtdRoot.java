@@ -24,11 +24,8 @@ public abstract class XtdRoot extends XtdEntity {
     @Relationship(type = XtdDescription.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
     private final SortedSet<XtdDescription> descriptions = new TreeSet<>();
 
-    @Relationship(type = XtdRelCollects.RELATIONSHIP_TYPE)
-    private Set<XtdRelCollects> collects = new HashSet<>();
-
     @Relationship(type = XtdRelCollects.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
-    private Set<XtdRelCollects> collectedIn = new HashSet<>();
+    private Set<XtdRelCollects> collectedBy = new HashSet<>();
 
     @Relationship(type = XtdRelDocuments.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
     private final Set<XtdRelDocuments> documentedBy = new HashSet<>();
@@ -91,20 +88,12 @@ public abstract class XtdRoot extends XtdEntity {
         return this.descriptions.remove(description);
     }
 
-    public Set<XtdRelCollects> getCollects() {
-        return collects;
+    public Set<XtdRelCollects> getCollectedBy() {
+        return collectedBy;
     }
 
-    public void setCollects(Set<XtdRelCollects> collects) {
-        this.collects = collects;
-    }
-
-    public Set<XtdRelCollects> getCollectedIn() {
-        return collectedIn;
-    }
-
-    public void setCollectedIn(Set<XtdRelCollects> collectedIn) {
-        this.collectedIn = collectedIn;
+    public void setCollectedBy(Set<XtdRelCollects> collectedBy) {
+        this.collectedBy = collectedBy;
     }
 
     public Set<XtdRelDocuments> getDocumentedBy() {
