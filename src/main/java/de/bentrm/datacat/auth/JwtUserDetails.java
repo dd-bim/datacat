@@ -1,22 +1,31 @@
 package de.bentrm.datacat.auth;
 
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class JwtUserDetails implements UserDetails {
 
-    private final String username;
+    private final DecodedJWT decodedJwt;
 
-    public JwtUserDetails(String username) {
-        this.username = username;
+    public JwtUserDetails(DecodedJWT decodedJwt) {
+        this.decodedJwt = decodedJwt;
     }
 
     @Override
     public List<SimpleGrantedAuthority> getAuthorities() {
-        return new ArrayList<>();
+        final Claim roles = decodedJwt.getClaim("roles");
+        return Arrays
+                .stream(roles.asArray(String.class))
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -26,7 +35,7 @@ public class JwtUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return decodedJwt.getSubject();
     }
 
     @Override
@@ -41,7 +50,7 @@ public class JwtUserDetails implements UserDetails {
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return Date.from(Instant.now()).compareTo(decodedJwt.getExpiresAt()) > 0;
     }
 
     @Override
