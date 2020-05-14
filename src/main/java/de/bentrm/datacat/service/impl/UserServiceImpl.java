@@ -62,6 +62,10 @@ public class UserServiceImpl implements UserService {
 
             var admin = new User();
             admin.setUsername(adminUsername);
+            admin.setFirstName("");
+            admin.setLastName("");
+            admin.setEmail("");
+            admin.setOrganization("");
             admin.setPassword(passwordEncoder.encode(adminPassword));
             admin.getRoles().add(Roles.ROLE_SUPERADMIN);
             admin.getRoles().add(Roles.ROLE_ADMIN);
