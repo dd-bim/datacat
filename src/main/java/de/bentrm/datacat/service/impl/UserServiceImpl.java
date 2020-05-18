@@ -127,7 +127,8 @@ public class UserServiceImpl implements UserService {
             UserProfile newUserProfile = UserProfile.of(user);
             return new UserSession(token, newUserProfile);
         } catch (AuthenticationException ex) {
-            throw new BadCredentialsException("Username not found.");
+            logger.warn("Authentication Exception for username {}: {}", username, ex.getMessage());
+            throw new BadCredentialsException("Unknown username or wrong password provided.");
         }
     }
 
