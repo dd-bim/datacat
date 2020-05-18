@@ -39,6 +39,9 @@ public class SchemaDefinition implements ResourceLoaderAware {
     private List<MutationDataFetcherProvider> mutationDataFetcherProviders;
 
     @Autowired
+    private RelCollectsDataFetcherProvider relCollectsProvider;
+
+    @Autowired
     private RelAssociatesDataFetcherProvider relAssociatesProvider;
 
     @Autowired
@@ -85,6 +88,11 @@ public class SchemaDefinition implements ResourceLoaderAware {
                 .type("XtdProperty", rootDataFetchers)
                 .type("XtdValue", rootDataFetchers)
                 .type("XtdBag", rootDataFetchers)
+                .type("XtdNest", rootDataFetchers)
+                .type("XtdRelCollects", typeWiring -> rootDataFetchers
+                        .apply(typeWiring)
+                        .dataFetchers(relCollectsProvider.getRelCollectsDataFetchers())
+                )
                 .type("XtdRelAssociates", typeWiring -> rootDataFetchers
                         .apply(typeWiring)
                         .dataFetchers(relAssociatesProvider.getRelAssociatesDataFetchers()))

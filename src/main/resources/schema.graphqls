@@ -845,6 +845,10 @@ type Mutation {
     updateBag(input: RootUpdateInput!): XtdBag
     deleteBag(id: ID!): XtdBag
 
+    createNest(input: RootInput!): XtdNest
+    updateNest(input: RootUpdateInput!): XtdNest
+    deleteNest(id: ID!): XtdNest
+
     createDocumentsRelation(relatingDocument: ID!, relatedObjects: [ID!]!, input: RootInput!): XtdRelDocuments
     deleteDocumentsRelation(id: ID!): XtdRelDocuments
 
