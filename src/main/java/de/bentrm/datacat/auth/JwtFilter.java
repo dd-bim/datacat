@@ -1,6 +1,7 @@
 package de.bentrm.datacat.auth;
 
 import com.auth0.jwt.JWTVerifier;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,8 +33,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private JWTVerifier verifier;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        logger.debug("Request is filtered: {}", request);
+    protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         getToken(request)
                 .map(verifier::verify)
                 .map(JwtUserDetails::new)

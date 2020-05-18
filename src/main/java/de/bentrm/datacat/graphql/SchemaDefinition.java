@@ -83,6 +83,8 @@ public class SchemaDefinition implements ResourceLoaderAware {
                 .type("XtdSubject", rootDataFetchers)
                 .type("XtdUnit", rootDataFetchers)
                 .type("XtdProperty", rootDataFetchers)
+                .type("XtdValue", rootDataFetchers)
+                .type("XtdBag", rootDataFetchers)
                 .type("XtdRelAssociates", typeWiring -> rootDataFetchers
                         .apply(typeWiring)
                         .dataFetchers(relAssociatesProvider.getRelAssociatesDataFetchers()))
