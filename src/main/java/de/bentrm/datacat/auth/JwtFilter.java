@@ -37,7 +37,7 @@ public class JwtFilter extends OncePerRequestFilter {
         getToken(request)
                 .map(verifier::verify)
                 .map(JwtUserDetails::new)
-                .map(userDetails -> new JwtPreAuthenticatedAuthenticationToken(userDetails.getUsername(), new WebAuthenticationDetailsSource().buildDetails(request)))
+                .map(userDetails -> new JwtPreAuthenticatedAuthenticationToken(userDetails.getUsername(), userDetails.getAuthorities(), new WebAuthenticationDetailsSource().buildDetails(request)))
                 .ifPresent(authentication -> SecurityContextHolder.getContext().setAuthentication(authentication));
         filterChain.doFilter(request, response);
     }
