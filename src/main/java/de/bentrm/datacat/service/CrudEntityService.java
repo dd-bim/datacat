@@ -9,13 +9,13 @@ import java.util.Optional;
 
 public interface CrudEntityService<T extends XtdEntity, C, U> extends EntityService<T> {
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('USER')")
     @NotNull T create(@Valid C dto);
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('USER')")
     @NotNull T update(@Valid U dto);
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('USER')")
     Optional<T> delete(@NotNull String id);
 
 }

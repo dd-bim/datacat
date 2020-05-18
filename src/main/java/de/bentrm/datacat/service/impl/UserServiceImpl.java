@@ -28,6 +28,7 @@ import javax.validation.constraints.NotBlank;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @Validated
@@ -67,9 +68,8 @@ public class UserServiceImpl implements UserService {
             admin.setEmail("");
             admin.setOrganization("");
             admin.setPassword(passwordEncoder.encode(adminPassword));
-            admin.getRoles().add(Roles.ROLE_SUPERADMIN);
-            admin.getRoles().add(Roles.ROLE_ADMIN);
-            admin.getRoles().add(Roles.ROLE_USER);
+            admin.getRoles().addAll(List.of(Roles.values()));
+
             admin = userRepository.save(admin);
 
             logger.info("Added admin user: {}", admin);
@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
 
         String encodedPassword = passwordEncoder.encode(signupInput.getPassword());
         user.setPassword(encodedPassword);
-        user.getRoles().add(Roles.ROLE_USER);
+        user.getRoles().add(Roles.ROLE_READONLY);
 
         // login new user
         var authenticationToken = new UsernamePasswordAuthenticationToken(signupInput.getUsername(), null, user.getAuthorities());
@@ -117,9 +117,6 @@ public class UserServiceImpl implements UserService {
         logger.debug("{} is trying to login", username);
         try {
             final User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Unknown username."));
-            logger.debug("{}", user);
-            logger.debug("Password: {}", password);
-            logger.debug("Encoded password: {}", user.getPassword());
             if (!passwordEncoder.matches(password, user.getPassword())) {
                 throw new BadCredentialsException("Wrong password.");
             }
@@ -136,7 +133,7 @@ public class UserServiceImpl implements UserService {
 
     public String getToken(UserDetails user) {
         Instant now = Instant.now();
-        Instant expiry = Instant.now().plus(Duration.ofHours(2)); // Token will be valid for 2 hours
+        Instant expiry = Instant.now().plus(Duration.ofHours(4)); // Token will be valid for 4 hours
         final String[] claims = user.getAuthorities().stream().map(Object::toString).toArray(String[]::new);
         return JWT
                 .create()

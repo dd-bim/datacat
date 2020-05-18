@@ -13,25 +13,25 @@ import java.util.Optional;
 
 public interface EntityService<T extends Entity> {
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('READONLY')")
     @NotNull Optional<T> findById(@NotNull String id);
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('READONLY')")
     @NotNull Page<T> findByIds(@NotNull List<String> ids, @NotNull Pageable pageable);
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('READONLY')")
     @NotNull Page<T> findAll(@NotNull Pageable pageable);
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('READONLY')")
     @NotNull long countAll();
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('READONLY')")
     @NotNull Page<T> findAll(@NotNull FilterOptions<String> filterOptions, @NotNull Pageable pageable);
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('READONLY')")
     @NotNull long countAll(@NotNull FilterOptions<String> filterOptions);
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('READONLY')")
     @NotNull Page<T> findByTerm(@NotBlank String term, @NotNull Pageable pageable);
 
 }
