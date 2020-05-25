@@ -132,7 +132,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public UserSession login(@NotBlank String username, @NotBlank String password) {
-        logger.debug("{} is trying to login", username);
         try {
             final User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Unknown username."));
             if (!passwordEncoder.matches(password, user.getPassword())) {
@@ -155,7 +154,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public void login(@NotBlank String token) {
         final DecodedJWT jwt = jwtVerifier.verify(token);
         final UserDetails userDetails = new JwtUserDetails(jwt);
-        logger.debug("{} is trying to login", userDetails.getUsername());
         final HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         final WebAuthenticationDetails webAuthenticationDetails = new WebAuthenticationDetailsSource().buildDetails(request);
         final var authenticationToken = new JwtPreAuthenticatedAuthenticationToken(
