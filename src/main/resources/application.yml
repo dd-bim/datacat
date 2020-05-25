@@ -1,3 +1,8 @@
-spring:
-  profiles:
-    active: dev
+graphql:
+  servlet:
+    enabled: true
+    corsEnabled: true
+    mapping: /graphql
+    exception-handlers-enabled: true
+    tracingEnabled: false
+    actuator-metrics: true
