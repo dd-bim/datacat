@@ -1,17 +1,17 @@
-package de.bentrm.datacat.service.impl;
+package de.bentrm.datacat.auth;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import de.bentrm.datacat.auth.UserProfile;
-import de.bentrm.datacat.auth.UserSession;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import de.bentrm.datacat.domain.Roles;
 import de.bentrm.datacat.domain.User;
 import de.bentrm.datacat.graphql.dto.SignupInput;
 import de.bentrm.datacat.repository.UserRepository;
-import de.bentrm.datacat.service.UserService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.actuate.audit.listener.AuditApplicationEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,32 +20,38 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotBlank;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Validated
 @Transactional
-public class UserServiceImpl implements UserService {
+public class AuthenticationServiceImpl implements AuthenticationService {
 
+    public static final String AUTHENTICATION_SUCCESS = "AUTHENTICATION_SUCCESS";
+    public static final String AUTHENTICATION_FAILURE = "AUTHENTICATION_FAILURE";
     @Autowired
     private Logger logger;
 
-    @Value("${de.bentrm.datacat.auth.issuer}")
-    private String issuer;
+    @Autowired
+    private AuthProperties authProperties;
 
-    @Value("${de.bentrm.datacat.auth.admin.username:admin}")
-    private String adminUsername;
-
-    @Value("${de.bentrm.datacat.auth.admin.password}")
-    private String adminPassword;
+    @Autowired
+    private JWTVerifier jwtVerifier;
 
     @Autowired
     private Algorithm algorithm;
@@ -56,18 +62,22 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
+
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        if (!userRepository.existsByUsername(adminUsername)) {
-            logger.info("No superadmin user named {} found. Adding user...", adminUsername);
+        final AuthProperties.Admin properties = authProperties.getAdmin();
+        if (!userRepository.existsByUsername(properties.getUsername())) {
+            logger.info("No superadmin user named {} found. Adding user...", properties.getUsername());
 
             var admin = new User();
-            admin.setUsername(adminUsername);
-            admin.setFirstName("");
-            admin.setLastName("");
-            admin.setEmail("");
-            admin.setOrganization("");
-            admin.setPassword(passwordEncoder.encode(adminPassword));
+            admin.setUsername(properties.getUsername());
+            admin.setFirstName(properties.getFirstname());
+            admin.setLastName(properties.getLastname());
+            admin.setEmail(properties.getEmail());
+            admin.setOrganization(properties.getOrganization());
+            admin.setPassword(passwordEncoder.encode(properties.getPassword()));
             admin.getRoles().addAll(List.of(Roles.values()));
 
             admin = userRepository.save(admin);
@@ -81,11 +91,17 @@ public class UserServiceImpl implements UserService {
         logger.debug("New signup: {}", signupInput);
 
         if (userRepository.existsByUsername(signupInput.getUsername())) {
-            throw new IllegalArgumentException("Username is taken.");
+            final IllegalArgumentException exception = new IllegalArgumentException("Username is taken.");
+            final AuditApplicationEvent event = new AuditApplicationEvent(Instant.now(), signupInput.getUsername(), AUTHENTICATION_SUCCESS, Map.ofEntries(Map.entry("details", exception)));
+            applicationEventPublisher.publishEvent(event);
+            throw exception;
         }
 
         if (userRepository.existsByEmail(signupInput.getEmail())) {
-            throw new IllegalArgumentException("Email is taken.");
+            final IllegalArgumentException exception = new IllegalArgumentException("Email is taken.");
+            final AuditApplicationEvent event = new AuditApplicationEvent(Instant.now(), signupInput.getUsername(), AUTHENTICATION_SUCCESS, Map.ofEntries(Map.entry("details", exception)));
+            applicationEventPublisher.publishEvent(event);
+            throw exception;
         }
 
         // create new user
@@ -107,8 +123,10 @@ public class UserServiceImpl implements UserService {
         // save after logging user in to audit creation
         user = userRepository.save(user);
 
-        String token = getToken(user);
+        String token = buildToken(user);
         UserProfile newUserProfile = UserProfile.of(user);
+
+        applicationEventPublisher.publishEvent(new AuditApplicationEvent(Instant.now(), user.getUsername(), AUTHENTICATION_SUCCESS, new HashMap<>()));
         return new UserSession(token, newUserProfile);
     }
 
@@ -123,22 +141,39 @@ public class UserServiceImpl implements UserService {
             var authenticationToken = new UsernamePasswordAuthenticationToken(username, null, user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-            String token = getToken(user);
+            String token = buildToken(user);
             UserProfile newUserProfile = UserProfile.of(user);
+            applicationEventPublisher.publishEvent(new AuditApplicationEvent(Instant.now(), username, AUTHENTICATION_SUCCESS, new HashMap<>()));
             return new UserSession(token, newUserProfile);
         } catch (AuthenticationException ex) {
-            logger.warn("Authentication Exception for username {}: {}", username, ex.getMessage());
-            throw new BadCredentialsException("Unknown username or wrong password provided.");
+            applicationEventPublisher.publishEvent(new AuditApplicationEvent(Instant.now(), username, AUTHENTICATION_FAILURE, new HashMap<>()));
+            throw new BadCredentialsException("Unknown username or wrong password provided.", ex);
         }
     }
 
-    public String getToken(UserDetails user) {
+    @Override
+    public void login(@NotBlank String token) {
+        final DecodedJWT jwt = jwtVerifier.verify(token);
+        final UserDetails userDetails = new JwtUserDetails(jwt);
+        logger.debug("{} is trying to login", userDetails.getUsername());
+        final HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        final WebAuthenticationDetails webAuthenticationDetails = new WebAuthenticationDetailsSource().buildDetails(request);
+        final var authenticationToken = new JwtPreAuthenticatedAuthenticationToken(
+                userDetails.getUsername(),
+                userDetails.getAuthorities(),
+                webAuthenticationDetails);
+        logger.debug("Auth token: {}", authenticationToken);
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        applicationEventPublisher.publishEvent(new AuditApplicationEvent(Instant.now(), authenticationToken.getName(), AUTHENTICATION_SUCCESS, new HashMap<>()));
+    }
+
+    public String buildToken(UserDetails user) {
         Instant now = Instant.now();
         Instant expiry = Instant.now().plus(Duration.ofHours(4)); // Token will be valid for 4 hours
         final String[] claims = user.getAuthorities().stream().map(Object::toString).toArray(String[]::new);
         return JWT
                 .create()
-                .withIssuer(issuer) // Same as within the JWTVerifier
+                .withIssuer(authProperties.getIssuer()) // Same as within the JWTVerifier
                 .withIssuedAt(Date.from(now))
                 .withExpiresAt(Date.from(expiry))
                 .withSubject(user.getUsername())

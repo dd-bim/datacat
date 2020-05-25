@@ -1,11 +1,8 @@
 package de.bentrm.datacat.auth;
 
-import com.auth0.jwt.JWTVerifier;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -26,19 +23,12 @@ public class JwtFilter extends OncePerRequestFilter {
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final Pattern BEARER_PATTERN = Pattern.compile("^Bearer (.+?)$");
 
-    @Autowired
-    private Logger logger;
-
-    @Autowired
-    private JWTVerifier verifier;
+    @Autowired @Lazy
+    private AuthenticationService authenticationService;
 
     @Override
     protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        getToken(request)
-                .map(verifier::verify)
-                .map(JwtUserDetails::new)
-                .map(userDetails -> new JwtPreAuthenticatedAuthenticationToken(userDetails.getUsername(), userDetails.getAuthorities(), new WebAuthenticationDetailsSource().buildDetails(request)))
-                .ifPresent(authentication -> SecurityContextHolder.getContext().setAuthentication(authentication));
+        getToken(request).ifPresent(token -> authenticationService.login(token));
         filterChain.doFilter(request, response);
     }
 

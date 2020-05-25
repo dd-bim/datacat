@@ -23,6 +23,8 @@ public class UserProfile {
     @NotNull
     private String organization;
 
+    private UserProfile() {}
+
     public static UserProfile of(User user) {
         var profile = new UserProfile();
         profile.setUsername(user.getUsername());

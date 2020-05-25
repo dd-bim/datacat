@@ -1,9 +1,14 @@
-de.bentrm.datacat.auth:
-  secret: my-secret
-  issuer: datacat-demo
-  admin:
-    username: admin
-    password: s3cret
+management:
+  endpoints.web.exposure.include: "auditevents,info,health,prometheus"
+  endpoint:
+    auditevents:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
 
 spring:
   data:
@@ -23,15 +28,17 @@ graphql:
     tracingEnabled: false
     actuator-metrics: true
 
-graphiql:
-  enabled: true
-  mapping: /graphiql
-  cdn:
-    enabled: false
-
 logging:
   level:
     de.bentrm.datacat:
       auth: DEBUG
       graphql: DEBUG
       service: DEBUG
+
+datacat:
+  auth:
+    secret: my-secret
+    issuer: datacat-demo
+    admin:
+      password: s3cret
+      username: admin

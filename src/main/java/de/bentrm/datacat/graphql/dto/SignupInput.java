@@ -1,7 +1,5 @@
 package de.bentrm.datacat.graphql.dto;
 
-import de.bentrm.datacat.auth.UserProfile;
-import de.bentrm.datacat.domain.User;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.validation.constraints.NotBlank;
@@ -26,16 +24,6 @@ public class SignupInput {
 
     @NotNull
     private String organization;
-
-    public static UserProfile of(User user) {
-        var profile = new UserProfile();
-        profile.setUsername(user.getUsername());
-        profile.setFirstName(user.getFirstName());
-        profile.setLastName(user.getLastName());
-        profile.setEmail(user.getEmail());
-        profile.setOrganization(user.getOrganization());
-        return profile;
-    }
 
     public String getUsername() {
         return username;

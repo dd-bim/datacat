@@ -34,6 +34,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
             .csrf().disable()
             .authorizeRequests()
+                .antMatchers("/actuator/**").permitAll()
                 .antMatchers("/graphql").permitAll()
                 .and()
             .cors()
@@ -42,6 +43,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
             .addFilterBefore(jwtFilter, RequestHeaderAuthenticationFilter.class);
     }
+
+
 
     @Bean("userDetailsServiceIml")
     @Override
