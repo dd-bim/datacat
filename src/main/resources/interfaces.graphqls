@@ -45,7 +45,6 @@ interface XtdRoot {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
-    documentedBy: XtdRelDocumentsConnection!
     collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
@@ -104,7 +103,6 @@ interface XtdCollection {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
-    documentedBy: XtdRelDocumentsConnection!
     collects: XtdRelCollectsConnection!
     collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
@@ -134,7 +132,6 @@ interface XtdRelationship {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
-    documentedBy: XtdRelDocumentsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
     groups(options: PagingOptions): XtdRelGroupsConnection!

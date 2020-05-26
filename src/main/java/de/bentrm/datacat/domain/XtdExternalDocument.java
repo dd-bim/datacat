@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 @NodeEntity(label = XtdExternalDocument.LABEL)
-@PropertyQueryHint("(root)<-[:IS_NAME_OF|COMMENTS*0..1]-()")
 public class XtdExternalDocument extends XtdEntity {
 
     public static final String TITLE = "ExternalDocument";

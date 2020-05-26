@@ -337,7 +337,6 @@ type XtdBag implements Node, XtdEntity, XtdRoot, XtdCollection {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
-    documentedBy: XtdRelDocumentsConnection!
     collects: XtdRelCollectsConnection!
     collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
@@ -369,7 +368,6 @@ type XtdNest implements Node, XtdEntity, XtdRoot, XtdCollection {
     label: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
-    documentedBy: XtdRelDocumentsConnection!
     collects: XtdRelCollectsConnection!
     collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
@@ -403,7 +401,6 @@ type XtdRelCollects implements Node, XtdEntity, XtdRoot, XtdRelationship {
     descriptions: [XtdDescription!]!
     relatingCollection: XtdCollection!
     relatedThings(options: PagingOptions): XtdRootConnection!
-    documentedBy: XtdRelDocumentsConnection!
     collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
@@ -436,7 +433,6 @@ type XtdRelDocuments implements Node, XtdEntity, XtdRoot, XtdRelationship {
     descriptions: [XtdDescription!]!
     relatingDocument: XtdExternalDocument!
     relatedObjects(options: PagingOptions): XtdObjectConnection!
-    documentedBy: XtdRelDocumentsConnection!
     collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
@@ -469,7 +465,6 @@ type XtdRelAssociates implements Node, XtdEntity, XtdRoot, XtdRelationship {
     descriptions: [XtdDescription!]!
     relatingThing: XtdObject!
     relatedThings(options: PagingOptions): XtdObjectConnection!
-    documentedBy: XtdRelDocumentsConnection!
     collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
@@ -502,7 +497,6 @@ type XtdRelGroups implements Node, XtdEntity, XtdRoot, XtdRelationship {
     descriptions: [XtdDescription!]!
     relatingThing: XtdRoot!
     relatedThings(options: PagingOptions): XtdRootConnection!
-    documentedBy: XtdRelDocumentsConnection!
     collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
@@ -535,7 +529,6 @@ type XtdRelSpecializes implements Node, XtdEntity, XtdRoot, XtdRelationship {
     descriptions: [XtdDescription!]!
     relatingThing: XtdRoot!
     relatedThings(options: PagingOptions): XtdRootConnection!
-    documentedBy: XtdRelDocumentsConnection!
     collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
@@ -568,7 +561,6 @@ type XtdRelComposes implements Node, XtdEntity, XtdRoot, XtdRelationship {
     descriptions: [XtdDescription!]!
     relatingThing: XtdRoot!
     relatedThings(options: PagingOptions): XtdRootConnection!
-    documentedBy: XtdRelDocumentsConnection!
     collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
@@ -601,7 +593,6 @@ type XtdRelActsUpon implements Node, XtdEntity, XtdRoot, XtdRelationship {
     descriptions: [XtdDescription!]!
     relatingThing: XtdRoot!
     relatedThings(options: PagingOptions): XtdRootConnection!
-    documentedBy: XtdRelDocumentsConnection!
     collectedBy: XtdRelCollectsConnection!
     associates(options: PagingOptions): XtdRelAssociatesConnection!
     associatedBy(options: PagingOptions): XtdRelAssociatesConnection!
@@ -660,7 +651,7 @@ type SearchConnection {
 type Query {
     node(id: ID!): Node
     search(options: SearchInput, paging: PagingOptions): SearchConnection!
-    documents(term: String, options: PagingOptions): XtdExternalDocumentConnection!
+    externalDocuments(term: String, options: PagingOptions): XtdExternalDocumentConnection!
     actors(term: String, options: PagingOptions): XtdActorConnection!
     activities(term: String, options: PagingOptions): XtdActivityConnection!
     classifications(term: String, options: PagingOptions): XtdClassificationConnection!
@@ -686,8 +677,13 @@ input TextInput {
     value: String!
 }
 
-input ExternalDocumentInput {
+input EntityInput {
     id: ID
+    names: [TextInput!]!
+}
+
+input EntityUpdateInput {
+    id: ID!
     names: [TextInput!]!
 }
 
@@ -733,6 +729,26 @@ input ValueUpdateInput {
     valueRole: XtdValueRoleEnum
     valueType: XtdValueTypeEnum
     nominalValue: String
+}
+
+input RelDocumentsInput {
+    id: ID
+    versionId: String!
+    versionDate: String!
+    names: [TextInput!]!
+    descriptions: [TextInput!]
+    relatingDocument: ID!
+    relatedObjects: [ID!]!
+}
+
+input RelDocumentsUpdateInput {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [TextInput!]!
+    descriptions: [TextInput!]
+    relatingDocument: ID!
+    relatedObjects: [ID!]!
 }
 
 input CollectsInput {
@@ -806,8 +822,9 @@ type Mutation {
     signup(input: SignupInput!): UserAuthentication
     login(input: LoginInput!): UserAuthentication
 
-    createDocument(input: ExternalDocumentInput!): XtdExternalDocument
-    deleteDocument(id: ID!): XtdExternalDocument
+    createExternalDocument(input: EntityInput!): XtdExternalDocument
+    updateExternalDocument(input: EntityUpdateInput!): XtdExternalDocument
+    deleteExternalDocument(id: ID!): XtdExternalDocument
 
     createActor(input: RootInput!): XtdActor
     updateActor(input: RootUpdateInput!): XtdActor
@@ -849,7 +866,8 @@ type Mutation {
     updateNest(input: RootUpdateInput!): XtdNest
     deleteNest(id: ID!): XtdNest
 
-    createDocumentsRelation(relatingDocument: ID!, relatedObjects: [ID!]!, input: RootInput!): XtdRelDocuments
+    createDocumentsRelation(input: RelDocumentsInput!): XtdRelDocuments
+    updateDocumentsRelation(input: RelDocumentsUpdateInput!): XtdRelDocuments
     deleteDocumentsRelation(id: ID!): XtdRelDocuments
 
     createCollectsRelation(input: CollectsInput!): XtdRelCollects

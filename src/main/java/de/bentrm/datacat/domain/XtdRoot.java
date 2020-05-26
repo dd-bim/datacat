@@ -27,9 +27,6 @@ public abstract class XtdRoot extends XtdEntity {
     @Relationship(type = XtdRelCollects.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
     private Set<XtdRelCollects> collectedBy = new HashSet<>();
 
-    @Relationship(type = XtdRelDocuments.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
-    private final Set<XtdRelDocuments> documentedBy = new HashSet<>();
-
     @Relationship(type = XtdRelAssociates.RELATIONSHIP_TYPE)
     private final Set<XtdRelAssociates> associates = new HashSet<>();
 
@@ -94,10 +91,6 @@ public abstract class XtdRoot extends XtdEntity {
 
     public void setCollectedBy(Set<XtdRelCollects> collectedBy) {
         this.collectedBy = collectedBy;
-    }
-
-    public Set<XtdRelDocuments> getDocumentedBy() {
-        return documentedBy;
     }
 
     public Set<XtdRelAssociates> getAssociates() {

@@ -10,7 +10,8 @@ import java.util.TreeSet;
 @NodeEntity(label = "XtdEntity")
 // TODO: Revise subgraph selection to be more specific to actual query and selected entity
 @PropertyQueryHint({
-        "(root)<-[:IS_NAME_OF|IS_DESCRIPTION_OF|COMMENTS*0..1]-()",
+        "(root)<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()",
+        "(root)-[:DOCUMENTS]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()",
         "(root)-[:COLLECTS]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()",
         "(root)-[:ASSOCIATES]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()",
         "(root)-[:COMPOSES]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()",
