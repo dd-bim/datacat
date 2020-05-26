@@ -1,7 +1,7 @@
 package de.bentrm.datacat.graphql.fetcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.bentrm.datacat.domain.XtdRoot;
+import de.bentrm.datacat.domain.XtdEntity;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.PageInfo;
 import de.bentrm.datacat.graphql.dto.PagingOptions;
@@ -16,9 +16,9 @@ import java.util.Map;
 import java.util.Optional;
 
 public abstract class EntityDataFetcherProviderImpl<
-        T extends XtdRoot, C, U,
+        T extends XtdEntity, C, U,
         S extends CrudEntityService<T, C, U>
-        > {
+        > implements DataFetcherProvider {
 
     private final Class<C> inputClass;
     private final Class<U> updateClass;
@@ -53,13 +53,6 @@ public abstract class EntityDataFetcherProviderImpl<
         return environment -> {
             String id = environment.getArgument("id");
             return entityService.delete(id);
-        };
-    }
-
-    public DataFetcher<Optional<T>> getOne() {
-        return env -> {
-            String id = env.getArgument("id");
-            return entityService.findById(id);
         };
     }
 

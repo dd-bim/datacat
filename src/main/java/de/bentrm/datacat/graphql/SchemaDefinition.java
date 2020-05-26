@@ -27,7 +27,10 @@ public class SchemaDefinition implements ResourceLoaderAware {
     private TypeResolvers typeResolvers;
 
     @Autowired
-    private BaseDataFetcherProvider dataFetchers;
+    private BaseDataFetcherProvider baseDataFetcherProvider;
+
+    @Autowired
+    private ExternalDocumentDataFetcherProvider externalDocumentDataFetcherProvider;
 
     @Autowired
     private List<QueryDataFetcherProvider> queryDataFetcherProviders;
@@ -36,7 +39,13 @@ public class SchemaDefinition implements ResourceLoaderAware {
     private List<RootDataFetcherProvider> rootDataFetcherProviders;
 
     @Autowired
+    private List<ObjectDataFetcherProvider> objectDataFetcherProviders;
+
+    @Autowired
     private List<MutationDataFetcherProvider> mutationDataFetcherProviders;
+
+    @Autowired
+    private RelDocumentsDataFetcherProvider relDocumentsProvider;
 
     @Autowired
     private RelCollectsDataFetcherProvider relCollectsProvider;
@@ -77,22 +86,31 @@ public class SchemaDefinition implements ResourceLoaderAware {
             rootDataFetcherProviders.forEach(provider -> typeWiring.dataFetchers(provider.getRootDataFetchers()));
             return typeWiring;
         };
+        final UnaryOperator<TypeRuntimeWiring.Builder> objectDataFetchers = typeWiring -> {
+            rootDataFetchers.apply(typeWiring);
+            objectDataFetcherProviders.forEach(provider -> typeWiring.dataFetchers(provider.getObjectDataFetchers()));
+            return typeWiring;
+        };
 
         RuntimeWiring wiring = builder
-                .type("XtdName", typeWiring -> typeWiring.dataFetcher("languageName", dataFetchers.languageByLanguageRepresentation()))
-                .type("XtdDescription", typeWiring -> typeWiring.dataFetcher("languageName", dataFetchers.languageByLanguageRepresentation()))
-                .type("XtdActivity", rootDataFetchers)
-                .type("XtdActor", rootDataFetchers)
-                .type("XtdSubject", rootDataFetchers)
-                .type("XtdUnit", rootDataFetchers)
-                .type("XtdProperty", rootDataFetchers)
-                .type("XtdValue", rootDataFetchers)
+                .type("XtdName", typeWiring -> typeWiring.dataFetcher("languageName", baseDataFetcherProvider.languageByLanguageRepresentation()))
+                .type("XtdDescription", typeWiring -> typeWiring.dataFetcher("languageName", baseDataFetcherProvider.languageByLanguageRepresentation()))
+                .type("XtdExternalDocument", typeWiring -> typeWiring
+                        .dataFetchers(externalDocumentDataFetcherProvider.getDataFetchers()))
+                .type("XtdActivity", objectDataFetchers)
+                .type("XtdActor", objectDataFetchers)
+                .type("XtdSubject", objectDataFetchers)
+                .type("XtdUnit", objectDataFetchers)
+                .type("XtdProperty", objectDataFetchers)
+                .type("XtdValue", objectDataFetchers)
                 .type("XtdBag", rootDataFetchers)
                 .type("XtdNest", rootDataFetchers)
+                .type("XtdRelDocuments", typeWiring -> rootDataFetchers
+                        .apply(typeWiring)
+                        .dataFetchers(relDocumentsProvider.getRelDocumentsDataFetchers()))
                 .type("XtdRelCollects", typeWiring -> rootDataFetchers
                         .apply(typeWiring)
-                        .dataFetchers(relCollectsProvider.getRelCollectsDataFetchers())
-                )
+                        .dataFetchers(relCollectsProvider.getRelCollectsDataFetchers()))
                 .type("XtdRelAssociates", typeWiring -> rootDataFetchers
                         .apply(typeWiring)
                         .dataFetchers(relAssociatesProvider.getRelAssociatesDataFetchers()))
