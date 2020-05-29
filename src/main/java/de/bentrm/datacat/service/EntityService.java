@@ -26,10 +26,10 @@ public interface EntityService<T extends Entity> {
     @NotNull long countAll();
 
     @PreAuthorize("hasRole('READONLY')")
-    @NotNull Page<T> findAll(@NotNull FilterOptions<String> filterOptions, @NotNull Pageable pageable);
+    @NotNull Page<T> findAll(@NotNull FilterOptions filterOptions, @NotNull Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    @NotNull long countAll(@NotNull FilterOptions<String> filterOptions);
+    @NotNull long countAll(@NotNull FilterOptions filterOptions);
 
     @PreAuthorize("hasRole('READONLY')")
     @NotNull Page<T> findByTerm(@NotBlank String term, @NotNull Pageable pageable);

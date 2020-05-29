@@ -52,8 +52,8 @@ public class BaseDataFetcherProvider implements QueryDataFetcherProvider {
     public DataFetcher<Connection<XtdEntity>> search() {
         return environment -> {
             Map<String, Object> optionsInput = environment.getArgument("options");
-            FilterOptions<String> searchOptions = mapper.convertValue(optionsInput, FilterOptions.class);
-            if (searchOptions == null) searchOptions = new FilterOptions<>();
+            FilterOptions searchOptions = mapper.convertValue(optionsInput, FilterOptions.class);
+            if (searchOptions == null) searchOptions = new FilterOptions();
 
             Map<String, Object> pagingInput = environment.getArgument("paging");
             PagingOptions pagingOptions = mapper.convertValue(pagingInput, PagingOptions.class);

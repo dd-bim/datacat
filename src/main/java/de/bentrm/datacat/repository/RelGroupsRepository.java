@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RelGroupsRepository
-        extends GraphEntityRepository<XtdRelGroups, String>, RelGroupsRepositoryExtension {
+        extends GraphEntityRepository<XtdRelGroups>, RelGroupsRepositoryExtension {
 
 }

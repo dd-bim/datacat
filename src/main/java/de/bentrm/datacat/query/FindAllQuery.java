@@ -5,10 +5,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.Set;
 
-public class FindAllQuery<T, ID extends Serializable> extends AbstractCustomQuery<T> implements IterableQuery<T> {
+public class FindAllQuery<T> extends AbstractCustomQuery<T> implements IterableQuery<T> {
 
     private static final String FIND_ALL_QUERY_TEMPLATE =
             "MATCH (name:XtdName)-[:IS_NAME_OF]->(root) " +
@@ -21,10 +20,10 @@ public class FindAllQuery<T, ID extends Serializable> extends AbstractCustomQuer
             "RETURN root, ${propertyAggregations}, ID(root)";
 
     public FindAllQuery(Class<T> entityType, Session session, @NotNull Pageable pageable) {
-        this(entityType, session, pageable, new FilterOptions<>(null, null, null));
+        this(entityType, session, pageable, new FilterOptions(null, null, null));
     }
 
-    public FindAllQuery(Class<T> entityType, Session session, @NotNull Pageable pageable, FilterOptions<ID> filterOptions) {
+    public FindAllQuery(Class<T> entityType, Session session, @NotNull Pageable pageable, FilterOptions filterOptions) {
         super(entityType, session);
 
         if (pageable.isUnpaged()) {

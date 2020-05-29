@@ -70,10 +70,10 @@ public abstract class EntityDataFetcherProviderImpl<
                 Page<T> page = entityService.findByTerm(term.trim(), dto.getPageble());
                 return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
             } else if (selectionSet.containsAnyOf("nodes/*", "pageInfo/*")) {
-                Page<T> page = entityService.findAll(new FilterOptions<>(null, null, excludedIds), dto.getPageble());
+                Page<T> page = entityService.findAll(new FilterOptions(null, null, excludedIds), dto.getPageble());
                 return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
             } else {
-                long totalElements = entityService.countAll(new FilterOptions<>(null, null, excludedIds));
+                long totalElements = entityService.countAll(new FilterOptions(null, null, excludedIds));
                 return new Connection<>(null, null, totalElements);
             }
         };

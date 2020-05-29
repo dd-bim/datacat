@@ -3,13 +3,12 @@ package de.bentrm.datacat.query;
 import org.neo4j.ogm.session.Session;
 
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 
-public class CountAllByIdQuery<T, ID extends Serializable> extends AbstractCustomQuery<T> implements CountQuery<T> {
+public class CountAllByIdQuery<T> extends AbstractCustomQuery<T> implements CountQuery<T> {
 
     private static final String COUNT_FIND_ALL_BY_ID_QUERY_TEMPLATE = "MATCH (root:${label}) WHERE root.id IN {ids} RETURN COUNT(root)";
 
-    public CountAllByIdQuery(Class<T> entityType, Session session, Iterable<ID> ids) {
+    public CountAllByIdQuery(Class<T> entityType, Session session, Iterable<String> ids) {
         super(entityType, session);
         this.queryParameters.put("ids", ids);
     }

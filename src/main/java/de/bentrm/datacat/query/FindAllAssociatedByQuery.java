@@ -7,11 +7,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Map;
 
-public class FindAllAssociatedByQuery<T extends Association, ID extends Serializable>
+public class FindAllAssociatedByQuery<T extends Association>
         extends AbstractCustomQuery<T>
         implements IterableQuery<T> {
 

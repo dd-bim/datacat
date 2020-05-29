@@ -4,4 +4,4 @@ import de.bentrm.datacat.domain.XtdExternalDocument;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ExternalDocumentRepository extends GraphEntityRepository<XtdExternalDocument, String> {}
+public interface ExternalDocumentRepository extends GraphEntityRepository<XtdExternalDocument> {}

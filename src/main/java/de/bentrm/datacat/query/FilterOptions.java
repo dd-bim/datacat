@@ -2,12 +2,11 @@ package de.bentrm.datacat.query;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-public class FilterOptions<ID extends Serializable> {
+public class FilterOptions {
 
     private final String term;
 
@@ -15,7 +14,7 @@ public class FilterOptions<ID extends Serializable> {
 
     private final Set<@NotBlank String> excludedLabels = new HashSet<>();
 
-    private final Set<@NotNull ID> excludedIds = new HashSet<>();
+    private final Set<String> excludedIds = new HashSet<String>();
 
     public FilterOptions() {
         this(null, null, null, null);
@@ -25,11 +24,11 @@ public class FilterOptions<ID extends Serializable> {
         this(term, null, null, null);
     }
 
-    public FilterOptions(Iterable<String> labels, Iterable<String> excludedLabels, Iterable<ID> excludedIds) {
+    public FilterOptions(Iterable<String> labels, Iterable<String> excludedLabels, Iterable<String> excludedIds) {
         this(null, labels, excludedLabels, excludedIds);
     }
 
-    public FilterOptions(String term, Iterable<String> labels, Iterable<String> excludedLabels, Iterable<ID> excludedIds) {
+    public FilterOptions(String term, Iterable<String> labels, Iterable<String> excludedLabels, Iterable<String> excludedIds) {
         this.term = term;
 
         if (labels != null) {
@@ -55,7 +54,7 @@ public class FilterOptions<ID extends Serializable> {
         return new HashSet<>(excludedLabels);
     }
 
-    public Set<ID> getExcludedIds() {
+    public Set<Serializable> getExcludedIds() {
         return new HashSet<>(excludedIds);
     }
 }

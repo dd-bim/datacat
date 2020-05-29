@@ -3,9 +3,8 @@ package de.bentrm.datacat.query;
 import org.neo4j.ogm.session.Session;
 
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 
-public class CountByTermQuery<T, ID extends Serializable> extends AbstractCustomQuery<T> implements CountQuery<T> {
+public class CountByTermQuery<T> extends AbstractCustomQuery<T> implements CountQuery<T> {
 
     private static final String COUNT_FIND_BY_TERM_QUERY_TEMPLATE =
             "CALL db.index.fulltext.queryNodes('namesAndDescriptions', {term}) YIELD node AS hit, score " +

@@ -22,12 +22,12 @@ public class SearchServiceImpl implements SearchService {
     private EntityRepository repository;
 
     @Override
-    public Page<XtdEntity> search(FilterOptions<String> filterOptions, Pageable pageable) {
+    public Page<XtdEntity> search(FilterOptions filterOptions, Pageable pageable) {
         return repository.search(filterOptions, pageable);
     }
 
     @Override
-    public long countSearchResults(@NotNull FilterOptions<String> filterOptions) {
+    public long countSearchResults(@NotNull FilterOptions filterOptions) {
         return repository.count(filterOptions);
     }
 }

@@ -5,11 +5,10 @@ import org.neo4j.ogm.annotation.Relationship;
 import org.neo4j.ogm.session.Session;
 
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Map;
 
-public class CountAllAssociatingQuery<T extends Association, ID extends Serializable>
+public class CountAllAssociatingQuery<T extends Association>
         extends AbstractCustomQuery<T>
         implements CountQuery<T> {
 

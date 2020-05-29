@@ -33,7 +33,7 @@ public abstract class CrudEntityServiceImpl<
 		T extends XtdEntity,
 		C extends EntityInput,
 		U extends EntityUpdateInput,
-		R extends GraphEntityRepository<T, String>>
+		R extends GraphEntityRepository<T>>
 		implements CrudEntityService<T, C, U> {
 
 	Logger logger = LoggerFactory.getLogger(SubjectServiceImpl.class);
@@ -158,12 +158,12 @@ public abstract class CrudEntityServiceImpl<
 	}
 
 	@Override
-	public @NotNull Page<T> findAll(@NotNull FilterOptions<String> filterOptions, @NotNull Pageable pageable) {
+	public @NotNull Page<T> findAll(@NotNull FilterOptions filterOptions, @NotNull Pageable pageable) {
 		return repository.findAll(filterOptions, pageable);
 	}
 
 	@Override
-	public @NotNull long countAll(@NotNull FilterOptions<String> filterOptions) {
+	public @NotNull long countAll(@NotNull FilterOptions filterOptions) {
 		return repository.count(filterOptions);
 	}
 

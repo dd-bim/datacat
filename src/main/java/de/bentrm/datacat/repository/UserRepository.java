@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends GraphEntityRepository<User, String> {
+public interface UserRepository extends GraphEntityRepository<User> {
 
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);

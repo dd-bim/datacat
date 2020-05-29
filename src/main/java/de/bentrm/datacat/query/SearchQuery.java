@@ -5,10 +5,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.Set;
 
-public class SearchQuery<T, ID extends Serializable> extends AbstractCustomQuery<T> implements IterableQuery<T> {
+public class SearchQuery<T> extends AbstractCustomQuery<T> implements IterableQuery<T> {
 
     private static final String QUERY =
             "MATCH (name:XtdName)-[:IS_NAME_OF]->(root) " +
@@ -30,7 +29,7 @@ public class SearchQuery<T, ID extends Serializable> extends AbstractCustomQuery
             "WITH DISTINCT root SKIP {skip} LIMIT {limit} " +
             "RETURN root, ${propertyAggregations}, ID(root)";
 
-    public SearchQuery(Class<T> entityType, Session session, @NotNull FilterOptions<ID> filterOptions, @NotNull Pageable pageable) {
+    public SearchQuery(Class<T> entityType, Session session, @NotNull FilterOptions filterOptions, @NotNull Pageable pageable) {
         super(entityType, session);
 
         if (pageable.isUnpaged()) {

@@ -20,7 +20,7 @@ public class EntityRepositoryExtensionImpl implements EntityRepositoryExtension 
     private Session session;
 
     @Override
-    public Page<XtdEntity> search(FilterOptions<String> searchOptions, Pageable pageable) {
+    public Page<XtdEntity> search(FilterOptions searchOptions, Pageable pageable) {
         Iterable<XtdEntity> results = new SearchQuery<>(XtdEntity.class, session, searchOptions, pageable).execute();
         List<XtdEntity> content = new ArrayList<>();
         results.forEach(content::add);

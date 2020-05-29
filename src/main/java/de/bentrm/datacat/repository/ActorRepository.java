@@ -4,5 +4,5 @@ import de.bentrm.datacat.domain.XtdActor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ActorRepository extends GraphEntityRepository<XtdActor, String> {
+public interface ActorRepository extends GraphEntityRepository<XtdActor> {
 }

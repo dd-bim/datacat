@@ -11,9 +11,9 @@ import javax.validation.constraints.NotNull;
 public interface SearchService {
 
     @PreAuthorize("hasRole('READONLY')")
-    Page<XtdEntity> search(@NotNull FilterOptions<String> filterOptions, @NotNull Pageable pageable);
+    Page<XtdEntity> search(@NotNull FilterOptions filterOptions, @NotNull Pageable pageable);
 
     @PreAuthorize("hasRole('ROLE_READONLY')")
-    long countSearchResults(@NotNull FilterOptions<String> filterOptions);
+    long countSearchResults(@NotNull FilterOptions filterOptions);
 
 }

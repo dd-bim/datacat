@@ -7,5 +7,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface EntityRepositoryExtension {
 
-    Page<XtdEntity> search(FilterOptions<String> searchOptions, Pageable pageable);
+    Page<XtdEntity> search(FilterOptions searchOptions, Pageable pageable);
 }

@@ -12,16 +12,15 @@ import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.support.PageableExecutionUtils;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @NoRepositoryBean
 @Transactional(readOnly = true)
-public class GraphEntityRepositoryBaseClass<T, ID extends Serializable>
-        extends SimpleNeo4jRepository<T, ID>
-        implements GraphEntityRepository<T, ID> {
+public class GraphEntityRepositoryBaseClass<T>
+        extends SimpleNeo4jRepository<T, String>
+        implements GraphEntityRepository<T> {
 
     Logger logger = LoggerFactory.getLogger(GraphEntityRepositoryBaseClass.class);
 
@@ -37,13 +36,13 @@ public class GraphEntityRepositoryBaseClass<T, ID extends Serializable>
     }
 
     @Override
-    public Optional<T> findById(ID id) {
-        FindByIdQuery<T, ID> query = new FindByIdQuery<>(entityType, session, id);
+    public Optional<T> findById(String id) {
+        FindByIdQuery<T> query = new FindByIdQuery<>(entityType, session, id);
         return query.execute();
     }
 
     @Override
-    public Page<T> findAllById(Iterable<ID> ids, Pageable pageable) {
+    public Page<T> findAllById(Iterable<String> ids, Pageable pageable) {
         Iterable<T> results = new FindAllByIdQuery<>(entityType, session, ids, pageable).execute();
         List<T> content = new ArrayList<>();
         results.forEach(content::add);
@@ -51,7 +50,7 @@ public class GraphEntityRepositoryBaseClass<T, ID extends Serializable>
     }
 
     @Override
-    public long count(FilterOptions<ID> filterOptions) {
+    public long count(FilterOptions filterOptions) {
         return new CountAllQuery<>(entityType, session, filterOptions).execute();
     }
 
@@ -64,7 +63,7 @@ public class GraphEntityRepositoryBaseClass<T, ID extends Serializable>
     }
 
     @Override
-    public Page<T> findAll(FilterOptions<ID> options, Pageable pageable) {
+    public Page<T> findAll(FilterOptions options, Pageable pageable) {
         Iterable<T> results = new FindAllQuery<>(entityType, session, pageable, options).execute();
         List<T> content = new ArrayList<>();
         results.forEach(content::add);

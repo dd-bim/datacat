@@ -16,10 +16,8 @@ import org.springframework.data.repository.core.support.RepositoryFactorySupport
 import org.springframework.data.repository.core.support.TransactionalRepositoryFactoryBeanSupport;
 import org.springframework.util.Assert;
 
-import java.io.Serializable;
-
-public class GraphEntityRepositoryFactoryBean<R extends GraphEntityRepository<T, ID>, T, ID extends Serializable>
-        extends TransactionalRepositoryFactoryBeanSupport<R, T, ID> {
+public class GraphEntityRepositoryFactoryBean<R extends GraphEntityRepository<T>, T>
+        extends TransactionalRepositoryFactoryBeanSupport<R, T, String> {
 
     private static final Logger logger = LoggerFactory.getLogger(GraphEntityRepositoryFactoryBean.class);
 

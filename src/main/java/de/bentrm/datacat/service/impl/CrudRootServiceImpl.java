@@ -19,7 +19,7 @@ public abstract class CrudRootServiceImpl<
             T extends XtdRoot,
             C extends RootInput,
             U extends RootUpdateInput,
-            R extends GraphEntityRepository<T, String>
+            R extends GraphEntityRepository<T>
         >
         extends CrudEntityServiceImpl<T, C, U, R>
         implements CrudEntityService<T, C, U> {

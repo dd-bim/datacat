@@ -6,33 +6,32 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.Repository;
 
-import java.io.Serializable;
 import java.util.Optional;
 
 @NoRepositoryBean
-public interface GraphEntityRepository<T, ID extends Serializable> extends Repository<T, ID> {
+public interface GraphEntityRepository<T> extends Repository<T, String> {
 
 	<S extends T> S save(S entity);
 
 	<S extends T> Iterable<S> saveAll(Iterable<S> entities);
 
-	Optional<T> findById(ID id);
+	Optional<T> findById(String id);
 
-	boolean existsById(ID id);
+	boolean existsById(String id);
 
-	Page<T> findAllById(Iterable<ID> ids, Pageable pageable);
+	Page<T> findAllById(Iterable<String> ids, Pageable pageable);
 
 	long count();
 
-	long count(FilterOptions<ID> filterOptions);
+	long count(FilterOptions filterOptions);
 
 	Page<T> findAll(Pageable pageable);
 
-	Page<T> findAll(FilterOptions<ID> filterOptions, Pageable pageable);
+	Page<T> findAll(FilterOptions filterOptions, Pageable pageable);
 
 	Page<T> findAllByTerm(String term, Pageable pageable);
 
-	void deleteById(ID id);
+	void deleteById(String id);
 
 	void delete(T entity);
 

@@ -3,10 +3,9 @@ package de.bentrm.datacat.query;
 import org.neo4j.ogm.session.Session;
 
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.Set;
 
-public class CountAllQuery<T, ID extends Serializable> extends AbstractCustomQuery<T> implements CountQuery<T> {
+public class CountAllQuery<T> extends AbstractCustomQuery<T> implements CountQuery<T> {
 
     private final String QUERY =
             "MATCH (root) " +
@@ -16,7 +15,7 @@ public class CountAllQuery<T, ID extends Serializable> extends AbstractCustomQue
                 "AND NOT root.id IN {excludedIds} " +
             "RETURN COUNT(root)";
 
-    public CountAllQuery(Class<T> entityType, Session session, FilterOptions<ID> filterOptions) {
+    public CountAllQuery(Class<T> entityType, Session session, FilterOptions filterOptions) {
         super(entityType, session);
 
         final Set<String> labels = filterOptions.getLabels();

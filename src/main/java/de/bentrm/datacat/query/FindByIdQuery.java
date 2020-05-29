@@ -3,15 +3,14 @@ package de.bentrm.datacat.query;
 import org.neo4j.ogm.session.Session;
 
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.Optional;
 
-public class FindByIdQuery<T, ID extends Serializable> extends AbstractCustomQuery<T> implements CustomQuery, EntityQuery<T> {
+public class FindByIdQuery<T> extends AbstractCustomQuery<T> implements CustomQuery, EntityQuery<T> {
 
     private static final String FIND_BY_ID_QUERY_TEMPLATE =
             "MATCH (root:${label} {id: {id}}) RETURN root, ${propertyAggregations}, ID(root)";
 
-    public FindByIdQuery(Class<T> entityType, Session session, ID id) {
+    public FindByIdQuery(Class<T> entityType, Session session, String id) {
         super(entityType, session);
         this.queryParameters.put("id", id);
     }
