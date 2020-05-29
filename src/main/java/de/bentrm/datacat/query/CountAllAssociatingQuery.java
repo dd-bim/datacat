@@ -12,10 +12,11 @@ public class CountAllAssociatingQuery<T extends Association>
         extends AbstractCustomQuery<T>
         implements CountQuery<T> {
 
-    private static final String QUERY =
-            "MATCH (root:${label})<-[:${associationLabel}]-(relatingThing) " +
-            "WHERE relatedThing.id = {relatedThingId} " +
-            "RETURN COUNT(root)";
+    private static final String QUERY = """
+            MATCH (root:${label})<-[:${associationLabel}]-(relatingThing)
+            WHERE relatedThing.id = {relatedThingId}
+            RETURN COUNT(root)
+            """;
 
     public CountAllAssociatingQuery(Class<T> entityType, Session session, String relatedThingId) {
         super(entityType, session);

@@ -7,8 +7,10 @@ import java.util.Optional;
 
 public class FindByIdQuery<T> extends AbstractCustomQuery<T> implements CustomQuery, EntityQuery<T> {
 
-    private static final String FIND_BY_ID_QUERY_TEMPLATE =
-            "MATCH (root:${label} {id: {id}}) RETURN root, ${propertyAggregations}, ID(root)";
+    private static final String FIND_BY_ID_QUERY_TEMPLATE = """
+            MATCH (root:${label} {id: {id}}) 
+            RETURN root, ${propertyAggregations}, ID(root)
+            """;
 
     public FindByIdQuery(Class<T> entityType, Session session, String id) {
         super(entityType, session);

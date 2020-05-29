@@ -9,25 +9,27 @@ import java.util.Set;
 
 public class SearchQuery<T> extends AbstractCustomQuery<T> implements IterableQuery<T> {
 
-    private static final String QUERY =
-            "MATCH (name:XtdName)-[:IS_NAME_OF]->(root) " +
-            "WHERE " +
-                "size([label IN labels(root) WHERE label IN {labels} | 1]) > 0 " +
-                "AND size([label IN labels(root) WHERE label IN {excludedLabels} | 1]) = 0 " +
-                "AND NOT root.id IN {excludedIds} " +
-            "WITH root, name ORDER BY name.sortOrder, toLower(name.name) ASC, name.name DESC " +
-            "WITH DISTINCT root SKIP {skip} LIMIT {limit} " +
-            "RETURN root, ${propertyAggregations}, ID(root)";
+    private static final String QUERY = """
+            MATCH (name:XtdName)-[:IS_NAME_OF]->(root)
+            WHERE
+                size([label IN labels(root) WHERE label IN {labels} | 1]) > 0
+                AND size([label IN labels(root) WHERE label IN {excludedLabels} | 1]) = 0
+                AND NOT root.id IN {excludedIds}
+            WITH root, name ORDER BY name.sortOrder, toLower(name.name) ASC, name.name DESC
+            WITH DISTINCT root SKIP {skip} LIMIT {limit}
+            RETURN root, ${propertyAggregations}, ID(root)
+            """;
 
-    private static final String FULL_TEXT_SEARCH_QUERY =
-            "CALL db.index.fulltext.queryNodes('namesAndDescriptions', {term}) YIELD node AS hit, score " +
-            "MATCH (hit)-[:IS_NAME_OF|:IS_DESCRIPTION_OF]->(root) " +
-            "WHERE " +
-                "size([label IN labels(root) WHERE label IN {labels} | 1]) > 0 " +
-                "AND size([label IN labels(root) WHERE label IN {excludedLabels} | 1]) = 0 " +
-                "AND NOT root.id IN {excludedIds} " +
-            "WITH DISTINCT root SKIP {skip} LIMIT {limit} " +
-            "RETURN root, ${propertyAggregations}, ID(root)";
+    private static final String FULL_TEXT_SEARCH_QUERY = """
+            CALL db.index.fulltext.queryNodes('namesAndDescriptions', {term}) YIELD node AS hit, score
+            MATCH (hit)-[:IS_NAME_OF|:IS_DESCRIPTION_OF]->(root)
+            WHERE
+                size([label IN labels(root) WHERE label IN {labels} | 1]) > 0
+                AND size([label IN labels(root) WHERE label IN {excludedLabels} | 1]) = 0
+                AND NOT root.id IN {excludedIds}
+            WITH DISTINCT root SKIP {skip} LIMIT {limit}
+            RETURN root, ${propertyAggregations}, ID(root)
+            """;
 
     public SearchQuery(Class<T> entityType, Session session, @NotNull FilterOptions filterOptions, @NotNull Pageable pageable) {
         super(entityType, session);

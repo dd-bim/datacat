@@ -8,11 +8,12 @@ import javax.validation.constraints.NotNull;
 
 public class FindAllByTermQuery<T> extends AbstractCustomQuery<T> implements IterableQuery<T> {
 
-    private static final String FIND_BY_TERM_QUERY_TEMPLATE =
-            "CALL db.index.fulltext.queryNodes('namesAndDescriptions', {term}) YIELD node AS hit, score " +
-            "MATCH (hit)-[:IS_NAME_OF|:IS_DESCRIPTION_OF]->(root:${label}) " +
-            "WITH DISTINCT root SKIP {skip} LIMIT {limit} " +
-            "RETURN root, ${propertyAggregations}, ID(root)";
+    private static final String FIND_BY_TERM_QUERY_TEMPLATE = """            
+            CALL db.index.fulltext.queryNodes('namesAndDescriptions', {term}) YIELD node AS hit, score
+            MATCH (hit)-[:IS_NAME_OF|:IS_DESCRIPTION_OF]->(root:${label})
+            WITH DISTINCT root SKIP {skip} LIMIT {limit}
+            RETURN root, ${propertyAggregations}, ID(root)
+            """;
 
     public FindAllByTermQuery(Class<T> entityType, Session session, String term, Pageable pageable) {
         super(entityType, session);

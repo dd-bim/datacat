@@ -7,22 +7,24 @@ import java.util.Set;
 
 public class CountSearchQuery<T> extends AbstractCustomQuery<T> implements CountQuery<T> {
 
-    private final String QUERY =
-            "MATCH (root) " +
-            "WHERE " +
-                "size([label IN labels(root) WHERE label IN {labels} | 1]) > 0 " +
-                "AND size([label IN labels(root) WHERE label IN {excludedLabels} | 1]) = 0 " +
-                "AND NOT root.id IN {excludedIds} " +
-            "RETURN COUNT(root)";
+    private final String QUERY = """
+            MATCH (root)
+            WHERE
+                size([label IN labels(root) WHERE label IN {labels} | 1]) > 0
+                AND size([label IN labels(root) WHERE label IN {excludedLabels} | 1]) = 0
+                AND NOT root.id IN {excludedIds}
+            "RETURN COUNT(root)
+            """;
 
-    private final String FULL_TEXT_SEARCH_QUERY =
-            "CALL db.index.fulltext.queryNodes('namesAndDescriptions', {term}) YIELD node AS hit, score " +
-            "MATCH (hit)-[:IS_NAME_OF|:IS_DESCRIPTION_OF]->(root) " +
-            "WHERE " +
-                "size([label IN labels(root) WHERE label IN {labels} | 1]) > 0 " +
-                "AND size([label IN labels(root) WHERE label IN {excludedLabels} | 1]) = 0 " +
-                "AND NOT root.id IN {excludedIds} " +
-            "RETURN count(DISTINCT root)";
+    private final String FULL_TEXT_SEARCH_QUERY = """
+            CALL db.index.fulltext.queryNodes('namesAndDescriptions', {term}) YIELD node AS hit, score
+            MATCH (hit)-[:IS_NAME_OF|:IS_DESCRIPTION_OF]->(root)
+            WHERE
+                size([label IN labels(root) WHERE label IN {labels} | 1]) > 0
+                AND size([label IN labels(root) WHERE label IN {excludedLabels} | 1]) = 0
+                AND NOT root.id IN {excludedIds}
+            RETURN count(DISTINCT root)
+            """;
 
     public CountSearchQuery(Class<T> entityType, Session session, FilterOptions options) {
         super(entityType, session);

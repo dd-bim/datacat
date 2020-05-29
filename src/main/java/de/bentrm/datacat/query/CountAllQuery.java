@@ -7,13 +7,14 @@ import java.util.Set;
 
 public class CountAllQuery<T> extends AbstractCustomQuery<T> implements CountQuery<T> {
 
-    private final String QUERY =
-            "MATCH (root) " +
-            "WHERE " +
-                "size([label IN labels(root) WHERE label IN {labels} | 1]) > 0 " +
-                "AND size([label IN labels(root) WHERE label IN {excludedLabels} | 1]) = 0 " +
-                "AND NOT root.id IN {excludedIds} " +
-            "RETURN COUNT(root)";
+    private final String QUERY = """
+            MATCH (root)
+            WHERE
+                size([label IN labels(root) WHERE label IN {labels} | 1]) > 0
+                AND size([label IN labels(root) WHERE label IN {excludedLabels} | 1]) = 0
+                AND NOT root.id IN {excludedIds}
+            RETURN COUNT(root)
+            """;
 
     public CountAllQuery(Class<T> entityType, Session session, FilterOptions filterOptions) {
         super(entityType, session);

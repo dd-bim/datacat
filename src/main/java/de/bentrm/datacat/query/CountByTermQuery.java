@@ -6,10 +6,11 @@ import javax.validation.constraints.NotNull;
 
 public class CountByTermQuery<T> extends AbstractCustomQuery<T> implements CountQuery<T> {
 
-    private static final String COUNT_FIND_BY_TERM_QUERY_TEMPLATE =
-            "CALL db.index.fulltext.queryNodes('namesAndDescriptions', {term}) YIELD node AS hit, score " +
-            "MATCH (hit)-[:IS_NAME_OF|:IS_DESCRIPTION_OF]->(root:${label}) " +
-            "RETURN count(DISTINCT root)";
+    private static final String COUNT_FIND_BY_TERM_QUERY_TEMPLATE = """           
+            CALL db.index.fulltext.queryNodes('namesAndDescriptions', {term}) YIELD node AS hit, score
+            MATCH (hit)-[:IS_NAME_OF|:IS_DESCRIPTION_OF]->(root:${label})
+            RETURN count(DISTINCT root)
+            """;
 
     public CountByTermQuery(Class<T> entityType, Session session, String term) {
         super(entityType, session);

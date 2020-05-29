@@ -9,15 +9,16 @@ import java.util.Set;
 
 public class FindAllQuery<T> extends AbstractCustomQuery<T> implements IterableQuery<T> {
 
-    private static final String FIND_ALL_QUERY_TEMPLATE =
-            "MATCH (name:XtdName)-[:IS_NAME_OF]->(root) " +
-            "WHERE " +
-                    "size([label IN labels(root) WHERE label IN {labels} | 1]) > 0 " +
-                    "AND size([label IN labels(root) WHERE label IN {excludedLabels} | 1]) = 0 " +
-                    "AND NOT root.id IN {excludedIds} " +
-            "WITH root, name ORDER BY name.sortOrder, toLower(name.name) ASC, name.name DESC " +
-            "WITH DISTINCT root SKIP {skip} LIMIT {limit} " +
-            "RETURN root, ${propertyAggregations}, ID(root)";
+    private static final String FIND_ALL_QUERY_TEMPLATE = """
+            MATCH (name:XtdName)-[:IS_NAME_OF]->(root)
+            WHERE
+                size([label IN labels(root) WHERE label IN {labels} | 1]) > 0
+                AND size([label IN labels(root) WHERE label IN {excludedLabels} | 1]) = 0
+                AND NOT root.id IN {excludedIds}
+            WITH root, name ORDER BY name.sortOrder, toLower(name.name) ASC, name.name DESC
+            WITH DISTINCT root SKIP {skip} LIMIT {limit}
+            RETURN root, ${propertyAggregations}, ID(root)
+            """;
 
     public FindAllQuery(Class<T> entityType, Session session, @NotNull Pageable pageable) {
         this(entityType, session, pageable, new FilterOptions(null, null, null));

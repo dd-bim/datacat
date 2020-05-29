@@ -18,7 +18,7 @@
     </parent>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>14</java.version>
         <spring-boot.version>2.3.0.RELEASE</spring-boot.version>
         <graphql-spring-boot-starter.version>7.0.1</graphql-spring-boot-starter.version>
         <commons-text.version>1.8</commons-text.version>
@@ -120,6 +120,23 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <release>${java.version}</release>
+                    <compilerArgs>
+                        <arg>--enable-preview</arg>
+                    </compilerArgs>
+                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
+                    <parameters>true</parameters>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>--enable-preview</argLine>
+                </configuration>
             </plugin>
         </plugins>
     </build>

@@ -14,12 +14,13 @@ public class FindAllAssociatingQuery<T extends Association>
         extends AbstractCustomQuery<T>
         implements IterableQuery<T> {
 
-    private static final String QUERY =
-            "MATCH (name:XtdName)-[:IS_NAME_OF]->(root:${label})-[:${associationLabel}]->(relatedThing) " +
-            "WHERE relatedThing.id = {relatedThingId} " +
-            "WITH root, name ORDER BY name.sortOrder, toLower(name.name) ASC, name.name DESC " +
-            "WITH DISTINCT root SKIP {skip} LIMIT {limit} " +
-            "RETURN root, ${propertyAggregations}, ID(root)";
+    private static final String QUERY = """            
+            MATCH (name:XtdName)-[:IS_NAME_OF]->(root:${label})-[:${associationLabel}]->(relatedThing)
+            WHERE relatedThing.id = {relatedThingId}
+            WITH root, name ORDER BY name.sortOrder, toLower(name.name) ASC, name.name DESC
+            WITH DISTINCT root SKIP {skip} LIMIT {limit}
+            RETURN root, ${propertyAggregations}, ID(root)
+            """;
 
     public FindAllAssociatingQuery(Class<T> entityType, Session session, String relatedThingId, Pageable pageable) {
         super(entityType, session);
