@@ -626,10 +626,21 @@ enum EntityTypes {
     XtdMeasureWithUnit
     XtdNest
     XtdProperty
+    XtdRelActsUpon
+    XtdRelAssignsCollections
+    XtdRelAssignsMeasures
+    XtdRelAssignsProperties
+    XtdRelAssignsPropertyWithValues
+    XtdRelAssignsUnit
+    XtdRelAssignsValues
     XtdRelAssociates
-    XtdRelGroups
-    XtdRelSpecializes
+    XtdRelClassifies
+    XtdRelCollects
     XtdRelComposes
+    XtdRelDocuments
+    XtdRelGroups
+    XtdRelSequences
+    XtdRelSpecializes
     XtdSubject
     XtdUnit
     XtdValue
