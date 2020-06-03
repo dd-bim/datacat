@@ -33,7 +33,7 @@ public abstract class XtdEntity extends Entity {
     }
 
     public String getLabel() {
-        return getNames().stream().map(XtdName::getName).reduce((a, b) -> a + ", " + b).orElse("");
+        return getNames().stream().map(XtdName::getValue).reduce((a, b) -> a + ", " + b).orElse("");
     }
 
     @Override

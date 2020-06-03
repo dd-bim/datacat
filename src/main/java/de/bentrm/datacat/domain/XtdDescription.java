@@ -1,6 +1,5 @@
 package de.bentrm.datacat.domain;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.neo4j.ogm.annotation.NodeEntity;
 
 import javax.validation.constraints.NotBlank;
@@ -13,35 +12,13 @@ public class XtdDescription extends XtdLanguageRepresentation {
 	public static final String LABEL = PREFIX + TITLE;
 	public static final String RELATIONSHIP_TYPE = "IS_DESCRIPTION_OF";
 
-	@NotBlank
-	private String description;
-
 	public XtdDescription() {}
 
-	public XtdDescription(@NotBlank  String languageName, @NotBlank String description) {
-		this.setLanguageName(languageName);
-		this.description = description;
+	public XtdDescription(@NotBlank  String languageName, @NotBlank String value) {
+		super(languageName, value);
 	}
 
-	public XtdDescription(@NotBlank String id, @NotBlank String languageName, @NotBlank String description) {
-		this.setId(id);
-		this.setLanguageName(languageName);
-		this.description = description;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this)
-				.appendSuper(super.toString())
-				.append("description", description)
-				.toString();
+	public XtdDescription(@NotBlank String id, @NotBlank String languageName, @NotBlank String value) {
+		super(id, languageName, value);
 	}
 }
