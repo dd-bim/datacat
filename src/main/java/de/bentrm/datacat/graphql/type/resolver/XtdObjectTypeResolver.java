@@ -1,4 +1,4 @@
-package de.bentrm.datacat.graphql.resolver;
+package de.bentrm.datacat.graphql.type.resolver;
 
 import de.bentrm.datacat.domain.*;
 import graphql.TypeResolutionEnvironment;
@@ -8,8 +8,7 @@ import graphql.schema.TypeResolver;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Component;
 
-import java.lang.Object;
-
+@Deprecated
 @Component
 public class XtdObjectTypeResolver implements TypeResolver {
 
