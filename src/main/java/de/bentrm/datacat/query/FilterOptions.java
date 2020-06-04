@@ -14,7 +14,7 @@ public class FilterOptions {
 
     private final Set<@NotBlank String> excludedLabels = new HashSet<>();
 
-    private final Set<String> excludedIds = new HashSet<String>();
+    private final Set<String> excludedIds = new HashSet<>();
 
     public FilterOptions() {
         this(null, null, null, null);

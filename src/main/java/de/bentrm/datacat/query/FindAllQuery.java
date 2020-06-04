@@ -15,7 +15,7 @@ public class FindAllQuery<T> extends AbstractCustomQuery<T> implements IterableQ
                 size([label IN labels(root) WHERE label IN {labels} | 1]) > 0
                 AND size([label IN labels(root) WHERE label IN {excludedLabels} | 1]) = 0
                 AND NOT root.id IN {excludedIds}
-            WITH root, name ORDER BY name.sortOrder, toLower(name.name) ASC, name.name DESC
+            WITH root, name ORDER BY name.sortOrder, toLower(name.value) ASC, name.value DESC
             WITH DISTINCT root SKIP {skip} LIMIT {limit}
             RETURN root, ${propertyAggregations}, ID(root)
             """;

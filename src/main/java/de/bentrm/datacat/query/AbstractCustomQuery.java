@@ -33,7 +33,7 @@ public abstract class AbstractCustomQuery<T> implements CustomQuery {
     }
 
     @Override
-    public @NotNull String getPropertyAggregations() {
+    public  @NotNull String getPropertyAggregations() {
         // TODO: Make sure this does not backfire with bad performance
         PropertyQueryHint annotation = entityType.getAnnotation(PropertyQueryHint.class);
         String[] values = annotation.value();
