@@ -1,6 +1,6 @@
-package de.bentrm.datacat.graphql.type.resolver;
+package de.bentrm.datacat.graphql.resolver;
 
-import de.bentrm.datacat.domain.XtdEntity;
+import de.bentrm.datacat.domain.CatalogItem;
 import de.bentrm.datacat.domain.XtdExternalDocument;
 import de.bentrm.datacat.domain.XtdRoot;
 import graphql.TypeResolutionEnvironment;
@@ -11,16 +11,15 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Deprecated
 @Component
-public class XtdEntityTypeResolver implements TypeResolver {
+public class CatalogItemTypeResolver implements TypeResolver {
 
     @Autowired
     private XtdRootTypeResolver rootTypeResolver;
 
     @Override
     public GraphQLObjectType getType(TypeResolutionEnvironment env) {
-        XtdEntity obj = env.getObject();
+        CatalogItem obj = env.getObject();
         GraphQLSchema schema = env.getSchema();
 
         if (obj instanceof XtdExternalDocument) {

@@ -1,7 +1,7 @@
 package de.bentrm.datacat.graphql.fetcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.bentrm.datacat.domain.XtdEntity;
+import de.bentrm.datacat.domain.CatalogItem;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.PageInfo;
 import de.bentrm.datacat.graphql.dto.PagingOptions;
@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public abstract class EntityDataFetcherProviderImpl<
-        T extends XtdEntity, C, U,
+        T extends CatalogItem, C, U,
         S extends CrudEntityService<T, C, U>
         > implements DataFetcherProvider {
 

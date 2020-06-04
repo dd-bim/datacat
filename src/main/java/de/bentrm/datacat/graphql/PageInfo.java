@@ -16,7 +16,7 @@ public class PageInfo {
         this.totalPages = totalPages;
     }
 
-    public static PageInfo of(Page page) {
+    public static PageInfo of(Page<?> page) {
         return new PageInfo(page.getNumber(), page.getSize(), page.getContent().size(), page.getTotalPages());
     }
 

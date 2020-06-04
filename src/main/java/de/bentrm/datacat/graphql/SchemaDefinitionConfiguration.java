@@ -4,6 +4,7 @@ import de.bentrm.datacat.graphql.fetcher.*;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.*;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.Bean;
@@ -19,9 +20,12 @@ import java.util.List;
 import java.util.function.UnaryOperator;
 
 @Configuration
-public class SchemaDefinition implements ResourceLoaderAware {
+public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
 
     private ResourceLoader resourceLoader;
+
+    @Autowired
+    private Logger logger;
 
     @Autowired
     private TypeResolvers typeResolvers;
@@ -67,21 +71,10 @@ public class SchemaDefinition implements ResourceLoaderAware {
 
     @Bean
     GraphQLSchema schema() throws IOException {
-        SchemaParser schemaParser = new SchemaParser();
-        SchemaGenerator schemaGenerator = new SchemaGenerator();
-
-        InputStream interfaces = loadSchema("classpath:interfaces.graphqls").getInputStream();
-        InputStreamReader interfacesInputStream = new InputStreamReader(interfaces);
-        BufferedReader interfacesReader = new BufferedReader(interfacesInputStream);
-        TypeDefinitionRegistry typeRegistry = schemaParser.parse(interfacesReader);
-
-        InputStream schema = loadSchema("classpath:schema.graphqls").getInputStream();
-        InputStreamReader inputStreamReader = new InputStreamReader(schema);
-        BufferedReader reader = new BufferedReader(inputStreamReader);
-        typeRegistry.merge(schemaParser.parse(reader));
-
+        final SchemaParser schemaParser = new SchemaParser();
+        final SchemaGenerator schemaGenerator = new SchemaGenerator();
+        final TypeDefinitionRegistry typeRegistry;
         final RuntimeWiring.Builder builder = RuntimeWiring.newRuntimeWiring();
-        typeResolvers.mapTypeResolvers(builder);
         final UnaryOperator<TypeRuntimeWiring.Builder> rootDataFetchers = typeWiring -> {
             rootDataFetcherProviders.forEach(provider -> typeWiring.dataFetchers(provider.getRootDataFetchers()));
             return typeWiring;
@@ -91,6 +84,38 @@ public class SchemaDefinition implements ResourceLoaderAware {
             objectDataFetcherProviders.forEach(provider -> typeWiring.dataFetchers(provider.getObjectDataFetchers()));
             return typeWiring;
         };
+
+        try {
+            InputStream inputStream = loadSchema("classpath:xtd.graphqls").getInputStream();
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            typeRegistry = schemaParser.parse(bufferedReader);
+        } catch (IOException e) {
+            logger.debug("Unabled to load XTD GraphQL schema file.");
+            throw e;
+        }
+
+        try {
+            InputStream inputStream = loadSchema("classpath:query.graphqls").getInputStream();
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            typeRegistry.merge(schemaParser.parse(bufferedReader));
+        } catch (IOException e) {
+            logger.debug("Unabled to load Query GraphQL schema file.");
+            throw e;
+        }
+
+        try {
+            InputStream inputStream = loadSchema("classpath:mutation.graphqls").getInputStream();
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            typeRegistry.merge(schemaParser.parse(bufferedReader));
+        } catch (IOException e) {
+            logger.debug("Unabled to load Mutation GraphQL schema file.");
+            throw e;
+        }
+
+        typeResolvers.mapTypeResolvers(builder);
 
         RuntimeWiring wiring = builder
                 .type("XtdName", typeWiring -> typeWiring.dataFetcher("languageName", baseDataFetcherProvider.languageByLanguageRepresentation()))

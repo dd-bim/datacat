@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class Application {
 
-    // CALL db.index.fulltext.createNodeIndex("namesAndDescriptions",["XtdName", "XtdDescription"],["name", "description"]);
+    // CALL db.index.fulltext.createNodeIndex("namesAndDescriptions",["XtdName", "XtdDescription"],["value"])
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);

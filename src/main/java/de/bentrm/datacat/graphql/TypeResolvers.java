@@ -9,13 +9,13 @@ import org.springframework.stereotype.Component;
 public class TypeResolvers {
 
     @Autowired
-    private NodeTypeResolver nodeTypeResolver;
+    private EntityTypeResolver entityTypeResolver;
 
     @Autowired
     private XtdLanguageRepresentationTypeResolver languageRepresentationTypeResolver;
 
     @Autowired
-    private XtdEntityTypeResolver entityTypeResolver;
+    private CatalogItemTypeResolver catalogItemTypeResolver;
 
     @Autowired
     private XtdRootTypeResolver rootTypeResolver;
@@ -31,9 +31,9 @@ public class TypeResolvers {
 
     public void mapTypeResolvers(RuntimeWiring.Builder builder) {
         builder
-                .type("Node", typeWiring -> typeWiring.typeResolver(nodeTypeResolver))
+                .type("Entity", typeWiring -> typeWiring.typeResolver(entityTypeResolver))
                 .type("XtdLanguageRepresentation", typeWiring -> typeWiring.typeResolver(languageRepresentationTypeResolver))
-                .type("XtdEntity", typeWiring -> typeWiring.typeResolver(entityTypeResolver))
+                .type("CatalogItem", typeWiring -> typeWiring.typeResolver(catalogItemTypeResolver))
                 .type("XtdRoot", typeWiring -> typeWiring.typeResolver(rootTypeResolver))
                 .type("XtdObject", typeWiring -> typeWiring.typeResolver(objectTypeResolver))
                 .type("XtdCollection", typeWiring -> typeWiring.typeResolver(collectionTypeResolver))

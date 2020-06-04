@@ -35,19 +35,19 @@ public class XtdNameTests {
         XtdName a = new XtdName();
         a.setId("A");
         a.setLanguageName("de");
-        a.setName("Test");
+        a.setValue("Test");
 
         XtdName b = new XtdName();
         b.setId("B");
         b.setLanguageName("de");
-        b.setName("Test");
+        b.setValue("Test");
 
         assertEquals(a, b);
 
-        b.setName("Not Test");
+        b.setValue("Not Test");
         assertNotEquals(a, b);
 
-        b.setName("Test");
+        b.setValue("Test");
         assertEquals(a, b);
 
         b.setLanguageName("es");
@@ -63,25 +63,25 @@ public class XtdNameTests {
 
         var a = new XtdName();
         a.setLanguageName("de");
-        a.setName("a");
+        a.setValue("a");
         names.add(a);
 
         assertTrue(names.contains(a));
 
         var b = new XtdName();
         b.setLanguageName("de");
-        b.setName("a");
+        b.setValue("a");
 
         assertEquals(a, b);
         assertTrue(names.contains(a));
         assertTrue(names.contains(b));
 
-        b.setName("b");
+        b.setValue("b");
         assertNotEquals(a, b);
         assertFalse(names.add(b));
         assertFalse(names.contains(b));
 
-        b.setName("a");
+        b.setValue("a");
         assertEquals(a, b);
         assertTrue(names.contains(b));
 

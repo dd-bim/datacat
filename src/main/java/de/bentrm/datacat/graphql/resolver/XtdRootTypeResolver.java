@@ -1,4 +1,4 @@
-package de.bentrm.datacat.graphql.type.resolver;
+package de.bentrm.datacat.graphql.resolver;
 
 import de.bentrm.datacat.domain.XtdObject;
 import de.bentrm.datacat.domain.XtdRoot;
@@ -11,7 +11,6 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Deprecated
 @Component
 public class XtdRootTypeResolver implements TypeResolver {
 

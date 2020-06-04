@@ -1,4 +1,4 @@
-package de.bentrm.datacat.graphql.type.resolver;
+package de.bentrm.datacat.graphql.resolver;
 
 import de.bentrm.datacat.domain.relationship.*;
 import graphql.TypeResolutionEnvironment;
@@ -8,7 +8,6 @@ import graphql.schema.TypeResolver;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Component;
 
-@Deprecated
 @Component
 public class XtdRelationshipTypeResolver implements TypeResolver {
 

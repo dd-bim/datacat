@@ -1,18 +1,17 @@
 package de.bentrm.datacat.graphql.fetcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.bentrm.datacat.domain.XtdEntity;
+import de.bentrm.datacat.domain.CatalogItem;
 import de.bentrm.datacat.domain.XtdLanguage;
 import de.bentrm.datacat.domain.XtdLanguageRepresentation;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.PageInfo;
-import de.bentrm.datacat.graphql.dto.PagingOptions;
-import de.bentrm.datacat.query.FilterOptions;
+import de.bentrm.datacat.graphql.dto.DtoMapper;
+import de.bentrm.datacat.graphql.dto.FilterInput;
+import de.bentrm.datacat.service.CatalogService;
 import de.bentrm.datacat.service.LanguageService;
-import de.bentrm.datacat.service.SearchService;
-import de.bentrm.datacat.service.SingleEntityService;
+import de.bentrm.datacat.service.Specification;
 import graphql.schema.DataFetcher;
-import graphql.schema.DataFetchingFieldSelectionSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -23,13 +22,13 @@ import java.util.Optional;
 @Component
 public class BaseDataFetcherProvider implements QueryDataFetcherProvider {
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
-    private SingleEntityService singleEntityService;
+    private DtoMapper dtoMapper;
 
     @Autowired
-    private SearchService searchService;
+    private CatalogService catalogService;
 
     @Autowired
     private LanguageService languageService;
@@ -42,32 +41,32 @@ public class BaseDataFetcherProvider implements QueryDataFetcherProvider {
         );
     }
 
-    public DataFetcher<Optional<XtdEntity>> node() {
+    public DataFetcher<Optional<CatalogItem>> node() {
         return environment -> {
             String id = environment.getArgument("id");
-            return singleEntityService.findById(id);
+            return catalogService.getCatalogItem(id);
         };
     }
 
-    public DataFetcher<Connection<XtdEntity>> search() {
+    public DataFetcher<Connection<CatalogItem>> search() {
         return environment -> {
-            Map<String, Object> optionsInput = environment.getArgument("options");
-            FilterOptions searchOptions = mapper.convertValue(optionsInput, FilterOptions.class);
-            if (searchOptions == null) searchOptions = new FilterOptions();
+            Map<String, Object> input = environment.getArgument("input");
+            FilterInput filterInput = objectMapper.convertValue(input, FilterInput.class);
+            if (filterInput == null) filterInput = new FilterInput();
 
-            Map<String, Object> pagingInput = environment.getArgument("paging");
-            PagingOptions pagingOptions = mapper.convertValue(pagingInput, PagingOptions.class);
-            if (pagingOptions == null) pagingOptions = PagingOptions.defaults();
+//            DataFetchingFieldSelectionSet selectionSet = environment.getSelectionSet();
+//
+//            if (selectionSet.containsAnyOf("nodes/*", "pageInfo/*")) {
+//                Page<CatalogItem> page = catalogService.searchCatalogItem(filterInput, pagingOptions.getPageble());
+//                return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
+//            } else {
+//                long totalElements = catalogService.countSearchResults(filterInput);
+//                return new Connection<>(null, null, totalElements);
+//            }
 
-            DataFetchingFieldSelectionSet selectionSet = environment.getSelectionSet();
-
-            if (selectionSet.containsAnyOf("nodes/*", "pageInfo/*")) {
-                Page<XtdEntity> page = searchService.search(searchOptions, pagingOptions.getPageble());
-                return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
-            } else {
-                long totalElements = searchService.countSearchResults(searchOptions);
-                return new Connection<>(null, null, totalElements);
-            }
+            Specification spec = dtoMapper.toSpecification(filterInput);
+            Page<CatalogItem> page = catalogService.searchCatalogItem(spec);
+            return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }
 
