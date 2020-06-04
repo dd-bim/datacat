@@ -1,0 +1,284 @@
+interface Entity {
+    id: ID!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+}
+
+interface CatalogItem {
+    id: ID!
+    label: String!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+}
+
+# Xtd misc
+
+extend type XtdName implements Entity {
+    id: ID!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+}
+
+extend type XtdDescription implements Entity {
+    id: ID!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+}
+
+extend type XtdExternalDocument implements Entity, CatalogItem {
+    id: ID!
+    label: String!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+    names: [XtdName!]!
+}
+
+# XtdObjects
+
+extend type XtdActivity implements Entity, CatalogItem {
+    id: ID!
+    label: String!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+}
+
+extend type XtdActor implements Entity, CatalogItem {
+    id: ID!
+    label: String!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+}
+
+extend type XtdClassification implements Entity, CatalogItem {
+    id: ID!
+    label: String!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+}
+
+extend type XtdMeasureWithUnit implements Entity, CatalogItem {
+    id: ID!
+    label: String!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+}
+
+extend type XtdProperty implements Entity, CatalogItem {
+    id: ID!
+    label: String!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+}
+
+extend type XtdSubject implements Entity, CatalogItem {
+    id: ID!
+    label: String!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+}
+
+extend type XtdUnit implements Entity, CatalogItem {
+    id: ID!
+    label: String!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+}
+
+extend type XtdValue implements Entity, CatalogItem {
+    id: ID!
+    label: String!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+}
+
+extend type XtdBag implements Entity, CatalogItem {
+    id: ID!
+    label: String!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+}
+
+extend type XtdNest implements Entity, CatalogItem {
+    id: ID!
+    label: String!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+}
+
+extend type XtdRelCollects implements Entity, CatalogItem {
+    id: ID!
+    label: String!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+}
+
+extend type XtdRelDocuments implements Entity, CatalogItem {
+    id: ID!
+    label: String!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+}
+
+extend type XtdRelAssociates implements Entity, CatalogItem {
+    id: ID!
+    label: String!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+}
+
+extend type XtdRelGroups implements Entity, CatalogItem {
+    id: ID!
+    label: String!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+}
+
+extend type XtdRelSpecializes implements Entity, CatalogItem {
+    id: ID!
+    label: String!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+}
+
+extend type XtdRelComposes implements Entity, CatalogItem {
+    id: ID!
+    label: String!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+}
+
+extend type XtdRelActsUpon implements Entity, CatalogItem {
+    id: ID!
+    label: String!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+}
+
+#enum EntityTypes {
+#    XtdActivity
+#    XtdActor
+#    XtdBag
+#    XtdClassification
+#    XtdExternalDocument
+#    XtdMeasureWithUnit
+#    XtdNest
+#    XtdProperty
+#    XtdRelActsUpon
+#    XtdRelAssignsCollections
+#    XtdRelAssignsMeasures
+#    XtdRelAssignsProperties
+#    XtdRelAssignsPropertyWithValues
+#    XtdRelAssignsUnit
+#    XtdRelAssignsValues
+#    XtdRelAssociates
+#    XtdRelClassifies
+#    XtdRelCollects
+#    XtdRelComposes
+#    XtdRelDocuments
+#    XtdRelGroups
+#    XtdRelSequences
+#    XtdRelSpecializes
+#    XtdSubject
+#    XtdUnit
+#    XtdValue
+#}
+
+#input SearchInput {
+#    query: String
+#    queryScope: QueryScopes
+#    entityTypeIn: [EntityTypes!]
+#    entityTypeNotIn: [EntityTypes!]
+#    idIn: [String!]
+#    idNotIn: [String!]
+#    pageNumber: Int
+#    pageSize: Int
+#}
+
+# inputs
+
+enum QueryScopes {
+    ALL
+    NAMES
+    DESCRIPTIONS
+}
+
+input FilterInput {
+    query: String
+    queryScope: QueryScopes
+    idIn: [String!]
+    idNotIn: [String!]
+    pageNumber: Int
+    pageSize: Int
+}
+
+# Query type
+
+type Query {
+    node(id: ID!): Entity
+    language(languageCode: ID!): XtdLanguage
+    search(input: FilterInput): SearchResultConnection!
+    externalDocuments(input: FilterInput): XtdExternalDocumentConnection!
+    actors(input: FilterInput): XtdActorConnection!
+    activities(input: FilterInput): XtdActivityConnection!
+    classifications(input: FilterInput): XtdClassificationConnection!
+    measures(input: FilterInput): XtdMeasureWithUnitConnection!
+    properties(input: FilterInput): XtdPropertyConnection!
+    subjects(input: FilterInput): XtdSubjectConnection!
+    units(input: FilterInput): XtdUnitConnection!
+    values(input: FilterInput): XtdValueConnection!
+    bags(input: FilterInput): XtdBagConnection!
+    nests(input: FilterInput): XtdNestConnection!
+    documentsRelations(input: FilterInput): XtdRelDocumentsConnection!
+    collectsRelations(input: FilterInput): XtdRelCollectsConnection!
+    associatesRelations(input: FilterInput): XtdRelAssociatesConnection!
+    groupsRelations(input: FilterInput): XtdRelGroupsConnection!
+    specializesRelations(input: FilterInput): XtdRelSpecializesConnection!
+    composesRelations(input: FilterInput): XtdRelComposesConnection!
+    actsUponRelations(input: FilterInput): XtdRelActsUponConnection!
+}

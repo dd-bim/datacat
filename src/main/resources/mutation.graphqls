@@ -1,0 +1,223 @@
+input TextInput {
+    id: ID
+    languageCode: ID!
+    value: String!
+}
+
+input EntityInput {
+    id: ID
+    names: [TextInput!]!
+}
+
+input EntityUpdateInput {
+    id: ID!
+    names: [TextInput!]!
+}
+
+input RootInput {
+    id: ID
+    versionId: String!
+    versionDate: String!
+    names: [TextInput!]!
+    descriptions: [TextInput!]
+}
+
+input RootUpdateInput {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [TextInput!]!
+    descriptions: [TextInput!]!
+}
+
+input ValueInput {
+    id: ID
+    versionId: String!
+    versionDate: String!
+    names: [TextInput!]!
+    descriptions: [TextInput!]
+    toleranceType: XtdToleranceTypeEnum
+    lowerTolerance: String
+    upperTolerance: String
+    valueRole: XtdValueRoleEnum
+    valueType: XtdValueTypeEnum
+    nominalValue: String
+}
+
+input ValueUpdateInput {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [TextInput!]!
+    descriptions: [TextInput!]!
+    toleranceType: XtdToleranceTypeEnum
+    lowerTolerance: String
+    upperTolerance: String
+    valueRole: XtdValueRoleEnum
+    valueType: XtdValueTypeEnum
+    nominalValue: String
+}
+
+input RelDocumentsInput {
+    id: ID
+    versionId: String!
+    versionDate: String!
+    names: [TextInput!]!
+    descriptions: [TextInput!]
+    relatingDocument: ID!
+    relatedObjects: [ID!]!
+}
+
+input RelDocumentsUpdateInput {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [TextInput!]!
+    descriptions: [TextInput!]
+    relatingDocument: ID!
+    relatedObjects: [ID!]!
+}
+
+input CollectsInput {
+    id: ID
+    versionId: String!
+    versionDate: String!
+    names: [TextInput!]!
+    descriptions: [TextInput!]
+    relatingCollection: ID!
+    relatedThings: [ID!]!
+}
+
+input CollectsUpdateInput {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [TextInput!]!
+    descriptions: [TextInput!]
+    relatingCollection: ID!
+    relatedThings: [ID!]!
+}
+
+input AssociationInput {
+    id: ID
+    versionId: String!
+    versionDate: String!
+    names: [TextInput!]!
+    descriptions: [TextInput!]
+    relatingThing: ID!
+    relatedThings: [ID!]!
+}
+
+input AssociationUpdateInput {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [TextInput!]!
+    descriptions: [TextInput!]
+    relatingThing: ID!
+    relatedThings: [ID!]!
+}
+
+type UserProfile {
+    username: String!
+    firstName: String!
+    lastName: String!
+    email: String!
+    organization: String!
+}
+
+type UserSession {
+    token: String!
+    user: UserProfile!
+}
+
+input SignupInput {
+    username: String!
+    password: String!
+    firstName: String!
+    lastName: String!
+    email: String!
+    organization: String!
+}
+
+input LoginInput {
+    username: String!
+    password: String!
+}
+
+type Mutation {
+    signup(input: SignupInput!): UserSession
+    login(input: LoginInput!): UserSession
+
+    createExternalDocument(input: EntityInput!): XtdExternalDocument
+    updateExternalDocument(input: EntityUpdateInput!): XtdExternalDocument
+    deleteExternalDocument(id: ID!): XtdExternalDocument
+
+    createActor(input: RootInput!): XtdActor
+    updateActor(input: RootUpdateInput!): XtdActor
+    deleteActor(id: ID!): XtdActor
+
+    createActivity(input: RootInput!): XtdActivity
+    updateActivity(input: RootUpdateInput!): XtdActivity
+    deleteActivity(id: ID!): XtdActivity
+
+    createClassification(input: RootInput!): XtdClassification
+    updateClassification(input: RootUpdateInput!): XtdClassification
+    delXtdClassification(id: ID!): XtdClassification
+
+    createMeasure(input: ValueInput!): XtdMeasureWithUnit
+    updateMeasure(input: ValueUpdateInput!): XtdMeasureWithUnit
+    deleteMeasure(id: ID!): XtdMeasureWithUnit
+
+    createProperty(input: RootInput!): XtdProperty
+    updateProperty(input: RootUpdateInput!): XtdProperty
+    deleteProperty(id: ID!): XtdProperty
+
+    createSubject(input: RootInput!): XtdSubject
+    updateSubject(input: RootUpdateInput!): XtdSubject
+    deleteSubject(id: ID!): XtdSubject
+
+    createUnit(input: RootInput!): XtdUnit
+    updateUnit(input: RootUpdateInput!): XtdUnit
+    deleteUnit(id: ID!): XtdUnit
+
+    createValue(input: ValueInput!): XtdValue
+    updateValue(input: ValueUpdateInput!): XtdValue
+    deleteValue(id: ID!): XtdValue
+
+    createBag(input: RootInput!): XtdBag
+    updateBag(input: RootUpdateInput!): XtdBag
+    deleteBag(id: ID!): XtdBag
+
+    createNest(input: RootInput!): XtdNest
+    updateNest(input: RootUpdateInput!): XtdNest
+    deleteNest(id: ID!): XtdNest
+
+    createDocumentsRelation(input: RelDocumentsInput!): XtdRelDocuments
+    updateDocumentsRelation(input: RelDocumentsUpdateInput!): XtdRelDocuments
+    deleteDocumentsRelation(id: ID!): XtdRelDocuments
+
+    createCollectsRelation(input: CollectsInput!): XtdRelCollects
+    updateCollectsRelation(input: CollectsUpdateInput!): XtdRelCollects
+    deleteCollectsRelation(id: ID!): XtdRelCollects
+
+    createAssociatesRelation(input: AssociationInput!): XtdRelAssociates
+    updateAssociatesRelation(input: AssociationUpdateInput!): XtdRelAssociates
+    deleteAssociatesRelation(id: ID!): XtdRelAssociates
+
+    createGroupsRelation(input: AssociationInput!): XtdRelGroups
+    updateGroupsRelation(input: AssociationUpdateInput!): XtdRelGroups
+    deleteGroupsRelation(id: ID!): XtdRelGroups
+
+    createSpecializesRelation(input: AssociationInput!): XtdRelSpecializes
+    updateSpecializesRelation(input: AssociationUpdateInput!): XtdRelSpecializes
+    deleteSpecializesRelation(id: ID!): XtdRelSpecializes
+
+    createComposesRelation(input: AssociationInput!): XtdRelComposes
+    updateComposesRelation(input: AssociationUpdateInput!): XtdRelComposes
+    deleteComposesRelation(id: ID!): XtdRelComposes
+
+    createActsUponRelation(input: AssociationInput!): XtdRelActsUpon
+    updateActsUponRelation(input: AssociationUpdateInput!): XtdRelActsUpon
+    deleteActsUponRelation(id: ID!): XtdRelActsUpon
+}

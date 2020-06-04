@@ -1,0 +1,632 @@
+type XtdExternalDocument {
+    id: ID!
+    names: [XtdName!]!
+    documents: XtdRelDocumentsConnection!
+}
+
+type XtdLanguage {
+    id: ID!
+    languageNameInEnglish: String!
+    languageNameInSelf: String!
+}
+
+interface XtdLanguageRepresentation {
+    id: ID!
+    value: String!
+    language: XtdLanguage
+}
+
+type XtdName implements XtdLanguageRepresentation {
+    id: ID!
+    value: String!
+    language: XtdLanguage
+}
+
+type XtdDescription implements XtdLanguageRepresentation {
+    id: ID!
+    value: String!
+    language: XtdLanguage
+}
+
+interface XtdRoot {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    collectedBy(input: PagingInput): XtdRelCollectsConnection!
+    associates(input: PagingInput): XtdRelAssociatesConnection!
+    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
+    groups(input: PagingInput): XtdRelGroupsConnection!
+    groupedBy(input: PagingInput): XtdRelGroupsConnection!
+    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
+    composes(input: PagingInput): XtdRelComposesConnection!
+    composedBy(input: PagingInput): XtdRelComposesConnection!
+    actsUpon(input: PagingInput): XtdRelActsUponConnection!
+    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
+}
+
+interface XtdObject {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    documentedBy: XtdRelDocumentsConnection!
+    associates(input: PagingInput): XtdRelAssociatesConnection!
+    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
+    groups(input: PagingInput): XtdRelGroupsConnection!
+    groupedBy(input: PagingInput): XtdRelGroupsConnection!
+    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
+    composes(input: PagingInput): XtdRelComposesConnection!
+    composedBy(input: PagingInput): XtdRelComposesConnection!
+}
+
+interface XtdCollection {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    collects: XtdRelCollectsConnection!
+    collectedBy(input: PagingInput): XtdRelCollectsConnection!
+    associates(input: PagingInput): XtdRelAssociatesConnection!
+    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
+    groups(input: PagingInput): XtdRelGroupsConnection!
+    groupedBy(input: PagingInput): XtdRelGroupsConnection!
+    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
+    composes(input: PagingInput): XtdRelComposesConnection!
+    composedBy(input: PagingInput): XtdRelComposesConnection!
+}
+
+interface XtdRelationship {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    associates(input: PagingInput): XtdRelAssociatesConnection!
+    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
+    groups(input: PagingInput): XtdRelGroupsConnection!
+    groupedBy(input: PagingInput): XtdRelGroupsConnection!
+    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
+    composes(input: PagingInput): XtdRelComposesConnection!
+    composedBy(input: PagingInput): XtdRelComposesConnection!
+}
+
+type XtdActivity implements XtdRoot, XtdObject {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    documentedBy: XtdRelDocumentsConnection!
+    collectedBy(input: PagingInput): XtdRelCollectsConnection!
+    associates(input: PagingInput): XtdRelAssociatesConnection!
+    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
+    groups(input: PagingInput): XtdRelGroupsConnection!
+    groupedBy(input: PagingInput): XtdRelGroupsConnection!
+    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
+    composes(input: PagingInput): XtdRelComposesConnection!
+    composedBy(input: PagingInput): XtdRelComposesConnection!
+    actsUpon(input: PagingInput): XtdRelActsUponConnection!
+    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
+}
+
+type XtdActor implements XtdRoot, XtdObject {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    documentedBy: XtdRelDocumentsConnection!
+    collectedBy(input: PagingInput): XtdRelCollectsConnection!
+    associates(input: PagingInput): XtdRelAssociatesConnection!
+    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
+    groups(input: PagingInput): XtdRelGroupsConnection!
+    groupedBy(input: PagingInput): XtdRelGroupsConnection!
+    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
+    composes(input: PagingInput): XtdRelComposesConnection!
+    composedBy(input: PagingInput): XtdRelComposesConnection!
+    actsUpon(input: PagingInput): XtdRelActsUponConnection!
+    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
+}
+
+type XtdSubject implements XtdRoot, XtdObject {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    documentedBy: XtdRelDocumentsConnection!
+    collectedBy(input: PagingInput): XtdRelCollectsConnection!
+    associates(input: PagingInput): XtdRelAssociatesConnection!
+    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
+    groups(input: PagingInput): XtdRelGroupsConnection!
+    groupedBy(input: PagingInput): XtdRelGroupsConnection!
+    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
+    composes(input: PagingInput): XtdRelComposesConnection!
+    composedBy(input: PagingInput): XtdRelComposesConnection!
+    actsUpon(input: PagingInput): XtdRelActsUponConnection!
+    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
+}
+
+
+type XtdClassification implements XtdRoot, XtdObject {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    documentedBy: XtdRelDocumentsConnection!
+    collectedBy(input: PagingInput): XtdRelCollectsConnection!
+    associates(input: PagingInput): XtdRelAssociatesConnection!
+    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
+    groups(input: PagingInput): XtdRelGroupsConnection!
+    groupedBy(input: PagingInput): XtdRelGroupsConnection!
+    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
+    composes(input: PagingInput): XtdRelComposesConnection!
+    composedBy(input: PagingInput): XtdRelComposesConnection!
+    actsUpon(input: PagingInput): XtdRelActsUponConnection!
+    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
+}
+
+type XtdMeasureWithUnit implements XtdRoot, XtdObject {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    documentedBy: XtdRelDocumentsConnection!
+    collectedBy(input: PagingInput): XtdRelCollectsConnection!
+    associates(input: PagingInput): XtdRelAssociatesConnection!
+    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
+    groups(input: PagingInput): XtdRelGroupsConnection!
+    groupedBy(input: PagingInput): XtdRelGroupsConnection!
+    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
+    composes(input: PagingInput): XtdRelComposesConnection!
+    composedBy(input: PagingInput): XtdRelComposesConnection!
+    actsUpon(input: PagingInput): XtdRelActsUponConnection!
+    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
+}
+
+type XtdProperty implements XtdRoot, XtdObject {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    documentedBy: XtdRelDocumentsConnection!
+    collectedBy(input: PagingInput): XtdRelCollectsConnection!
+    associates(input: PagingInput): XtdRelAssociatesConnection!
+    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
+    groups(input: PagingInput): XtdRelGroupsConnection!
+    groupedBy(input: PagingInput): XtdRelGroupsConnection!
+    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
+    composes(input: PagingInput): XtdRelComposesConnection!
+    composedBy(input: PagingInput): XtdRelComposesConnection!
+    actsUpon(input: PagingInput): XtdRelActsUponConnection!
+    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
+}
+
+
+type XtdUnit implements XtdRoot, XtdObject {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    documentedBy: XtdRelDocumentsConnection!
+    collectedBy(input: PagingInput): XtdRelCollectsConnection!
+    associates(input: PagingInput): XtdRelAssociatesConnection!
+    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
+    groups(input: PagingInput): XtdRelGroupsConnection!
+    groupedBy(input: PagingInput): XtdRelGroupsConnection!
+    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
+    composes(input: PagingInput): XtdRelComposesConnection!
+    composedBy(input: PagingInput): XtdRelComposesConnection!
+    actsUpon(input: PagingInput): XtdRelActsUponConnection!
+    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
+}
+
+enum XtdValueTypeEnum {
+    XtdString
+    XtdNumber
+    XtdInteger
+    XtdReal
+    XtdBoolean
+    XtdLogical
+}
+
+enum XtdToleranceTypeEnum {
+    Realvalue
+    Percentage
+}
+
+enum XtdValueRoleEnum {
+    Nominal
+    Maximum
+    Minimum
+}
+
+type XtdValue implements XtdRoot, XtdObject {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    toleranceType: XtdToleranceTypeEnum
+    lowerTolerance: String
+    upperTolerance: String
+    valueRole: XtdValueRoleEnum
+    valueType: XtdValueTypeEnum
+    nominalValue: String
+    documentedBy: XtdRelDocumentsConnection!
+    collectedBy(input: PagingInput): XtdRelCollectsConnection!
+    associates(input: PagingInput): XtdRelAssociatesConnection!
+    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
+    groups(input: PagingInput): XtdRelGroupsConnection!
+    groupedBy(input: PagingInput): XtdRelGroupsConnection!
+    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
+    composes(input: PagingInput): XtdRelComposesConnection!
+    composedBy(input: PagingInput): XtdRelComposesConnection!
+    actsUpon(input: PagingInput): XtdRelActsUponConnection!
+    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
+}
+
+type XtdBag implements XtdRoot, XtdCollection {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    collects: XtdRelCollectsConnection!
+    collectedBy(input: PagingInput): XtdRelCollectsConnection!
+    associates(input: PagingInput): XtdRelAssociatesConnection!
+    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
+    groups(input: PagingInput): XtdRelGroupsConnection!
+    groupedBy(input: PagingInput): XtdRelGroupsConnection!
+    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
+    composes(input: PagingInput): XtdRelComposesConnection!
+    composedBy(input: PagingInput): XtdRelComposesConnection!
+    actsUpon(input: PagingInput): XtdRelActsUponConnection!
+    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
+}
+
+type XtdNest implements XtdRoot, XtdCollection {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    collects: XtdRelCollectsConnection!
+    collectedBy(input: PagingInput): XtdRelCollectsConnection!
+    associates(input: PagingInput): XtdRelAssociatesConnection!
+    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
+    groups(input: PagingInput): XtdRelGroupsConnection!
+    groupedBy(input: PagingInput): XtdRelGroupsConnection!
+    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
+    composes(input: PagingInput): XtdRelComposesConnection!
+    composedBy(input: PagingInput): XtdRelComposesConnection!
+    actsUpon(input: PagingInput): XtdRelActsUponConnection!
+    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
+}
+
+type XtdRelCollects implements XtdRoot, XtdRelationship {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    relatingCollection: XtdCollection!
+    relatedThings(input: PagingInput): XtdRootConnection!
+    collectedBy(input: PagingInput): XtdRelCollectsConnection!
+    associates(input: PagingInput): XtdRelAssociatesConnection!
+    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
+    groups(input: PagingInput): XtdRelGroupsConnection!
+    groupedBy(input: PagingInput): XtdRelGroupsConnection!
+    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
+    composes(input: PagingInput): XtdRelComposesConnection!
+    composedBy(input: PagingInput): XtdRelComposesConnection!
+    actsUpon(input: PagingInput): XtdRelActsUponConnection!
+    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
+}
+
+type XtdRelDocuments implements XtdRoot, XtdRelationship {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    relatingDocument: XtdExternalDocument!
+    relatedObjects(input: PagingInput): XtdObjectConnection!
+    collectedBy(input: PagingInput): XtdRelCollectsConnection!
+    associates(input: PagingInput): XtdRelAssociatesConnection!
+    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
+    groups(input: PagingInput): XtdRelGroupsConnection!
+    groupedBy(input: PagingInput): XtdRelGroupsConnection!
+    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
+    composes(input: PagingInput): XtdRelComposesConnection!
+    composedBy(input: PagingInput): XtdRelComposesConnection!
+    actsUpon(input: PagingInput): XtdRelActsUponConnection!
+    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
+}
+
+type XtdRelAssociates implements XtdRoot, XtdRelationship {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    relatingThing: XtdObject!
+    relatedThings(input: PagingInput): XtdObjectConnection!
+    collectedBy(input: PagingInput): XtdRelCollectsConnection!
+    associates(input: PagingInput): XtdRelAssociatesConnection!
+    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
+    groups(input: PagingInput): XtdRelGroupsConnection!
+    groupedBy(input: PagingInput): XtdRelGroupsConnection!
+    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
+    composes(input: PagingInput): XtdRelComposesConnection!
+    composedBy(input: PagingInput): XtdRelComposesConnection!
+    actsUpon(input: PagingInput): XtdRelActsUponConnection!
+    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
+}
+
+type XtdRelGroups implements XtdRoot, XtdRelationship {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    relatingThing: XtdRoot!
+    relatedThings(input: PagingInput): XtdRootConnection!
+    collectedBy(input: PagingInput): XtdRelCollectsConnection!
+    associates(input: PagingInput): XtdRelAssociatesConnection!
+    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
+    groups(input: PagingInput): XtdRelGroupsConnection!
+    groupedBy(input: PagingInput): XtdRelGroupsConnection!
+    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
+    composes(input: PagingInput): XtdRelComposesConnection!
+    composedBy(input: PagingInput): XtdRelComposesConnection!
+    actsUpon(input: PagingInput): XtdRelActsUponConnection!
+    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
+}
+
+type XtdRelSpecializes implements XtdRoot, XtdRelationship {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    relatingThing: XtdRoot!
+    relatedThings(input: PagingInput): XtdRootConnection!
+    collectedBy(input: PagingInput): XtdRelCollectsConnection!
+    associates(input: PagingInput): XtdRelAssociatesConnection!
+    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
+    groups(input: PagingInput): XtdRelGroupsConnection!
+    groupedBy(input: PagingInput): XtdRelGroupsConnection!
+    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
+    composes(input: PagingInput): XtdRelComposesConnection!
+    composedBy(input: PagingInput): XtdRelComposesConnection!
+    actsUpon(input: PagingInput): XtdRelActsUponConnection!
+    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
+}
+
+type XtdRelComposes implements XtdRoot, XtdRelationship {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    relatingThing: XtdRoot!
+    relatedThings(input: PagingInput): XtdRootConnection!
+    collectedBy(input: PagingInput): XtdRelCollectsConnection!
+    associates(input: PagingInput): XtdRelAssociatesConnection!
+    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
+    groups(input: PagingInput): XtdRelGroupsConnection!
+    groupedBy(input: PagingInput): XtdRelGroupsConnection!
+    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
+    composes(input: PagingInput): XtdRelComposesConnection!
+    composedBy(input: PagingInput): XtdRelComposesConnection!
+    actsUpon(input: PagingInput): XtdRelActsUponConnection!
+    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
+}
+
+type XtdRelActsUpon implements XtdRoot, XtdRelationship {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    relatingThing: XtdRoot!
+    relatedThings(input: PagingInput): XtdRootConnection!
+    collectedBy(input: PagingInput): XtdRelCollectsConnection!
+    associates(input: PagingInput): XtdRelAssociatesConnection!
+    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
+    groups(input: PagingInput): XtdRelGroupsConnection!
+    groupedBy(input: PagingInput): XtdRelGroupsConnection!
+    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
+    composes(input: PagingInput): XtdRelComposesConnection!
+    composedBy(input: PagingInput): XtdRelComposesConnection!
+    actsUpon(input: PagingInput): XtdRelActsUponConnection!
+    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
+}
+
+# Connections
+
+type PageInfo {
+    pageNumber: Int!
+    pageSize: Int!
+    pageElements: Int!
+    totalPages: Int!
+    hasNext: Boolean!
+    hasPrevious: Boolean!
+    isFirst: Boolean!
+    isLast: Boolean!
+}
+
+type XtdExternalDocumentConnection {
+    nodes: [XtdExternalDocument!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+type XtdRootConnection {
+    nodes: [XtdRoot!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+type XtdObjectConnection {
+    nodes: [XtdObject!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+type XtdActivityConnection {
+    nodes: [XtdActivity!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+type XtdActorConnection {
+    nodes: [XtdActor!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+type XtdClassificationConnection {
+    nodes: [XtdClassification!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+type XtdMeasureWithUnitConnection {
+    nodes: [XtdMeasureWithUnit!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+type XtdPropertyConnection {
+    nodes: [XtdProperty!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+type XtdSubjectConnection {
+    nodes: [XtdSubject!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+type XtdUnitConnection {
+    nodes: [XtdUnit!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+type XtdValueConnection {
+    nodes: [XtdValue!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+type XtdCollectionConnection {
+    nodes: [XtdCollection!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+type XtdBagConnection {
+    nodes: [XtdBag!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+type XtdNestConnection {
+    nodes: [XtdNest!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+type XtdRelationshipConnection {
+    nodes: [XtdRelationship!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+type XtdRelCollectsConnection {
+    nodes: [XtdRelCollects!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+type XtdRelDocumentsConnection {
+    nodes: [XtdRelDocuments!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+
+type XtdRelAssociatesConnection {
+    nodes: [XtdRelAssociates!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+type XtdRelGroupsConnection {
+    nodes: [XtdRelGroups!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+type XtdRelSpecializesConnection {
+    nodes: [XtdRelSpecializes!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+type XtdRelComposesConnection {
+    nodes: [XtdRelComposes!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+
+type XtdRelActsUponConnection {
+    nodes: [XtdRelActsUpon!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+type SearchResultConnection {
+    nodes: [CatalogItem!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+input PagingInput {
+    pageNumber: Int
+    pageSize: Int
+}
