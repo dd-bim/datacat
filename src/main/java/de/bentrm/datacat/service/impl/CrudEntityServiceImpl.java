@@ -1,6 +1,6 @@
 package de.bentrm.datacat.service.impl;
 
-import de.bentrm.datacat.domain.XtdEntity;
+import de.bentrm.datacat.domain.CatalogItem;
 import de.bentrm.datacat.domain.XtdName;
 import de.bentrm.datacat.graphql.dto.EntityInput;
 import de.bentrm.datacat.graphql.dto.EntityUpdateInput;
@@ -9,6 +9,7 @@ import de.bentrm.datacat.query.FilterOptions;
 import de.bentrm.datacat.repository.GraphEntityRepository;
 import de.bentrm.datacat.service.CrudEntityService;
 import de.bentrm.datacat.service.RelGroupsService;
+import de.bentrm.datacat.service.Specification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ import java.util.stream.Collectors;
 @Validated
 @Transactional(readOnly = true)
 public abstract class CrudEntityServiceImpl<
-		T extends XtdEntity,
+		T extends CatalogItem,
 		C extends EntityInput,
 		U extends EntityUpdateInput,
 		R extends GraphEntityRepository<T>>
@@ -111,7 +112,7 @@ public abstract class CrudEntityServiceImpl<
 					throw new IllegalArgumentException("Update of languageName of name with id " + newName.getId() + " is not allowed.");
 				}
 
-				oldName.setName(newName.getName());
+				oldName.setValue(newName.getValue());
 				oldName.setSortOrder(newName.getSortOrder());
 
 				logger.debug("Updated persistent name: {}" , oldName);
@@ -142,6 +143,11 @@ public abstract class CrudEntityServiceImpl<
 	@Override
 	public @NotNull Page<T> findByIds(@NotNull List<String> ids, @NotNull Pageable pageable) {
 		return repository.findAllById(ids, pageable);
+	}
+
+	@Override
+	public @NotNull Page<T> search(@NotNull Specification specification) {
+		return repository.findAll(specification);
 	}
 
 	@Override

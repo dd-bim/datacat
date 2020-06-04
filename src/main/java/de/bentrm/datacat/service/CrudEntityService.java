@@ -1,13 +1,13 @@
 package de.bentrm.datacat.service;
 
-import de.bentrm.datacat.domain.XtdEntity;
+import de.bentrm.datacat.domain.CatalogItem;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
-public interface CrudEntityService<T extends XtdEntity, C, U> extends EntityService<T> {
+public interface CrudEntityService<T extends CatalogItem, C, U> extends EntityService<T> {
 
     @PreAuthorize("hasRole('USER')")
     @NotNull T create(@Valid C dto);

@@ -17,6 +17,9 @@ public interface EntityService<T extends Entity> {
     @NotNull Optional<T> findById(@NotNull String id);
 
     @PreAuthorize("hasRole('READONLY')")
+    @NotNull Page<T> search(@NotNull Specification specification);
+
+    @PreAuthorize("hasRole('READONLY')")
     @NotNull Page<T> findByIds(@NotNull List<String> ids, @NotNull Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")

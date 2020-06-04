@@ -80,7 +80,7 @@ public abstract class CrudRootServiceImpl<
                     throw new IllegalArgumentException("Update of languageName of description with id " + newDescription.getId() + " is not allowed.");
                 }
 
-                oldDescription.setDescription(newDescription.getDescription());
+                oldDescription.setValue(newDescription.getValue());
                 oldDescription.setSortOrder(newDescription.getSortOrder());
 
                 logger.debug("Updated persistent description: {}" , oldDescription);
