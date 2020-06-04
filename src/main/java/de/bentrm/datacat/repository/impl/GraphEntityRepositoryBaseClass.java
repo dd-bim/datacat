@@ -2,6 +2,7 @@ package de.bentrm.datacat.repository.impl;
 
 import de.bentrm.datacat.query.*;
 import de.bentrm.datacat.repository.GraphEntityRepository;
+import de.bentrm.datacat.service.Specification;
 import org.neo4j.ogm.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +53,36 @@ public class GraphEntityRepositoryBaseClass<T>
     @Override
     public long count(FilterOptions filterOptions) {
         return new CountAllQuery<>(entityType, session, filterOptions).execute();
+    }
+
+    @Override
+    public Page<T> findAll(Specification spec) {
+        logger.debug("Current query spec: {}", spec);
+
+        final ListQuery.QueryBuilder<T> builder = new ListQuery.QueryBuilder<>(entityType, session);
+        final Pageable pageable = spec.getPageable();
+
+        spec.getQuery().ifPresent(builder::setSearchTerm);
+
+        final String queryScope = spec.getQueryScope().name();
+        logger.debug("User-selected queryscope '{}'", queryScope);
+
+        final FullTextIndex fullTextIndex = FullTextIndex.valueOf(queryScope);
+        logger.debug("Determined full-text index to use: {}", fullTextIndex);
+        builder.setFullTextIndex(fullTextIndex);
+
+        spec.getEntityTypeIn().ifPresent(builder::setLabels);
+        spec.getEntityTypeNotIn().ifPresent(builder::setExcludedLabels);
+        spec.getIdIn().ifPresent(builder::setIds);
+        spec.getIdNotIn().ifPresent(builder::setExcludedIds);
+        builder.setSkip(pageable.getOffset());
+        builder.setLimit(pageable.getPageSize());
+
+        final ListQuery<T> query = builder.build();
+        Iterable<T> results = query.execute();
+        List<T> content = new ArrayList<>();
+        results.forEach(content::add);
+        return PageableExecutionUtils.getPage(content, pageable, this::count);
     }
 
     @Override

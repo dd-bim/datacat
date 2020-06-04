@@ -1,11 +1,11 @@
 package de.bentrm.datacat.repository;
 
-import de.bentrm.datacat.domain.XtdEntity;
+import de.bentrm.datacat.domain.CatalogItem;
 import de.bentrm.datacat.query.FilterOptions;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface EntityRepositoryExtension {
+public interface CatalogItemRepositoryExtension {
 
-    Page<XtdEntity> search(FilterOptions searchOptions, Pageable pageable);
+    Page<CatalogItem> search(FilterOptions searchOptions, Pageable pageable);
 }
