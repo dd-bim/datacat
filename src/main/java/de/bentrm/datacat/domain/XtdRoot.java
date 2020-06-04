@@ -11,7 +11,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 @NodeEntity(label = XtdRoot.LABEL)
-public abstract class XtdRoot extends XtdEntity {
+public abstract class XtdRoot extends CatalogItem {
 
     public static final String TITLE = "Root";
     public static final String TITLE_PLURAL = "Roots";

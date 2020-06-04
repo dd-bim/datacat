@@ -19,7 +19,7 @@ import java.util.TreeSet;
         "(root)-[:SPECIALIZES]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()",
         "(root)-[:ACTS_UPON]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()"
 })
-public abstract class XtdEntity extends Entity {
+public abstract class CatalogItem extends Entity {
 
     @Relationship(type = XtdName.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
     protected SortedSet<XtdName> names = new TreeSet<>();
@@ -33,12 +33,16 @@ public abstract class XtdEntity extends Entity {
     }
 
     public String getLabel() {
-        return getNames().stream().map(XtdName::getValue).reduce((a, b) -> a + ", " + b).orElse("");
+        return this.getNames().stream()
+                .map(XtdName::getValue)
+                .reduce((a, b) -> a + ", " + b)
+                .orElseGet(() -> String.format("<%s>", this.getId()));
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
+                .append("label", this.getLabel())
                 .append("names", names)
                 .toString();
     }

@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @NodeEntity(label = XtdExternalDocument.LABEL)
-public class XtdExternalDocument extends XtdEntity {
+public class XtdExternalDocument extends CatalogItem {
 
     public static final String TITLE = "ExternalDocument";
     public static final String TITLE_PLURAL = "ExternalDocuments";
