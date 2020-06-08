@@ -118,8 +118,8 @@ public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
         typeResolvers.mapTypeResolvers(builder);
 
         RuntimeWiring wiring = builder
-                .type("XtdName", typeWiring -> typeWiring.dataFetcher("languageName", baseDataFetcherProvider.languageByLanguageRepresentation()))
-                .type("XtdDescription", typeWiring -> typeWiring.dataFetcher("languageName", baseDataFetcherProvider.languageByLanguageRepresentation()))
+                .type("XtdName", typeWiring -> typeWiring.dataFetcher("language", baseDataFetcherProvider.languageByLanguageRepresentation()))
+                .type("XtdDescription", typeWiring -> typeWiring.dataFetcher("language", baseDataFetcherProvider.languageByLanguageRepresentation()))
                 .type("XtdExternalDocument", typeWiring -> typeWiring
                         .dataFetchers(externalDocumentDataFetcherProvider.getDataFetchers()))
                 .type("XtdActivity", objectDataFetchers)
