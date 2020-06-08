@@ -146,8 +146,8 @@ input LoginInput {
 }
 
 type Mutation {
-    signup(input: SignupInput!): UserSession
-    login(input: LoginInput!): UserSession
+    signup(input: SignupInput!): UserSession!
+    login(input: LoginInput!): UserSession!
 
     createExternalDocument(input: EntityInput!): XtdExternalDocument
     updateExternalDocument(input: EntityUpdateInput!): XtdExternalDocument

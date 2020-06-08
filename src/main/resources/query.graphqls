@@ -6,19 +6,19 @@ interface Entity {
     lastModifiedBy: String!
 }
 
-interface CatalogItem {
+interface CatalogItem implements Entity {
     id: ID!
     label: String!
     created: String!
     createdBy: String!
     lastModified: String!
     lastModifiedBy: String!
+    names: [XtdName!]!
 }
 
 # Xtd misc
 
 extend type XtdName implements Entity {
-    id: ID!
     created: String!
     createdBy: String!
     lastModified: String!
@@ -26,7 +26,6 @@ extend type XtdName implements Entity {
 }
 
 extend type XtdDescription implements Entity {
-    id: ID!
     created: String!
     createdBy: String!
     lastModified: String!
@@ -34,30 +33,24 @@ extend type XtdDescription implements Entity {
 }
 
 extend type XtdExternalDocument implements Entity, CatalogItem {
-    id: ID!
     label: String!
     created: String!
     createdBy: String!
     lastModified: String!
     lastModifiedBy: String!
-    names: [XtdName!]!
 }
 
 # XtdObjects
 
 extend type XtdActivity implements Entity, CatalogItem {
-    id: ID!
     label: String!
     created: String!
     createdBy: String!
     lastModified: String!
     lastModifiedBy: String!
-    names: [XtdName!]!
-    descriptions: [XtdDescription!]!
 }
 
 extend type XtdActor implements Entity, CatalogItem {
-    id: ID!
     label: String!
     created: String!
     createdBy: String!
@@ -66,7 +59,6 @@ extend type XtdActor implements Entity, CatalogItem {
 }
 
 extend type XtdClassification implements Entity, CatalogItem {
-    id: ID!
     label: String!
     created: String!
     createdBy: String!
@@ -75,7 +67,6 @@ extend type XtdClassification implements Entity, CatalogItem {
 }
 
 extend type XtdMeasureWithUnit implements Entity, CatalogItem {
-    id: ID!
     label: String!
     created: String!
     createdBy: String!
@@ -84,7 +75,6 @@ extend type XtdMeasureWithUnit implements Entity, CatalogItem {
 }
 
 extend type XtdProperty implements Entity, CatalogItem {
-    id: ID!
     label: String!
     created: String!
     createdBy: String!
@@ -93,7 +83,6 @@ extend type XtdProperty implements Entity, CatalogItem {
 }
 
 extend type XtdSubject implements Entity, CatalogItem {
-    id: ID!
     label: String!
     created: String!
     createdBy: String!
@@ -102,7 +91,6 @@ extend type XtdSubject implements Entity, CatalogItem {
 }
 
 extend type XtdUnit implements Entity, CatalogItem {
-    id: ID!
     label: String!
     created: String!
     createdBy: String!
@@ -111,7 +99,6 @@ extend type XtdUnit implements Entity, CatalogItem {
 }
 
 extend type XtdValue implements Entity, CatalogItem {
-    id: ID!
     label: String!
     created: String!
     createdBy: String!
@@ -120,7 +107,6 @@ extend type XtdValue implements Entity, CatalogItem {
 }
 
 extend type XtdBag implements Entity, CatalogItem {
-    id: ID!
     label: String!
     created: String!
     createdBy: String!
@@ -129,7 +115,6 @@ extend type XtdBag implements Entity, CatalogItem {
 }
 
 extend type XtdNest implements Entity, CatalogItem {
-    id: ID!
     label: String!
     created: String!
     createdBy: String!
@@ -138,7 +123,6 @@ extend type XtdNest implements Entity, CatalogItem {
 }
 
 extend type XtdRelCollects implements Entity, CatalogItem {
-    id: ID!
     label: String!
     created: String!
     createdBy: String!
@@ -147,7 +131,6 @@ extend type XtdRelCollects implements Entity, CatalogItem {
 }
 
 extend type XtdRelDocuments implements Entity, CatalogItem {
-    id: ID!
     label: String!
     created: String!
     createdBy: String!
@@ -156,7 +139,6 @@ extend type XtdRelDocuments implements Entity, CatalogItem {
 }
 
 extend type XtdRelAssociates implements Entity, CatalogItem {
-    id: ID!
     label: String!
     created: String!
     createdBy: String!
@@ -165,7 +147,6 @@ extend type XtdRelAssociates implements Entity, CatalogItem {
 }
 
 extend type XtdRelGroups implements Entity, CatalogItem {
-    id: ID!
     label: String!
     created: String!
     createdBy: String!
@@ -174,7 +155,6 @@ extend type XtdRelGroups implements Entity, CatalogItem {
 }
 
 extend type XtdRelSpecializes implements Entity, CatalogItem {
-    id: ID!
     label: String!
     created: String!
     createdBy: String!
@@ -183,7 +163,6 @@ extend type XtdRelSpecializes implements Entity, CatalogItem {
 }
 
 extend type XtdRelComposes implements Entity, CatalogItem {
-    id: ID!
     label: String!
     created: String!
     createdBy: String!
@@ -192,7 +171,6 @@ extend type XtdRelComposes implements Entity, CatalogItem {
 }
 
 extend type XtdRelActsUpon implements Entity, CatalogItem {
-    id: ID!
     label: String!
     created: String!
     createdBy: String!
