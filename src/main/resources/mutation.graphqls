@@ -19,7 +19,7 @@ input RootInput {
     versionId: String!
     versionDate: String!
     names: [TextInput!]!
-    descriptions: [TextInput!]
+    descriptions: [TextInput!]!
 }
 
 input RootUpdateInput {
