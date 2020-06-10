@@ -81,13 +81,6 @@ public class RelComposesDataFetcherProvider implements QueryDataFetcherProvider,
         };
     }
 
-    public DataFetcher<Optional<XtdRelComposes>> getOne() {
-        return environment -> {
-            String id = environment.getArgument("id");
-            return relComposesService.findById(id);
-        };
-    }
-
     public DataFetcher<Connection<XtdRelComposes>> getAll() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("options");

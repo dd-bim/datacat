@@ -81,13 +81,6 @@ public class RelActsUponDataFetcherProvider implements QueryDataFetcherProvider,
         };
     }
 
-    public DataFetcher<Optional<XtdRelActsUpon>> getOne() {
-        return environment -> {
-            String id = environment.getArgument("id");
-            return relActsUponService.findById(id);
-        };
-    }
-
     public DataFetcher<Connection<XtdRelActsUpon>> getAll() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("options");

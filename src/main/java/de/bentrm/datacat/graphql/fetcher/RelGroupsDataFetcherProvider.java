@@ -83,13 +83,6 @@ public class RelGroupsDataFetcherProvider implements QueryDataFetcherProvider, R
         };
     }
 
-    public DataFetcher<Optional<XtdRelGroups>> getOne() {
-        return environment -> {
-            String id = environment.getArgument("id");
-            return relGroupsService.findById(id);
-        };
-    }
-
     public DataFetcher<Connection<XtdRelGroups>> getAll() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("options");

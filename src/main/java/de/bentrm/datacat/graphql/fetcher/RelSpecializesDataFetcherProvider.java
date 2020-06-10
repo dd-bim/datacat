@@ -82,13 +82,6 @@ public class RelSpecializesDataFetcherProvider implements QueryDataFetcherProvid
         };
     }
 
-    public DataFetcher<Optional<XtdRelSpecializes>> getOne() {
-        return environment -> {
-            String id = environment.getArgument("id");
-            return relSpecializesService.findById(id);
-        };
-    }
-
     public DataFetcher<Connection<XtdRelSpecializes>> getAll() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("options");
