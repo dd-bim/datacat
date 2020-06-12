@@ -3,7 +3,7 @@ package de.bentrm.datacat.domain;
 import java.util.List;
 
 public enum XtdValueTypeEnum {
-
+    Nil,
     XtdString,
     XtdNumber,
     XtdInteger,

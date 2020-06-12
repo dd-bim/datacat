@@ -9,15 +9,15 @@ public class XtdValue extends XtdObject {
     public static final String TITLE_PLURAL = "Values";
     public static final String LABEL = PREFIX + TITLE;
 
-    private XtdToleranceTypeEnum toleranceType;
+    private XtdToleranceTypeEnum toleranceType = XtdToleranceTypeEnum.Nil;
 
     private String lowerTolerance;
 
     private String upperTolerance;
 
-    private XtdValueRoleEnum valueRole;
+    private XtdValueRoleEnum valueRole = XtdValueRoleEnum.Nil;
 
-    private XtdValueTypeEnum valueType;
+    private XtdValueTypeEnum valueType = XtdValueTypeEnum.Nil;
 
     private String nominalValue;
 
