@@ -49,6 +49,9 @@ public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
     private List<MutationDataFetcherProvider> mutationDataFetcherProviders;
 
     @Autowired
+    private MeasureWithUnitDataFetcherProvider measureWithUnitDataFetcherProvider;
+
+    @Autowired
     private RelDocumentsDataFetcherProvider relDocumentsProvider;
 
     @Autowired
@@ -128,6 +131,9 @@ public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
                 .type("XtdUnit", objectDataFetchers)
                 .type("XtdProperty", objectDataFetchers)
                 .type("XtdValue", objectDataFetchers)
+                .type("XtdMeasureWithUnit", typeWiring -> objectDataFetchers
+                        .apply(typeWiring)
+                        .dataFetchers(measureWithUnitDataFetcherProvider.getPropertyDataFetchers()))
                 .type("XtdBag", rootDataFetchers)
                 .type("XtdNest", rootDataFetchers)
                 .type("XtdRelDocuments", typeWiring -> rootDataFetchers

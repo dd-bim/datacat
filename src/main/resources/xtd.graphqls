@@ -193,6 +193,8 @@ type XtdMeasureWithUnit implements XtdRoot, XtdObject {
     versionDate: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
+    unitComponent: XtdUnit
+    valueDomain: [XtdValue!]
     actedUponBy(input: PagingInput): XtdRelActsUponConnection!
     actsUpon(input: PagingInput): XtdRelActsUponConnection!
     associatedBy(input: PagingInput): XtdRelAssociatesConnection!
@@ -249,6 +251,7 @@ type XtdUnit implements XtdRoot, XtdObject {
 }
 
 enum XtdValueTypeEnum {
+    Nil
     XtdString
     XtdNumber
     XtdInteger
@@ -258,11 +261,13 @@ enum XtdValueTypeEnum {
 }
 
 enum XtdToleranceTypeEnum {
+    Nil
     Realvalue
     Percentage
 }
 
 enum XtdValueRoleEnum {
+    Nil
     Nominal
     Maximum
     Minimum
@@ -274,11 +279,11 @@ type XtdValue implements XtdRoot, XtdObject {
     versionDate: String!
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
-    toleranceType: XtdToleranceTypeEnum
+    toleranceType: XtdToleranceTypeEnum!
     lowerTolerance: String
     upperTolerance: String
-    valueRole: XtdValueRoleEnum
-    valueType: XtdValueTypeEnum
+    valueRole: XtdValueRoleEnum!
+    valueType: XtdValueTypeEnum!
     nominalValue: String
     actedUponBy(input: PagingInput): XtdRelActsUponConnection!
     actsUpon(input: PagingInput): XtdRelActsUponConnection!
