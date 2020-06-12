@@ -17,7 +17,8 @@ import java.util.TreeSet;
         "(root)-[:COMPOSES]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()",
         "(root)-[:GROUPS]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()",
         "(root)-[:SPECIALIZES]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()",
-        "(root)-[:ACTS_UPON]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()"
+        "(root)-[:ACTS_UPON]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()",
+        "(root)-[:HAS_UNIT_COMPONENT|HAS_VALUE_DOMAIN*0..1]->()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()"
 })
 public abstract class CatalogItem extends Entity {
 
