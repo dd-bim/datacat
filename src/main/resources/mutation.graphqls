@@ -35,12 +35,12 @@ input ValueInput {
     versionId: String!
     versionDate: String!
     names: [TextInput!]!
-    descriptions: [TextInput!]
-    toleranceType: XtdToleranceTypeEnum
+    descriptions: [TextInput!]!
+    toleranceType: XtdToleranceTypeEnum!
     lowerTolerance: String
     upperTolerance: String
-    valueRole: XtdValueRoleEnum
-    valueType: XtdValueTypeEnum
+    valueRole: XtdValueRoleEnum!
+    valueType: XtdValueTypeEnum!
     nominalValue: String
 }
 
@@ -50,11 +50,11 @@ input ValueUpdateInput {
     versionDate: String!
     names: [TextInput!]!
     descriptions: [TextInput!]!
-    toleranceType: XtdToleranceTypeEnum
+    toleranceType: XtdToleranceTypeEnum!
     lowerTolerance: String
     upperTolerance: String
-    valueRole: XtdValueRoleEnum
-    valueType: XtdValueTypeEnum
+    valueRole: XtdValueRoleEnum!
+    valueType: XtdValueTypeEnum!
     nominalValue: String
 }
 

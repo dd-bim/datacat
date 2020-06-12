@@ -4,11 +4,14 @@ import de.bentrm.datacat.domain.XtdToleranceTypeEnum;
 import de.bentrm.datacat.domain.XtdValueRoleEnum;
 import de.bentrm.datacat.domain.XtdValueTypeEnum;
 import de.bentrm.datacat.validation.NullOrNotEmpty;
-import de.bentrm.datacat.validation.ToleranceComponentConstraint;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
-@ToleranceComponentConstraint
+import javax.validation.constraints.NotNull;
+
+//@ToleranceComponentConstraint
 public class ValueInput extends RootInput implements ToleranceComponentInput {
 
+    @NotNull
     private XtdToleranceTypeEnum toleranceType;
 
     @NullOrNotEmpty
@@ -17,8 +20,10 @@ public class ValueInput extends RootInput implements ToleranceComponentInput {
     @NullOrNotEmpty
     private String upperTolerance;
 
+    @NotNull
     private XtdValueRoleEnum valueRole;
 
+    @NotNull
     private XtdValueTypeEnum valueType;
 
     @NullOrNotEmpty
@@ -46,5 +51,17 @@ public class ValueInput extends RootInput implements ToleranceComponentInput {
 
     public String getNominalValue() {
         return nominalValue;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("toleranceType", toleranceType)
+                .append("lowerTolerance", lowerTolerance)
+                .append("upperTolerance", upperTolerance)
+                .append("valueRole", valueRole)
+                .append("valueType", valueType)
+                .append("nominalValue", nominalValue)
+                .toString();
     }
 }

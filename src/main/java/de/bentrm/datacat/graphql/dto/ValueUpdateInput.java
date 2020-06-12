@@ -3,21 +3,30 @@ package de.bentrm.datacat.graphql.dto;
 import de.bentrm.datacat.domain.XtdToleranceTypeEnum;
 import de.bentrm.datacat.domain.XtdValueRoleEnum;
 import de.bentrm.datacat.domain.XtdValueTypeEnum;
-import de.bentrm.datacat.validation.ToleranceComponentConstraint;
+import de.bentrm.datacat.validation.NullOrNotEmpty;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
-@ToleranceComponentConstraint
+import javax.validation.constraints.NotNull;
+
+//@ToleranceComponentConstraint
 public class ValueUpdateInput extends RootUpdateInput implements ToleranceComponentInput {
 
+    @NotNull
     private XtdToleranceTypeEnum toleranceType;
 
+    @NullOrNotEmpty
     private String lowerTolerance;
 
+    @NullOrNotEmpty
     private String upperTolerance;
 
+    @NotNull
     private XtdValueRoleEnum valueRole;
 
+    @NotNull
     private XtdValueTypeEnum valueType;
 
+    @NullOrNotEmpty
     private String nominalValue;
 
     public XtdToleranceTypeEnum getToleranceType() {
@@ -42,5 +51,17 @@ public class ValueUpdateInput extends RootUpdateInput implements ToleranceCompon
 
     public String getNominalValue() {
         return nominalValue;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("toleranceType", toleranceType)
+                .append("lowerTolerance", lowerTolerance)
+                .append("upperTolerance", upperTolerance)
+                .append("valueRole", valueRole)
+                .append("valueType", valueType)
+                .append("nominalValue", nominalValue)
+                .toString();
     }
 }
