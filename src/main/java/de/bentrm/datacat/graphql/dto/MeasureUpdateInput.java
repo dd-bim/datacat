@@ -1,28 +1,29 @@
 package de.bentrm.datacat.graphql.dto;
 
+import de.bentrm.datacat.validation.IdConstraint;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 public class MeasureUpdateInput extends RootUpdateInput {
 
-    private String unit;
+    private String unitComponent;
 
-    @NotNull
-    private ItemListUpdateInput valueDomain;
+    private List<@NotNull @IdConstraint String> valueDomain;
 
-    public String getUnit() {
-        return unit;
+    public String getUnitComponent() {
+        return unitComponent;
     }
 
-    public ItemListUpdateInput getValueDomain() {
+    public List<String> getValueDomain() {
         return valueDomain;
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .append("unit", unit)
+                .append("unitComponent", unitComponent)
                 .append("valueDomain", valueDomain)
                 .toString();
     }
