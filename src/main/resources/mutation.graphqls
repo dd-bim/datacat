@@ -58,28 +58,14 @@ input ValueUpdateInput {
     nominalValue: String
 }
 
-input ItemListInput {
-    add: [ID!]!
-}
-
-input IdInput {
-    index: Int!
-    id: ID!
-}
-
-input ItemListUpdateInput {
-    insert: [IdInput!]!
-    remove: [ID!]!
-}
-
 input MeasureInput {
     id: ID
     versionId: String!
     versionDate: String!
     names: [TextInput!]!
     descriptions: [TextInput!]!
-    unit: ID
-    valueDomain: ItemListInput!
+    unitComponent: ID
+    valueDomain: [ID!]!
 }
 
 input MeasureUpdateInput {
@@ -88,8 +74,8 @@ input MeasureUpdateInput {
     versionDate: String!
     names: [TextInput!]!
     descriptions: [TextInput!]!
-    unit: ID
-    valueDomain: ItemListUpdateInput!
+    unitComponent: ID
+    valueDomain: [ID!]!
 }
 
 input RelDocumentsInput {

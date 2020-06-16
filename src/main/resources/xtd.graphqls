@@ -194,7 +194,7 @@ type XtdMeasureWithUnit implements XtdRoot, XtdObject {
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
     unitComponent: XtdUnit
-    valueDomain: [XtdValue!]
+    valueDomain: [XtdValue!]!
     actedUponBy(input: PagingInput): XtdRelActsUponConnection!
     actsUpon(input: PagingInput): XtdRelActsUponConnection!
     associatedBy(input: PagingInput): XtdRelAssociatesConnection!

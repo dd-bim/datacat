@@ -4,8 +4,6 @@ import de.bentrm.datacat.domain.DomainValueRelationship;
 import de.bentrm.datacat.domain.XtdMeasureWithUnit;
 import de.bentrm.datacat.domain.XtdUnit;
 import de.bentrm.datacat.domain.XtdValue;
-import de.bentrm.datacat.graphql.dto.IdInput;
-import de.bentrm.datacat.graphql.dto.ItemListUpdateInput;
 import de.bentrm.datacat.graphql.dto.MeasureInput;
 import de.bentrm.datacat.graphql.dto.MeasureUpdateInput;
 import de.bentrm.datacat.repository.MeasureWithUnitRepository;
@@ -16,8 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Optional;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 @Service
 @Validated
@@ -46,12 +46,12 @@ public class MeasureWithUnitServiceImpl
     protected void setEntityProperties(XtdMeasureWithUnit entity, MeasureInput dto) {
         super.setEntityProperties(entity, dto);
 
-        final String unitComponentId = dto.getUnit();
+        final String unitComponentId = dto.getUnitComponent();
         if (unitComponentId != null) {
             setUnitComponent(entity, unitComponentId);
         }
 
-        List<String> add = dto.getValueDomain().getAdd();
+        List<String> add = dto.getValueDomain();
         for (int i = 0; i < add.size(); i++) {
             String valueId = add.get(i);
             final Optional<XtdValue> optionalValue = valueRepository.findById(valueId);
@@ -73,75 +73,46 @@ public class MeasureWithUnitServiceImpl
     protected void updateEntityProperties(XtdMeasureWithUnit entity, MeasureUpdateInput dto) {
         super.updateEntityProperties(entity, dto);
 
-        final SortedSet<DomainValueRelationship> persistentValueDomain = entity.getValueDomain();
-        final ItemListUpdateInput valueDomainInput = dto.getValueDomain();
-        final List<IdInput> inserts = valueDomainInput.getInsert();
-
         // update unit component
-        final String unitComponentId = dto.getUnit();
+        final String unitComponentId = dto.getUnitComponent();
         if (unitComponentId != null) {
             setUnitComponent(entity, unitComponentId);
         } else {
             entity.setUnitComponent(null);
         }
 
-        // remove value domain entries
-        for (String id : valueDomainInput.getRemove()) {
-            final boolean removed = persistentValueDomain.removeIf(value -> value.getId().equals(id));
-            if (!removed) {
-                throw new IllegalArgumentException(String.format("No value with id %s found in value domain.", id));
+        final SortedSet<DomainValueRelationship> persistentValueDomain = entity.getValueDomain();
+        final List<String> valueDomain = dto.getValueDomain();
+
+        SortedSet<DomainValueRelationship> newMapping = new TreeSet<>();
+        for (int i = 0; i < valueDomain.size(); i++) {
+            final String id = valueDomain.get(i);
+            final int sortOrder = i;
+
+            final Optional<DomainValueRelationship> relationship = persistentValueDomain.stream()
+                    .filter(x -> x.getValue().getId().equals(id))
+                    .findFirst();
+            if (relationship.isPresent()) {
+                final DomainValueRelationship preExistingRelationship = relationship.get();
+                preExistingRelationship.setSortOrder(sortOrder);
+                newMapping.add(preExistingRelationship);
+            } else {
+                valueRepository
+                        .findById(id)
+                        .ifPresentOrElse(value -> {
+                            DomainValueRelationship newRelationship = new DomainValueRelationship();
+                            newRelationship.setMeasure(entity);
+                            newRelationship.setValue(value);
+                            newRelationship.setSortOrder(sortOrder);
+                            newMapping.add(newRelationship);
+                        }, () -> {
+                            throw new IllegalArgumentException(String.format("No value with id %s found.", id));
+                        });
             }
         }
 
-        // Guard against double inserts
-        final List<String> preexistingIds = persistentValueDomain
-                .stream()
-                .map(x -> x.getValue().getId())
-                .collect(Collectors.toList());
-        final Set<String> intersections = inserts
-                .stream()
-                .map(IdInput::getId)
-                .filter(preexistingIds::contains)
-                .collect(Collectors.toSet());
-        if (!intersections.isEmpty()) {
-            throw new IllegalArgumentException(String.format("The following values are already present in the value domain: %s", intersections.toString()));
-        }
-
-        // Update sort order of preexisting items
-        List<DomainValueRelationship> relationships = new ArrayList<>(persistentValueDomain);
-        for (IdInput insert : inserts) {
-            for (DomainValueRelationship relationship : relationships) {
-                final int sortOrder = relationship.getSortOrder();
-                if (sortOrder >= insert.getIndex()) {
-                    relationship.setSortOrder(sortOrder + 1);
-                }
-            }
-        }
-
-        // Initialize new Relationships
-        for (IdInput insert : inserts) {
-            final Optional<XtdValue> optionalValue = valueRepository.findById(insert.getId());
-            optionalValue.ifPresentOrElse(value -> {
-                DomainValueRelationship relationship = new DomainValueRelationship();
-                relationship.setMeasure(entity);
-                relationship.setValue(value);
-                relationship.setSortOrder(insert.getIndex());
-
-                relationships.add(insert.getIndex(), relationship);
-            }, () -> {
-                throw new IllegalArgumentException(String.format("No value with id %s found.", insert.getId()));
-            });
-        }
-
-        // Update sort order of merged item list
-        for (int i = 0; i < relationships.size(); i++) {
-            DomainValueRelationship relationship = relationships.get(i);
-            relationship.setSortOrder(i);
-        }
-
-        // Update entity state
         entity.getValueDomain().clear();
-        entity.getValueDomain().addAll(relationships);
+        entity.getValueDomain().addAll(newMapping);
     }
 
     private void setUnitComponent(XtdMeasureWithUnit entity, String unitComponentId) {
