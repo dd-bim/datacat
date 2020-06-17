@@ -346,7 +346,7 @@ type XtdRelCollects implements XtdRoot, XtdRelationship {
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
     relatingCollection: XtdCollection!
-    relatedThings(input: PagingInput): XtdRootConnection!
+    relatedThings: [XtdRoot!]!
     actedUponBy(input: PagingInput): XtdRelActsUponConnection!
     actsUpon(input: PagingInput): XtdRelActsUponConnection!
     associatedBy(input: PagingInput): XtdRelAssociatesConnection!

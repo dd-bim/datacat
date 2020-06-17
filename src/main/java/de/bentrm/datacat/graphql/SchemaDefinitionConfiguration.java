@@ -139,9 +139,7 @@ public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
                 .type("XtdRelDocuments", typeWiring -> rootDataFetchers
                         .apply(typeWiring)
                         .dataFetchers(relDocumentsProvider.getRelDocumentsDataFetchers()))
-                .type("XtdRelCollects", typeWiring -> rootDataFetchers
-                        .apply(typeWiring)
-                        .dataFetchers(relCollectsProvider.getRelCollectsDataFetchers()))
+                .type("XtdRelCollects", rootDataFetchers)
                 .type("XtdRelAssociates", typeWiring -> rootDataFetchers
                         .apply(typeWiring)
                         .dataFetchers(relAssociatesProvider.getRelAssociatesDataFetchers()))

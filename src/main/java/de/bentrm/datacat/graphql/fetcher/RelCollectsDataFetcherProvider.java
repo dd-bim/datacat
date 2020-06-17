@@ -13,10 +13,8 @@ import de.bentrm.datacat.service.RelCollectsService;
 import graphql.schema.DataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.repository.support.PageableExecutionUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -40,12 +38,6 @@ public class RelCollectsDataFetcherProvider implements QueryDataFetcherProvider,
     public Map<String, DataFetcher> getRootDataFetchers() {
         return Map.ofEntries(
                 Map.entry("collectedBy", collectedBy())
-        );
-    }
-
-    public Map<String, DataFetcher> getRelCollectsDataFetchers() {
-        return Map.ofEntries(
-                Map.entry("relatedThings", relatedThings())
         );
     }
 
@@ -125,20 +117,6 @@ public class RelCollectsDataFetcherProvider implements QueryDataFetcherProvider,
             List<String> ids = source.getCollectedBy().stream().map(XtdRelCollects::getId).collect(Collectors.toList());
             Page<XtdRelCollects> page = relCollectsService.findByIds(ids, dto.getPageble());
 
-            return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
-        };
-    }
-
-    public DataFetcher<Connection<XtdRoot>> relatedThings() {
-        return environment -> {
-            XtdRelCollects source = environment.getSource();
-            Map<String, Object> input = environment.getArgument("options");
-            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
-
-            if (dto == null) dto = PagingOptions.defaults();
-
-            List<XtdRoot> content = new ArrayList<>(source.getRelatedThings());
-            Page<XtdRoot> page = PageableExecutionUtils.getPage(content, dto.getPageble(), () -> source.getRelatedThings().size());
             return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }

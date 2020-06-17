@@ -103,7 +103,7 @@ input CollectsInput {
     versionId: String!
     versionDate: String!
     names: [TextInput!]!
-    descriptions: [TextInput!]
+    descriptions: [TextInput!]!
     relatingCollection: ID!
     relatedThings: [ID!]!
 }
@@ -113,7 +113,7 @@ input CollectsUpdateInput {
     versionId: String!
     versionDate: String!
     names: [TextInput!]!
-    descriptions: [TextInput!]
+    descriptions: [TextInput!]!
     relatingCollection: ID!
     relatedThings: [ID!]!
 }
