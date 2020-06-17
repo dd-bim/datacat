@@ -7,10 +7,7 @@ import org.neo4j.ogm.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ListQuery<T> {
 
@@ -46,6 +43,7 @@ public class ListQuery<T> {
         StringSubstitutor substitutor = new StringSubstitutor(this.getSubstitutionParameters());
         String query = substitutor.replace(QUERY_TEMPLATE);
         logger.debug("Prepared query statement: {}", query);
+        logger.debug("Parameters: {}", queryParameters);
         return this.session.query(this.entityType, query, this.queryParameters);
     }
 
@@ -79,24 +77,20 @@ public class ListQuery<T> {
 
     public static class QueryBuilder<T> {
         protected final Class<T> entityType;
-        protected final String nodeEntityLabel;
         protected final Session session;
 
         private String searchTerm;
         private FullTextIndex fullTextIndex = FullTextIndex.ALL;
-        private List<String> labels;
-        private List<String> excludedLabels;
-        private List<String> ids;
-        private List<String> excludedIds;
+        private final Set<String> labelsIn = new HashSet<>();
+        private final Set<String> labelsNotIn = new HashSet<>();
+        private final Set<String> idsIn = new HashSet<>();
+        private final Set<String> idsNotIn = new HashSet<>();
         private long skip = 0;
         private int limit = 10;
 
         public QueryBuilder(Class<T> entityType, Session session) {
             this.entityType = entityType;
             this.session = session;
-
-            NodeEntity annotation = entityType.getAnnotation(NodeEntity.class);
-            nodeEntityLabel = annotation.label();
         }
 
         public void setSearchTerm(String searchTerm) {
@@ -107,20 +101,28 @@ public class ListQuery<T> {
             this.fullTextIndex = fullTextIndex;
         }
 
-        public void setLabels(List<String> labels) {
-            this.labels = labels;
+        public void setLabelsIn(List<String> labelsIn) {
+            if (labelsIn != null) {
+                this.labelsIn.addAll(labelsIn);
+            }
         }
 
-        public void setExcludedLabels(List<String> excludedLabels) {
-            this.excludedLabels = excludedLabels;
+        public void setLabelsNotIn(List<String> labelsNotIn) {
+            if (labelsNotIn != null) {
+                this.labelsNotIn.addAll(labelsNotIn);
+            }
         }
 
-        public void setIds(List<String> ids) {
-            this.ids = ids;
+        public void setIdsIn(List<String> idsIn) {
+            if (idsIn != null) {
+                this.idsIn.addAll(idsIn);
+            }
         }
 
-        public void setExcludedIds(List<String> excludedIds) {
-            this.excludedIds = excludedIds;
+        public void setIdsNotIn(List<String> idsNotIn) {
+            if (idsNotIn != null) {
+                this.idsNotIn.addAll(idsNotIn);
+            }
         }
 
         public void setSkip(long skip) {
@@ -132,35 +134,34 @@ public class ListQuery<T> {
         }
 
         public ListQuery<T> build() {
-            ListQuery<T> query = new ListQuery<T>(this.entityType, this.session);
+            ListQuery<T> query = new ListQuery<>(this.entityType, this.session);
 
             if (this.searchTerm != null && !searchTerm.isBlank()) {
                 query.isFullTextSearch = true;
                 query.queryParameters.put("index", this.fullTextIndex.getIndexName());
-                query.queryParameters.put("searchTerm", this.searchTerm);
+                query.queryParameters.put("searchTerm", this.searchTerm.trim());
             }
 
-            if (this.labels == null) {
-                this.labels = new ArrayList<>();
+            if (this.labelsIn.isEmpty()) {
+                NodeEntity annotation = entityType.getAnnotation(NodeEntity.class);
+                this.labelsIn.add(annotation.label());
             }
-            if (!this.labels.contains(nodeEntityLabel)) {
-                this.labels.add(nodeEntityLabel);
-            }
-            query.queryParameters.put("labels", this.labels);
+
+            query.queryParameters.put("labels", this.labelsIn);
             query.whereClauses.add("size([label IN labels(root) WHERE label IN {labels} | 1]) > 0");
 
-            if (this.excludedLabels != null && !this.excludedLabels.isEmpty()) {
-                query.queryParameters.put("excludedLabels", this.excludedLabels);
+            if (!this.labelsNotIn.isEmpty()) {
+                query.queryParameters.put("excludedLabels", this.labelsNotIn);
                 query.whereClauses.add("size([label IN labels(root) WHERE label IN {excludedLabels} | 1]) = 0");
             }
 
-            if (this.ids != null && !this.ids.isEmpty()) {
-                query.queryParameters.put("ids", this.ids);
+            if (!this.idsIn.isEmpty()) {
+                query.queryParameters.put("ids", this.idsIn);
                 query.whereClauses.add("root.id IN {ids}");
             }
 
-            if (this.excludedIds != null && !this.excludedIds.isEmpty()) {
-                query.queryParameters.put("excludedIds", this.excludedIds);
+            if (!this.idsNotIn.isEmpty()) {
+                query.queryParameters.put("excludedIds", this.idsNotIn);
                 query.whereClauses.add("NOT root.id IN {excludedIds}");
             }
 

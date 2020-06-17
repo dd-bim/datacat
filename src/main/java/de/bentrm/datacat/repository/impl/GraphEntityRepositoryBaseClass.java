@@ -71,10 +71,10 @@ public class GraphEntityRepositoryBaseClass<T>
         logger.debug("Determined full-text index to use: {}", fullTextIndex);
         builder.setFullTextIndex(fullTextIndex);
 
-        spec.getEntityTypeIn().ifPresent(builder::setLabels);
-        spec.getEntityTypeNotIn().ifPresent(builder::setExcludedLabels);
-        spec.getIdIn().ifPresent(builder::setIds);
-        spec.getIdNotIn().ifPresent(builder::setExcludedIds);
+        spec.getEntityTypeIn().ifPresent(builder::setLabelsIn);
+        spec.getEntityTypeNotIn().ifPresent(builder::setLabelsNotIn);
+        spec.getIdIn().ifPresent(builder::setIdsIn);
+        spec.getIdNotIn().ifPresent(builder::setIdsNotIn);
         builder.setSkip(pageable.getOffset());
         builder.setLimit(pageable.getPageSize());
 

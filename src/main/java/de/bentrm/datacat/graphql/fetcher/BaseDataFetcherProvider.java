@@ -7,7 +7,7 @@ import de.bentrm.datacat.domain.XtdLanguageRepresentation;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.PageInfo;
 import de.bentrm.datacat.graphql.dto.DtoMapper;
-import de.bentrm.datacat.graphql.dto.FilterInput;
+import de.bentrm.datacat.graphql.dto.SearchInput;
 import de.bentrm.datacat.service.CatalogService;
 import de.bentrm.datacat.service.LanguageService;
 import de.bentrm.datacat.service.Specification;
@@ -51,8 +51,8 @@ public class BaseDataFetcherProvider implements QueryDataFetcherProvider {
     public DataFetcher<Connection<CatalogItem>> search() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("input");
-            FilterInput filterInput = objectMapper.convertValue(input, FilterInput.class);
-            if (filterInput == null) filterInput = new FilterInput();
+            SearchInput filterInput = objectMapper.convertValue(input, SearchInput.class);
+            if (filterInput == null) filterInput = new SearchInput();
 
 //            DataFetchingFieldSelectionSet selectionSet = environment.getSelectionSet();
 //

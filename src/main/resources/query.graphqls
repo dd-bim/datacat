@@ -178,47 +178,51 @@ extend type XtdRelActsUpon implements Entity, CatalogItem {
     lastModifiedBy: String!
 }
 
-#enum EntityTypes {
-#    XtdActivity
-#    XtdActor
-#    XtdBag
-#    XtdClassification
-#    XtdExternalDocument
-#    XtdMeasureWithUnit
-#    XtdNest
-#    XtdProperty
-#    XtdRelActsUpon
-#    XtdRelAssignsCollections
-#    XtdRelAssignsMeasures
-#    XtdRelAssignsProperties
-#    XtdRelAssignsPropertyWithValues
-#    XtdRelAssignsUnit
-#    XtdRelAssignsValues
-#    XtdRelAssociates
-#    XtdRelClassifies
-#    XtdRelCollects
-#    XtdRelComposes
-#    XtdRelDocuments
-#    XtdRelGroups
-#    XtdRelSequences
-#    XtdRelSpecializes
-#    XtdSubject
-#    XtdUnit
-#    XtdValue
-#}
-
-#input SearchInput {
-#    query: String
-#    queryScope: QueryScopes
-#    entityTypeIn: [EntityTypes!]
-#    entityTypeNotIn: [EntityTypes!]
-#    idIn: [String!]
-#    idNotIn: [String!]
-#    pageNumber: Int
-#    pageSize: Int
-#}
-
 # inputs
+
+enum EntityTypes {
+    XtdExternalDocument
+    XtdRoot
+    XtdObject
+    XtdActivity
+    XtdActor
+    XtdClassification
+    XtdMeasureWithUnit
+    XtdProperty
+    XtdSubject
+    XtdUnit
+    XtdValue
+    XtdCollection
+    XtdBag
+    XtdNest
+    XtdRelationship
+    XtdRelActsUpon
+    XtdRelAssignsCollections
+    XtdRelAssignsMeasures
+    XtdRelAssignsProperties
+    XtdRelAssignsPropertyWithValues
+    XtdRelAssignsUnit
+    XtdRelAssignsValues
+    XtdRelAssociates
+    XtdRelClassifies
+    XtdRelCollects
+    XtdRelComposes
+    XtdRelDocuments
+    XtdRelGroups
+    XtdRelSequences
+    XtdRelSpecializes
+}
+
+input SearchInput {
+    query: String
+    queryScope: QueryScopes
+    entityTypeIn: [EntityTypes!]
+    entityTypeNotIn: [EntityTypes!]
+    idIn: [String!]
+    idNotIn: [String!]
+    pageNumber: Int
+    pageSize: Int
+}
 
 enum QueryScopes {
     ALL
@@ -240,7 +244,7 @@ input FilterInput {
 type Query {
     node(id: ID!): Entity
     language(languageCode: ID!): XtdLanguage
-    search(input: FilterInput): SearchResultConnection!
+    search(input: SearchInput): SearchResultConnection!
     externalDocuments(input: FilterInput): XtdExternalDocumentConnection!
     actors(input: FilterInput): XtdActorConnection!
     activities(input: FilterInput): XtdActivityConnection!

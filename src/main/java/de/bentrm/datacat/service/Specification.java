@@ -19,14 +19,21 @@ public class Specification {
     }
 
     public enum EntityType {
+        XtdExternalDocument,
+        XtdRoot,
+        XtdObject,
         XtdActivity,
         XtdActor,
-        XtdBag,
         XtdClassification,
-        XtdExternalDocument,
         XtdMeasureWithUnit,
-        XtdNest,
         XtdProperty,
+        XtdSubject,
+        XtdUnit,
+        XtdValue,
+        XtdCollection,
+        XtdBag,
+        XtdNest,
+        XtdRelationship,
         XtdRelActsUpon,
         XtdRelAssignsCollections,
         XtdRelAssignsMeasures,
@@ -41,10 +48,7 @@ public class Specification {
         XtdRelDocuments,
         XtdRelGroups,
         XtdRelSequences,
-        XtdRelSpecializes,
-        XtdSubject,
-        XtdUnit,
-        XtdValue
+        XtdRelSpecializes
     }
 
     public static final int DEFAULT_PAGE_NUMBER = 0;
