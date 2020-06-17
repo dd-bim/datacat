@@ -122,6 +122,14 @@ extend type XtdNest implements Entity, CatalogItem {
     lastModifiedBy: String!
 }
 
+extend type XtdRelAssignsCollections implements Entity, CatalogItem {
+    label: String!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+}
+
 extend type XtdRelCollects implements Entity, CatalogItem {
     label: String!
     created: String!
@@ -256,6 +264,7 @@ type Query {
     values(input: FilterInput): XtdValueConnection!
     bags(input: FilterInput): XtdBagConnection!
     nests(input: FilterInput): XtdNestConnection!
+    assignsCollectionsRelations(input: FilterInput): XtdRelAssignsCollectionsConnection!
     documentsRelations(input: FilterInput): XtdRelDocumentsConnection!
     collectsRelations(input: FilterInput): XtdRelCollectsConnection!
     associatesRelations(input: FilterInput): XtdRelAssociatesConnection!

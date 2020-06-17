@@ -98,6 +98,26 @@ input RelDocumentsUpdateInput {
     relatedObjects: [ID!]!
 }
 
+input AssignsCollectionsInput {
+    id: ID
+    versionId: String!
+    versionDate: String!
+    names: [TextInput!]!
+    descriptions: [TextInput!]!
+    relatingObject: ID!
+    relatedCollections: [ID!]!
+}
+
+input AssignsCollectionsUpdateInput {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [TextInput!]!
+    descriptions: [TextInput!]!
+    relatingObject: ID!
+    relatedCollections: [ID!]!
+}
+
 input CollectsInput {
     id: ID
     versionId: String!
@@ -212,6 +232,10 @@ type Mutation {
     createNest(input: RootInput!): XtdNest
     updateNest(input: RootUpdateInput!): XtdNest
     deleteNest(id: ID!): XtdNest
+
+    createAssignsCollectionsRelation(input: AssignsCollectionsInput!): XtdRelAssignsCollections
+    updateAssignsCollectionsRelation(input: AssignsCollectionsUpdateInput!): XtdRelAssignsCollections
+    deleteAssignsCollectionsRelation(id: ID!): XtdRelAssignsCollections
 
     createDocumentsRelation(input: RelDocumentsInput!): XtdRelDocuments
     updateDocumentsRelation(input: RelDocumentsUpdateInput!): XtdRelDocuments

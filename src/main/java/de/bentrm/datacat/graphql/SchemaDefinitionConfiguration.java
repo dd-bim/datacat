@@ -55,9 +55,6 @@ public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
     private RelDocumentsDataFetcherProvider relDocumentsProvider;
 
     @Autowired
-    private RelCollectsDataFetcherProvider relCollectsProvider;
-
-    @Autowired
     private RelAssociatesDataFetcherProvider relAssociatesProvider;
 
     @Autowired
