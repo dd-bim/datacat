@@ -12,7 +12,7 @@ import java.util.Set;
 public class XtdRelAssignsCollections extends XtdRelationship {
 
     public static final String LABEL = "XtdRelAssignsCollections";
-    public static final String RELATIONSHIP_TYPE = "ASSIGNS_COLLECTION";
+    public static final String RELATIONSHIP_TYPE = "ASSIGNS_COLLECTIONS";
 
     @Relationship(type = RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
     private XtdObject relatingObject;

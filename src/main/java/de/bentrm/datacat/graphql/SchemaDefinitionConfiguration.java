@@ -133,6 +133,7 @@ public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
                         .dataFetchers(measureWithUnitDataFetcherProvider.getPropertyDataFetchers()))
                 .type("XtdBag", rootDataFetchers)
                 .type("XtdNest", rootDataFetchers)
+                .type("XtdRelAssignsCollections", rootDataFetchers)
                 .type("XtdRelDocuments", typeWiring -> rootDataFetchers
                         .apply(typeWiring)
                         .dataFetchers(relDocumentsProvider.getRelDocumentsDataFetchers()))
