@@ -14,7 +14,7 @@ public class CountAllAssociatingQuery<T extends Association>
 
     private static final String QUERY = """
             MATCH (root:${label})<-[:${associationLabel}]-(relatingThing)
-            WHERE relatedThing.id = {relatedThingId}
+            WHERE relatedThing.id = $relatedThingId
             RETURN COUNT(root)
             """;
 

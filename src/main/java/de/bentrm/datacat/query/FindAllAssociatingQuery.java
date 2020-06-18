@@ -16,9 +16,9 @@ public class FindAllAssociatingQuery<T extends Association>
 
     private static final String QUERY = """            
             MATCH (name:XtdName)-[:IS_NAME_OF]->(root:${label})-[:${associationLabel}]->(relatedThing)
-            WHERE relatedThing.id = {relatedThingId}
+            WHERE relatedThing.id = $relatedThingId
             WITH root, name ORDER BY name.sortOrder, toLower(name.value) ASC, name.value DESC
-            WITH DISTINCT root SKIP {skip} LIMIT {limit}
+            WITH DISTINCT root SKIP $skip LIMIT $limit
             RETURN root, ${propertyAggregations}, ID(root)
             """;
 

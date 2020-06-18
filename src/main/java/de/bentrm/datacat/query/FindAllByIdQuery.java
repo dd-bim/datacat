@@ -10,9 +10,9 @@ public class FindAllByIdQuery<T> extends AbstractCustomQuery<T> implements Itera
 
     private static final String FIND_BY_IDS_QUERY_TEMPLATE = """
             MATCH (name:XtdName)-[:IS_NAME_OF]->(root:${label})
-            WHERE root.id IN {ids}
+            WHERE root.id IN $ids
             WITH root, name ORDER BY name.sortOrder, toLower(name.value) ASC, name.value DESC
-            WITH DISTINCT root SKIP {skip} LIMIT {limit}
+            WITH DISTINCT root SKIP $skip LIMIT $limit
             RETURN root, ${propertyAggregations}, ID(root)
             """;
 

@@ -10,7 +10,7 @@ import java.util.Set;
 public class SearchQuery<T> extends AbstractCustomQuery<T> implements IterableQuery<T> {
 
     private static final String FULL_TEXT_MATCH = """
-            CALL db.index.fulltext.queryNodes({index}, {term}) YIELD node AS hit, score
+            CALL db.index.fulltext.queryNodes($index, $term) YIELD node AS hit, score
             MATCH (hit)-[:IS_NAME_OF|:IS_DESCRIPTION_OF]->(root)
             """;
 
@@ -20,11 +20,11 @@ public class SearchQuery<T> extends AbstractCustomQuery<T> implements IterableQu
 
     private static final String QUERY_BODY = """
             WHERE
-                size([label IN labels(root) WHERE label IN {labels} | 1]) > 0
-                AND size([label IN labels(root) WHERE label IN {excludedLabels} | 1]) = 0
-                AND NOT root.id IN {excludedIds}
+                size([label IN labels(root) WHERE label IN $labels | 1]) > 0
+                AND size([label IN labels(root) WHERE label IN $excludedLabels | 1]) = 0
+                AND NOT root.id IN $excludedIds
             WITH root, name ORDER BY name.sortOrder, toLower(name.value) ASC, name.value DESC
-            WITH DISTINCT root SKIP {skip} LIMIT {limit}
+            WITH DISTINCT root SKIP $skip LIMIT $limit
             RETURN root, ${propertyAggregations}, ID(root)
             """;
 

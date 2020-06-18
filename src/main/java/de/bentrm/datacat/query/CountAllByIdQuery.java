@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 public class CountAllByIdQuery<T> extends AbstractCustomQuery<T> implements CountQuery<T> {
 
     private static final String COUNT_FIND_ALL_BY_ID_QUERY_TEMPLATE = """
-        MATCH (root:${label}) WHERE root.id IN {ids} RETURN COUNT(root)
+        MATCH (root:${label}) WHERE root.id IN $ids RETURN COUNT(root)
         """;
 
     public CountAllByIdQuery(Class<T> entityType, Session session, Iterable<String> ids) {

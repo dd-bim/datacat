@@ -10,9 +10,9 @@ public class CountAllQuery<T> extends AbstractCustomQuery<T> implements CountQue
     private final String QUERY = """
             MATCH (root)
             WHERE
-                size([label IN labels(root) WHERE label IN {labels} | 1]) > 0
-                AND size([label IN labels(root) WHERE label IN {excludedLabels} | 1]) = 0
-                AND NOT root.id IN {excludedIds}
+                size([label IN labels(root) WHERE label IN $labels | 1]) > 0
+                AND size([label IN labels(root) WHERE label IN $excludedLabels | 1]) = 0
+                AND NOT root.id IN $excludedIds
             RETURN COUNT(root)
             """;
 

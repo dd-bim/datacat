@@ -16,12 +16,12 @@ public class ListQuery<T> {
     private static final String QUERY_TEMPLATE = """
             ${matchClause}
             WHERE ${whereClauses}
-            WITH DISTINCT root SKIP {skip} LIMIT {limit}
+            WITH DISTINCT root SKIP $skip LIMIT $limit
             RETURN root, ${propertyAggregations}, ID(root)
             """;
 
     private static final String FULL_TEXT_MATCH = """
-            CALL db.index.fulltext.queryNodes({index}, {searchTerm}) YIELD node AS hit, score
+            CALL db.index.fulltext.queryNodes($index, $searchTerm) YIELD node AS hit, score
             MATCH (hit)-[:IS_NAME_OF|:IS_DESCRIPTION_OF]->(root)""";
 
     private static final String MATCH = """
@@ -148,21 +148,21 @@ public class ListQuery<T> {
             }
 
             query.queryParameters.put("labels", this.labelsIn);
-            query.whereClauses.add("size([label IN labels(root) WHERE label IN {labels} | 1]) > 0");
+            query.whereClauses.add("size([label IN labels(root) WHERE label IN $labels | 1]) > 0");
 
             if (!this.labelsNotIn.isEmpty()) {
                 query.queryParameters.put("excludedLabels", this.labelsNotIn);
-                query.whereClauses.add("size([label IN labels(root) WHERE label IN {excludedLabels} | 1]) = 0");
+                query.whereClauses.add("size([label IN labels(root) WHERE label IN $excludedLabels | 1]) = 0");
             }
 
             if (!this.idsIn.isEmpty()) {
                 query.queryParameters.put("ids", this.idsIn);
-                query.whereClauses.add("root.id IN {ids}");
+                query.whereClauses.add("root.id IN $ids");
             }
 
             if (!this.idsNotIn.isEmpty()) {
                 query.queryParameters.put("excludedIds", this.idsNotIn);
-                query.whereClauses.add("NOT root.id IN {excludedIds}");
+                query.whereClauses.add("NOT root.id IN $excludedIds");
             }
 
             query.queryParameters.put("skip", this.skip);

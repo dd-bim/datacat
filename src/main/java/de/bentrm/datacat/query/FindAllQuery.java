@@ -12,11 +12,11 @@ public class FindAllQuery<T> extends AbstractCustomQuery<T> implements IterableQ
     private static final String FIND_ALL_QUERY_TEMPLATE = """
             MATCH (name:XtdName)-[:IS_NAME_OF]->(root)
             WHERE
-                size([label IN labels(root) WHERE label IN {labels} | 1]) > 0
-                AND size([label IN labels(root) WHERE label IN {excludedLabels} | 1]) = 0
-                AND NOT root.id IN {excludedIds}
+                size([label IN labels(root) WHERE label IN $labels | 1]) > 0
+                AND size([label IN labels(root) WHERE label IN $excludedLabels | 1]) = 0
+                AND NOT root.id IN $excludedIds
             WITH root, name ORDER BY name.sortOrder, toLower(name.value) ASC, name.value DESC
-            WITH DISTINCT root SKIP {skip} LIMIT {limit}
+            WITH DISTINCT root SKIP $skip LIMIT $limit
             RETURN root, ${propertyAggregations}, ID(root)
             """;
 
