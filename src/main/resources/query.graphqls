@@ -40,7 +40,23 @@ extend type XtdExternalDocument implements Entity, CatalogItem {
     lastModifiedBy: String!
 }
 
+extend interface XtdRoot implements Entity, CatalogItem {
+    label: String!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+}
+
 # XtdObjects
+
+extend interface XtdObject implements Entity, CatalogItem {
+    label: String!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+}
 
 extend type XtdActivity implements Entity, CatalogItem {
     label: String!
@@ -106,6 +122,14 @@ extend type XtdValue implements Entity, CatalogItem {
     lastModifiedBy: String!
 }
 
+extend interface XtdCollection implements Entity, CatalogItem {
+    label: String!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+}
+
 extend type XtdBag implements Entity, CatalogItem {
     label: String!
     created: String!
@@ -115,6 +139,14 @@ extend type XtdBag implements Entity, CatalogItem {
 }
 
 extend type XtdNest implements Entity, CatalogItem {
+    label: String!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+}
+
+extend interface XtdRelationship implements Entity, CatalogItem {
     label: String!
     created: String!
     createdBy: String!
