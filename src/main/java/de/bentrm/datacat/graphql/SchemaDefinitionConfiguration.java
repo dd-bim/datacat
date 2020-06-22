@@ -124,6 +124,7 @@ public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
                         .dataFetchers(externalDocumentDataFetcherProvider.getDataFetchers()))
                 .type("XtdActivity", objectDataFetchers)
                 .type("XtdActor", objectDataFetchers)
+                .type("XtdClassification", objectDataFetchers)
                 .type("XtdSubject", objectDataFetchers)
                 .type("XtdUnit", objectDataFetchers)
                 .type("XtdProperty", objectDataFetchers)
