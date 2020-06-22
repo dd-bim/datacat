@@ -6,6 +6,7 @@ import de.bentrm.datacat.domain.XtdLanguage;
 import de.bentrm.datacat.domain.XtdLanguageRepresentation;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.PageInfo;
+import de.bentrm.datacat.graphql.dto.CatalogStatistics;
 import de.bentrm.datacat.graphql.dto.DtoMapper;
 import de.bentrm.datacat.graphql.dto.SearchInput;
 import de.bentrm.datacat.service.CatalogService;
@@ -36,9 +37,14 @@ public class BaseDataFetcherProvider implements QueryDataFetcherProvider {
     @Override
     public Map<String, DataFetcher> getQueryDataFetchers() {
         return Map.ofEntries(
+                Map.entry("statistics", statistics()),
                 Map.entry("node", node()),
                 Map.entry("search", search())
         );
+    }
+
+    public DataFetcher<CatalogStatistics> statistics() {
+        return environment -> catalogService.getStatistics();
     }
 
     public DataFetcher<Optional<CatalogItem>> node() {

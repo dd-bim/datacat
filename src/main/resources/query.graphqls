@@ -1,3 +1,12 @@
+type CatalogItemStatistics {
+    id: ID!
+    count: Int!
+}
+
+type CatalogStatistics {
+    items: [CatalogItemStatistics!]!
+}
+
 interface Entity {
     id: ID!
     created: String!
@@ -162,6 +171,14 @@ extend type XtdRelAssignsCollections implements Entity, CatalogItem {
     lastModifiedBy: String!
 }
 
+extend type XtdRelAssignsPropertyWithValues implements Entity, CatalogItem {
+    label: String!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+}
+
 extend type XtdRelCollects implements Entity, CatalogItem {
     label: String!
     created: String!
@@ -282,6 +299,7 @@ input FilterInput {
 # Query type
 
 type Query {
+    statistics: CatalogStatistics!
     node(id: ID!): Entity
     language(languageCode: ID!): XtdLanguage
     search(input: SearchInput): SearchResultConnection!

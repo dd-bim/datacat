@@ -2,6 +2,9 @@ package de.bentrm.datacat.service.impl;
 
 import de.bentrm.datacat.domain.CatalogItem;
 import de.bentrm.datacat.domain.Entity;
+import de.bentrm.datacat.graphql.dto.CatalogItemStatistics;
+import de.bentrm.datacat.graphql.dto.CatalogStatistics;
+import de.bentrm.datacat.graphql.dto.DtoMapper;
 import de.bentrm.datacat.query.FilterOptions;
 import de.bentrm.datacat.repository.CatalogItemRepository;
 import de.bentrm.datacat.repository.EntityRepository;
@@ -16,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Map;
 import java.util.Optional;
 
 @Validated
@@ -24,11 +28,25 @@ import java.util.Optional;
 public class CatalogServiceImpl implements CatalogService {
 
     @Autowired
+    private DtoMapper dtoMapper;
+
+    @Autowired
     private EntityRepository entityRepository;
 
     @Autowired
     private CatalogItemRepository catalogItemRepository;
 
+    @Override
+    public CatalogStatistics getStatistics() {
+        final Map<String, Long> labelsStats = catalogItemRepository.statistics();
+        final CatalogStatistics statistics = new CatalogStatistics();
+        labelsStats.forEach((label, count) -> {
+            if (label.startsWith("Xtd")) {
+                statistics.getItems().add(new CatalogItemStatistics(label, count));
+            }
+        });
+        return statistics;
+    }
 
     @Override
     public @NotNull Optional<Entity> getEntity(@NotBlank String id) {

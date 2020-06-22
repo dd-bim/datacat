@@ -360,6 +360,27 @@ type XtdRelAssignsCollections implements XtdRoot, XtdRelationship {
     specializes(input: PagingInput): XtdRelSpecializesConnection!
 }
 
+type XtdRelAssignsPropertyWithValues implements XtdRoot, XtdRelationship {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [XtdName!]!
+    descriptions: [XtdDescription!]!
+    relatingObject: XtdObject!
+    relatedCollections: [XtdCollection!]!
+    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
+    actsUpon(input: PagingInput): XtdRelActsUponConnection!
+    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
+    associates(input: PagingInput): XtdRelAssociatesConnection!
+    collectedBy(input: PagingInput): XtdRelCollectsConnection!
+    composedBy(input: PagingInput): XtdRelComposesConnection!
+    composes(input: PagingInput): XtdRelComposesConnection!
+    groupedBy(input: PagingInput): XtdRelGroupsConnection!
+    groups(input: PagingInput): XtdRelGroupsConnection!
+    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
+    specializes(input: PagingInput): XtdRelSpecializesConnection!
+}
+
 type XtdRelCollects implements XtdRoot, XtdRelationship {
     id: ID!
     versionId: String!

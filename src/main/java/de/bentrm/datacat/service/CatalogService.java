@@ -2,6 +2,7 @@ package de.bentrm.datacat.service;
 
 import de.bentrm.datacat.domain.CatalogItem;
 import de.bentrm.datacat.domain.Entity;
+import de.bentrm.datacat.graphql.dto.CatalogStatistics;
 import de.bentrm.datacat.query.FilterOptions;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +13,8 @@ import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 public interface CatalogService {
+
+    CatalogStatistics getStatistics();
 
     // TODO: PostAuthorize access to restricted items
     @PreAuthorize("hasRole('READONLY')")
