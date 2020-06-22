@@ -203,7 +203,7 @@ type Mutation {
 
     createClassification(input: RootInput!): XtdClassification
     updateClassification(input: RootUpdateInput!): XtdClassification
-    delXtdClassification(id: ID!): XtdClassification
+    deleteClassification(id: ID!): XtdClassification
 
     createMeasure(input: MeasureInput!): XtdMeasureWithUnit
     updateMeasure(input: MeasureUpdateInput!): XtdMeasureWithUnit
