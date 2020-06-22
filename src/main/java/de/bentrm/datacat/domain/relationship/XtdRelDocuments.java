@@ -1,7 +1,7 @@
 package de.bentrm.datacat.domain.relationship;
 
 import de.bentrm.datacat.domain.XtdExternalDocument;
-import de.bentrm.datacat.domain.XtdObject;
+import de.bentrm.datacat.domain.XtdRoot;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
@@ -18,7 +18,7 @@ public class XtdRelDocuments extends XtdRelationship {
     private XtdExternalDocument relatingDocument;
 
     @Relationship(type = RELATIONSHIP_TYPE)
-    private Set<XtdObject> relatedObjects = new HashSet<>();
+    private Set<XtdRoot> relatedThings = new HashSet<>();
 
     public XtdExternalDocument getRelatingDocument() {
         return relatingDocument;
@@ -28,11 +28,11 @@ public class XtdRelDocuments extends XtdRelationship {
         this.relatingDocument = relatingDocument;
     }
 
-    public Set<XtdObject> getRelatedObjects() {
-        return this.relatedObjects;
+    public Set<XtdRoot> getRelatedThings() {
+        return this.relatedThings;
     }
 
-    public void setRelatedObjects(Set<XtdObject> relatedObjects) {
-        this.relatedObjects = relatedObjects;
+    public void setRelatedThings(Set<XtdRoot> relatedThings) {
+        this.relatedThings = relatedThings;
     }
 }

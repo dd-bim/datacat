@@ -1,13 +1,13 @@
 package de.bentrm.datacat.service.impl;
 
 import de.bentrm.datacat.domain.XtdExternalDocument;
-import de.bentrm.datacat.domain.XtdObject;
+import de.bentrm.datacat.domain.XtdRoot;
 import de.bentrm.datacat.domain.relationship.XtdRelDocuments;
-import de.bentrm.datacat.graphql.dto.RelDocumentsInput;
-import de.bentrm.datacat.graphql.dto.RelDocumentsUpdateInput;
+import de.bentrm.datacat.graphql.dto.DocumentsInput;
+import de.bentrm.datacat.graphql.dto.DocumentsUpdateInput;
 import de.bentrm.datacat.repository.ExternalDocumentRepository;
-import de.bentrm.datacat.repository.ObjectRepository;
 import de.bentrm.datacat.repository.RelDocumentsRepository;
+import de.bentrm.datacat.repository.RootRepository;
 import de.bentrm.datacat.service.RelDocumentsService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,16 +19,16 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @Transactional(readOnly = true)
 public class RelDocumentsServiceImpl
-        extends CrudEntityServiceImpl<XtdRelDocuments, RelDocumentsInput, RelDocumentsUpdateInput, RelDocumentsRepository>
+        extends CrudEntityServiceImpl<XtdRelDocuments, DocumentsInput, DocumentsUpdateInput, RelDocumentsRepository>
         implements RelDocumentsService {
 
     private final ExternalDocumentRepository externalDocumentRepository;
-    private final ObjectRepository objectRepository;
+    private final RootRepository thingsRepository;
 
-    public RelDocumentsServiceImpl(RelDocumentsRepository repository, ExternalDocumentRepository externalDocumentRepository, ObjectRepository objectRepository) {
+    public RelDocumentsServiceImpl(RelDocumentsRepository repository, ExternalDocumentRepository externalDocumentRepository, RootRepository thingsRepository) {
         super(repository);
         this.externalDocumentRepository = externalDocumentRepository;
-        this.objectRepository = objectRepository;
+        this.thingsRepository = thingsRepository;
     }
 
     @Override
@@ -37,19 +37,19 @@ public class RelDocumentsServiceImpl
     }
 
     @Override
-    protected void setEntityProperties(XtdRelDocuments entity, RelDocumentsInput dto) {
+    protected void setEntityProperties(XtdRelDocuments entity, DocumentsInput dto) {
         super.setEntityProperties(entity, dto);
         XtdExternalDocument relating = externalDocumentRepository
                 .findById(dto.getRelatingDocument())
                 .orElseThrow(() -> new IllegalArgumentException("No Object with id " + dto.getRelatingDocument() + " found."));
         entity.setRelatingDocument(relating);
 
-        Page<XtdObject> relatedObjects = objectRepository.findAllById(dto.getRelatedObjects(), PageRequest.of(0, 1000));
-        entity.getRelatedObjects().addAll(relatedObjects.getContent());
+        Page<XtdRoot> relatedThings = thingsRepository.findAllById(dto.getRelatedThings(), PageRequest.of(0, 1000));
+        entity.getRelatedThings().addAll(relatedThings.getContent());
     }
 
     @Override
-    protected void updateEntityProperties(XtdRelDocuments entity, RelDocumentsUpdateInput dto) {
+    protected void updateEntityProperties(XtdRelDocuments entity, DocumentsUpdateInput dto) {
         super.updateEntityProperties(entity, dto);
 
         if (!dto.getRelatingDocument().equals(entity.getRelatingDocument().getId())) {
@@ -57,10 +57,10 @@ public class RelDocumentsServiceImpl
         }
 
         // remove things no longer in this relationship
-        entity.getRelatedObjects().removeIf(thing -> !dto.getRelatedObjects().contains(thing.getId()));
+        entity.getRelatedThings().removeIf(thing -> !dto.getRelatedThings().contains(thing.getId()));
 
         // add new things to this relationship
-        Page<XtdObject> relatedObjects = objectRepository.findAllById(dto.getRelatedObjects(), PageRequest.of(0, 1000));
-        entity.getRelatedObjects().addAll(relatedObjects.getContent());
+        Page<XtdRoot> relatedThings = thingsRepository.findAllById(dto.getRelatedThings(), PageRequest.of(0, 1000));
+        entity.getRelatedThings().addAll(relatedThings.getContent());
     }
 }

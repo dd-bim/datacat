@@ -78,24 +78,24 @@ input MeasureUpdateInput {
     valueDomain: [ID!]!
 }
 
-input RelDocumentsInput {
+input DocumentsInput {
     id: ID
     versionId: String!
     versionDate: String!
     names: [TextInput!]!
-    descriptions: [TextInput!]
+    descriptions: [TextInput!]!
     relatingDocument: ID!
-    relatedObjects: [ID!]!
+    relatedThings: [ID!]!
 }
 
-input RelDocumentsUpdateInput {
+input DocumentsUpdateInput {
     id: ID!
     versionId: String!
     versionDate: String!
     names: [TextInput!]!
-    descriptions: [TextInput!]
+    descriptions: [TextInput!]!
     relatingDocument: ID!
-    relatedObjects: [ID!]!
+    relatedThings: [ID!]!
 }
 
 input AssignsCollectionsInput {
@@ -237,8 +237,8 @@ type Mutation {
     updateAssignsCollectionsRelation(input: AssignsCollectionsUpdateInput!): XtdRelAssignsCollections
     deleteAssignsCollectionsRelation(id: ID!): XtdRelAssignsCollections
 
-    createDocumentsRelation(input: RelDocumentsInput!): XtdRelDocuments
-    updateDocumentsRelation(input: RelDocumentsUpdateInput!): XtdRelDocuments
+    createDocumentsRelation(input: DocumentsInput!): XtdRelDocuments
+    updateDocumentsRelation(input: DocumentsUpdateInput!): XtdRelDocuments
     deleteDocumentsRelation(id: ID!): XtdRelDocuments
 
     createCollectsRelation(input: CollectsInput!): XtdRelCollects

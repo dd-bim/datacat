@@ -1,9 +1,9 @@
 package de.bentrm.datacat.service;
 
 import de.bentrm.datacat.domain.relationship.XtdRelDocuments;
-import de.bentrm.datacat.graphql.dto.RelDocumentsInput;
-import de.bentrm.datacat.graphql.dto.RelDocumentsUpdateInput;
+import de.bentrm.datacat.graphql.dto.DocumentsInput;
+import de.bentrm.datacat.graphql.dto.DocumentsUpdateInput;
 
-public interface RelDocumentsService extends CrudEntityService<XtdRelDocuments, RelDocumentsInput, RelDocumentsUpdateInput> {
+public interface RelDocumentsService extends CrudEntityService<XtdRelDocuments, DocumentsInput, DocumentsUpdateInput> {
 
 }

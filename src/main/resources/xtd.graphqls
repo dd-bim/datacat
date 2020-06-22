@@ -409,7 +409,7 @@ type XtdRelDocuments implements XtdRoot, XtdRelationship {
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
     relatingDocument: XtdExternalDocument!
-    relatedObjects(input: PagingInput): XtdObjectConnection!
+    relatedThings: [XtdRoot!]!
     collectedBy(input: PagingInput): XtdRelCollectsConnection!
     associates(input: PagingInput): XtdRelAssociatesConnection!
     associatedBy(input: PagingInput): XtdRelAssociatesConnection!

@@ -6,17 +6,15 @@ import de.bentrm.datacat.domain.XtdObject;
 import de.bentrm.datacat.domain.relationship.XtdRelDocuments;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.PageInfo;
+import de.bentrm.datacat.graphql.dto.DocumentsInput;
+import de.bentrm.datacat.graphql.dto.DocumentsUpdateInput;
 import de.bentrm.datacat.graphql.dto.PagingOptions;
-import de.bentrm.datacat.graphql.dto.RelDocumentsInput;
-import de.bentrm.datacat.graphql.dto.RelDocumentsUpdateInput;
 import de.bentrm.datacat.service.RelDocumentsService;
 import graphql.schema.DataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.repository.support.PageableExecutionUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -44,12 +42,6 @@ public class RelDocumentsDataFetcherProvider implements QueryDataFetcherProvider
         );
     }
 
-    public Map<String, DataFetcher> getRelDocumentsDataFetchers() {
-        return Map.ofEntries(
-                Map.entry("relatedObjects", relatedObjects())
-        );
-    }
-
     @Override
     public Map<String, DataFetcher> getMutationDataFetchers() {
         return Map.ofEntries(
@@ -62,7 +54,7 @@ public class RelDocumentsDataFetcherProvider implements QueryDataFetcherProvider
     public DataFetcher<XtdRelDocuments> add() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("input");
-            RelDocumentsInput dto = mapper.convertValue(input, RelDocumentsInput.class);
+            DocumentsInput dto = mapper.convertValue(input, DocumentsInput.class);
             return relDocumentsService.create(dto);
         };
     }
@@ -70,7 +62,7 @@ public class RelDocumentsDataFetcherProvider implements QueryDataFetcherProvider
     public DataFetcher<XtdRelDocuments> update() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("input");
-            RelDocumentsUpdateInput dto = mapper.convertValue(input, RelDocumentsUpdateInput.class);
+            DocumentsUpdateInput dto = mapper.convertValue(input, DocumentsUpdateInput.class);
             return relDocumentsService.update(dto);
         };
     }
@@ -126,20 +118,6 @@ public class RelDocumentsDataFetcherProvider implements QueryDataFetcherProvider
             List<String> ids = source.getDocumentedBy().stream().map(XtdRelDocuments::getId).collect(Collectors.toList());
             Page<XtdRelDocuments> page = relDocumentsService.findByIds(ids, dto.getPageble());
 
-            return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
-        };
-    }
-
-    public DataFetcher<Connection<XtdObject>> relatedObjects() {
-        return environment -> {
-            XtdRelDocuments source = environment.getSource();
-            Map<String, Object> input = environment.getArgument("options");
-            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
-
-            if (dto == null) dto = PagingOptions.defaults();
-
-            List<XtdObject> content = new ArrayList<>(source.getRelatedObjects());
-            Page<XtdObject> page = PageableExecutionUtils.getPage(content, dto.getPageble(), () -> source.getRelatedObjects().size());
             return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }

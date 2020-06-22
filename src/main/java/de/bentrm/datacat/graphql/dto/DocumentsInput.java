@@ -7,19 +7,19 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RelDocumentsUpdateInput extends RootUpdateInput {
+public class DocumentsInput extends RootInput {
 
     @NotBlank @IdConstraint
     private String relatingDocument;
 
     private @NotNull
-    final List<@NotBlank @IdConstraint String> relatedObjects = new ArrayList<>();
+    final List<@NotBlank @IdConstraint String> relatedThings = new ArrayList<>();
 
     public String getRelatingDocument() {
         return relatingDocument;
     }
 
-    public List<String> getRelatedObjects() {
-        return relatedObjects;
+    public List<String> getRelatedThings() {
+        return relatedThings;
     }
 }
