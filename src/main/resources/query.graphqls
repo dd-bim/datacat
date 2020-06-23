@@ -315,6 +315,7 @@ type Query {
     bags(input: FilterInput): XtdBagConnection!
     nests(input: FilterInput): XtdNestConnection!
     assignsCollectionsRelations(input: FilterInput): XtdRelAssignsCollectionsConnection!
+    assignsPropertyWithValues(input: FilterInput): XtdRelAssignsPropertyWithValuesConnection!
     documentsRelations(input: FilterInput): XtdRelDocumentsConnection!
     collectsRelations(input: FilterInput): XtdRelCollectsConnection!
     associatesRelations(input: FilterInput): XtdRelAssociatesConnection!

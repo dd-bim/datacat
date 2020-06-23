@@ -14,6 +14,7 @@ import java.util.TreeSet;
         "(root)-[:DOCUMENTS]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()",
         "(root)-[:COLLECTS]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()",
         "(root)-[:ASSIGNS_COLLECTIONS]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()",
+        "(root)-[:ASSIGNS_PROPERTY_WITH_VALUES]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()",
         "(root)-[:ASSOCIATES]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()",
         "(root)-[:COMPOSES]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()",
         "(root)-[:GROUPS]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()",

@@ -135,6 +135,7 @@ public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
                 .type("XtdBag", rootDataFetchers)
                 .type("XtdNest", rootDataFetchers)
                 .type("XtdRelAssignsCollections", rootDataFetchers)
+                .type("XtdRelAssignsPropertyWithValues", rootDataFetchers)
                 .type("XtdRelDocuments", rootDataFetchers)
                 .type("XtdRelCollects", rootDataFetchers)
                 .type("XtdRelAssociates", typeWiring -> rootDataFetchers

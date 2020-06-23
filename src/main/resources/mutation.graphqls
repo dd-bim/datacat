@@ -118,6 +118,28 @@ input AssignsCollectionsUpdateInput {
     relatedCollections: [ID!]!
 }
 
+input AssignsPropertyWithValuesInput {
+    id: ID
+    versionId: String!
+    versionDate: String!
+    names: [TextInput!]!
+    descriptions: [TextInput!]!
+    relatingObject: ID!
+    relatedProperty: ID!
+    relatedValues: [ID!]!
+}
+
+input AssignsPropertyWithValuesUpdateInput {
+    id: ID!
+    versionId: String!
+    versionDate: String!
+    names: [TextInput!]!
+    descriptions: [TextInput!]!
+    relatingObject: ID!
+    relatedProperty: ID!
+    relatedValues: [ID!]!
+}
+
 input CollectsInput {
     id: ID
     versionId: String!
@@ -236,6 +258,10 @@ type Mutation {
     createAssignsCollectionsRelation(input: AssignsCollectionsInput!): XtdRelAssignsCollections
     updateAssignsCollectionsRelation(input: AssignsCollectionsUpdateInput!): XtdRelAssignsCollections
     deleteAssignsCollectionsRelation(id: ID!): XtdRelAssignsCollections
+
+    createAssignsPropertyWithValues(input: AssignsPropertyWithValuesInput!): XtdRelAssignsPropertyWithValues
+    updateAssignsPropertyWithValues(input: AssignsPropertyWithValuesUpdateInput!): XtdRelAssignsPropertyWithValues
+    deleteAssignsPropertyWithValues(id: ID!): XtdRelAssignsPropertyWithValues
 
     createDocumentsRelation(input: DocumentsInput!): XtdRelDocuments
     updateDocumentsRelation(input: DocumentsUpdateInput!): XtdRelDocuments

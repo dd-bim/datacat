@@ -367,7 +367,8 @@ type XtdRelAssignsPropertyWithValues implements XtdRoot, XtdRelationship {
     names: [XtdName!]!
     descriptions: [XtdDescription!]!
     relatingObject: XtdObject!
-    relatedCollections: [XtdCollection!]!
+    relatedProperty: XtdProperty!
+    relatedValues: [XtdValue!]!
     actedUponBy(input: PagingInput): XtdRelActsUponConnection!
     actsUpon(input: PagingInput): XtdRelActsUponConnection!
     associatedBy(input: PagingInput): XtdRelAssociatesConnection!
@@ -633,6 +634,12 @@ type XtdRelationshipConnection {
 
 type XtdRelAssignsCollectionsConnection {
     nodes: [XtdRelAssignsCollections!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+type XtdRelAssignsPropertyWithValuesConnection {
+    nodes: [XtdRelAssignsPropertyWithValues!]!
     pageInfo: PageInfo!
     totalElements: Int!
 }

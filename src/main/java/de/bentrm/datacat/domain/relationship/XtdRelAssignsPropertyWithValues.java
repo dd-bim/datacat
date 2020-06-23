@@ -13,7 +13,7 @@ import java.util.List;
 public class XtdRelAssignsPropertyWithValues extends XtdRelationship {
 
     public static final String LABEL = "XtdRelAssignsPropertyWithValues";
-    public static final String RELATIONSHIP_TYPE = "ASSIGNS_PROPERTY_WITH_VALUE";
+    public static final String RELATIONSHIP_TYPE = "ASSIGNS_PROPERTY_WITH_VALUES";
 
     @Relationship(type = RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
     private XtdObject relatingObject;
@@ -24,7 +24,7 @@ public class XtdRelAssignsPropertyWithValues extends XtdRelationship {
     @Relationship(type = RELATIONSHIP_TYPE)
     private List<XtdValue> relatedValues = new ArrayList<>();
 
-    public Object getRelatingObject() {
+    public XtdObject getRelatingObject() {
         return relatingObject;
     }
 
