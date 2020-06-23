@@ -6,10 +6,9 @@ import de.bentrm.datacat.domain.XtdRoot;
 import de.bentrm.datacat.domain.relationship.XtdRelAssociates;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.PageInfo;
-import de.bentrm.datacat.graphql.dto.AssociationInput;
-import de.bentrm.datacat.graphql.dto.AssociationUpdateInput;
-import de.bentrm.datacat.graphql.dto.PagingOptions;
+import de.bentrm.datacat.graphql.dto.*;
 import de.bentrm.datacat.service.RelAssociatesService;
+import de.bentrm.datacat.service.Specification;
 import graphql.schema.DataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,7 +27,7 @@ public class RelAssociatesDataFetcherProvider implements QueryDataFetcherProvide
     @Autowired
     private RelAssociatesService relAssociatesService;
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public Map<String, DataFetcher> getQueryDataFetchers() {
@@ -62,7 +61,7 @@ public class RelAssociatesDataFetcherProvider implements QueryDataFetcherProvide
     public DataFetcher<XtdRelAssociates> add() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("input");
-            AssociationInput dto = mapper.convertValue(input, AssociationInput.class);
+            AssociationInput dto = objectMapper.convertValue(input, AssociationInput.class);
             return relAssociatesService.create(dto);
         };
     }
@@ -70,7 +69,7 @@ public class RelAssociatesDataFetcherProvider implements QueryDataFetcherProvide
     public DataFetcher<XtdRelAssociates> update() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("input");
-            AssociationUpdateInput dto = mapper.convertValue(input, AssociationUpdateInput.class);
+            AssociationUpdateInput dto = objectMapper.convertValue(input, AssociationUpdateInput.class);
             return relAssociatesService.update(dto);
         };
     }
@@ -84,18 +83,12 @@ public class RelAssociatesDataFetcherProvider implements QueryDataFetcherProvide
 
     public DataFetcher<Connection<XtdRelAssociates>> getAll() {
         return environment -> {
-            Map<String, Object> input = environment.getArgument("options");
-            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
-            if (dto == null) dto = PagingOptions.defaults();
+            Map<String, Object> input = environment.getArgument("input");
+            FilterInput filterInput = objectMapper.convertValue(input, FilterInput.class);
+            if (filterInput == null) filterInput = new FilterInput();
 
-            Page<XtdRelAssociates> page;
-            String term = environment.getArgument("term");
-            if (term != null && !term.isBlank()) {
-                page = relAssociatesService.findByTerm(term.trim(), dto.getPageble());
-            } else {
-                page = relAssociatesService.findAll(dto.getPageble());
-            }
-
+            Specification spec = DtoMapper.INSTANCE.toSpecification(filterInput);
+            Page<XtdRelAssociates> page = relAssociatesService.search(spec);
             return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }
@@ -104,7 +97,7 @@ public class RelAssociatesDataFetcherProvider implements QueryDataFetcherProvide
         return environment -> {
             XtdRoot root = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
-            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
+            PagingOptions dto = objectMapper.convertValue(input, PagingOptions.class);
 
             if (dto == null) dto = PagingOptions.defaults();
 
@@ -119,7 +112,7 @@ public class RelAssociatesDataFetcherProvider implements QueryDataFetcherProvide
         return environment -> {
             XtdRoot source = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
-            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
+            PagingOptions dto = objectMapper.convertValue(input, PagingOptions.class);
 
             if (dto == null) dto = PagingOptions.defaults();
 
@@ -134,7 +127,7 @@ public class RelAssociatesDataFetcherProvider implements QueryDataFetcherProvide
         return environment -> {
             XtdRelAssociates source = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
-            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
+            PagingOptions dto = objectMapper.convertValue(input, PagingOptions.class);
 
             if (dto == null) dto = PagingOptions.defaults();
 
@@ -148,7 +141,7 @@ public class RelAssociatesDataFetcherProvider implements QueryDataFetcherProvide
         return environment -> {
             XtdRoot source = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
-            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
+            PagingOptions dto = objectMapper.convertValue(input, PagingOptions.class);
             if (dto == null) dto = PagingOptions.defaults();
 
             Page<XtdRelAssociates> page = relAssociatesService.findByRelatingThingId(source.getId(), dto.getPageble());
@@ -160,7 +153,7 @@ public class RelAssociatesDataFetcherProvider implements QueryDataFetcherProvide
         return environment -> {
             XtdObject source = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
-            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
+            PagingOptions dto = objectMapper.convertValue(input, PagingOptions.class);
             if (dto == null) dto = PagingOptions.defaults();
 
             Page<XtdRelAssociates> page = relAssociatesService.findByRelatedThingId(source.getId(), dto.getPageble());

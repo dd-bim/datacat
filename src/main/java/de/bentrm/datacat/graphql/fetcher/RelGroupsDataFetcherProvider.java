@@ -6,10 +6,9 @@ import de.bentrm.datacat.domain.XtdRoot;
 import de.bentrm.datacat.domain.relationship.XtdRelGroups;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.PageInfo;
-import de.bentrm.datacat.graphql.dto.AssociationInput;
-import de.bentrm.datacat.graphql.dto.AssociationUpdateInput;
-import de.bentrm.datacat.graphql.dto.PagingOptions;
+import de.bentrm.datacat.graphql.dto.*;
 import de.bentrm.datacat.service.RelGroupsService;
+import de.bentrm.datacat.service.Specification;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingFieldSelectionSet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,7 @@ public class RelGroupsDataFetcherProvider implements QueryDataFetcherProvider, R
     @Autowired
     private RelGroupsService relGroupsService;
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public Map<String, DataFetcher> getQueryDataFetchers() {
         return Map.ofEntries(
@@ -85,18 +84,12 @@ public class RelGroupsDataFetcherProvider implements QueryDataFetcherProvider, R
 
     public DataFetcher<Connection<XtdRelGroups>> getAll() {
         return environment -> {
-            Map<String, Object> input = environment.getArgument("options");
-            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
-            if (dto == null) dto = PagingOptions.defaults();
+            Map<String, Object> input = environment.getArgument("input");
+            FilterInput filterInput = objectMapper.convertValue(input, FilterInput.class);
+            if (filterInput == null) filterInput = new FilterInput();
 
-            Page<XtdRelGroups> page;
-            String term = environment.getArgument("term");
-            if (term != null && !term.isBlank()) {
-                page = relGroupsService.findByTerm(term.trim(), dto.getPageble());
-            } else {
-                page = relGroupsService.findAll(dto.getPageble());
-            }
-
+            Specification spec = DtoMapper.INSTANCE.toSpecification(filterInput);
+            Page<XtdRelGroups> page = relGroupsService.search(spec);
             return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }
@@ -106,7 +99,7 @@ public class RelGroupsDataFetcherProvider implements QueryDataFetcherProvider, R
             XtdRoot root = environment.getSource();
 
             Map<String, Object> input = environment.getArgument("options");
-            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
+            PagingOptions dto = objectMapper.convertValue(input, PagingOptions.class);
             if (dto == null) dto = PagingOptions.defaults();
 
             DataFetchingFieldSelectionSet selectionSet = environment.getSelectionSet();
@@ -124,7 +117,7 @@ public class RelGroupsDataFetcherProvider implements QueryDataFetcherProvider, R
         return environment -> {
             XtdRoot source = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
-            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
+            PagingOptions dto = objectMapper.convertValue(input, PagingOptions.class);
 
             if (dto == null) dto = PagingOptions.defaults();
 
@@ -139,7 +132,7 @@ public class RelGroupsDataFetcherProvider implements QueryDataFetcherProvider, R
         return environment -> {
             XtdRelGroups source = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
-            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
+            PagingOptions dto = objectMapper.convertValue(input, PagingOptions.class);
 
             if (dto == null) dto = PagingOptions.defaults();
 
@@ -153,7 +146,7 @@ public class RelGroupsDataFetcherProvider implements QueryDataFetcherProvider, R
         return environment -> {
             XtdRoot source = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
-            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
+            PagingOptions dto = objectMapper.convertValue(input, PagingOptions.class);
             if (dto == null) dto = PagingOptions.defaults();
 
             Page<XtdRelGroups> page = relGroupsService.findByRelatingThingId(source.getId(), dto.getPageble());
@@ -165,7 +158,7 @@ public class RelGroupsDataFetcherProvider implements QueryDataFetcherProvider, R
         return environment -> {
             XtdObject source = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
-            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
+            PagingOptions dto = objectMapper.convertValue(input, PagingOptions.class);
             if (dto == null) dto = PagingOptions.defaults();
 
             Page<XtdRelGroups> page = relGroupsService.findByRelatedThingId(source.getId(), dto.getPageble());

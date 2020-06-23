@@ -6,10 +6,9 @@ import de.bentrm.datacat.domain.XtdObject;
 import de.bentrm.datacat.domain.relationship.XtdRelDocuments;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.PageInfo;
-import de.bentrm.datacat.graphql.dto.DocumentsInput;
-import de.bentrm.datacat.graphql.dto.DocumentsUpdateInput;
-import de.bentrm.datacat.graphql.dto.PagingOptions;
+import de.bentrm.datacat.graphql.dto.*;
 import de.bentrm.datacat.service.RelDocumentsService;
+import de.bentrm.datacat.service.Specification;
 import graphql.schema.DataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,7 +25,7 @@ public class RelDocumentsDataFetcherProvider implements QueryDataFetcherProvider
     @Autowired
     private RelDocumentsService relDocumentsService;
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public Map<String, DataFetcher> getQueryDataFetchers() {
@@ -54,7 +53,7 @@ public class RelDocumentsDataFetcherProvider implements QueryDataFetcherProvider
     public DataFetcher<XtdRelDocuments> add() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("input");
-            DocumentsInput dto = mapper.convertValue(input, DocumentsInput.class);
+            DocumentsInput dto = objectMapper.convertValue(input, DocumentsInput.class);
             return relDocumentsService.create(dto);
         };
     }
@@ -62,7 +61,7 @@ public class RelDocumentsDataFetcherProvider implements QueryDataFetcherProvider
     public DataFetcher<XtdRelDocuments> update() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("input");
-            DocumentsUpdateInput dto = mapper.convertValue(input, DocumentsUpdateInput.class);
+            DocumentsUpdateInput dto = objectMapper.convertValue(input, DocumentsUpdateInput.class);
             return relDocumentsService.update(dto);
         };
     }
@@ -76,18 +75,12 @@ public class RelDocumentsDataFetcherProvider implements QueryDataFetcherProvider
 
     public DataFetcher<Connection<XtdRelDocuments>> getAll() {
         return environment -> {
-            Map<String, Object> input = environment.getArgument("options");
-            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
-            if (dto == null) dto = PagingOptions.defaults();
+            Map<String, Object> input = environment.getArgument("input");
+            FilterInput filterInput = objectMapper.convertValue(input, FilterInput.class);
+            if (filterInput == null) filterInput = new FilterInput();
 
-            Page<XtdRelDocuments> page;
-            String term = environment.getArgument("term");
-            if (term != null && !term.isBlank()) {
-                page = relDocumentsService.findByTerm(term.trim(), dto.getPageble());
-            } else {
-                page = relDocumentsService.findAll(dto.getPageble());
-            }
-
+            Specification spec = DtoMapper.INSTANCE.toSpecification(filterInput);
+            Page<XtdRelDocuments> page = relDocumentsService.search(spec);
             return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }
@@ -96,7 +89,7 @@ public class RelDocumentsDataFetcherProvider implements QueryDataFetcherProvider
         return environment -> {
             XtdExternalDocument collection = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
-            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
+            PagingOptions dto = objectMapper.convertValue(input, PagingOptions.class);
 
             if (dto == null) dto = PagingOptions.defaults();
 
@@ -111,7 +104,7 @@ public class RelDocumentsDataFetcherProvider implements QueryDataFetcherProvider
         return environment -> {
             XtdObject source = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
-            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
+            PagingOptions dto = objectMapper.convertValue(input, PagingOptions.class);
 
             if (dto == null) dto = PagingOptions.defaults();
 

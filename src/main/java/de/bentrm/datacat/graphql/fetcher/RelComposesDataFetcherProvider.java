@@ -6,10 +6,9 @@ import de.bentrm.datacat.domain.XtdRoot;
 import de.bentrm.datacat.domain.relationship.XtdRelComposes;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.PageInfo;
-import de.bentrm.datacat.graphql.dto.AssociationInput;
-import de.bentrm.datacat.graphql.dto.AssociationUpdateInput;
-import de.bentrm.datacat.graphql.dto.PagingOptions;
+import de.bentrm.datacat.graphql.dto.*;
 import de.bentrm.datacat.service.RelComposesService;
+import de.bentrm.datacat.service.Specification;
 import graphql.schema.DataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,7 +24,8 @@ import java.util.stream.Collectors;
 @Component
 public class RelComposesDataFetcherProvider implements QueryDataFetcherProvider, RootDataFetcherProvider, MutationDataFetcherProvider {
 
-    ObjectMapper mapper = new ObjectMapper();
+    ObjectMapper objectMapper = new ObjectMapper();
+
     @Autowired
     private RelComposesService relComposesService;
 
@@ -61,7 +61,7 @@ public class RelComposesDataFetcherProvider implements QueryDataFetcherProvider,
     public DataFetcher<XtdRelComposes> add() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("input");
-            AssociationInput dto = mapper.convertValue(input, AssociationInput.class);
+            AssociationInput dto = objectMapper.convertValue(input, AssociationInput.class);
             return relComposesService.create(dto);
         };
     }
@@ -69,7 +69,7 @@ public class RelComposesDataFetcherProvider implements QueryDataFetcherProvider,
     public DataFetcher<XtdRelComposes> update() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("input");
-            AssociationUpdateInput dto = mapper.convertValue(input, AssociationUpdateInput.class);
+            AssociationUpdateInput dto = objectMapper.convertValue(input, AssociationUpdateInput.class);
             return relComposesService.update(dto);
         };
     }
@@ -83,18 +83,12 @@ public class RelComposesDataFetcherProvider implements QueryDataFetcherProvider,
 
     public DataFetcher<Connection<XtdRelComposes>> getAll() {
         return environment -> {
-            Map<String, Object> input = environment.getArgument("options");
-            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
-            if (dto == null) dto = PagingOptions.defaults();
+            Map<String, Object> input = environment.getArgument("input");
+            FilterInput filterInput = objectMapper.convertValue(input, FilterInput.class);
+            if (filterInput == null) filterInput = new FilterInput();
 
-            Page<XtdRelComposes> page;
-            String term = environment.getArgument("term");
-            if (term != null && !term.isBlank()) {
-                page = relComposesService.findByTerm(term.trim(), dto.getPageble());
-            } else {
-                page = relComposesService.findAll(dto.getPageble());
-            }
-
+            Specification spec = DtoMapper.INSTANCE.toSpecification(filterInput);
+            Page<XtdRelComposes> page = relComposesService.search(spec);
             return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }
@@ -103,7 +97,7 @@ public class RelComposesDataFetcherProvider implements QueryDataFetcherProvider,
         return environment -> {
             XtdRoot root = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
-            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
+            PagingOptions dto = objectMapper.convertValue(input, PagingOptions.class);
 
             if (dto == null) dto = PagingOptions.defaults();
 
@@ -118,7 +112,7 @@ public class RelComposesDataFetcherProvider implements QueryDataFetcherProvider,
         return environment -> {
             XtdRoot source = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
-            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
+            PagingOptions dto = objectMapper.convertValue(input, PagingOptions.class);
 
             if (dto == null) dto = PagingOptions.defaults();
 
@@ -133,7 +127,7 @@ public class RelComposesDataFetcherProvider implements QueryDataFetcherProvider,
         return environment -> {
             XtdRelComposes source = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
-            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
+            PagingOptions dto = objectMapper.convertValue(input, PagingOptions.class);
 
             if (dto == null) dto = PagingOptions.defaults();
 
@@ -147,7 +141,7 @@ public class RelComposesDataFetcherProvider implements QueryDataFetcherProvider,
         return environment -> {
             XtdRoot source = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
-            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
+            PagingOptions dto = objectMapper.convertValue(input, PagingOptions.class);
             if (dto == null) dto = PagingOptions.defaults();
 
             Page<XtdRelComposes> page = relComposesService.findByRelatingThingId(source.getId(), dto.getPageble());
@@ -159,7 +153,7 @@ public class RelComposesDataFetcherProvider implements QueryDataFetcherProvider,
         return environment -> {
             XtdObject source = environment.getSource();
             Map<String, Object> input = environment.getArgument("options");
-            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
+            PagingOptions dto = objectMapper.convertValue(input, PagingOptions.class);
             if (dto == null) dto = PagingOptions.defaults();
 
             Page<XtdRelComposes> page = relComposesService.findByRelatedThingId(source.getId(), dto.getPageble());

@@ -6,10 +6,9 @@ import de.bentrm.datacat.domain.XtdRoot;
 import de.bentrm.datacat.domain.relationship.XtdRelSpecializes;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.PageInfo;
-import de.bentrm.datacat.graphql.dto.AssociationInput;
-import de.bentrm.datacat.graphql.dto.AssociationUpdateInput;
-import de.bentrm.datacat.graphql.dto.PagingOptions;
+import de.bentrm.datacat.graphql.dto.*;
 import de.bentrm.datacat.service.RelSpecializesService;
+import de.bentrm.datacat.service.Specification;
 import graphql.schema.DataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,6 +26,8 @@ public class RelSpecializesDataFetcherProvider implements QueryDataFetcherProvid
 
     @Autowired
     private RelSpecializesService relSpecializesService;
+
+    ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public Map<String, DataFetcher> getQueryDataFetchers() {
@@ -84,19 +85,12 @@ public class RelSpecializesDataFetcherProvider implements QueryDataFetcherProvid
 
     public DataFetcher<Connection<XtdRelSpecializes>> getAll() {
         return environment -> {
-            Map<String, Object> input = environment.getArgument("options");
-            ObjectMapper mapper = new ObjectMapper();
-            PagingOptions dto = mapper.convertValue(input, PagingOptions.class);
-            if (dto == null) dto = PagingOptions.defaults();
+            Map<String, Object> input = environment.getArgument("input");
+            FilterInput filterInput = objectMapper.convertValue(input, FilterInput.class);
+            if (filterInput == null) filterInput = new FilterInput();
 
-            Page<XtdRelSpecializes> page;
-            String term = environment.getArgument("term");
-            if (term != null && !term.isBlank()) {
-                page = relSpecializesService.findByTerm(term.trim(), dto.getPageble());
-            } else {
-                page = relSpecializesService.findAll(dto.getPageble());
-            }
-
+            Specification spec = DtoMapper.INSTANCE.toSpecification(filterInput);
+            Page<XtdRelSpecializes> page = relSpecializesService.search(spec);
             return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
     }
