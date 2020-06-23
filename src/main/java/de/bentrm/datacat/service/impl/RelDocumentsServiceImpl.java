@@ -19,7 +19,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @Transactional(readOnly = true)
 public class RelDocumentsServiceImpl
-        extends CrudEntityServiceImpl<XtdRelDocuments, DocumentsInput, DocumentsUpdateInput, RelDocumentsRepository>
+        extends CrudRootServiceImpl<XtdRelDocuments, DocumentsInput, DocumentsUpdateInput, RelDocumentsRepository>
         implements RelDocumentsService {
 
     private final ExternalDocumentRepository externalDocumentRepository;

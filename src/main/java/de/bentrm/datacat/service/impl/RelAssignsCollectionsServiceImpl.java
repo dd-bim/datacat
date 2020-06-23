@@ -19,7 +19,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @Transactional(readOnly = true)
 public class RelAssignsCollectionsServiceImpl
-        extends CrudEntityServiceImpl<XtdRelAssignsCollections, AssignsCollectionsInput, AssignsCollectionsUpdateInput, RelAssignsCollectionsRepository>
+        extends CrudRootServiceImpl<XtdRelAssignsCollections, AssignsCollectionsInput, AssignsCollectionsUpdateInput, RelAssignsCollectionsRepository>
         implements RelAssignsCollectionsService {
 
     private final ObjectRepository objectRepository;

@@ -19,7 +19,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @Transactional(readOnly = true)
 public class RelCollectsServiceImpl
-        extends CrudEntityServiceImpl<XtdRelCollects, CollectsInput, CollectsUpdateInput, RelCollectsRepository>
+        extends CrudRootServiceImpl<XtdRelCollects, CollectsInput, CollectsUpdateInput, RelCollectsRepository>
         implements RelCollectsService {
 
     private final CollectionRepository collectionRepository;
