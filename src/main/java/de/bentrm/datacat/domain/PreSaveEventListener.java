@@ -22,8 +22,7 @@ public class PreSaveEventListener extends EventListenerAdapter {
 
 		Object obj = event.getObject();
 
-		if (obj instanceof Entity) {
-			Entity entity = (Entity) obj;
+		if (obj instanceof Entity entity) {
 
 			if (entity.getCreated() == null) {
 				entity.setCreated(now);
@@ -35,13 +34,12 @@ public class PreSaveEventListener extends EventListenerAdapter {
 			entity.setLastModifiedBy(currentAuditor);
 		}
 
-		if (obj instanceof XtdRoot) {
-			XtdRoot entity = (XtdRoot) obj;
+		if (obj instanceof XtdRoot entity) {
 			if (entity.getVersionId() == null) {
 				entity.setVersionId("1");
 			}
 			if (entity.getVersionDate() == null) {
-				entity.setVersionDate(LocalDate.now().toString());
+				entity.setVersionDate(String.valueOf(LocalDate.now().getYear()));
 			}
 		}
 	}
