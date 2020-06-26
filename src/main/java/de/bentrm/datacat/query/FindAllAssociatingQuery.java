@@ -15,7 +15,7 @@ public class FindAllAssociatingQuery<T extends Association>
         implements IterableQuery<T> {
 
     private static final String QUERY = """            
-            MATCH (name:XtdName)-[:IS_NAME_OF]->(root:${label})-[:${associationLabel}]->(relatedThing)
+            MATCH (name:Translation)<-[:NAMED]-(root:${label})-[:${associationLabel}]->(relatedThing)
             WHERE relatedThing.id = $relatedThingId
             WITH root, name ORDER BY name.sortOrder, toLower(name.value) ASC, name.value DESC
             WITH DISTINCT root SKIP $skip LIMIT $limit

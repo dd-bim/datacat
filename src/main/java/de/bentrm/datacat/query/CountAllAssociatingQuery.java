@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class CountAllAssociatingQuery<T extends Association>
         extends AbstractCustomQuery<T>
-        implements CountQuery<T> {
+        implements CountQuery {
 
     private static final String QUERY = """
             MATCH (root:${label})<-[:${associationLabel}]-(relatingThing)

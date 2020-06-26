@@ -5,7 +5,7 @@ import org.neo4j.ogm.session.Session;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
-public class CountSearchQuery<T> extends AbstractCustomQuery<T> implements CountQuery<T> {
+public class CountSearchQuery<T> extends AbstractCustomQuery<T> implements CountQuery {
 
     private final String QUERY = """
             MATCH (root)
@@ -17,8 +17,8 @@ public class CountSearchQuery<T> extends AbstractCustomQuery<T> implements Count
             """;
 
     private final String FULL_TEXT_SEARCH_QUERY = """
-            CALL db.index.fulltext.queryNodes('namesAndDescriptions', $term) YIELD node AS hit, score
-            MATCH (hit)-[:IS_NAME_OF|:IS_DESCRIPTION_OF]->(root)
+            CALL db.index.fulltext.queryNodes('translations', $term) YIELD node AS hit, score
+            MATCH (hit)<-[:NAMED|:DESCRIBED]-(root)
             WHERE
                 size([label IN labels(root) WHERE label IN $labels | 1]) > 0
                 AND size([label IN labels(root) WHERE label IN $excludedLabels | 1]) = 0

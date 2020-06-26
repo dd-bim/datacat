@@ -7,8 +7,6 @@ import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 @NodeEntity(label = XtdRoot.LABEL)
 public abstract class XtdRoot extends CatalogItem {
@@ -21,11 +19,11 @@ public abstract class XtdRoot extends CatalogItem {
 
     private String versionDate;
 
-    @Relationship(type = XtdDescription.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
-    private final SortedSet<XtdDescription> descriptions = new TreeSet<>();
+    @Relationship(type = "DESCRIBED")
+    private final Set<Translation> descriptions = new HashSet<>();
 
     @Relationship(type = XtdRelCollects.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
-    private Set<XtdRelCollects> collectedBy = new HashSet<>();
+    private final Set<XtdRelCollects> collectedBy = new HashSet<>();
 
     @Relationship(type = XtdRelAssociates.RELATIONSHIP_TYPE)
     private final Set<XtdRelAssociates> associates = new HashSet<>();
@@ -73,24 +71,20 @@ public abstract class XtdRoot extends CatalogItem {
         this.versionDate = versionDate;
     }
 
-    public SortedSet<XtdDescription> getDescriptions() {
+    public Set<Translation> getDescriptions() {
         return this.descriptions;
     }
 
-    public void addDescription(XtdDescription newDescription) {
+    public void addDescription(Translation newDescription) {
         this.descriptions.add(newDescription);
     }
 
-    public boolean removeDescription(XtdDescription description) {
+    public boolean removeDescription(Translation description) {
         return this.descriptions.remove(description);
     }
 
     public Set<XtdRelCollects> getCollectedBy() {
         return collectedBy;
-    }
-
-    public void setCollectedBy(Set<XtdRelCollects> collectedBy) {
-        this.collectedBy = collectedBy;
     }
 
     public Set<XtdRelAssociates> getAssociates() {
@@ -137,6 +131,7 @@ public abstract class XtdRoot extends CatalogItem {
     public String toString() {
         return new ToStringBuilder(this)
                 .appendSuper(super.toString())
+                .append("descriptions", descriptions)
                 .append("versionId", versionId)
                 .append("versionDate", versionDate)
                 .toString();

@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 public class FindAllByIdQuery<T> extends AbstractCustomQuery<T> implements IterableQuery<T> {
 
     private static final String FIND_BY_IDS_QUERY_TEMPLATE = """
-            MATCH (name:XtdName)-[:IS_NAME_OF]->(root:${label})
+            MATCH (name:Translation)<-[:Named]->(root:${label})
             WHERE root.id IN $ids
             WITH root, name ORDER BY name.sortOrder, toLower(name.value) ASC, name.value DESC
             WITH DISTINCT root SKIP $skip LIMIT $limit

@@ -4,40 +4,43 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.HashSet;
+import java.util.Set;
 
-@NodeEntity(label = "XtdEntity")
-// TODO: Revise subgraph selection to be more specific to actual query and selected entity
+@NodeEntity(label = "CatalogItem")
 @PropertyQueryHint({
-        "(root)<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()",
-        "(root)-[:DOCUMENTS]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()",
-        "(root)-[:COLLECTS]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()",
-        "(root)-[:ASSIGNS_COLLECTIONS]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()",
-        "(root)-[:ASSIGNS_PROPERTY_WITH_VALUES]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()",
-        "(root)-[:ASSOCIATES]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()",
-        "(root)-[:COMPOSES]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()",
-        "(root)-[:GROUPS]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()",
-        "(root)-[:SPECIALIZES]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()",
-        "(root)-[:ACTS_UPON]-()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()",
-        "(root)-[:HAS_UNIT_COMPONENT|HAS_VALUE_DOMAIN*0..1]->()<-[:IS_NAME_OF|IS_DESCRIPTION_OF*0..1]-()"
+        "(root)-[:NAMED|DESCRIBED*0..1]->(:Translation)",
+        "(root)-[:HAS_FACET]->(:Facet)",
+        "(root)-[:DOCUMENTS]-()-[:NAMED|DESCRIBED*0..1]->(:Translation)",
+        "(root)-[:COLLECTS]-()-[:NAMED|DESCRIBED*0..1]->(:Translation)",
+        "(root)-[:ASSIGNS_COLLECTIONS]-()-[:NAMED|DESCRIBED*0..1]->(:Translation)",
+        "(root)-[:ASSIGNS_PROPERTY_WITH_VALUES]-()-[:NAMED|DESCRIBED*0..1]->(:Translation)",
+        "(root)-[:ASSOCIATES]-()-[:NAMED|DESCRIBED*0..1]->(:Translation)",
+        "(root)-[:COMPOSES]-()-[:NAMED|DESCRIBED*0..1]->(:Translation)",
+        "(root)-[:GROUPS]-()-[:NAMED|DESCRIBED*0..1]->(:Translation)",
+        "(root)-[:SPECIALIZES]-()-[:NAMED|DESCRIBED*0..1]->(:Translation)",
+        "(root)-[:ACTS_UPON]-()-[:NAMED|DESCRIBED*0..1]->(:Translation)",
+        "(root)-[:HAS_UNIT_COMPONENT|HAS_VALUE_DOMAIN*0..1]->()-[:NAMED|DESCRIBED*0..1]->(:Translation)",
 })
 public abstract class CatalogItem extends Entity {
 
-    @Relationship(type = XtdName.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
-    protected SortedSet<XtdName> names = new TreeSet<>();
+    @Relationship(type = "NAMED")
+    private final Set<Translation> names = new HashSet<>();
 
-    public SortedSet<XtdName> getNames() {
+    @Relationship(type = "HAS_FACET")
+    private final Set<Facet> facets = new HashSet<>();
+
+    public Set<Translation> getNames() {
         return this.names;
     }
 
-    public void setNames(SortedSet<XtdName> names) {
-        this.names = names;
+    public Set<Facet> getFacets() {
+        return this.facets;
     }
 
     public String getLabel() {
         return this.getNames().stream()
-                .map(XtdName::getValue)
+                .map(Translation::getLabel)
                 .reduce((a, b) -> a + ", " + b)
                 .orElseGet(() -> String.format("<%s>", this.getId()));
     }
@@ -47,6 +50,7 @@ public abstract class CatalogItem extends Entity {
         return new ToStringBuilder(this)
                 .append("label", this.getLabel())
                 .append("names", names)
+                .append("facets", facets)
                 .toString();
     }
 }

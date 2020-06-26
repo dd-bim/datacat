@@ -1,6 +1,6 @@
 package de.bentrm.datacat.query;
 
-public interface CountQuery<T> {
+public interface CountQuery {
 
     long execute();
 

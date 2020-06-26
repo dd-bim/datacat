@@ -4,6 +4,25 @@ input TextInput {
     value: String!
 }
 
+input TranslationInput {
+    languageCode: ID!
+    value: String!
+}
+
+input FacetInput {
+    id: ID
+    names: [TranslationInput!]!
+    descriptions: [TranslationInput!]!
+    targets: [EntityTypes!]!
+}
+
+input FacetUpdateInput {
+    id: ID!
+    names: [TranslationInput!]!
+    descriptions: [TranslationInput!]!
+    targets: [EntityTypes!]!
+}
+
 input EntityInput {
     id: ID
     names: [TextInput!]!
@@ -210,6 +229,10 @@ input LoginInput {
 type Mutation {
     signup(input: SignupInput!): UserSession!
     login(input: LoginInput!): UserSession!
+
+    createFacet(input: FacetInput!): Facet
+    updateFacet(input: FacetUpdateInput!): Facet
+    deleteFacet(input: ID!): Facet
 
     createExternalDocument(input: EntityInput!): XtdExternalDocument
     updateExternalDocument(input: EntityUpdateInput!): XtdExternalDocument

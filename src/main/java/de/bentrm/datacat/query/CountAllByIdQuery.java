@@ -4,7 +4,7 @@ import org.neo4j.ogm.session.Session;
 
 import javax.validation.constraints.NotNull;
 
-public class CountAllByIdQuery<T> extends AbstractCustomQuery<T> implements CountQuery<T> {
+public class CountAllByIdQuery<T> extends AbstractCustomQuery<T> implements CountQuery {
 
     private static final String COUNT_FIND_ALL_BY_ID_QUERY_TEMPLATE = """
         MATCH (root:${label}) WHERE root.id IN $ids RETURN COUNT(root)

@@ -1,39 +1,28 @@
-type XtdExternalDocument {
-    id: ID!
-    names: [XtdName!]!
-    documents: XtdRelDocumentsConnection!
-}
-
 type XtdLanguage {
     id: ID!
     languageNameInEnglish: String!
     languageNameInSelf: String!
 }
 
-interface XtdLanguageRepresentation {
+type Translation {
     id: ID!
-    value: String!
+    label: String!
+    values: [String!]!
     language: XtdLanguage!
 }
 
-type XtdName implements XtdLanguageRepresentation {
+type XtdExternalDocument {
     id: ID!
-    value: String!
-    language: XtdLanguage!
-}
-
-type XtdDescription implements XtdLanguageRepresentation {
-    id: ID!
-    value: String!
-    language: XtdLanguage!
+    names: [Translation!]!
+    documents: XtdRelDocumentsConnection!
 }
 
 interface XtdRoot {
     id: ID!
     versionId: String!
     versionDate: String!
-    names: [XtdName!]!
-    descriptions: [XtdDescription!]!
+    names: [Translation!]!
+    descriptions: [Translation!]!
     actedUponBy(input: PagingInput): XtdRelActsUponConnection!
     actsUpon(input: PagingInput): XtdRelActsUponConnection!
     associatedBy(input: PagingInput): XtdRelAssociatesConnection!
@@ -51,8 +40,8 @@ interface XtdObject implements XtdRoot {
     id: ID!
     versionId: String!
     versionDate: String!
-    names: [XtdName!]!
-    descriptions: [XtdDescription!]!
+    names: [Translation!]!
+    descriptions: [Translation!]!
     actedUponBy(input: PagingInput): XtdRelActsUponConnection!
     actsUpon(input: PagingInput): XtdRelActsUponConnection!
     associatedBy(input: PagingInput): XtdRelAssociatesConnection!
@@ -71,8 +60,8 @@ interface XtdCollection implements XtdRoot {
     id: ID!
     versionId: String!
     versionDate: String!
-    names: [XtdName!]!
-    descriptions: [XtdDescription!]!
+    names: [Translation!]!
+    descriptions: [Translation!]!
     actedUponBy(input: PagingInput): XtdRelActsUponConnection!
     actsUpon(input: PagingInput): XtdRelActsUponConnection!
     associatedBy(input: PagingInput): XtdRelAssociatesConnection!
@@ -91,8 +80,8 @@ interface XtdRelationship implements XtdRoot {
     id: ID!
     versionId: String!
     versionDate: String!
-    names: [XtdName!]!
-    descriptions: [XtdDescription!]!
+    names: [Translation!]!
+    descriptions: [Translation!]!
     actedUponBy(input: PagingInput): XtdRelActsUponConnection!
     actsUpon(input: PagingInput): XtdRelActsUponConnection!
     associatedBy(input: PagingInput): XtdRelAssociatesConnection!
@@ -110,8 +99,8 @@ type XtdActivity implements XtdRoot, XtdObject {
     id: ID!
     versionId: String!
     versionDate: String!
-    names: [XtdName!]!
-    descriptions: [XtdDescription!]!
+    names: [Translation!]!
+    descriptions: [Translation!]!
     actedUponBy(input: PagingInput): XtdRelActsUponConnection!
     actsUpon(input: PagingInput): XtdRelActsUponConnection!
     associatedBy(input: PagingInput): XtdRelAssociatesConnection!
@@ -130,8 +119,8 @@ type XtdActor implements XtdRoot, XtdObject {
     id: ID!
     versionId: String!
     versionDate: String!
-    names: [XtdName!]!
-    descriptions: [XtdDescription!]!
+    names: [Translation!]!
+    descriptions: [Translation!]!
     actedUponBy(input: PagingInput): XtdRelActsUponConnection!
     actsUpon(input: PagingInput): XtdRelActsUponConnection!
     associatedBy(input: PagingInput): XtdRelAssociatesConnection!
@@ -150,8 +139,8 @@ type XtdSubject implements XtdRoot, XtdObject {
     id: ID!
     versionId: String!
     versionDate: String!
-    names: [XtdName!]!
-    descriptions: [XtdDescription!]!
+    names: [Translation!]!
+    descriptions: [Translation!]!
     actedUponBy(input: PagingInput): XtdRelActsUponConnection!
     actsUpon(input: PagingInput): XtdRelActsUponConnection!
     associatedBy(input: PagingInput): XtdRelAssociatesConnection!
@@ -171,8 +160,8 @@ type XtdClassification implements XtdRoot, XtdObject {
     id: ID!
     versionId: String!
     versionDate: String!
-    names: [XtdName!]!
-    descriptions: [XtdDescription!]!
+    names: [Translation!]!
+    descriptions: [Translation!]!
     actedUponBy(input: PagingInput): XtdRelActsUponConnection!
     actsUpon(input: PagingInput): XtdRelActsUponConnection!
     associatedBy(input: PagingInput): XtdRelAssociatesConnection!
@@ -191,8 +180,8 @@ type XtdMeasureWithUnit implements XtdRoot, XtdObject {
     id: ID!
     versionId: String!
     versionDate: String!
-    names: [XtdName!]!
-    descriptions: [XtdDescription!]!
+    names: [Translation!]!
+    descriptions: [Translation!]!
     unitComponent: XtdUnit
     valueDomain: [XtdValue!]!
     actedUponBy(input: PagingInput): XtdRelActsUponConnection!
@@ -213,8 +202,8 @@ type XtdProperty implements XtdRoot, XtdObject {
     id: ID!
     versionId: String!
     versionDate: String!
-    names: [XtdName!]!
-    descriptions: [XtdDescription!]!
+    names: [Translation!]!
+    descriptions: [Translation!]!
     actedUponBy(input: PagingInput): XtdRelActsUponConnection!
     actsUpon(input: PagingInput): XtdRelActsUponConnection!
     associatedBy(input: PagingInput): XtdRelAssociatesConnection!
@@ -234,8 +223,8 @@ type XtdUnit implements XtdRoot, XtdObject {
     id: ID!
     versionId: String!
     versionDate: String!
-    names: [XtdName!]!
-    descriptions: [XtdDescription!]!
+    names: [Translation!]!
+    descriptions: [Translation!]!
     actedUponBy(input: PagingInput): XtdRelActsUponConnection!
     actsUpon(input: PagingInput): XtdRelActsUponConnection!
     associatedBy(input: PagingInput): XtdRelAssociatesConnection!
@@ -277,8 +266,8 @@ type XtdValue implements XtdRoot, XtdObject {
     id: ID!
     versionId: String!
     versionDate: String!
-    names: [XtdName!]!
-    descriptions: [XtdDescription!]!
+    names: [Translation!]!
+    descriptions: [Translation!]!
     toleranceType: XtdToleranceTypeEnum!
     lowerTolerance: String
     upperTolerance: String
@@ -303,8 +292,8 @@ type XtdBag implements XtdRoot, XtdCollection {
     id: ID!
     versionId: String!
     versionDate: String!
-    names: [XtdName!]!
-    descriptions: [XtdDescription!]!
+    names: [Translation!]!
+    descriptions: [Translation!]!
     actedUponBy(input: PagingInput): XtdRelActsUponConnection!
     actsUpon(input: PagingInput): XtdRelActsUponConnection!
     associatedBy(input: PagingInput): XtdRelAssociatesConnection!
@@ -323,8 +312,8 @@ type XtdNest implements XtdRoot, XtdCollection {
     id: ID!
     versionId: String!
     versionDate: String!
-    names: [XtdName!]!
-    descriptions: [XtdDescription!]!
+    names: [Translation!]!
+    descriptions: [Translation!]!
     actedUponBy(input: PagingInput): XtdRelActsUponConnection!
     actsUpon(input: PagingInput): XtdRelActsUponConnection!
     associatedBy(input: PagingInput): XtdRelAssociatesConnection!
@@ -343,8 +332,8 @@ type XtdRelAssignsCollections implements XtdRoot, XtdRelationship {
     id: ID!
     versionId: String!
     versionDate: String!
-    names: [XtdName!]!
-    descriptions: [XtdDescription!]!
+    names: [Translation!]!
+    descriptions: [Translation!]!
     relatingObject: XtdObject!
     relatedCollections: [XtdCollection!]!
     actedUponBy(input: PagingInput): XtdRelActsUponConnection!
@@ -364,8 +353,8 @@ type XtdRelAssignsPropertyWithValues implements XtdRoot, XtdRelationship {
     id: ID!
     versionId: String!
     versionDate: String!
-    names: [XtdName!]!
-    descriptions: [XtdDescription!]!
+    names: [Translation!]!
+    descriptions: [Translation!]!
     relatingObject: XtdObject!
     relatedProperty: XtdProperty!
     relatedValues: [XtdValue!]!
@@ -386,8 +375,8 @@ type XtdRelCollects implements XtdRoot, XtdRelationship {
     id: ID!
     versionId: String!
     versionDate: String!
-    names: [XtdName!]!
-    descriptions: [XtdDescription!]!
+    names: [Translation!]!
+    descriptions: [Translation!]!
     relatingCollection: XtdCollection!
     relatedThings: [XtdRoot!]!
     actedUponBy(input: PagingInput): XtdRelActsUponConnection!
@@ -407,8 +396,8 @@ type XtdRelDocuments implements XtdRoot, XtdRelationship {
     id: ID!
     versionId: String!
     versionDate: String!
-    names: [XtdName!]!
-    descriptions: [XtdDescription!]!
+    names: [Translation!]!
+    descriptions: [Translation!]!
     relatingDocument: XtdExternalDocument!
     relatedThings: [XtdRoot!]!
     collectedBy(input: PagingInput): XtdRelCollectsConnection!
@@ -428,8 +417,8 @@ type XtdRelAssociates implements XtdRoot, XtdRelationship {
     id: ID!
     versionId: String!
     versionDate: String!
-    names: [XtdName!]!
-    descriptions: [XtdDescription!]!
+    names: [Translation!]!
+    descriptions: [Translation!]!
     relatingThing: XtdObject!
     relatedThings(input: PagingInput): XtdObjectConnection!
     collectedBy(input: PagingInput): XtdRelCollectsConnection!
@@ -449,8 +438,8 @@ type XtdRelGroups implements XtdRoot, XtdRelationship {
     id: ID!
     versionId: String!
     versionDate: String!
-    names: [XtdName!]!
-    descriptions: [XtdDescription!]!
+    names: [Translation!]!
+    descriptions: [Translation!]!
     relatingThing: XtdRoot!
     relatedThings(input: PagingInput): XtdRootConnection!
     collectedBy(input: PagingInput): XtdRelCollectsConnection!
@@ -470,8 +459,8 @@ type XtdRelSpecializes implements XtdRoot, XtdRelationship {
     id: ID!
     versionId: String!
     versionDate: String!
-    names: [XtdName!]!
-    descriptions: [XtdDescription!]!
+    names: [Translation!]!
+    descriptions: [Translation!]!
     relatingThing: XtdRoot!
     relatedThings(input: PagingInput): XtdRootConnection!
     collectedBy(input: PagingInput): XtdRelCollectsConnection!
@@ -491,8 +480,8 @@ type XtdRelComposes implements XtdRoot, XtdRelationship {
     id: ID!
     versionId: String!
     versionDate: String!
-    names: [XtdName!]!
-    descriptions: [XtdDescription!]!
+    names: [Translation!]!
+    descriptions: [Translation!]!
     relatingThing: XtdRoot!
     relatedThings(input: PagingInput): XtdRootConnection!
     collectedBy(input: PagingInput): XtdRelCollectsConnection!
@@ -512,8 +501,8 @@ type XtdRelActsUpon implements XtdRoot, XtdRelationship {
     id: ID!
     versionId: String!
     versionDate: String!
-    names: [XtdName!]!
-    descriptions: [XtdDescription!]!
+    names: [Translation!]!
+    descriptions: [Translation!]!
     relatingThing: XtdRoot!
     relatedThings(input: PagingInput): XtdRootConnection!
     collectedBy(input: PagingInput): XtdRelCollectsConnection!

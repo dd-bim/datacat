@@ -12,9 +12,6 @@ public class TypeResolvers {
     private EntityTypeResolver entityTypeResolver;
 
     @Autowired
-    private XtdLanguageRepresentationTypeResolver languageRepresentationTypeResolver;
-
-    @Autowired
     private CatalogItemTypeResolver catalogItemTypeResolver;
 
     @Autowired
@@ -32,7 +29,6 @@ public class TypeResolvers {
     public void mapTypeResolvers(RuntimeWiring.Builder builder) {
         builder
                 .type("Entity", typeWiring -> typeWiring.typeResolver(entityTypeResolver))
-                .type("XtdLanguageRepresentation", typeWiring -> typeWiring.typeResolver(languageRepresentationTypeResolver))
                 .type("CatalogItem", typeWiring -> typeWiring.typeResolver(catalogItemTypeResolver))
                 .type("XtdRoot", typeWiring -> typeWiring.typeResolver(rootTypeResolver))
                 .type("XtdObject", typeWiring -> typeWiring.typeResolver(objectTypeResolver))
