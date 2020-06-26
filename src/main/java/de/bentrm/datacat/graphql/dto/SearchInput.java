@@ -1,5 +1,6 @@
 package de.bentrm.datacat.graphql.dto;
 
+import de.bentrm.datacat.domain.EntityType;
 import de.bentrm.datacat.service.Specification;
 
 import java.util.List;
@@ -7,8 +8,8 @@ import java.util.List;
 public class SearchInput {
     private String query = null;
     private Specification.QueryScope queryScope;
-    private List<Specification.EntityType> entityTypeIn;
-    private List<Specification.EntityType> entityTypeNotIn;
+    private List<EntityType> entityTypeIn;
+    private List<EntityType> entityTypeNotIn;
     private List<String> idIn;
     private List<String> idNotIn;
     private Integer pageNumber = 0;
@@ -30,19 +31,19 @@ public class SearchInput {
         this.queryScope = queryScope;
     }
 
-    public List<Specification.EntityType> getEntityTypeIn() {
+    public List<EntityType> getEntityTypeIn() {
         return entityTypeIn;
     }
 
-    public void setEntityTypeIn(List<Specification.EntityType> entityTypeIn) {
+    public void setEntityTypeIn(List<EntityType> entityTypeIn) {
         this.entityTypeIn = entityTypeIn;
     }
 
-    public List<Specification.EntityType> getEntityTypeNotIn() {
+    public List<EntityType> getEntityTypeNotIn() {
         return entityTypeNotIn;
     }
 
-    public void setEntityTypeNotIn(List<Specification.EntityType> entityTypeNotIn) {
+    public void setEntityTypeNotIn(List<EntityType> entityTypeNotIn) {
         this.entityTypeNotIn = entityTypeNotIn;
     }
 
