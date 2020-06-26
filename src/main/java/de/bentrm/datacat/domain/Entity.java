@@ -13,6 +13,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.Instant;
 
+@PropertyQueryHint({})
 public abstract class Entity {
 
 	public static final String PREFIX = "Xtd";
