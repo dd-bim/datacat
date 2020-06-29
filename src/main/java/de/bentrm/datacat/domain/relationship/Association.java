@@ -11,6 +11,4 @@ public interface Association {
     void setRelatingThing(XtdRoot relatingThing);
 
     Set<XtdRoot> getRelatedThings();
-
-    void setRelatedThings(Set<XtdRoot> relatedThings);
 }

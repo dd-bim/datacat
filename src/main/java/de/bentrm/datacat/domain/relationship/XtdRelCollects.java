@@ -18,7 +18,7 @@ public class XtdRelCollects extends XtdRelationship {
 	private XtdCollection relatingCollection;
 
 	@Relationship(type = RELATIONSHIP_TYPE)
-	private Set<XtdRoot> relatedThings = new HashSet<>();
+	private final Set<XtdRoot> relatedThings = new HashSet<>();
 
 	public XtdCollection getRelatingCollection() {
 		return relatingCollection;
@@ -30,9 +30,5 @@ public class XtdRelCollects extends XtdRelationship {
 
 	public Set<XtdRoot> getRelatedThings() {
 		return relatedThings;
-	}
-
-	public void setRelatedThings(Set<XtdRoot> relatedThings) {
-		this.relatedThings = relatedThings;
 	}
 }

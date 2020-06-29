@@ -18,7 +18,7 @@ public class XtdRelAssignsProperties extends XtdRelationship {
     private XtdObject relatingObject;
 
     @Relationship(type = RELATIONSHIP_TYPE)
-    private Set<XtdProperty> relatedProperties = new HashSet<>();
+    private final Set<XtdProperty> relatedProperties = new HashSet<>();
 
     public XtdObject getRelatingObject() {
         return relatingObject;
@@ -31,10 +31,5 @@ public class XtdRelAssignsProperties extends XtdRelationship {
 
     public Set<XtdProperty> getRelatedProperties() {
         return relatedProperties;
-    }
-
-    public XtdRelAssignsProperties setRelatedProperties(Set<XtdProperty> relatedProperties) {
-        this.relatedProperties = relatedProperties;
-        return this;
     }
 }

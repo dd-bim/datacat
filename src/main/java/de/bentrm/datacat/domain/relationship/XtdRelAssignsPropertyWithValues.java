@@ -22,7 +22,7 @@ public class XtdRelAssignsPropertyWithValues extends XtdRelationship {
     private XtdProperty relatedProperty;
 
     @Relationship(type = RELATIONSHIP_TYPE)
-    private List<XtdValue> relatedValues = new ArrayList<>();
+    private final List<XtdValue> relatedValues = new ArrayList<>();
 
     public XtdObject getRelatingObject() {
         return relatingObject;
@@ -44,10 +44,5 @@ public class XtdRelAssignsPropertyWithValues extends XtdRelationship {
 
     public List<XtdValue> getRelatedValues() {
         return relatedValues;
-    }
-
-    public XtdRelAssignsPropertyWithValues setRelatedValues(List<XtdValue> relatedValues) {
-        this.relatedValues = relatedValues;
-        return this;
     }
 }

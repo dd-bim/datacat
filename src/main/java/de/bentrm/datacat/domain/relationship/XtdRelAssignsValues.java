@@ -18,7 +18,7 @@ public class XtdRelAssignsValues extends XtdRelationship {
     private XtdMeasureWithUnit relatingMeasure;
 
     @Relationship(type = RELATIONSHIP_TYPE)
-    private List<XtdValue> relatedValues = new ArrayList<>();
+    private final List<XtdValue> relatedValues = new ArrayList<>();
 
     public XtdMeasureWithUnit getRelatingMeasure() {
         return relatingMeasure;
@@ -31,10 +31,5 @@ public class XtdRelAssignsValues extends XtdRelationship {
 
     public List<XtdValue> getRelatedValues() {
         return relatedValues;
-    }
-
-    public XtdRelAssignsValues setRelatedValues(List<XtdValue> relatedValues) {
-        this.relatedValues = relatedValues;
-        return this;
     }
 }

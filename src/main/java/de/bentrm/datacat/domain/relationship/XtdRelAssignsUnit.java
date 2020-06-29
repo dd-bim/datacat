@@ -18,7 +18,7 @@ public class XtdRelAssignsUnit extends XtdRelationship {
     private XtdMeasureWithUnit relatingMeasure;
 
     @Relationship(type = RELATIONSHIP_TYPE)
-    private Set<XtdUnit> relatingUnits = new HashSet<>();
+    private final Set<XtdUnit> relatingUnits = new HashSet<>();
 
     public XtdMeasureWithUnit getRelatingMeasure() {
         return relatingMeasure;
@@ -31,10 +31,5 @@ public class XtdRelAssignsUnit extends XtdRelationship {
 
     public Set<XtdUnit> getRelatingUnits() {
         return relatingUnits;
-    }
-
-    public XtdRelAssignsUnit setRelatingUnits(Set<XtdUnit> relatingUnits) {
-        this.relatingUnits = relatingUnits;
-        return this;
     }
 }

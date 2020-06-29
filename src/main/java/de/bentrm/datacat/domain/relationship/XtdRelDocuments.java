@@ -18,7 +18,7 @@ public class XtdRelDocuments extends XtdRelationship {
     private XtdExternalDocument relatingDocument;
 
     @Relationship(type = RELATIONSHIP_TYPE)
-    private Set<XtdRoot> relatedThings = new HashSet<>();
+    private final Set<XtdRoot> relatedThings = new HashSet<>();
 
     public XtdExternalDocument getRelatingDocument() {
         return relatingDocument;
@@ -30,9 +30,5 @@ public class XtdRelDocuments extends XtdRelationship {
 
     public Set<XtdRoot> getRelatedThings() {
         return this.relatedThings;
-    }
-
-    public void setRelatedThings(Set<XtdRoot> relatedThings) {
-        this.relatedThings = relatedThings;
     }
 }

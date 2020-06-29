@@ -17,7 +17,7 @@ public class XtdRelSpecializes extends XtdRelationship implements Association {
     private XtdRoot relatingThing;
 
     @Relationship(type = RELATIONSHIP_TYPE)
-    private Set<XtdRoot> relatedThings = new HashSet<>();
+    private final Set<XtdRoot> relatedThings = new HashSet<>();
 
     public XtdRoot getRelatingThing() {
         return relatingThing;
@@ -30,9 +30,4 @@ public class XtdRelSpecializes extends XtdRelationship implements Association {
     public Set<XtdRoot> getRelatedThings() {
         return relatedThings;
     }
-
-    public void setRelatedThings(Set<XtdRoot> relatedThings) {
-        this.relatedThings = relatedThings;
-    }
-
 }

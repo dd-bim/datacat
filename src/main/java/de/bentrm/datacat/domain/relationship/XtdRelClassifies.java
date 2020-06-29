@@ -1,7 +1,7 @@
 package de.bentrm.datacat.domain.relationship;
 
-import de.bentrm.datacat.domain.XtdRoot;
 import de.bentrm.datacat.domain.XtdClassification;
+import de.bentrm.datacat.domain.XtdRoot;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
@@ -15,18 +15,10 @@ public class XtdRelClassifies extends XtdRelationship {
 	public static final String RELATIONSHIP_TYPE = "CLASSIFIES";
 
 	@Relationship(type = RELATIONSHIP_TYPE)
-	private Set<XtdRoot> relatedThings = new HashSet<>();
+	private final Set<XtdRoot> relatedThings = new HashSet<>();
 
 	@Relationship(type = RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
 	private XtdClassification relatingClassification;
-
-	public Set<XtdRoot> getRelatedThings() {
-		return relatedThings;
-	}
-
-	public void setRelatedThings(Set<XtdRoot> relatedThings) {
-		this.relatedThings = relatedThings;
-	}
 
 	public XtdClassification getRelatingClassification() {
 		return relatingClassification;
@@ -34,5 +26,9 @@ public class XtdRelClassifies extends XtdRelationship {
 
 	public void setRelatingClassification(XtdClassification relatingClassification) {
 		this.relatingClassification = relatingClassification;
+	}
+
+	public Set<XtdRoot> getRelatedThings() {
+		return relatedThings;
 	}
 }
