@@ -2,8 +2,8 @@ package de.bentrm.datacat.graphql.fetcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.bentrm.datacat.domain.CatalogItem;
+import de.bentrm.datacat.domain.Translation;
 import de.bentrm.datacat.domain.XtdLanguage;
-import de.bentrm.datacat.domain.XtdLanguageRepresentation;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.PageInfo;
 import de.bentrm.datacat.graphql.dto.CatalogStatistics;
@@ -78,8 +78,8 @@ public class BaseDataFetcherProvider implements QueryDataFetcherProvider {
 
     public DataFetcher<Optional<XtdLanguage>> languageByLanguageRepresentation() {
         return environment -> {
-            XtdLanguageRepresentation value = environment.getSource();
-            return languageService.findByLanguage(value.getLanguageName());
+            Translation value = environment.getSource();
+            return languageService.findByLanguage(value.getLanguageCode());
         };
     }
 
