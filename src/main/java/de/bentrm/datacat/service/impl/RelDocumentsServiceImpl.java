@@ -10,7 +10,6 @@ import de.bentrm.datacat.repository.RelDocumentsRepository;
 import de.bentrm.datacat.repository.RootRepository;
 import de.bentrm.datacat.service.RelDocumentsService;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -49,7 +48,7 @@ public class RelDocumentsServiceImpl
     @Override
     protected void updateEntityProperties(XtdRelDocuments entity, DocumentsUpdateInput dto) {
         final List<String> relatedIds = entity.getRelatedThings()
-                .stream().map(Entity::getId)
+                .stream().map(XtdRoot::getId)
                 .collect(Collectors.toList());
         final String newRelatingId = dto.getRelatingDocument();
         final List<String> newRelatedIds = dto.getRelatedThings();
