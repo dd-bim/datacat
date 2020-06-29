@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Map;
 
 @Repository
-public interface CatalogItemRepository extends GraphEntityRepository<CatalogItem>, CatalogItemRepositoryExtension {
+public interface CatalogItemRepository extends GraphEntityRepository<CatalogItem> {
 
     @Query("CALL apoc.meta.stats() YIELD labels RETURN labels")
     Map<String, Long> statistics();
