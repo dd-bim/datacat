@@ -36,6 +36,7 @@ public class FacetServiceImpl implements FacetService {
         this.dtoMapper = dtoMapper;
     }
 
+    @Transactional
     @Override
     public Facet create(@Valid FacetInput dto) {
         Facet facet = new Facet();
@@ -56,6 +57,7 @@ public class FacetServiceImpl implements FacetService {
         return facetRepository.save(facet);
     }
 
+    @Transactional
     @Override
     public Facet update(@Valid FacetUpdateInput dto) {
         final Facet facet = facetRepository
@@ -64,11 +66,14 @@ public class FacetServiceImpl implements FacetService {
 
         mapTextInputToTranslationSet(facet.getNames(), dto.getNames());
         mapTextInputToTranslationSet(facet.getDescriptions(), dto.getDescriptions());
+
+        facet.getTargets().clear();
         facet.getTargets().addAll(dto.getTargets());
 
         return facetRepository.save(facet);
     }
 
+    @Transactional
     @Override
     public Optional<Facet> delete(@NotNull String id) {
         Optional<Facet> result = facetRepository.findById(id);
