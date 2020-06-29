@@ -1,5 +1,7 @@
 package de.bentrm.datacat.graphql.dto;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -27,4 +29,13 @@ public class RootUpdateInput extends EntityUpdateInput {
         return descriptions;
     }
 
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .appendSuper(super.toString())
+                .append("versionId", versionId)
+                .append("versionDate", versionDate)
+                .append("descriptions", descriptions)
+                .toString();
+    }
 }

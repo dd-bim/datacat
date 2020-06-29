@@ -1,6 +1,7 @@
 package de.bentrm.datacat.graphql.dto;
 
 import de.bentrm.datacat.validation.IdConstraint;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -21,5 +22,14 @@ public class DocumentsUpdateInput extends RootUpdateInput {
 
     public List<String> getRelatedThings() {
         return relatedThings;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .appendSuper(super.toString())
+                .append("relatingDocument", relatingDocument)
+                .append("relatedThings", relatedThings)
+                .toString();
     }
 }
