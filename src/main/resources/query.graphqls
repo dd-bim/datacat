@@ -337,6 +337,7 @@ input FilterInput {
 type Query {
     statistics: CatalogStatistics!
     node(id: ID!): Entity
+    facet(id: ID!): Facet
     facets(input: FilterInput): FacetConnection!
     language(languageCode: ID!): XtdLanguage
     search(input: SearchInput): SearchResultConnection!

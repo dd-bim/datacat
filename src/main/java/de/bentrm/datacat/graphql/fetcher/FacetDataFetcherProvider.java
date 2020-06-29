@@ -8,19 +8,24 @@ import graphql.schema.DataFetcher;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 public class FacetDataFetcherProvider
         extends EntityDataFetcherProviderImpl<Facet, FacetInput, FacetUpdateInput, FacetService>
         implements QueryDataFetcherProvider, MutationDataFetcherProvider {
 
+    private final FacetService entityService;
+
     public FacetDataFetcherProvider(FacetService entityService) {
         super(FacetInput.class, FacetUpdateInput.class, entityService);
+        this.entityService = entityService;
     }
 
     @Override
     public Map<String, DataFetcher> getQueryDataFetchers() {
         return Map.ofEntries(
+                Map.entry("facet", get()),
                 Map.entry("facets", getAll())
         );
     }
@@ -32,5 +37,12 @@ public class FacetDataFetcherProvider
                 Map.entry("updateFacet", update()),
                 Map.entry("deleteFacet", remove())
         );
+    }
+
+    private DataFetcher<Optional<Facet>> get() {
+        return env -> {
+            final String id = env.getArgument("id");
+            return this.entityService.findById(id);
+        };
     }
 }
