@@ -3,6 +3,7 @@ package de.bentrm.datacat.repository.impl;
 import de.bentrm.datacat.query.*;
 import de.bentrm.datacat.repository.GraphEntityRepository;
 import de.bentrm.datacat.service.Specification;
+import org.jetbrains.annotations.NotNull;
 import org.neo4j.ogm.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,8 +38,9 @@ public class GraphEntityRepositoryBaseClass<T>
         logger.debug("Initializing custom repository for class {}", domainClass);
     }
 
+    @NotNull
     @Override
-    public Optional<T> findById(String id) {
+    public Optional<T> findById(@NotNull String id) {
         FindByIdQuery<T> query = new FindByIdQuery<>(entityType, session, id);
         return query.execute();
     }
