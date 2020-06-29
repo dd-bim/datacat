@@ -7,6 +7,7 @@ import org.neo4j.ogm.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.repository.support.SimpleNeo4jRepository;
 import org.springframework.data.repository.NoRepositoryBean;
@@ -51,16 +52,11 @@ public class GraphEntityRepositoryBaseClass<T>
     }
 
     @Override
-    public long count(FilterOptions filterOptions) {
-        return new CountAllQuery<>(entityType, session, filterOptions).execute();
-    }
-
-    @Override
     public Page<T> findAll(Specification spec) {
         logger.debug("Current query spec: {}", spec);
 
-        final ListQuery.QueryBuilder<T> builder = new ListQuery.QueryBuilder<>(entityType, session);
-        final Pageable pageable = spec.getPageable();
+        final CatalogItemListQuery.Builder<T> builder = new CatalogItemListQuery.Builder<>(entityType, session);
+        final Optional<Pageable> pagingSpec = spec.getPageable();
 
         spec.getQuery().ifPresent(builder::setSearchTerm);
 
@@ -75,37 +71,18 @@ public class GraphEntityRepositoryBaseClass<T>
         spec.getEntityTypeNotIn().ifPresent(builder::setLabelsNotIn);
         spec.getIdIn().ifPresent(builder::setIdsIn);
         spec.getIdNotIn().ifPresent(builder::setIdsNotIn);
-        builder.setSkip(pageable.getOffset());
-        builder.setLimit(pageable.getPageSize());
+        pagingSpec.ifPresent(pageable -> {
+            builder.setSkip(pageable.getOffset());
+            builder.setLimit(pageable.getPageSize());
+        });
 
-        final ListQuery<T> query = builder.build();
-        Iterable<T> results = query.execute();
+        final CatalogItemListQuery<T> query = builder.build();
+        final Iterable<T> results = query.execute();
+        final int count = query.count();
+
         List<T> content = new ArrayList<>();
         results.forEach(content::add);
-        return PageableExecutionUtils.getPage(content, pageable, this::count);
-    }
-
-    @Override
-    public Page<T> findAll(Pageable pageable) {
-        Iterable<T> results = new FindAllQuery<>(entityType, session, pageable).execute();
-        List<T> content = new ArrayList<>();
-        results.forEach(content::add);
-        return PageableExecutionUtils.getPage(content, pageable, this::count);
-    }
-
-    @Override
-    public Page<T> findAll(FilterOptions options, Pageable pageable) {
-        Iterable<T> results = new FindAllQuery<>(entityType, session, pageable, options).execute();
-        List<T> content = new ArrayList<>();
-        results.forEach(content::add);
-        return PageableExecutionUtils.getPage(content, pageable, () -> new CountAllQuery<>(entityType, session, options).execute());
-    }
-
-    @Override
-    public Page<T> findAllByTerm(String term, Pageable pageable) {
-        Iterable<T> results = new FindAllByTermQuery<>(entityType, session, term, pageable).execute();
-        List<T> content = new ArrayList<>();
-        results.forEach(content::add);
-        return PageableExecutionUtils.getPage(content, pageable, () -> new CountByTermQuery<>(entityType, session, term).execute());
+        Pageable pageable = pagingSpec.orElseGet(() -> PageRequest.of(0, Math.max(count, 10)));
+        return PageableExecutionUtils.getPage(content, pageable, () -> count);
     }
 }

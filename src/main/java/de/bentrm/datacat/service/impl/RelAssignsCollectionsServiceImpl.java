@@ -1,6 +1,6 @@
 package de.bentrm.datacat.service.impl;
 
-import de.bentrm.datacat.domain.XtdObject;
+import de.bentrm.datacat.domain.Entity;
 import de.bentrm.datacat.domain.collection.XtdCollection;
 import de.bentrm.datacat.domain.relationship.XtdRelAssignsCollections;
 import de.bentrm.datacat.graphql.dto.AssignsCollectionsInput;
@@ -14,6 +14,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Validated
@@ -38,36 +41,43 @@ public class RelAssignsCollectionsServiceImpl
 
     @Override
     protected void setEntityProperties(XtdRelAssignsCollections entity, AssignsCollectionsInput dto) {
+        final String relatingId = dto.getRelatingObject();
+        final List<String> relatedIds = dto.getRelatedCollections();
+
         super.setEntityProperties(entity, dto);
-
-        XtdObject relating = objectRepository
-                .findById(dto.getRelatingObject())
-                .orElseThrow(() -> new IllegalArgumentException("No Object with id " + dto.getRelatingObject() + " found."));
-        entity.setRelatingObject(relating);
-
-        Specification spec = Specification.unspecified();
-        spec.setIdIn(dto.getRelatedCollections());
-        spec.setPageSize(1000);
-        Page<XtdCollection> relatedCollections = collectionRepository.findAll(spec);
-        entity.getRelatedCollections().addAll(relatedCollections.getContent());
+        mapRelating(entity, relatingId);
+        mapRelated(entity, relatedIds);
     }
 
     @Override
     protected void updateEntityProperties(XtdRelAssignsCollections entity, AssignsCollectionsUpdateInput dto) {
+        final List<String> relatedIds = entity.getRelatedCollections()
+                .stream().map(Entity::getId)
+                .collect(Collectors.toList());
+        final String newRelatingId = dto.getRelatingObject();
+        final List<String> newRelatedIds = dto.getRelatedCollections();
+
         super.updateEntityProperties(entity, dto);
+        mapRelating(entity, newRelatingId);
+        entity.getRelatedCollections().removeIf(thing -> !newRelatedIds.contains(thing.getId()));
+        newRelatedIds.removeAll(relatedIds);
+        mapRelated(entity, newRelatedIds);
+    }
 
-        if (!dto.getRelatingObject().equals(entity.getRelatingObject().getId())) {
-            throw new IllegalArgumentException("Relating side of relationship can't be changed. Create a new relationship instead.'");
-        }
+    private void mapRelating(XtdRelAssignsCollections entity, String relatingId) {
+        objectRepository
+                .findById(relatingId)
+                .ifPresentOrElse(
+                        entity::setRelatingObject,
+                        ServiceUtil.throwEntityNotFoundException(relatingId)
+                );
+    }
 
-        // remove things no longer in this relationship
-        entity.getRelatedCollections().removeIf(thing -> !dto.getRelatedCollections().contains(thing.getId()));
-
-        // add new things to this relationship
-        Specification spec = Specification.unspecified();
-        spec.setIdIn(dto.getRelatedCollections());
-        spec.setPageSize(1000);
-        Page<XtdCollection> relatedThings = collectionRepository.findAll(spec);
+    private void mapRelated(XtdRelAssignsCollections entity, List<String> relatedIds) {
+        final Specification spec = Specification
+                .unspecified()
+                .setIdIn(relatedIds);
+        final Page<XtdCollection> relatedThings = collectionRepository.findAll(spec);
         entity.getRelatedCollections().addAll(relatedThings.getContent());
     }
 }

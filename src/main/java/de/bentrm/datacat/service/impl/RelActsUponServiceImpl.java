@@ -1,5 +1,6 @@
 package de.bentrm.datacat.service.impl;
 
+import de.bentrm.datacat.domain.Entity;
 import de.bentrm.datacat.domain.XtdRoot;
 import de.bentrm.datacat.domain.relationship.XtdRelActsUpon;
 import de.bentrm.datacat.graphql.dto.AssociationInput;
@@ -7,10 +8,10 @@ import de.bentrm.datacat.graphql.dto.AssociationUpdateInput;
 import de.bentrm.datacat.repository.RelActsUponRepository;
 import de.bentrm.datacat.repository.RootRepository;
 import de.bentrm.datacat.service.RelActsUponService;
+import de.bentrm.datacat.service.Specification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Validated
@@ -43,70 +45,27 @@ public class RelActsUponServiceImpl
 
     @Override
     protected void setEntityProperties(XtdRelActsUpon entity, AssociationInput dto) {
+        final String relatingThingId = dto.getRelatingThing();
+        final List<String> relatedThingsIds = dto.getRelatedThings();
+
         super.setEntityProperties(entity, dto);
-
-        XtdRoot relating = thingRepository
-                .findById(dto.getRelatingThing())
-                .orElseThrow(() -> new IllegalArgumentException("No Object with id " + dto.getRelatingThing() + " found."));
-        entity.setRelatingThing(relating);
-
-        Page<XtdRoot> relatedThings = thingRepository.findAllById(dto.getRelatedThings(), PageRequest.of(0, 1000));
-        entity.getRelatedThings().addAll(relatedThings.getContent());
+        mapRelatingThing(entity, relatingThingId);
+        mapRelatedThings(entity, relatedThingsIds);
     }
 
     @Override
     protected void updateEntityProperties(XtdRelActsUpon entity, AssociationUpdateInput dto) {
+        final List<String> preexistingIds = entity.getRelatedThings()
+                .stream().map(Entity::getId)
+                .collect(Collectors.toList());
+        final String relatingThingId = dto.getRelatingThing();
+        final List<String> submittedIds = dto.getRelatedThings();
+
         super.updateEntityProperties(entity, dto);
-
-        if (!dto.getRelatingThing().equals(entity.getRelatingThing().getId())) {
-            throw new IllegalArgumentException("Relating side of relationship can't be changed. Create a new relationship instead.'");
-        }
-
-        // remove things no longer in this relationship
-        entity.getRelatedThings().removeIf(thing -> !dto.getRelatedThings().contains(thing.getId()));
-
-        // add new things to this relationship
-        Page<XtdRoot> relatedThings = thingRepository.findAllById(dto.getRelatedThings(), PageRequest.of(0, 1000));
-        entity.getRelatedThings().addAll(relatedThings.getContent());
-    }
-
-    @Transactional
-    public XtdRelActsUpon addRelatedObjects(String id, List<String> relatedObjectsIds) {
-        XtdRelActsUpon relation = findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("No relation with id " + id + " found."));
-
-        for (String relatedObjectId : relatedObjectsIds) {
-            XtdRoot relatedObject = thingRepository
-                    .findById(relatedObjectId)
-                    .orElseThrow(() -> new IllegalArgumentException("No relatable object with id " + relatedObjectId + " found."));
-
-            // TODO: Throw if related thing is already in persistent set
-            relation.getRelatedThings().add(relatedObject);
-        }
-
-        return repository.save(relation);
-    }
-
-    @Transactional
-    public XtdRelActsUpon removeRelatedObjects(String id, List<String> relatedObjectsIds) {
-        XtdRelActsUpon relation = findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("No relation with id " + id + " found."));
-
-        for (String relatedObjectId : relatedObjectsIds) {
-            XtdRoot relatedThing = thingRepository
-                    .findById(relatedObjectId)
-                    .orElseThrow(() -> new IllegalArgumentException("No relatable object with id " + relatedObjectId + " found."));
-
-            if (!relation.getRelatedThings().remove(relatedThing)) {
-                throw new IllegalArgumentException("Object with id " + relatedObjectId + " is not related in relation " + id);
-            }
-        }
-
-        if (relation.getRelatedThings().isEmpty()) {
-            throw new IllegalArgumentException("Relation may not be empty");
-        }
-
-        return repository.save(relation);
+        mapRelatingThing(entity, relatingThingId);
+        entity.getRelatedThings().removeIf(thing -> !submittedIds.contains(thing.getId()));
+        submittedIds.removeAll(preexistingIds);
+        mapRelatedThings(entity, submittedIds);
     }
 
     @Override
@@ -117,5 +76,22 @@ public class RelActsUponServiceImpl
     @Override
     public @NotNull Page<XtdRelActsUpon> findByRelatedThingId(@NotBlank String relatedObjectId, Pageable pageable) {
         return repository.findAllActingUpon(relatedObjectId, pageable);
+    }
+
+    private void mapRelatingThing(XtdRelActsUpon entity, String relatingThingId) {
+        thingRepository
+                .findById(relatingThingId)
+                .ifPresentOrElse(
+                        entity::setRelatingThing,
+                        ServiceUtil.throwEntityNotFoundException(relatingThingId)
+                );
+    }
+
+    private void mapRelatedThings(XtdRelActsUpon entity, List<String> relatedThingsIds) {
+        final Specification spec = Specification
+                .unspecified()
+                .setIdIn(relatedThingsIds);
+        final Page<XtdRoot> relatedThings = thingRepository.findAll(spec);
+        entity.getRelatedThings().addAll(relatedThings.getContent());
     }
 }

@@ -4,15 +4,12 @@ import de.bentrm.datacat.domain.CatalogItem;
 import de.bentrm.datacat.domain.Entity;
 import de.bentrm.datacat.graphql.dto.CatalogItemStatistics;
 import de.bentrm.datacat.graphql.dto.CatalogStatistics;
-import de.bentrm.datacat.graphql.dto.DtoMapper;
-import de.bentrm.datacat.query.FilterOptions;
 import de.bentrm.datacat.repository.CatalogItemRepository;
 import de.bentrm.datacat.repository.EntityRepository;
 import de.bentrm.datacat.service.CatalogService;
 import de.bentrm.datacat.service.Specification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -26,9 +23,6 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 @Service
 public class CatalogServiceImpl implements CatalogService {
-
-    @Autowired
-    private DtoMapper dtoMapper;
 
     @Autowired
     private EntityRepository entityRepository;
@@ -61,15 +55,5 @@ public class CatalogServiceImpl implements CatalogService {
     @Override
     public @NotNull Page<CatalogItem> searchCatalogItem(@NotNull Specification specification) {
         return catalogItemRepository.findAll(specification);
-    }
-
-    @Override
-    public Page<CatalogItem> searchCatalogItem(FilterOptions filterOptions, Pageable pageable) {
-        return catalogItemRepository.search(filterOptions, pageable);
-    }
-
-    @Override
-    public long countSearchResults(@NotNull FilterOptions filterOptions) {
-        return catalogItemRepository.count(filterOptions);
     }
 }

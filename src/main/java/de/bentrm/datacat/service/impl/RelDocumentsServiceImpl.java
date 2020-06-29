@@ -38,29 +38,43 @@ public class RelDocumentsServiceImpl
 
     @Override
     protected void setEntityProperties(XtdRelDocuments entity, DocumentsInput dto) {
-        super.setEntityProperties(entity, dto);
-        XtdExternalDocument relating = externalDocumentRepository
-                .findById(dto.getRelatingDocument())
-                .orElseThrow(() -> new IllegalArgumentException("No Object with id " + dto.getRelatingDocument() + " found."));
-        entity.setRelatingDocument(relating);
+        final String relatingId = dto.getRelatingDocument();
+        final List<String> relatedIds = dto.getRelatedThings();
 
-        Page<XtdRoot> relatedThings = thingsRepository.findAllById(dto.getRelatedThings(), PageRequest.of(0, 1000));
-        entity.getRelatedThings().addAll(relatedThings.getContent());
+        super.setEntityProperties(entity, dto);
+        mapRelating(entity, relatingId);
+        mapRelated(entity, relatedIds);
     }
 
     @Override
     protected void updateEntityProperties(XtdRelDocuments entity, DocumentsUpdateInput dto) {
+        final List<String> relatedIds = entity.getRelatedThings()
+                .stream().map(Entity::getId)
+                .collect(Collectors.toList());
+        final String newRelatingId = dto.getRelatingDocument();
+        final List<String> newRelatedIds = dto.getRelatedThings();
+
         super.updateEntityProperties(entity, dto);
+        mapRelating(entity, newRelatingId);
+        entity.getRelatedThings().removeIf(thing -> !newRelatedIds.contains(thing.getId()));
+        newRelatedIds.removeAll(relatedIds);
+        mapRelated(entity, newRelatedIds);
+    }
 
-        if (!dto.getRelatingDocument().equals(entity.getRelatingDocument().getId())) {
-            throw new IllegalArgumentException("Relating side of relationship can't be changed. Create a new relationship instead.'");
-        }
+    private void mapRelating(XtdRelDocuments entity, String relatingId) {
+        externalDocumentRepository
+                .findById(relatingId)
+                .ifPresentOrElse(
+                        entity::setRelatingDocument,
+                        ServiceUtil.throwEntityNotFoundException(relatingId)
+                );
+    }
 
-        // remove things no longer in this relationship
-        entity.getRelatedThings().removeIf(thing -> !dto.getRelatedThings().contains(thing.getId()));
-
-        // add new things to this relationship
-        Page<XtdRoot> relatedThings = thingsRepository.findAllById(dto.getRelatedThings(), PageRequest.of(0, 1000));
+    private void mapRelated(XtdRelDocuments entity, List<String> relatedIds) {
+        Specification spec = Specification
+                .unspecified()
+                .setIdIn(relatedIds);
+        Page<XtdRoot> relatedThings = thingsRepository.findAll(spec);
         entity.getRelatedThings().addAll(relatedThings.getContent());
     }
 }

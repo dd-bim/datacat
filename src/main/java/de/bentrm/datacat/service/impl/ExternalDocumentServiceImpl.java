@@ -15,7 +15,7 @@ import org.springframework.validation.annotation.Validated;
 @Transactional(readOnly = true)
 @Validated
 public class ExternalDocumentServiceImpl
-        extends CrudEntityServiceImpl<XtdExternalDocument, EntityInput, EntityUpdateInput, ExternalDocumentRepository>
+        extends CatalogItemServiceImpl<XtdExternalDocument, EntityInput, EntityUpdateInput, ExternalDocumentRepository>
         implements ExternalDocumentService {
 
     Logger logger = LoggerFactory.getLogger(ExternalDocumentServiceImpl.class);

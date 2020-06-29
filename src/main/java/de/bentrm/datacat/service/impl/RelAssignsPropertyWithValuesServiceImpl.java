@@ -1,7 +1,6 @@
 package de.bentrm.datacat.service.impl;
 
-import de.bentrm.datacat.domain.XtdObject;
-import de.bentrm.datacat.domain.XtdProperty;
+import de.bentrm.datacat.domain.Entity;
 import de.bentrm.datacat.domain.XtdValue;
 import de.bentrm.datacat.domain.relationship.XtdRelAssignsPropertyWithValues;
 import de.bentrm.datacat.graphql.dto.AssignsPropertyWithValuesInput;
@@ -16,6 +15,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Validated
@@ -45,45 +47,56 @@ public class RelAssignsPropertyWithValuesServiceImpl
 
     @Override
     protected void setEntityProperties(XtdRelAssignsPropertyWithValues entity, AssignsPropertyWithValuesInput dto) {
+        final String relatingId = dto.getRelatingObject();
+        final String relatedPropertyId = dto.getRelatedProperty();
+        final List<String> relatedValuesIds = dto.getRelatedValues();
+
         super.setEntityProperties(entity, dto);
-
-        XtdObject relatingObject = objectRepository
-                .findById(dto.getRelatingObject())
-                .orElseThrow(() -> new IllegalArgumentException("No Object with id " + dto.getRelatingObject() + " found."));
-        entity.setRelatingObject(relatingObject);
-
-        XtdProperty relatedProperty = propertyRepository
-                .findById(dto.getRelatedProperty())
-                .orElseThrow(() -> new IllegalArgumentException("No property with id " + dto.getRelatedProperty() + " found."));
-        entity.setRelatedProperty(relatedProperty);
-
-        Specification spec = Specification.unspecified();
-        spec.setIdIn(dto.getRelatedValues());
-        spec.setPageSize(1000);
-        Page<XtdValue> relatedValues = valueRepository.findAll(spec);
-        entity.getRelatedValues().addAll(relatedValues.getContent());
+        mapRelating(entity, relatingId);
+        mapRelatedProperty(entity, relatedPropertyId);
+        mapRelatedValues(entity, relatedValuesIds);
     }
 
     @Override
     protected void updateEntityProperties(XtdRelAssignsPropertyWithValues entity, AssignsPropertyWithValuesUpdateInput dto) {
+        final List<String> relatedIds = entity.getRelatedValues()
+                .stream().map(Entity::getId)
+                .collect(Collectors.toList());
+        final String newRelatingId = dto.getRelatingObject();
+        final String newRelatedPropertyId = dto.getRelatedProperty();
+        final List<String> newRelatedValuesIds = dto.getRelatedValues();
+
         super.updateEntityProperties(entity, dto);
+        mapRelating(entity, newRelatingId);
+        mapRelatedProperty(entity, newRelatedPropertyId);
+        entity.getRelatedValues().removeIf(x -> !newRelatedValuesIds.contains(x.getId()));
+        newRelatedValuesIds.removeAll(relatedIds);
+        mapRelatedValues(entity, newRelatedValuesIds);
+    }
 
-        if (!dto.getRelatingObject().equals(entity.getRelatingObject().getId())) {
-            throw new IllegalArgumentException("Relating side of relationship can't be updated. Create a new relationship instead.");
-        }
+    private void mapRelating(XtdRelAssignsPropertyWithValues entity, String relatingId) {
+        objectRepository
+                .findById(relatingId)
+                .ifPresentOrElse(
+                        entity::setRelatingObject,
+                        ServiceUtil.throwEntityNotFoundException(relatingId)
+                );
+    }
 
-        if (!dto.getRelatedProperty().equals(entity.getRelatedProperty().getId())) {
-            throw new IllegalArgumentException("Related property of relationship can't be updated. Create a new relationship instead.");
-        }
+    private void mapRelatedProperty(XtdRelAssignsPropertyWithValues entity, String relatedId) {
+        propertyRepository
+                .findById(relatedId)
+                .ifPresentOrElse(
+                        entity::setRelatedProperty,
+                        ServiceUtil.throwEntityNotFoundException(relatedId)
+                );
+    }
 
-        // remove things no longer in this relationship
-        entity.getRelatedValues().removeIf(thing -> !dto.getRelatedValues().contains(thing.getId()));
-
-        // add new things to this relationship
-        Specification spec = Specification.unspecified();
-        spec.setIdIn(dto.getRelatedValues());
-        spec.setPageSize(1000);
-        Page<XtdValue> relatedValues = valueRepository.findAll(spec);
-        entity.getRelatedValues().addAll(relatedValues.getContent());
+    private void mapRelatedValues(XtdRelAssignsPropertyWithValues entity, List<String> relatedIds) {
+        final Specification spec = Specification
+                .unspecified()
+                .setIdIn(relatedIds);
+        final Page<XtdValue> relatedThings = valueRepository.findAll(spec);
+        entity.getRelatedValues().addAll(relatedThings.getContent());
     }
 }

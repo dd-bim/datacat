@@ -1,6 +1,6 @@
 package de.bentrm.datacat.service.impl;
 
-import de.bentrm.datacat.domain.XtdDescription;
+import de.bentrm.datacat.domain.Translation;
 import de.bentrm.datacat.domain.XtdRoot;
 import de.bentrm.datacat.graphql.dto.RootInput;
 import de.bentrm.datacat.graphql.dto.RootUpdateInput;
@@ -10,18 +10,18 @@ import de.bentrm.datacat.service.CrudEntityService;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
+import static de.bentrm.datacat.service.impl.ServiceUtil.mapTextInputToTranslationSet;
 
 public abstract class CrudRootServiceImpl<
-            T extends XtdRoot,
-            C extends RootInput,
-            U extends RootUpdateInput,
-            R extends GraphEntityRepository<T>
+        T extends XtdRoot,
+        C extends RootInput,
+        U extends RootUpdateInput,
+        R extends GraphEntityRepository<T>
         >
-        extends CrudEntityServiceImpl<T, C, U, R>
+        extends CatalogItemServiceImpl<T, C, U, R>
         implements CrudEntityService<T, C, U> {
 
 
@@ -37,11 +37,9 @@ public abstract class CrudRootServiceImpl<
         entity.setVersionDate(dto.getVersionDate());
 
         List<TextInput> descriptions = dto.getDescriptions();
-        for (int i = 0; i < descriptions.size(); i++) {
-            TextInput description = descriptions.get(i);
-            XtdDescription newDescription = newDescriptionInstance(description);
-            newDescription.setSortOrder(i);
-            entity.getDescriptions().add(newDescription);
+        for (TextInput input : descriptions) {
+            final Translation translation = dtoMapper.toTranslation(input);
+            entity.getDescriptions().add(translation);
         }
     }
 
@@ -52,45 +50,7 @@ public abstract class CrudRootServiceImpl<
         entity.setVersionId(dto.getVersionId());
         entity.setVersionDate(dto.getVersionDate());
 
-        List<TextInput> descriptionDtos = dto.getDescriptions();
-        List<String> descriptionIds = descriptionDtos.stream().map(TextInput::getId).collect(Collectors.toList());
-        List<XtdDescription> descriptions = new ArrayList<>(entity.getDescriptions());
-
-        // empty current set to prepare for updates
-        entity.getDescriptions().clear();
-
-        // remove deleted descriptions temporary list
-        descriptions.removeIf(x -> !descriptionIds.contains(x.getId()));
-
-        for (int i = 0; i < descriptionDtos.size(); i++) {
-            TextInput input = descriptionDtos.get(i);
-            XtdDescription newDescription = newDescriptionInstance(input);
-            newDescription.setSortOrder(i);
-
-            logger.debug("Transient description {}", newDescription);
-
-            int index = descriptions.indexOf(newDescription);
-            if (input.getId() != null && (index > -1)) {
-                // Update of an existing entity
-                XtdDescription oldDescription = descriptions.get(index);
-                logger.debug("Persistent description to be updated: {}", oldDescription);
-
-                if (!oldDescription.getLanguageName().equals(newDescription.getLanguageName())) {
-                    // Update of languageName is not allowed
-                    throw new IllegalArgumentException("Update of languageName of description with id " + newDescription.getId() + " is not allowed.");
-                }
-
-                oldDescription.setValue(newDescription.getValue());
-                oldDescription.setSortOrder(newDescription.getSortOrder());
-
-                logger.debug("Updated persistent description: {}" , oldDescription);
-
-                entity.getDescriptions().add(oldDescription);
-            } else {
-                // New entity with no given id
-                entity.getDescriptions().add(newDescription);
-            }
-        }
+        mapTextInputToTranslationSet(entity.getDescriptions(), dto.getDescriptions());
     }
 
     @Transactional
@@ -111,12 +71,5 @@ public abstract class CrudRootServiceImpl<
         }
 
         return result;
-    }
-
-    protected XtdDescription newDescriptionInstance(TextInput input) {
-        if (input.getId() != null) {
-            return new XtdDescription(input.getId(), input.getLanguageCode(), input.getValue());
-        }
-        return new XtdDescription(input.getLanguageCode(), input.getValue());
     }
 }
