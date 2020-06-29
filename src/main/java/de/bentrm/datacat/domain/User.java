@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@NodeEntity("User")
+@NodeEntity(label = "User")
 public class User extends Entity implements UserDetails {
 
     @Index(unique = true)

@@ -4,12 +4,13 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-@NodeEntity("Facet")
+@NodeEntity(label = "Facet")
+@PropertyQueryHint({
+        "(root)-[:NAMED|DESCRIBED*0..1]->(:Translation)"
+})
 public class Facet extends Entity {
 
     @Relationship(type = "NAMED")
@@ -18,7 +19,7 @@ public class Facet extends Entity {
     @Relationship(type = "DESCRIBED")
     private final Set<Translation> descriptions = new HashSet<>();
 
-    private final List<EntityType> targets = new ArrayList<>();
+    private final Set<EntityType> targets = new HashSet<>();
 
     public String getLabel() {
         return this.getNames().stream()
@@ -35,7 +36,7 @@ public class Facet extends Entity {
         return descriptions;
     }
 
-    public List<EntityType> getTargets() {
+    public Set<EntityType> getTargets() {
         return targets;
     }
 
