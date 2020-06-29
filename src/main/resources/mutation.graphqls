@@ -4,22 +4,17 @@ input TextInput {
     value: String!
 }
 
-input TranslationInput {
-    languageCode: ID!
-    value: String!
-}
-
 input FacetInput {
     id: ID
-    names: [TranslationInput!]!
-    descriptions: [TranslationInput!]!
+    names: [TextInput!]!
+    descriptions: [TextInput!]!
     targets: [EntityTypes!]!
 }
 
 input FacetUpdateInput {
     id: ID!
-    names: [TranslationInput!]!
-    descriptions: [TranslationInput!]!
+    names: [TextInput!]!
+    descriptions: [TextInput!]!
     targets: [EntityTypes!]!
 }
 
@@ -232,7 +227,7 @@ type Mutation {
 
     createFacet(input: FacetInput!): Facet
     updateFacet(input: FacetUpdateInput!): Facet
-    deleteFacet(input: ID!): Facet
+    deleteFacet(id: ID!): Facet
 
     createExternalDocument(input: EntityInput!): XtdExternalDocument
     updateExternalDocument(input: EntityUpdateInput!): XtdExternalDocument
