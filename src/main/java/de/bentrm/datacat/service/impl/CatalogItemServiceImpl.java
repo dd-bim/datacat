@@ -1,11 +1,13 @@
 package de.bentrm.datacat.service.impl;
 
 import de.bentrm.datacat.domain.CatalogItem;
+import de.bentrm.datacat.domain.Facet;
 import de.bentrm.datacat.domain.Translation;
 import de.bentrm.datacat.graphql.dto.DtoMapper;
 import de.bentrm.datacat.graphql.dto.EntityInput;
 import de.bentrm.datacat.graphql.dto.EntityUpdateInput;
 import de.bentrm.datacat.graphql.dto.TextInput;
+import de.bentrm.datacat.repository.FacetRepository;
 import de.bentrm.datacat.repository.GraphEntityRepository;
 import de.bentrm.datacat.service.CrudEntityService;
 import de.bentrm.datacat.service.RelGroupsService;
@@ -45,6 +47,9 @@ public abstract class CatalogItemServiceImpl<
     protected RelGroupsService relGroupsService;
 
     @Autowired
+    private FacetRepository facetRepository;
+
+    @Autowired
     protected DtoMapper dtoMapper;
 
     public CatalogItemServiceImpl(R repository) {
@@ -67,6 +72,12 @@ public abstract class CatalogItemServiceImpl<
             final Translation translation = dtoMapper.toTranslation(name);
             entity.getNames().add(translation);
         }
+
+        final Specification specification = Specification
+                .unspecified()
+                .setIdIn(dto.getFacets());
+        final Page<Facet> all = facetRepository.findAll(specification);
+        entity.getFacets().addAll(all.getContent());
     }
 
     @Transactional
@@ -88,6 +99,13 @@ public abstract class CatalogItemServiceImpl<
         final List<TextInput> textInput = dto.getNames();
 
         mapTextInputToTranslationSet(persistentNamesSet, textInput);
+
+        final Specification specification = Specification
+                .unspecified()
+                .setIdIn(dto.getFacets());
+        final Page<Facet> all = facetRepository.findAll(specification);
+        entity.getFacets().retainAll(all.getContent());
+        entity.getFacets().addAll(all.getContent());
     }
 
     // TODO: Delete all relationships that this entity is on the relating side of
