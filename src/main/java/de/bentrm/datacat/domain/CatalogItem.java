@@ -10,7 +10,7 @@ import java.util.Set;
 @NodeEntity(label = "CatalogItem")
 @PropertyQueryHint({
         "(root)-[:NAMED|DESCRIBED*0..1]->(:Translation)",
-        "(root)-[:HAS_FACET]->(:Facet)",
+        "(root)-[:HAS_FACET]->(:Facet)-[:NAMED|DESCRIBED*0..1]->(:Translation)",
         "(root)-[:DOCUMENTS]-()-[:NAMED|DESCRIBED*0..1]->(:Translation)",
         "(root)-[:COLLECTS]-()-[:NAMED|DESCRIBED*0..1]->(:Translation)",
         "(root)-[:ASSIGNS_COLLECTIONS]-()-[:NAMED|DESCRIBED*0..1]->(:Translation)",
