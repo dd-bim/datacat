@@ -4,28 +4,27 @@ import de.bentrm.datacat.graphql.fetcher.*;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.*;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
-import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
 @Configuration
 public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
 
-    private ResourceLoader resourceLoader;
+    private final static String[] schemaFiles = {
+            "classpath:xtd.graphqls",
+            "classpath:query.graphqls",
+            "classpath:mutation.graphqls"
+    };
 
-    @Autowired
-    private Logger logger;
+    private ResourceLoader resourceLoader;
 
     @Autowired
     private TypeResolvers typeResolvers;
@@ -73,7 +72,7 @@ public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
     GraphQLSchema schema() throws IOException {
         final SchemaParser schemaParser = new SchemaParser();
         final SchemaGenerator schemaGenerator = new SchemaGenerator();
-        final TypeDefinitionRegistry typeRegistry;
+        final TypeDefinitionRegistry typeRegistry = new TypeDefinitionRegistry();
         final RuntimeWiring.Builder builder = RuntimeWiring.newRuntimeWiring();
         final UnaryOperator<TypeRuntimeWiring.Builder> rootDataFetchers = typeWiring -> {
             rootDataFetcherProviders.forEach(provider -> typeWiring.dataFetchers(provider.getRootDataFetchers()));
@@ -85,34 +84,10 @@ public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
             return typeWiring;
         };
 
-        try {
-            InputStream inputStream = loadSchema("classpath:xtd.graphqls").getInputStream();
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            typeRegistry = schemaParser.parse(bufferedReader);
-        } catch (IOException e) {
-            logger.debug("Unabled to load XTD GraphQL schema file.");
-            throw e;
-        }
-
-        try {
-            InputStream inputStream = loadSchema("classpath:query.graphqls").getInputStream();
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            typeRegistry.merge(schemaParser.parse(bufferedReader));
-        } catch (IOException e) {
-            logger.debug("Unabled to load Query GraphQL schema file.");
-            throw e;
-        }
-
-        try {
-            InputStream inputStream = loadSchema("classpath:mutation.graphqls").getInputStream();
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            typeRegistry.merge(schemaParser.parse(bufferedReader));
-        } catch (IOException e) {
-            logger.debug("Unabled to load Mutation GraphQL schema file.");
-            throw e;
+        for (String location : schemaFiles) {
+            final File file = getFile(location);
+            final TypeDefinitionRegistry subRegistry = schemaParser.parse(file);
+            typeRegistry.merge(subRegistry);
         }
 
         typeResolvers.mapTypeResolvers(builder);
@@ -169,7 +144,7 @@ public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
         this.resourceLoader = resourceLoader;
     }
 
-    public Resource loadSchema(String location) {
-        return resourceLoader.getResource(location);
+    public File getFile(String location) throws IOException {
+        return resourceLoader.getResource(location).getFile();
     }
 }
