@@ -4,22 +4,24 @@ import de.bentrm.datacat.service.Specification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
-import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
+import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 @NoRepositoryBean
-public interface GraphEntityRepository<T> extends Repository<T, String> {
+public interface GraphEntityRepository<T> extends PagingAndSortingRepository<T, String> {
 
-	<S extends T> S save(S entity);
+    @NotNull <S extends T> S save(@NotNull S entity);
 
-	Optional<T> findById(String id);
+    @NotNull
+    Optional<T> findById(@NotNull String id);
 
-	@Deprecated
-	Page<T> findAllById(Iterable<String> ids, Pageable pageable);
+    @Deprecated
+    Page<T> findAllById(Iterable<String> ids, Pageable pageable);
 
-	Page<T> findAll(Specification specification);
+    Page<T> findAll(Specification specification);
 
-	void delete(T entity);
+    void delete(@NotNull T entity);
 
 }
