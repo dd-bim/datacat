@@ -3,9 +3,9 @@ package de.bentrm.datacat.service.impl;
 import de.bentrm.datacat.domain.CatalogItem;
 import de.bentrm.datacat.domain.Facet;
 import de.bentrm.datacat.domain.Translation;
-import de.bentrm.datacat.graphql.dto.DtoMapper;
 import de.bentrm.datacat.graphql.dto.EntityInput;
 import de.bentrm.datacat.graphql.dto.EntityUpdateInput;
+import de.bentrm.datacat.graphql.dto.InputMapper;
 import de.bentrm.datacat.graphql.dto.TextInput;
 import de.bentrm.datacat.repository.FacetRepository;
 import de.bentrm.datacat.repository.GraphEntityRepository;
@@ -50,7 +50,7 @@ public abstract class CatalogItemServiceImpl<
     private FacetRepository facetRepository;
 
     @Autowired
-    protected DtoMapper dtoMapper;
+    protected InputMapper inputMapper;
 
     public CatalogItemServiceImpl(R repository) {
         this.repository = repository;
@@ -69,7 +69,7 @@ public abstract class CatalogItemServiceImpl<
 
         List<TextInput> names = dto.getNames();
         for (TextInput name : names) {
-            final Translation translation = dtoMapper.toTranslation(name);
+            final Translation translation = inputMapper.toTranslation(name);
             entity.getNames().add(translation);
         }
 

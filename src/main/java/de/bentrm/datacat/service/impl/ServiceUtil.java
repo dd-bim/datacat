@@ -1,7 +1,7 @@
 package de.bentrm.datacat.service.impl;
 
 import de.bentrm.datacat.domain.Translation;
-import de.bentrm.datacat.graphql.dto.DtoMapper;
+import de.bentrm.datacat.graphql.dto.InputMapper;
 import de.bentrm.datacat.graphql.dto.TextInput;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,7 +20,7 @@ public class ServiceUtil {
     }
 
     static void mapTextInputToTranslationSet(Set<Translation> persistentTranslations, List<TextInput> textInput) {
-        DtoMapper dtoMapper = DtoMapper.INSTANCE;
+        InputMapper inputMapper = InputMapper.INSTANCE;
         final Iterator<Translation> namesIter = persistentTranslations.iterator();
         while (namesIter.hasNext()) {
             final Translation name = namesIter.next();
@@ -43,7 +43,7 @@ public class ServiceUtil {
                 .collect(Collectors.toList());
         for (TextInput input : textInput) {
             if (input.getId() == null || !ids.contains(input.getId())) {
-                final Translation newName = dtoMapper.toTranslation(input);
+                final Translation newName = inputMapper.toTranslation(input);
                 persistentTranslations.add(newName);
             }
         }

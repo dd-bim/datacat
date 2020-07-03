@@ -2,7 +2,7 @@ package de.bentrm.datacat.service.impl;
 
 import de.bentrm.datacat.domain.Facet;
 import de.bentrm.datacat.domain.Translation;
-import de.bentrm.datacat.graphql.dto.DtoMapper;
+import de.bentrm.datacat.graphql.dto.InputMapper;
 import de.bentrm.datacat.graphql.dto.TextInput;
 import de.bentrm.datacat.repository.FacetRepository;
 import de.bentrm.datacat.service.FacetService;
@@ -29,11 +29,11 @@ public class FacetServiceImpl implements FacetService {
 
     private final FacetRepository facetRepository;
 
-    private final DtoMapper dtoMapper;
+    private final InputMapper inputMapper;
 
-    public FacetServiceImpl(FacetRepository facetRepository, DtoMapper dtoMapper) {
+    public FacetServiceImpl(FacetRepository facetRepository, InputMapper inputMapper) {
         this.facetRepository = facetRepository;
-        this.dtoMapper = dtoMapper;
+        this.inputMapper = inputMapper;
     }
 
     @Transactional
@@ -44,12 +44,12 @@ public class FacetServiceImpl implements FacetService {
         facet.setId(dto.getId());
 
         for (TextInput input : dto.getNames()) {
-            final Translation translation = dtoMapper.toTranslation(input);
+            final Translation translation = inputMapper.toTranslation(input);
             facet.getNames().add(translation);
         }
 
         for (TextInput input : dto.getDescriptions()) {
-            final Translation translation = dtoMapper.toTranslation(input);
+            final Translation translation = inputMapper.toTranslation(input);
             facet.getDescriptions().add(translation);
         }
 

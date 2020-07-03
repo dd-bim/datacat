@@ -7,7 +7,7 @@ import de.bentrm.datacat.domain.XtdLanguage;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.PageInfo;
 import de.bentrm.datacat.graphql.dto.CatalogStatistics;
-import de.bentrm.datacat.graphql.dto.DtoMapper;
+import de.bentrm.datacat.graphql.dto.InputMapper;
 import de.bentrm.datacat.graphql.dto.SearchInput;
 import de.bentrm.datacat.service.CatalogService;
 import de.bentrm.datacat.service.LanguageService;
@@ -26,7 +26,7 @@ public class BaseDataFetcherProvider implements QueryDataFetcherProvider {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
-    private DtoMapper dtoMapper;
+    private InputMapper inputMapper;
 
     @Autowired
     private CatalogService catalogService;
@@ -70,7 +70,7 @@ public class BaseDataFetcherProvider implements QueryDataFetcherProvider {
 //                return new Connection<>(null, null, totalElements);
 //            }
 
-            Specification spec = dtoMapper.toSpecification(filterInput);
+            Specification spec = inputMapper.toSpecification(filterInput);
             Page<CatalogItem> page = catalogService.searchCatalogItem(spec);
             return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };

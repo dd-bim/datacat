@@ -6,8 +6,8 @@ import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.PageInfo;
 import de.bentrm.datacat.graphql.dto.AssignsCollectionsInput;
 import de.bentrm.datacat.graphql.dto.AssignsCollectionsUpdateInput;
-import de.bentrm.datacat.graphql.dto.DtoMapper;
 import de.bentrm.datacat.graphql.dto.FilterInput;
+import de.bentrm.datacat.graphql.dto.InputMapper;
 import de.bentrm.datacat.service.RelAssignsCollectionsService;
 import de.bentrm.datacat.service.Specification;
 import graphql.schema.DataFetcher;
@@ -71,7 +71,7 @@ public class RelAssignsCollectionsDataFetcherProvider implements QueryDataFetche
             FilterInput filterInput = objectMapper.convertValue(input, FilterInput.class);
             if (filterInput == null) filterInput = new FilterInput();
 
-            Specification spec = DtoMapper.INSTANCE.toSpecification(filterInput);
+            Specification spec = InputMapper.INSTANCE.toSpecification(filterInput);
             Page<XtdRelAssignsCollections> page = relAssignsCollectionsService.search(spec);
             return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };

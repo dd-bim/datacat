@@ -38,7 +38,7 @@ public abstract class CrudRootServiceImpl<
 
         List<TextInput> descriptions = dto.getDescriptions();
         for (TextInput input : descriptions) {
-            final Translation translation = dtoMapper.toTranslation(input);
+            final Translation translation = inputMapper.toTranslation(input);
             entity.getDescriptions().add(translation);
         }
     }

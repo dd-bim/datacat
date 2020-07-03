@@ -88,7 +88,7 @@ public class RelGroupsDataFetcherProvider implements QueryDataFetcherProvider, R
             FilterInput filterInput = objectMapper.convertValue(input, FilterInput.class);
             if (filterInput == null) filterInput = new FilterInput();
 
-            Specification spec = DtoMapper.INSTANCE.toSpecification(filterInput);
+            Specification spec = InputMapper.INSTANCE.toSpecification(filterInput);
             Page<XtdRelGroups> page = relGroupsService.search(spec);
             return new Connection<>(page.getContent(), PageInfo.of(page), page.getTotalElements());
         };
