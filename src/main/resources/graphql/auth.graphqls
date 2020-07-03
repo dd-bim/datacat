@@ -1,0 +1,31 @@
+type User {
+    username: ID!
+    firstName: String!
+    lastName: String!
+    email: String!
+    organization: String!
+}
+
+type UserSession {
+    token: String!
+    user: User!
+}
+
+input SignupInput {
+    username: String!
+    password: String!
+    firstName: String!
+    lastName: String!
+    email: String!
+    organization: String!
+}
+
+input LoginInput {
+    username: String!
+    password: String!
+}
+
+extend type Mutation {
+    signup(input: SignupInput!): UserSession!
+    login(input: LoginInput!): UserSession!
+}

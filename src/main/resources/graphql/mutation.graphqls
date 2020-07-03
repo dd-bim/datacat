@@ -212,37 +212,7 @@ input AssociationUpdateInput {
     relatedThings: [ID!]!
 }
 
-type UserProfile {
-    username: String!
-    firstName: String!
-    lastName: String!
-    email: String!
-    organization: String!
-}
-
-type UserSession {
-    token: String!
-    user: UserProfile!
-}
-
-input SignupInput {
-    username: String!
-    password: String!
-    firstName: String!
-    lastName: String!
-    email: String!
-    organization: String!
-}
-
-input LoginInput {
-    username: String!
-    password: String!
-}
-
 type Mutation {
-    signup(input: SignupInput!): UserSession!
-    login(input: LoginInput!): UserSession!
-
     createFacet(input: FacetInput!): Facet
     updateFacet(input: FacetUpdateInput!): Facet
     deleteFacet(id: ID!): Facet

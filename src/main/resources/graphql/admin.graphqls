@@ -1,0 +1,57 @@
+type Account {
+    username: ID!
+    firstName: String!
+    lastName: String!
+    email: String!
+    organization: String!
+    expired: Boolean!
+    locked: Boolean!
+    credentialsExpired: Boolean!
+    enabled: Boolean!
+    status: AccountStatus!
+}
+
+enum AccountStatus {
+    Admin,
+    Verified,
+    Unverified
+}
+
+type AccountConnection {
+    nodes: [Account!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+input AccountFilterInput {
+    expired: Boolean
+    locked: Boolean
+    credentialsExpired: Boolean
+    pageNumber: Int
+    pageSize: Int
+}
+
+extend type Query {
+    account(username: ID!): Account
+    accounts(input: AccountFilterInput): AccountConnection!
+}
+
+input AccountUpdateInput {
+    username: ID!
+    firstName: String!
+    lastName: String!
+    email: String!
+    organization: String!
+}
+
+input AccountStatusUpdateInput {
+    username: ID!
+    status: AccountStatus!
+}
+
+extend type Mutation {
+    updateAccount(input: AccountUpdateInput!): Account
+    updateAccountStatus(input: AccountStatusUpdateInput!): Account
+    lockAccount(username: ID!): Account
+    unlockAccount(username: ID!): Account
+}
