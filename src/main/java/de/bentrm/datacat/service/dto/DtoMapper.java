@@ -26,8 +26,13 @@ public interface DtoMapper {
         return AccountStatus.Unverified;
     }
 
+    @Mapping(target = "profile", source = ".")
     @Mapping(target = "status", source = "roles")
-    AccountDto toDto(User user);
+    AccountDto toAccountDto(User user);
 
     void setProperties(AccountUpdateDto dto, @MappingTarget User user);
+
+    ProfileDto toProfileDto(User user);
+
+    void setProperties(ProfileUpdateDto dto, @MappingTarget User user);
 }

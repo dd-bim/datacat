@@ -7,11 +7,7 @@ import lombok.Value;
 @Value
 @Builder
 public class AccountDto {
-    String username;
-    String firstName;
-    String lastName;
-    String email;
-    String organization;
+    ProfileDto profile;
     boolean expired;
     boolean locked;
     boolean credentialsExpired;
