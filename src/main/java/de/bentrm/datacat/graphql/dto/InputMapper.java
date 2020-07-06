@@ -4,6 +4,7 @@ import de.bentrm.datacat.domain.Translation;
 import de.bentrm.datacat.repository.UserSpecification;
 import de.bentrm.datacat.service.Specification;
 import de.bentrm.datacat.service.dto.AccountUpdateDto;
+import de.bentrm.datacat.service.dto.ProfileUpdateDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.factory.Mappers;
@@ -21,6 +22,8 @@ public interface InputMapper {
     UserSpecification toSpecification(@NotNull AccountFilterInput filter);
 
     AccountUpdateDto toDto(AccountUpdateInput input);
+
+    ProfileUpdateDto toDto(ProfileUpdateInput input);
 
     Translation toTranslation(TextInput input);
 }
