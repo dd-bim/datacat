@@ -1,4 +1,4 @@
-package de.bentrm.datacat.auth;
+package de.bentrm.datacat.service;
 
 import de.bentrm.datacat.graphql.dto.SignupInput;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -15,10 +15,10 @@ public interface AuthenticationService {
     void onApplicationEvent(ContextRefreshedEvent event);
 
     @PreAuthorize("isAnonymous()")
-    UserSession signup(@NotNull @Valid SignupInput signupInput);
+    String signup(@NotNull @Valid SignupInput signupInput);
 
     @PreAuthorize("isAnonymous()")
-    UserSession login(@NotBlank String username, @NotBlank String password);
+    String login(@NotBlank String username, @NotBlank String password);
 
     void login(@NotBlank String jwtToken);
 

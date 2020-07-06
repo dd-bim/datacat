@@ -39,7 +39,7 @@ public class AdminServiceImpl implements AdminService {
                 .orElseThrow(() -> new IllegalArgumentException("No account found."));
         dtoMapper.setProperties(dto, user);
         user = userRepository.save(user);
-        return dtoMapper.toDto(user);
+        return dtoMapper.toAccountDto(user);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class AdminServiceImpl implements AdminService {
         user.setRoles(newRoles);
         user = userRepository.save(user);
 
-        return dtoMapper.toDto(user);
+        return dtoMapper.toAccountDto(user);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class AdminServiceImpl implements AdminService {
             User user = result.get();
             user.setLocked(locked);
             user = userRepository.save(user);
-            final AccountDto accountDto = dtoMapper.toDto(user);
+            final AccountDto accountDto = dtoMapper.toAccountDto(user);
             return Optional.of(accountDto);
         }
         return Optional.empty();
@@ -85,7 +85,7 @@ public class AdminServiceImpl implements AdminService {
     public Optional<AccountDto> findAccount(String username) {
         return userRepository
                 .findByUsername(username)
-                .map(user -> dtoMapper.toDto(user));
+                .map(user -> dtoMapper.toAccountDto(user));
     }
 
     @Override
@@ -97,7 +97,7 @@ public class AdminServiceImpl implements AdminService {
     public Page<AccountDto> findAccounts(UserSpecification specification) {
         final Page<User> content = userRepository.findAll(specification);
         final List<AccountDto> newContent = content.getContent().stream()
-                .map(user -> dtoMapper.toDto(user))
+                .map(user -> dtoMapper.toAccountDto(user))
                 .collect(Collectors.toList());
         return PageableExecutionUtils.getPage(newContent, content.getPageable(), content::getTotalElements);
     }

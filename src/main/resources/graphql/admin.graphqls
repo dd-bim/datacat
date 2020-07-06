@@ -1,9 +1,5 @@
 type Account {
-    username: ID!
-    firstName: String!
-    lastName: String!
-    email: String!
-    organization: String!
+    profile: Profile!
     expired: Boolean!
     locked: Boolean!
     credentialsExpired: Boolean!

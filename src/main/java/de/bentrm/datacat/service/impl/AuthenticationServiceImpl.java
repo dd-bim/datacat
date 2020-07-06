@@ -1,14 +1,18 @@
-package de.bentrm.datacat.auth;
+package de.bentrm.datacat.service.impl;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import de.bentrm.datacat.auth.AuthProperties;
+import de.bentrm.datacat.auth.JwtPreAuthenticatedAuthenticationToken;
+import de.bentrm.datacat.auth.JwtUserDetails;
 import de.bentrm.datacat.domain.Roles;
 import de.bentrm.datacat.domain.User;
 import de.bentrm.datacat.graphql.dto.SignupInput;
 import de.bentrm.datacat.repository.UserRepository;
-import org.slf4j.Logger;
+import de.bentrm.datacat.service.AuthenticationService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.audit.listener.AuditApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
@@ -37,6 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @Validated
 @Transactional
@@ -44,8 +49,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     public static final String AUTHENTICATION_SUCCESS = "AUTHENTICATION_SUCCESS";
     public static final String AUTHENTICATION_FAILURE = "AUTHENTICATION_FAILURE";
-    @Autowired
-    private Logger logger;
 
     @Autowired
     private AuthProperties authProperties;
@@ -69,7 +72,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public void onApplicationEvent(ContextRefreshedEvent event) {
         final AuthProperties.Admin properties = authProperties.getAdmin();
         if (!userRepository.existsByUsername(properties.getUsername())) {
-            logger.info("No superadmin user named {} found. Adding user...", properties.getUsername());
+            log.info("No superadmin user named {} found. Adding user...", properties.getUsername());
 
             var admin = new User();
             admin.setUsername(properties.getUsername());
@@ -82,13 +85,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             admin = userRepository.save(admin);
 
-            logger.info("Added admin user: {}", admin);
+            log.info("Added admin user: {}", admin);
         }
     }
 
     @Override
-    public UserSession signup(SignupInput signupInput) {
-        logger.debug("New signup: {}", signupInput);
+    public String signup(SignupInput signupInput) {
+        log.debug("New signup: {}", signupInput);
 
         if (userRepository.existsByUsername(signupInput.getUsername())) {
             final IllegalArgumentException exception = new IllegalArgumentException("Username is taken.");
@@ -124,14 +127,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user = userRepository.save(user);
 
         String token = buildToken(user);
-        UserProfile newUserProfile = UserProfile.of(user);
 
         applicationEventPublisher.publishEvent(new AuditApplicationEvent(Instant.now(), user.getUsername(), AUTHENTICATION_SUCCESS, new HashMap<>()));
-        return new UserSession(token, newUserProfile);
+        return token;
     }
 
     @Override
-    public UserSession login(@NotBlank String username, @NotBlank String password) {
+    public String login(@NotBlank String username, @NotBlank String password) {
         try {
             final User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Unknown username."));
             if (!passwordEncoder.matches(password, user.getPassword())) {
@@ -141,9 +143,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
             String token = buildToken(user);
-            UserProfile newUserProfile = UserProfile.of(user);
             applicationEventPublisher.publishEvent(new AuditApplicationEvent(Instant.now(), username, AUTHENTICATION_SUCCESS, new HashMap<>()));
-            return new UserSession(token, newUserProfile);
+            return token;
         } catch (AuthenticationException ex) {
             applicationEventPublisher.publishEvent(new AuditApplicationEvent(Instant.now(), username, AUTHENTICATION_FAILURE, new HashMap<>()));
             throw new BadCredentialsException("Unknown username or wrong password provided.", ex);
@@ -160,7 +161,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 userDetails.getUsername(),
                 userDetails.getAuthorities(),
                 webAuthenticationDetails);
-        logger.debug("Auth token: {}", authenticationToken);
+        log.debug("Auth token: {}", authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         applicationEventPublisher.publishEvent(new AuditApplicationEvent(Instant.now(), authenticationToken.getName(), AUTHENTICATION_SUCCESS, new HashMap<>()));
     }

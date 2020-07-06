@@ -1,5 +1,6 @@
 package de.bentrm.datacat.auth;
 
+import de.bentrm.datacat.service.AuthenticationService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;

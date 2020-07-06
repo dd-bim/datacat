@@ -1,4 +1,4 @@
-type User {
+type Profile {
     username: ID!
     firstName: String!
     lastName: String!
@@ -6,13 +6,8 @@ type User {
     organization: String!
 }
 
-type UserSession {
-    token: String!
-    user: User!
-}
-
 input SignupInput {
-    username: String!
+    username: ID!
     password: String!
     firstName: String!
     lastName: String!
@@ -21,11 +16,21 @@ input SignupInput {
 }
 
 input LoginInput {
-    username: String!
+    username: ID!
     password: String!
 }
 
+input ProfileUpdateInput {
+    username: ID!
+    firstName: String!
+    lastName: String!
+    email: String!
+    organization: String!
+}
+
 extend type Mutation {
-    signup(input: SignupInput!): UserSession!
-    login(input: LoginInput!): UserSession!
+    signup(input: SignupInput!): String!
+    login(input: LoginInput!): String!
+    profile: Profile!
+    updateProfile(input: ProfileUpdateInput!): Profile!
 }
