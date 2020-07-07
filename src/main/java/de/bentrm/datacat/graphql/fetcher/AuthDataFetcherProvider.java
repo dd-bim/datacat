@@ -5,17 +5,22 @@ import de.bentrm.datacat.graphql.dto.InputMapper;
 import de.bentrm.datacat.graphql.dto.LoginInput;
 import de.bentrm.datacat.graphql.dto.ProfileUpdateInput;
 import de.bentrm.datacat.graphql.dto.SignupInput;
-import de.bentrm.datacat.service.AuthenticationService;
-import de.bentrm.datacat.service.ProfileService;
+import de.bentrm.datacat.service.*;
 import de.bentrm.datacat.service.dto.ProfileDto;
+import graphql.GraphQLError;
+import graphql.kickstart.spring.error.ThrowableGraphQLError;
 import graphql.schema.DataFetcher;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.Map;
 
+@Slf4j
 @Component
-public class AuthDataFetcherProvider implements MutationDataFetcherProvider {
+public class AuthDataFetcherProvider implements QueryDataFetcherProvider, MutationDataFetcherProvider {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -28,21 +33,47 @@ public class AuthDataFetcherProvider implements MutationDataFetcherProvider {
     @Autowired
     private InputMapper inputMapper;
 
+    @ExceptionHandler({
+            UsernameTakenException.class,
+            EmailTakenException.class,
+            EmailUnconfirmedException.class,
+            BadCredentialsException.class
+    })
+    public GraphQLError handleException(Throwable e) {
+        return new ThrowableGraphQLError(e);
+    }
+
+    @Override
+    public Map<String, DataFetcher> getQueryDataFetchers() {
+        return Map.ofEntries(
+                Map.entry("profile", profile())
+        );
+    }
+
     @Override
     public Map<String, DataFetcher> getMutationDataFetchers() {
         return Map.ofEntries(
                 Map.entry("signup", signup()),
+                Map.entry("confirm", confirm()),
                 Map.entry("login", login()),
-                Map.entry("profile", profile()),
                 Map.entry("updateProfile", updateProfile())
         );
     }
 
-    private DataFetcher<String> signup() {
+    private DataFetcher<Boolean> signup() {
         return environment -> {
             Map<String, Object> input = environment.getArgument("input");
             SignupInput dto = mapper.convertValue(input, SignupInput.class);
-            return authenticationService.signup(dto);
+            authenticationService.signup(dto);
+            return true;
+        };
+    }
+
+    private DataFetcher<Boolean> confirm() {
+        return env -> {
+            final String token = env.getArgument("token");
+            authenticationService.fulfillEmailConfirmationRequest(token);
+            return true;
         };
     }
 

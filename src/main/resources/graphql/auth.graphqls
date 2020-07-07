@@ -28,9 +28,13 @@ input ProfileUpdateInput {
     organization: String!
 }
 
-extend type Mutation {
-    signup(input: SignupInput!): String!
-    login(input: LoginInput!): String!
+extend type Query {
     profile: Profile!
+}
+
+extend type Mutation {
+    signup(input: SignupInput!): Boolean
+    confirm(token: String!): Boolean
+    login(input: LoginInput!): String
     updateProfile(input: ProfileUpdateInput!): Profile!
 }

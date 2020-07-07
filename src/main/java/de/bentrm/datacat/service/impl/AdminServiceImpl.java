@@ -1,11 +1,14 @@
 package de.bentrm.datacat.service.impl;
 
+import de.bentrm.datacat.domain.EmailConfirmationRequest;
 import de.bentrm.datacat.domain.Roles;
 import de.bentrm.datacat.domain.User;
+import de.bentrm.datacat.repository.EmailConfirmationRepository;
 import de.bentrm.datacat.repository.UserRepository;
 import de.bentrm.datacat.repository.UserSpecification;
 import de.bentrm.datacat.service.AccountStatus;
 import de.bentrm.datacat.service.AdminService;
+import de.bentrm.datacat.service.EmailService;
 import de.bentrm.datacat.service.dto.AccountDto;
 import de.bentrm.datacat.service.dto.AccountUpdateDto;
 import de.bentrm.datacat.service.dto.DtoMapper;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -28,6 +32,12 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EmailConfirmationRepository emailConfirmationRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private DtoMapper dtoMapper;
@@ -79,6 +89,16 @@ public class AdminServiceImpl implements AdminService {
             return Optional.of(accountDto);
         }
         return Optional.empty();
+    }
+
+    @Override
+    public void requestEmailConfirmation(@NotBlank String username) {
+        User user = userRepository
+                .findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("No account found."));
+        EmailConfirmationRequest confirmation = EmailConfirmationRequest.of(user);
+        confirmation = emailConfirmationRepository.save(confirmation);
+        emailService.sendEmailConfirmation(confirmation);
     }
 
     @Override

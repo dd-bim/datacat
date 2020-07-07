@@ -15,7 +15,10 @@ public interface AuthenticationService {
     void onApplicationEvent(ContextRefreshedEvent event);
 
     @PreAuthorize("isAnonymous()")
-    String signup(@NotNull @Valid SignupInput signupInput);
+    void signup(@NotNull @Valid SignupInput signupInput);
+
+    @PreAuthorize("isAnonymous()")
+    void fulfillEmailConfirmationRequest(@NotNull String emailConfirmationToken);
 
     @PreAuthorize("isAnonymous()")
     String login(@NotBlank String username, @NotBlank String password);

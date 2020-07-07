@@ -50,7 +50,8 @@ public class AdminFetcherProvider implements QueryDataFetcherProvider, MutationD
                 Map.entry("updateAccount", updateAccount()),
                 Map.entry("updateAccountStatus", updateAccountStatus()),
                 Map.entry("lockAccount", lockAccount()),
-                Map.entry("unlockAccount", unlockAccount())
+                Map.entry("unlockAccount", unlockAccount()),
+                Map.entry("requestEmailConfirmation", requestEmailConfirmation())
         );
     }
 
@@ -103,6 +104,14 @@ public class AdminFetcherProvider implements QueryDataFetcherProvider, MutationD
         return env -> {
             String username = env.getArgument(IDENTIFIER);
             return adminService.unlockAccount(username);
+        };
+    }
+
+    private DataFetcher<Boolean> requestEmailConfirmation() {
+        return env -> {
+            String username = env.getArgument(IDENTIFIER);
+            adminService.requestEmailConfirmation(username);
+            return true;
         };
     }
 

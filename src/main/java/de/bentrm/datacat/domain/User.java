@@ -43,11 +43,17 @@ public class User extends Entity implements UserDetails {
 
     private boolean expired = false;
 
-    private boolean locked = true;
+    private boolean locked = false;
 
     private boolean credentialsExpired = false;
 
+    private boolean emailConfirmed = false;
+
     private Set<Roles> roles = new HashSet<>();
+
+    public String getName() {
+        return this.firstName + " " + this.lastName;
+    }
 
     @Override
     public boolean isAccountNonExpired() {
@@ -66,7 +72,7 @@ public class User extends Entity implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return !locked && !expired && !credentialsExpired;
+        return !locked && !expired && !credentialsExpired && emailConfirmed;
     }
 
     @Override

@@ -50,4 +50,5 @@ extend type Mutation {
     updateAccountStatus(input: AccountStatusUpdateInput!): Account
     lockAccount(username: ID!): Account
     unlockAccount(username: ID!): Account
+    requestEmailConfirmation(username: ID!): Boolean!
 }

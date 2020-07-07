@@ -1,6 +1,8 @@
 package de.bentrm.datacat.graphql;
 
 import de.bentrm.datacat.graphql.fetcher.*;
+import graphql.GraphQLError;
+import graphql.kickstart.spring.error.ThrowableGraphQLError;
 import graphql.schema.DataFetcher;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.*;
@@ -12,6 +14,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -96,6 +100,12 @@ public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
         });
         return typeWiring;
     };
+
+    @ExceptionHandler(BadCredentialsException.class)
+    GraphQLError handle(Throwable e) {
+        log.info("Called!!!");
+        return new ThrowableGraphQLError(e, "Catch all handler");
+    }
 
     @Bean
     GraphQLSchema schema() throws IOException {

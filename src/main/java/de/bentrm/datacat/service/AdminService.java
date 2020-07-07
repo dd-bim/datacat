@@ -26,6 +26,9 @@ public interface AdminService {
     Optional<AccountDto> unlockAccount(@NotBlank String username);
 
     @PreAuthorize("hasRole('ADMIN')")
+    void requestEmailConfirmation(@NotBlank String username);
+
+    @PreAuthorize("hasRole('ADMIN')")
     Optional<AccountDto> findAccount(@NotBlank String username);
 
     @PreAuthorize("hasRole('ADMIN')")
