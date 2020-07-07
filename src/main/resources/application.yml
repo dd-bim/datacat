@@ -3,6 +3,6 @@ graphql:
     enabled: true
     corsEnabled: true
     mapping: /graphql
-    exception-handlers-enabled: true
-    tracingEnabled: false
+    tracingEnabled: true
     actuator-metrics: true
+    exception-handlers-enabled: true
