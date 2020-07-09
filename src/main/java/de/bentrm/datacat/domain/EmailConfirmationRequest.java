@@ -16,7 +16,7 @@ import java.time.Instant;
 @NodeEntity(label = "EmailConfirmation")
 public class EmailConfirmationRequest extends Entity {
 
-    public static final Duration VALIDITY_DURATION = Duration.ofHours(1);
+    public static final Duration VALIDITY_DURATION = Duration.ofHours(24);
 
     @Relationship(type = "HAS_EMAIL_CONFIRMATION", direction = Relationship.INCOMING)
     private User user;
@@ -55,6 +55,7 @@ public class EmailConfirmationRequest extends Entity {
         confirmation.sentTo = user.getEmail();
         confirmation.token = ConfirmationTokenUtil.generateConfirmationToken();
         confirmation.expiredAt = Instant.now().plus(VALIDITY_DURATION);
+        user.setEmailConfirmed(false);
         return confirmation;
     }
 }
