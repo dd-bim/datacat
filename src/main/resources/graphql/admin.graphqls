@@ -1,10 +1,14 @@
 type Account {
-    profile: Profile!
+    username: ID!
+    created: String!
+    lastModified: String!
     expired: Boolean!
     locked: Boolean!
     credentialsExpired: Boolean!
+    emailConfirmed: Boolean!
     enabled: Boolean!
     status: AccountStatus!
+    profile: Profile!
 }
 
 enum AccountStatus {
