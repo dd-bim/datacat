@@ -94,7 +94,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             admin.setOrganization(properties.getOrganization());
             admin.setPassword(passwordEncoder.encode(properties.getPassword()));
             admin.getRoles().addAll(List.of(Roles.values()));
-
+            admin.setEmailConfirmed(true);
             admin = userRepository.save(admin);
 
             log.info("Added admin user: {}", admin);
