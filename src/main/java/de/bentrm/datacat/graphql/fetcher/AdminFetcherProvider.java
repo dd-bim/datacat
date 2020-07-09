@@ -107,11 +107,10 @@ public class AdminFetcherProvider implements QueryDataFetcherProvider, MutationD
         };
     }
 
-    private DataFetcher<Boolean> requestEmailConfirmation() {
+    private DataFetcher<Optional<AccountDto>> requestEmailConfirmation() {
         return env -> {
             String username = env.getArgument(IDENTIFIER);
-            adminService.requestEmailConfirmation(username);
-            return true;
+            return adminService.requestEmailConfirmation(username);
         };
     }
 

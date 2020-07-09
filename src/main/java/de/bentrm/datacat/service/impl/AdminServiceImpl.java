@@ -92,13 +92,15 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void requestEmailConfirmation(@NotBlank String username) {
-        User user = userRepository
-                .findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("No account found."));
-        EmailConfirmationRequest confirmation = EmailConfirmationRequest.of(user);
-        confirmation = emailConfirmationRepository.save(confirmation);
-        emailService.sendEmailConfirmation(confirmation);
+    public Optional<AccountDto> requestEmailConfirmation(@NotBlank String username) {
+        return userRepository.findByUsername(username)
+                .map(user -> {
+                    EmailConfirmationRequest confirmation = EmailConfirmationRequest.of(user);
+                    confirmation = emailConfirmationRepository.save(confirmation);
+                    emailService.sendEmailConfirmation(confirmation);
+                    return user;
+                })
+                .map(dtoMapper::toAccountDto);
     }
 
     @Override
