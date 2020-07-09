@@ -36,6 +36,7 @@ public class ProfileServiceImpl implements ProfileService {
                 .orElseThrow();
     }
 
+    @Transactional
     @Override
     public ProfileDto updateAccount(@Valid ProfileUpdateDto dto) {
         User user = userRepository
