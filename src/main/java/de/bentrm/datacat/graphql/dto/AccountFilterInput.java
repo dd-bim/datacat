@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class AccountFilterInput {
+    private String query;
     private Boolean expired;
     private Boolean locked;
     private Boolean credentialsExpired;

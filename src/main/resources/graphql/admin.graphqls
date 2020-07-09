@@ -24,6 +24,7 @@ type AccountConnection {
 }
 
 input AccountFilterInput {
+    query: String
     expired: Boolean
     locked: Boolean
     credentialsExpired: Boolean
@@ -54,5 +55,5 @@ extend type Mutation {
     updateAccountStatus(input: AccountStatusUpdateInput!): Account
     lockAccount(username: ID!): Account
     unlockAccount(username: ID!): Account
-    requestEmailConfirmation(username: ID!): Boolean!
+    requestEmailConfirmation(username: ID!): Account
 }
