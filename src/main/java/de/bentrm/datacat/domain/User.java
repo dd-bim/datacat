@@ -5,7 +5,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.validation.constraints.NotBlank;
@@ -49,7 +48,7 @@ public class User extends Entity implements UserDetails {
 
     private boolean emailConfirmed = false;
 
-    private Set<Roles> roles = new HashSet<>();
+    private Set<Role> roles = new HashSet<>();
 
     public String getName() {
         return this.firstName + " " + this.lastName;
@@ -76,10 +75,9 @@ public class User extends Entity implements UserDetails {
     }
 
     @Override
-    public List<SimpleGrantedAuthority> getAuthorities() {
+    public List<Role> getAuthorities() {
         return roles.stream()
                 .sorted()
-                .map(role -> new SimpleGrantedAuthority(role.name()))
                 .collect(Collectors.toList());
     }
 }

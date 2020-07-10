@@ -1,7 +1,7 @@
 package de.bentrm.datacat.service.impl;
 
 import de.bentrm.datacat.domain.EmailConfirmationRequest;
-import de.bentrm.datacat.domain.Roles;
+import de.bentrm.datacat.domain.Role;
 import de.bentrm.datacat.domain.User;
 import de.bentrm.datacat.repository.EmailConfirmationRepository;
 import de.bentrm.datacat.repository.UserRepository;
@@ -58,10 +58,10 @@ public class AdminServiceImpl implements AdminService {
                 .findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("No account found."));
 
-        Set<Roles> newRoles = switch (newStatus) {
-            case Admin -> Set.of(Roles.ROLE_ADMIN, Roles.ROLE_USER, Roles.ROLE_READONLY);
-            case Verified -> Set.of(Roles.ROLE_USER, Roles.ROLE_READONLY);
-            case Unverified -> Set.of(Roles.ROLE_READONLY);
+        Set<Role> newRoles = switch (newStatus) {
+            case Admin -> Set.of(Role.ADMIN, Role.USER, Role.READONLY);
+            case Verified -> Set.of(Role.USER, Role.READONLY);
+            case Unverified -> Set.of(Role.READONLY);
         };
         user.setRoles(newRoles);
         user = userRepository.save(user);

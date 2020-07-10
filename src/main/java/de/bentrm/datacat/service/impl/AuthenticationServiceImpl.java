@@ -8,7 +8,7 @@ import de.bentrm.datacat.auth.AuthProperties;
 import de.bentrm.datacat.auth.JwtPreAuthenticatedAuthenticationToken;
 import de.bentrm.datacat.auth.JwtUserDetails;
 import de.bentrm.datacat.domain.EmailConfirmationRequest;
-import de.bentrm.datacat.domain.Roles;
+import de.bentrm.datacat.domain.Role;
 import de.bentrm.datacat.domain.User;
 import de.bentrm.datacat.graphql.dto.SignupInput;
 import de.bentrm.datacat.repository.EmailConfirmationRepository;
@@ -93,7 +93,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             admin.setEmail(properties.getEmail());
             admin.setOrganization(properties.getOrganization());
             admin.setPassword(passwordEncoder.encode(properties.getPassword()));
-            admin.getRoles().addAll(List.of(Roles.values()));
+            admin.getRoles().addAll(List.of(Role.values()));
             admin.setEmailConfirmed(true);
             admin = userRepository.save(admin);
 
@@ -121,7 +121,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         String encodedPassword = passwordEncoder.encode(signupInput.getPassword());
         user.setPassword(encodedPassword);
-        user.getRoles().add(Roles.ROLE_READONLY);
+        user.getRoles().add(Role.READONLY);
 
         EmailConfirmationRequest emailConfirmationRequest = emailConfirmationRepository.save(EmailConfirmationRequest.of(user));
         emailService.sendEmailConfirmation(emailConfirmationRequest);
@@ -205,10 +205,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         applicationEventPublisher.publishEvent(new AuditApplicationEvent(Instant.now(), username, AUTHENTICATION_FAILURE, new HashMap<>()));
     }
 
-    public String buildToken(UserDetails user) {
+    public String buildToken(User user) {
         Instant now = Instant.now();
         Instant expiry = Instant.now().plus(Duration.ofHours(4)); // Token will be valid for 4 hours
-        final String[] claims = user.getAuthorities().stream().map(Object::toString).toArray(String[]::new);
+        final String[] claims = user.getAuthorities().stream()
+                .map(Role::getAuthority)
+                .toArray(String[]::new);
         return JWT
                 .create()
                 .withIssuer(authProperties.getIssuer()) // Same as within the JWTVerifier
