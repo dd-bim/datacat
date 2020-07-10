@@ -2,7 +2,10 @@ package de.bentrm.datacat;
 
 import de.bentrm.datacat.domain.Migration;
 import de.bentrm.datacat.repository.MigrationRepository;
+import de.bentrm.datacat.util.QueryStatisticsWrapper;
+import de.bentrm.datacat.util.UtilMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.neo4j.ogm.model.QueryStatistics;
 import org.neo4j.ogm.model.Result;
 import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;
@@ -40,6 +43,9 @@ public class MigrationService implements ApplicationRunner, ResourceLoaderAware 
 
     @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    private UtilMapper utilMapper;
 
     private ResourceLoader resourceLoader;
 
@@ -96,7 +102,9 @@ public class MigrationService implements ApplicationRunner, ResourceLoaderAware 
                     final Result result = session.query(command, Map.of());
                     migration.setAppliedAt(Instant.now());
                     migrationRepository.save(migration);
-                    log.info("Result: {}", result.queryStatistics());
+                    final QueryStatistics statistics = result.queryStatistics();
+                    final QueryStatisticsWrapper queryStatisticsWrapper = utilMapper.toWrapper(statistics);
+                    log.info("Result: {}", queryStatisticsWrapper);
                 }
             } else {
                 log.info("Skipping already applied migration with id {}", migration.getId());
