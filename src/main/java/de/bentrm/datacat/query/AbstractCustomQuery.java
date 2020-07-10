@@ -38,12 +38,14 @@ public abstract class AbstractCustomQuery<T> implements CustomQuery {
         PropertyQueryHint annotation = entityType.getAnnotation(PropertyQueryHint.class);
         String[] values = annotation.value();
 
+        if (values.length == 0) return "";
+
         for (int i = 0; i < values.length; i++) {
             String label = "p" + i;
             values[i] = "[ " + label + "=" + values[i] + " | [relationships(" + label + "), nodes(" + label + ")] ]";
         }
 
-        return String.join(", ", values);
+        return ", " + String.join(", ", values);
     }
 
     public @NotNull Map<String, Object> getSubstitutionParameters() {

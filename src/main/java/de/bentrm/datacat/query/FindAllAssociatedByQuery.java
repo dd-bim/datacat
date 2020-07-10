@@ -19,7 +19,7 @@ public class FindAllAssociatedByQuery<T extends Association>
             WHERE relatingThing.id = $relatingThingId
             WITH root, name ORDER BY name.sortOrder, toLower(name.value) ASC, name.value DESC
             WITH DISTINCT root SKIP $skip LIMIT $limit
-            RETURN root, ${propertyAggregations}, ID(root)
+            RETURN ID(root), root ${propertyAggregations} 
             """;
 
     public FindAllAssociatedByQuery(Class<T> entityType, Session session, String relatingThingId, Pageable pageable) {

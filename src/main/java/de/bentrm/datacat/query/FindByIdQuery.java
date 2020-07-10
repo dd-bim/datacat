@@ -9,7 +9,7 @@ public class FindByIdQuery<T> extends AbstractCustomQuery<T> implements CustomQu
 
     private static final String FIND_BY_ID_QUERY_TEMPLATE = """
             MATCH (root:${label} {id: $id}) 
-            RETURN root, ${propertyAggregations}, ID(root)
+            RETURN ID(root), root ${propertyAggregations} 
             """;
 
     public FindByIdQuery(Class<T> entityType, Session session, String id) {

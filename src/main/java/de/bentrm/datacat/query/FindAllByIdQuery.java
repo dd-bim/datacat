@@ -13,7 +13,7 @@ public class FindAllByIdQuery<T> extends AbstractCustomQuery<T> implements Itera
             WHERE root.id IN $ids
             WITH root, name ORDER BY name.sortOrder, toLower(name.value) ASC, name.value DESC
             WITH DISTINCT root SKIP $skip LIMIT $limit
-            RETURN root, ${propertyAggregations}, ID(root)
+            RETURN ID(root), root ${propertyAggregations}
             """;
 
     public FindAllByIdQuery(Class<T> entityType, Session session, Iterable<String> ids, Pageable pageable) {
