@@ -10,6 +10,10 @@
     <name>datacat</name>
     <description>A generic data catalog implementation based on ISO 12006-3.</description>
 
+    <scm>
+        <developerConnection>git:git:https://kis5.geoinformation.htw-dresden.de/gitlab/bentrm/datacat.git</developerConnection>
+    </scm>
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -163,6 +167,11 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>3.0.0-M1</version>
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
