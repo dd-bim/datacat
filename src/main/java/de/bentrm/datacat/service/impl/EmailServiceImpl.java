@@ -20,15 +20,15 @@ public class EmailServiceImpl implements EmailService {
 
     final static String confirmEmailTemplate = """
         Dear ${name},
-                    
+
         Thank you for registering at ${homeUrl}. 
         To be able to login to your account, you'll need to confirm your email address.
-                    
+
         Please open ${confirmUrl}${token} and enter your confirmation token: ${token}
-                    
+
         If you did not register at ${homeUrl}, someone else may have used your email address
-        to open an account. Please ignore this message.
-                    
+        to open an account. In this case, please ignore this message.
+
         Kind regards
         """;
 
