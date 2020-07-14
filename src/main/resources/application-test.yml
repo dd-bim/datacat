@@ -1,0 +1,42 @@
+spring:
+  profiles:
+    active: dev
+  mail:
+    host: smtp.eu.mailgun.org
+    port: 587
+    username: postmaster@mg.datacat.org
+    password: d6c3c66d43cabe9a5e9a18d414b8eaf3-87c34c41-df902225
+    properties:
+      mail:
+        smtp:
+          auth: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+          starttls:
+            enable: true
+            required: true
+
+logging:
+  level:
+    de.bentrm.datacat: DEBUG
+
+spring.data.neo4j:
+  uri: "bolt://localhost:7687"
+  username: neo4j
+  password: secret
+
+datacat:
+  url: datacat.org
+  auth:
+    confirm:
+      url: http://localhost:3000/confirm?token=
+      from: no-reply@datacat.org
+    secret: my-secret
+    issuer: datacat-demo
+    admin:
+      password: s3cret
+      username: admin
+  neo4j:
+    embedded: true
+    home-dir: /Users/ben/Developer/datacat_dir
