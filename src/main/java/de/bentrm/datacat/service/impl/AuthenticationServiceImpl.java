@@ -4,13 +4,14 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import de.bentrm.datacat.auth.AuthProperties;
 import de.bentrm.datacat.auth.JwtPreAuthenticatedAuthenticationToken;
 import de.bentrm.datacat.auth.JwtUserDetails;
 import de.bentrm.datacat.domain.EmailConfirmationRequest;
 import de.bentrm.datacat.domain.Role;
 import de.bentrm.datacat.domain.User;
 import de.bentrm.datacat.graphql.dto.SignupInput;
+import de.bentrm.datacat.properties.ApplicationProperties;
+import de.bentrm.datacat.properties.AuthProperties;
 import de.bentrm.datacat.repository.EmailConfirmationRepository;
 import de.bentrm.datacat.repository.UserRepository;
 import de.bentrm.datacat.service.*;
@@ -18,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.audit.listener.AuditApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
@@ -42,7 +42,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -57,7 +56,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public static final String AUTHENTICATION_FAILURE = "AUTHENTICATION_FAILURE";
 
     @Autowired
-    private AuthProperties authProperties;
+    private ApplicationProperties applicationProperties;
 
     @Autowired
     private JWTVerifier jwtVerifier;
@@ -77,29 +76,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Autowired
     private EmailService emailService;
 
+
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
-
-    @Override
-    public void onApplicationEvent(ContextRefreshedEvent event) {
-        final AuthProperties.Admin properties = authProperties.getAdmin();
-        if (!userRepository.existsByUsername(properties.getUsername())) {
-            log.info("No SUPERADMIN user named {} found. Adding user...", properties.getUsername());
-
-            var admin = new User();
-            admin.setUsername(properties.getUsername());
-            admin.setFirstName(properties.getFirstname());
-            admin.setLastName(properties.getLastname());
-            admin.setEmail(properties.getEmail());
-            admin.setOrganization(properties.getOrganization());
-            admin.setPassword(passwordEncoder.encode(properties.getPassword()));
-            admin.getRoles().addAll(List.of(Role.values()));
-            admin.setEmailConfirmed(true);
-            admin = userRepository.save(admin);
-
-            log.info("Added admin user: {}", admin);
-        }
-    }
 
     @Override
     public void signup(SignupInput signupInput) {
@@ -208,12 +187,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public String buildToken(User user) {
         Instant now = Instant.now();
         Instant expiry = Instant.now().plus(Duration.ofHours(4)); // Token will be valid for 4 hours
+        @NotNull final AuthProperties auth = applicationProperties.getAuth();
         final String[] claims = user.getAuthorities().stream()
                 .map(Role::getAuthority)
                 .toArray(String[]::new);
         return JWT
                 .create()
-                .withIssuer(authProperties.getIssuer()) // Same as within the JWTVerifier
+                .withIssuer(auth.getIssuer()) // Same as within the JWTVerifier
                 .withIssuedAt(Date.from(now))
                 .withExpiresAt(Date.from(expiry))
                 .withSubject(user.getUsername())
