@@ -13,8 +13,7 @@ spring.data.neo4j:
 
 datacat:
   users:
-    - forceUpdate: true
-      username: admin
+    - username: admin
       firstName: Admin
       lastName: Tester
       email: tester+admin@datacat.local
@@ -22,22 +21,9 @@ datacat:
         - ADMIN
         - USER
         - READONLY
-    - username: user
-      firstName: User
-      lastName: Tester
-      email: tester+user@datacat.local
-      roles:
-        - USER
-        - READONLY
-    - username: guest
-      firstName: Guest
-      lastName: Tester
-      email: tester+guest@datacat.local
-      roles:
-        - READONLY
 
   auth:
-    secret: thisisatest
+    secret: change-this-in-production
     issuer: datacat.local
 
   mail:
