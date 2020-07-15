@@ -1,4 +1,4 @@
-FROM openjdk:14-jdk-slim as builder
+FROM openjdk:14-jdk as builder
 WORKDIR application
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} application.jar
@@ -12,4 +12,4 @@ COPY --from=builder application/snapshot-dependencies/ ./
 COPY --from=builder application/application/ ./
 
 EXPOSE 8080
-ENTRYPOINT ["java", "--enable-preview", "org.springframework.boot.loader.JarLauncher"]
+CMD ["java", "--enable-preview", "org.springframework.boot.loader.JarLauncher"]
