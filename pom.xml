@@ -140,9 +140,11 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
                 <configuration>
+                    <jvmArguments>
+                        --enable-preview
+                    </jvmArguments>
                     <layers>
                         <enabled>true</enabled>
-                        <includeLayerTools>true</includeLayerTools>
                     </layers>
                 </configuration>
             </plugin>
