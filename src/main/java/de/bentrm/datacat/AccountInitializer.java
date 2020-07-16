@@ -2,9 +2,8 @@ package de.bentrm.datacat;
 
 import de.bentrm.datacat.auth.PasswordGenerator;
 import de.bentrm.datacat.domain.User;
-import de.bentrm.datacat.properties.ApplicationProperties;
+import de.bentrm.datacat.properties.AppProperties;
 import de.bentrm.datacat.properties.PropertyMapper;
-import de.bentrm.datacat.properties.UserProperties;
 import de.bentrm.datacat.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +11,6 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -23,7 +20,7 @@ public class AccountInitializer implements ApplicationRunner {
     private PropertyMapper propertyMapper;
 
     @Autowired
-    private ApplicationProperties applicationProperties;
+    private AppProperties properties;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -33,10 +30,11 @@ public class AccountInitializer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        final List<UserProperties> users = applicationProperties.getUsers();
+        final var users = properties.getUsers();
 
-        for (var properties : users) {
-            final String username = properties.getUsername();
+        for (var entry : users.entrySet()) {
+            final String username = entry.getKey();
+            final var userProperties = entry.getValue();
 
             if (userRepository.findByUsername(username).isPresent()) {
                 log.info("Account with username {} found... skipping account creation.", username);
@@ -44,14 +42,16 @@ public class AccountInitializer implements ApplicationRunner {
             }
 
             log.info("Adding new account {}...", username);
-            final User user = propertyMapper.toUser(properties);
-            String password = properties.getPassword();
+            final User user = propertyMapper.toUser(username, userProperties);
+
+            String password = userProperties.getPassword();
             if (password == null || password.isBlank()) {
                 password = PasswordGenerator.generate();
                 log.info("Generated password for user {}: {}", username, password);
             }
             String encodedPassword = passwordEncoder.encode(password);
             user.setPassword(encodedPassword);
+
             user.setLocked(false);
             user.setEmailConfirmed(true);
             user.setCredentialsExpired(false);

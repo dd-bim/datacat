@@ -1,12 +1,45 @@
+datacat:
+  url: http://datacat.local:3000
+  auth:
+    secret: change-this-in-production
+    issuer: datacat.local
+  users:
+    admin:
+      firstName: datacat
+      lastName: Admin
+      email: admin@datacat.local
+      password: s3cret
+      roles:
+        - ADMIN
+        - USER
+        - READONLY
+  mail:
+    confirmLink: http://localhost:3000/confirm?token=
+    from: postmaster@nivalis.local
+
 spring:
   profiles:
     active: dev
+  data.neo4j:
+    uri: "bolt://localhost:7687"
+    username: neo4j
+    password: secret
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
 
 graphql:
   servlet:
     enabled: true
     corsEnabled: true
     mapping: /graphql
-    tracingEnabled: true
+    tracing-enabled: "'metrics-only'"
     actuator-metrics: true
     exception-handlers-enabled: true
+
+logging:
+  level:
+    de.bentrm.datcat: DEBUG

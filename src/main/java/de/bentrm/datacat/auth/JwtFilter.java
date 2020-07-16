@@ -1,6 +1,7 @@
 package de.bentrm.datacat.auth;
 
 import de.bentrm.datacat.service.AuthenticationService;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -24,11 +25,15 @@ public class JwtFilter extends OncePerRequestFilter {
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final Pattern BEARER_PATTERN = Pattern.compile("^Bearer (.+?)$");
 
+    @Autowired
+    private MeterRegistry meterRegistry;
+
     @Autowired @Lazy
     private AuthenticationService authenticationService;
 
     @Override
     protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        meterRegistry.counter("datacat.metrics.request", "uri", request.getRequestURI()).increment();
         getToken(request).ifPresent(token -> authenticationService.login(token));
         filterChain.doFilter(request, response);
     }

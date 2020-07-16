@@ -10,6 +10,6 @@ public interface PropertyMapper {
 
     PropertyMapper INSTANCE = Mappers.getMapper(PropertyMapper.class);
 
-    User toUser(UserProperties properties);
+    User toUser(String username, AppProperties.UserProperties properties);
 
 }

@@ -3,6 +3,7 @@ package de.bentrm.datacat.service.impl;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import de.bentrm.datacat.auth.JwtPreAuthenticatedAuthenticationToken;
 import de.bentrm.datacat.auth.JwtUserDetails;
@@ -10,11 +11,11 @@ import de.bentrm.datacat.domain.EmailConfirmationRequest;
 import de.bentrm.datacat.domain.Role;
 import de.bentrm.datacat.domain.User;
 import de.bentrm.datacat.graphql.dto.SignupInput;
-import de.bentrm.datacat.properties.ApplicationProperties;
-import de.bentrm.datacat.properties.AuthProperties;
+import de.bentrm.datacat.properties.AppProperties;
 import de.bentrm.datacat.repository.EmailConfirmationRepository;
 import de.bentrm.datacat.repository.UserRepository;
 import de.bentrm.datacat.service.*;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.audit.listener.AuditApplicationEvent;
@@ -56,7 +57,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public static final String AUTHENTICATION_FAILURE = "AUTHENTICATION_FAILURE";
 
     @Autowired
-    private ApplicationProperties applicationProperties;
+    private MeterRegistry meterRegistry;
+
+    @Autowired
+    private AppProperties properties;
 
     @Autowired
     private JWTVerifier jwtVerifier;
@@ -154,18 +158,28 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void login(@NotBlank String token) {
-        final DecodedJWT jwt = jwtVerifier.verify(token);
-        final String username = jwt.getSubject();
+        meterRegistry.counter("datacat.metrics.auth", "token", token).increment();
 
+        DecodedJWT jwt;
+        try {
+            jwt = jwtVerifier.verify(token);
+        } catch (JWTVerificationException e) {
+            meterRegistry.counter("datacat.metrics.auth.error", "token", token, "type", e.getClass().getName()).increment();
+            throw e;
+        }
+
+        final String username = jwt.getSubject();
         final User user = userRepository
                 .findByUsername(username)
                 .orElseThrow(() -> {
-                    log.info("Bad token: {jwt}");
+                    log.warn("Bad token: {jwt}");
+                    meterRegistry.counter("datacat.metrics.auth.unknown", "username", username).increment();
                     return new UsernameNotFoundException("The provided username is unknown.");
                 });
 
         if (user.isLocked()) {
-            log.info("Bad token: {}", jwt);
+            log.warn("Bad token: {}", jwt);
+            meterRegistry.counter("datacat.metrics.auth.locked", "username", username).increment();
             throw new LockedException("The account is locked - invalid token.");
         }
 
@@ -187,7 +201,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public String buildToken(User user) {
         Instant now = Instant.now();
         Instant expiry = Instant.now().plus(Duration.ofHours(4)); // Token will be valid for 4 hours
-        @NotNull final AuthProperties auth = applicationProperties.getAuth();
+        final AppProperties.AuthProperties auth = properties.getAuth();
         final String[] claims = user.getAuthorities().stream()
                 .map(Role::getAuthority)
                 .toArray(String[]::new);

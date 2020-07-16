@@ -1,6 +1,5 @@
 package de.bentrm.datacat;
 
-import de.bentrm.datacat.properties.ApplicationProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InjectionPoint;
@@ -8,7 +7,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.audit.AuditEventRepository;
 import org.springframework.boot.actuate.audit.InMemoryAuditEventRepository;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -19,9 +18,9 @@ import javax.validation.Validator;
 import java.lang.reflect.Field;
 import java.util.Optional;
 
-@SpringBootApplication
-@EnableConfigurationProperties(ApplicationProperties.class)
 @Configuration
+@ConfigurationPropertiesScan({"de.bentrm.datacat.properties"})
+@SpringBootApplication
 public class Application {
 
     public static void main(String[] args) {
@@ -43,10 +42,10 @@ public class Application {
     public Logger logger(final InjectionPoint ip) {
         return LoggerFactory.getLogger(Optional.ofNullable(ip.getMethodParameter())
                 .<Class>map(MethodParameter::getContainingClass)
-                .orElseGet( () ->
+                .orElseGet(() ->
                         Optional.ofNullable(ip.getField())
                                 .map(Field::getDeclaringClass)
-                                .orElseThrow (IllegalArgumentException::new)
+                                .orElseThrow(IllegalArgumentException::new)
                 )
         );
     }

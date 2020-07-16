@@ -3,23 +3,22 @@ package de.bentrm.datacat.auth;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import de.bentrm.datacat.properties.ApplicationProperties;
-import de.bentrm.datacat.properties.AuthProperties;
-import org.springframework.beans.factory.annotation.Autowired;
+import de.bentrm.datacat.properties.AppProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import javax.validation.constraints.NotNull;
 
 @Configuration
 public class JwtConfiguration {
 
-    @Autowired
-    private ApplicationProperties applicationProperties;
+    private final AppProperties properties;
+
+    public JwtConfiguration(AppProperties properties) {
+        this.properties = properties;
+    }
 
     @Bean
     public JWTVerifier jwtVerifier(Algorithm algorithm) {
-        @NotNull final AuthProperties auth = applicationProperties.getAuth();
+        final var auth = properties.getAuth();
         return JWT
                 .require(algorithm)
                 .withIssuer(auth.getIssuer())
@@ -28,7 +27,7 @@ public class JwtConfiguration {
 
     @Bean
     public Algorithm jwtAlgorithm() {
-        @NotNull final AuthProperties auth = applicationProperties.getAuth();
+        final var auth = properties.getAuth();
         return Algorithm.HMAC256(auth.getSecret());
     }
 

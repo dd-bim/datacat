@@ -1,20 +1,6 @@
-spring:
-  profiles:
-    active: dev
-
-logging:
-  level:
-    de.bentrm.datacat: DEBUG
-
-spring.data.neo4j:
-  uri: "bolt://localhost:7687"
-  username: neo4j
-  password: secret
-
 datacat:
   users:
-    - forceUpdate: true
-      username: admin
+    admin:
       firstName: Admin
       lastName: Tester
       email: tester+admin@datacat.local
@@ -22,24 +8,16 @@ datacat:
         - ADMIN
         - USER
         - READONLY
-    - username: user
+    user:
       firstName: User
       lastName: Tester
       email: tester+user@datacat.local
       roles:
         - USER
         - READONLY
-    - username: guest
+    guest:
       firstName: Guest
       lastName: Tester
       email: tester+guest@datacat.local
       roles:
         - READONLY
-
-  auth:
-    secret: thisisatest
-    issuer: datacat.local
-
-  mail:
-    confirmLink: http://localhost:3000/confirm?token=
-    from: no-reply@datacat.local

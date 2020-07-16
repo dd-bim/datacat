@@ -1,8 +1,7 @@
 package de.bentrm.datacat.service.impl;
 
 import de.bentrm.datacat.domain.EmailConfirmationRequest;
-import de.bentrm.datacat.properties.ApplicationProperties;
-import de.bentrm.datacat.properties.EmailProperties;
+import de.bentrm.datacat.properties.AppProperties;
 import de.bentrm.datacat.service.EmailService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.StringSubstitutor;
@@ -10,13 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 @Slf4j
-@Service
+@Component
 public class EmailServiceImpl implements EmailService {
 
     final static String confirmEmailTemplate = """
@@ -37,14 +36,14 @@ public class EmailServiceImpl implements EmailService {
     private JavaMailSender javaMailSender;
 
     @Autowired
-    private ApplicationProperties applicationProperties;
+    private AppProperties properties;
 
     @Override
     public void sendEmailConfirmation(@NotNull EmailConfirmationRequest emailConfirmationRequest) {
-        @NotNull final EmailProperties emailProperties = applicationProperties.getMail();
+        final var emailProperties = properties.getMail();
         StringSubstitutor substitutor = new StringSubstitutor(Map.ofEntries(
                 Map.entry("name", emailConfirmationRequest.getUser().getName()),
-                Map.entry("url", applicationProperties.getUrl()),
+                Map.entry("url", properties.getUrl()),
                 Map.entry("confirmUrl", emailProperties.getConfirmLink()),
                 Map.entry("token", emailConfirmationRequest.getToken())
         ));
