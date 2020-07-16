@@ -1,10 +1,10 @@
-FROM openjdk:14-jdk as builder
+FROM adoptopenjdk:14-hotspot as builder
 WORKDIR application
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} application.jar
 RUN java -Djarmode=layertools -jar application.jar extract
 
-FROM openjdk:14-jdk-slim
+FROM adoptopenjdk:14-hotspot
 WORKDIR application
 COPY --from=builder application/dependencies/ ./
 COPY --from=builder application/spring-boot-loader/ ./
