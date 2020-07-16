@@ -20,8 +20,8 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "datacat")
 public class AppProperties {
 
-    @URL
-    private String url;
+    @NotNull
+    private ExplorerProperties explorer;
 
     @NotNull
     private AuthProperties auth;
@@ -31,6 +31,13 @@ public class AppProperties {
 
     @NotNull
     private EmailProperties mail;
+
+    @Validated
+    @Data
+    public static class ExplorerProperties {
+        @URL
+        private String url;
+    }
 
     @Validated
     @Data
@@ -74,9 +81,6 @@ public class AppProperties {
     @Validated
     @Data
     public static class EmailProperties {
-
-        @URL
-        private String confirmLink;
 
         @Email
         private String from;

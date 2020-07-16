@@ -1,5 +1,6 @@
 datacat:
-  url: http://datacat.local:3000
+  explorer:
+    url: http://localhost:3000
   auth:
     secret: change-this-in-production
     issuer: datacat.local
@@ -14,8 +15,7 @@ datacat:
         - USER
         - READONLY
   mail:
-    confirmLink: http://localhost:3000/confirm?token=
-    from: postmaster@nivalis.local
+    from: postmaster@localhost
 
 spring:
   profiles:

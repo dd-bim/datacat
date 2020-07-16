@@ -5,6 +5,7 @@ import de.bentrm.datacat.properties.AppProperties;
 import de.bentrm.datacat.service.EmailService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.StringSubstitutor;
+import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
@@ -41,10 +42,11 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendEmailConfirmation(@NotNull EmailConfirmationRequest emailConfirmationRequest) {
         final var emailProperties = properties.getMail();
+        @URL final String url = properties.getExplorer().getUrl();
         StringSubstitutor substitutor = new StringSubstitutor(Map.ofEntries(
                 Map.entry("name", emailConfirmationRequest.getUser().getName()),
-                Map.entry("url", properties.getUrl()),
-                Map.entry("confirmUrl", emailProperties.getConfirmLink()),
+                Map.entry("url", url),
+                Map.entry("confirmUrl", url + "/confirm?token="),
                 Map.entry("token", emailConfirmationRequest.getToken())
         ));
         String body = substitutor.replace(confirmEmailTemplate);
