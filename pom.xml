@@ -10,7 +10,7 @@
     <description>A generic data catalog implementation based on ISO 12006-3.</description>
 
     <scm>
-        <developerConnection>git:https://kis5.geoinformation.htw-dresden.de/gitlab/bentrm/datacat.git</developerConnection>
+        <developerConnection>git:git:https://kis5.geoinformation.htw-dresden.de/gitlab/bentrm/datacat.git</developerConnection>
         <tag>v0.4.3</tag>
     </scm>
 
