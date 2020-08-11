@@ -1,0 +1,1 @@
+MATCH (n:Facet) DETACH DELETE n

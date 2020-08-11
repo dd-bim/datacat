@@ -2,6 +2,8 @@ package de.bentrm.datacat.graphql;
 
 import org.springframework.data.domain.Page;
 
+import java.util.Collection;
+
 public class PageInfo {
 
     private final long pageNumber;
@@ -18,6 +20,10 @@ public class PageInfo {
 
     public static PageInfo of(Page<?> page) {
         return new PageInfo(page.getNumber(), page.getSize(), page.getContent().size(), page.getTotalPages());
+    }
+
+    public static PageInfo of(Collection<?> content) {
+        return new PageInfo(0, content.size(), content.size(), 1);
     }
 
     public long getPageNumber() {

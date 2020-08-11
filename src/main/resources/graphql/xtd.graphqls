@@ -23,17 +23,17 @@ interface XtdRoot {
     versionDate: String!
     names: [Translation!]!
     descriptions: [Translation!]!
-    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
-    actsUpon(input: PagingInput): XtdRelActsUponConnection!
-    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
-    associates(input: PagingInput): XtdRelAssociatesConnection!
-    collectedBy(input: PagingInput): XtdRelCollectsConnection!
-    composedBy(input: PagingInput): XtdRelComposesConnection!
-    composes(input: PagingInput): XtdRelComposesConnection!
-    groupedBy(input: PagingInput): XtdRelGroupsConnection!
-    groups(input: PagingInput): XtdRelGroupsConnection!
-    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
-    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    actedUponBy: XtdRelActsUponConnection!
+    actsUpon: XtdRelActsUponConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    associates: XtdRelAssociatesConnection!
+    collectedBy: XtdRelCollectsConnection!
+    composedBy: XtdRelComposesConnection!
+    composes: XtdRelComposesConnection!
+    groupedBy: XtdRelGroupsConnection!
+    groups: XtdRelGroupsConnection!
+    specializedBy: XtdRelSpecializesConnection!
+    specializes: XtdRelSpecializesConnection!
 }
 
 interface XtdObject implements XtdRoot {
@@ -42,18 +42,18 @@ interface XtdObject implements XtdRoot {
     versionDate: String!
     names: [Translation!]!
     descriptions: [Translation!]!
-    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
-    actsUpon(input: PagingInput): XtdRelActsUponConnection!
-    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
-    associates(input: PagingInput): XtdRelAssociatesConnection!
-    collectedBy(input: PagingInput): XtdRelCollectsConnection!
-    composedBy(input: PagingInput): XtdRelComposesConnection!
-    composes(input: PagingInput): XtdRelComposesConnection!
+    actedUponBy: XtdRelActsUponConnection!
+    actsUpon: XtdRelActsUponConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    associates: XtdRelAssociatesConnection!
+    collectedBy: XtdRelCollectsConnection!
+    composedBy: XtdRelComposesConnection!
+    composes: XtdRelComposesConnection!
     documentedBy: XtdRelDocumentsConnection!
-    groupedBy(input: PagingInput): XtdRelGroupsConnection!
-    groups(input: PagingInput): XtdRelGroupsConnection!
-    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
-    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    groupedBy: XtdRelGroupsConnection!
+    groups: XtdRelGroupsConnection!
+    specializedBy: XtdRelSpecializesConnection!
+    specializes: XtdRelSpecializesConnection!
 }
 
 interface XtdCollection implements XtdRoot {
@@ -62,18 +62,18 @@ interface XtdCollection implements XtdRoot {
     versionDate: String!
     names: [Translation!]!
     descriptions: [Translation!]!
-    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
-    actsUpon(input: PagingInput): XtdRelActsUponConnection!
-    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
-    associates(input: PagingInput): XtdRelAssociatesConnection!
-    collectedBy(input: PagingInput): XtdRelCollectsConnection!
-    collects(input: PagingInput): XtdRelCollectsConnection!
-    composedBy(input: PagingInput): XtdRelComposesConnection!
-    composes(input: PagingInput): XtdRelComposesConnection!
-    groupedBy(input: PagingInput): XtdRelGroupsConnection!
-    groups(input: PagingInput): XtdRelGroupsConnection!
-    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
-    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    actedUponBy: XtdRelActsUponConnection!
+    actsUpon: XtdRelActsUponConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    associates: XtdRelAssociatesConnection!
+    collectedBy: XtdRelCollectsConnection!
+    collects: XtdRelCollectsConnection!
+    composedBy: XtdRelComposesConnection!
+    composes: XtdRelComposesConnection!
+    groupedBy: XtdRelGroupsConnection!
+    groups: XtdRelGroupsConnection!
+    specializedBy: XtdRelSpecializesConnection!
+    specializes: XtdRelSpecializesConnection!
 }
 
 interface XtdRelationship implements XtdRoot {
@@ -82,17 +82,17 @@ interface XtdRelationship implements XtdRoot {
     versionDate: String!
     names: [Translation!]!
     descriptions: [Translation!]!
-    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
-    actsUpon(input: PagingInput): XtdRelActsUponConnection!
-    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
-    associates(input: PagingInput): XtdRelAssociatesConnection!
-    collectedBy(input: PagingInput): XtdRelCollectsConnection!
-    composedBy(input: PagingInput): XtdRelComposesConnection!
-    composes(input: PagingInput): XtdRelComposesConnection!
-    groupedBy(input: PagingInput): XtdRelGroupsConnection!
-    groups(input: PagingInput): XtdRelGroupsConnection!
-    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
-    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    actedUponBy: XtdRelActsUponConnection!
+    actsUpon: XtdRelActsUponConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    associates: XtdRelAssociatesConnection!
+    collectedBy: XtdRelCollectsConnection!
+    composedBy: XtdRelComposesConnection!
+    composes: XtdRelComposesConnection!
+    groupedBy: XtdRelGroupsConnection!
+    groups: XtdRelGroupsConnection!
+    specializedBy: XtdRelSpecializesConnection!
+    specializes: XtdRelSpecializesConnection!
 }
 
 type XtdActivity implements XtdRoot, XtdObject {
@@ -101,18 +101,18 @@ type XtdActivity implements XtdRoot, XtdObject {
     versionDate: String!
     names: [Translation!]!
     descriptions: [Translation!]!
-    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
-    actsUpon(input: PagingInput): XtdRelActsUponConnection!
-    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
-    associates(input: PagingInput): XtdRelAssociatesConnection!
-    collectedBy(input: PagingInput): XtdRelCollectsConnection!
-    composedBy(input: PagingInput): XtdRelComposesConnection!
-    composes(input: PagingInput): XtdRelComposesConnection!
+    actedUponBy: XtdRelActsUponConnection!
+    actsUpon: XtdRelActsUponConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    associates: XtdRelAssociatesConnection!
+    collectedBy: XtdRelCollectsConnection!
+    composedBy: XtdRelComposesConnection!
+    composes: XtdRelComposesConnection!
     documentedBy: XtdRelDocumentsConnection!
-    groupedBy(input: PagingInput): XtdRelGroupsConnection!
-    groups(input: PagingInput): XtdRelGroupsConnection!
-    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
-    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    groupedBy: XtdRelGroupsConnection!
+    groups: XtdRelGroupsConnection!
+    specializedBy: XtdRelSpecializesConnection!
+    specializes: XtdRelSpecializesConnection!
 }
 
 type XtdActor implements XtdRoot, XtdObject {
@@ -121,18 +121,18 @@ type XtdActor implements XtdRoot, XtdObject {
     versionDate: String!
     names: [Translation!]!
     descriptions: [Translation!]!
-    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
-    actsUpon(input: PagingInput): XtdRelActsUponConnection!
-    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
-    associates(input: PagingInput): XtdRelAssociatesConnection!
-    collectedBy(input: PagingInput): XtdRelCollectsConnection!
-    composedBy(input: PagingInput): XtdRelComposesConnection!
-    composes(input: PagingInput): XtdRelComposesConnection!
+    actedUponBy: XtdRelActsUponConnection!
+    actsUpon: XtdRelActsUponConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    associates: XtdRelAssociatesConnection!
+    collectedBy: XtdRelCollectsConnection!
+    composedBy: XtdRelComposesConnection!
+    composes: XtdRelComposesConnection!
     documentedBy: XtdRelDocumentsConnection!
-    groupedBy(input: PagingInput): XtdRelGroupsConnection!
-    groups(input: PagingInput): XtdRelGroupsConnection!
-    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
-    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    groupedBy: XtdRelGroupsConnection!
+    groups: XtdRelGroupsConnection!
+    specializedBy: XtdRelSpecializesConnection!
+    specializes: XtdRelSpecializesConnection!
 }
 
 type XtdSubject implements XtdRoot, XtdObject {
@@ -141,18 +141,18 @@ type XtdSubject implements XtdRoot, XtdObject {
     versionDate: String!
     names: [Translation!]!
     descriptions: [Translation!]!
-    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
-    actsUpon(input: PagingInput): XtdRelActsUponConnection!
-    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
-    associates(input: PagingInput): XtdRelAssociatesConnection!
-    collectedBy(input: PagingInput): XtdRelCollectsConnection!
-    composedBy(input: PagingInput): XtdRelComposesConnection!
-    composes(input: PagingInput): XtdRelComposesConnection!
+    actedUponBy: XtdRelActsUponConnection!
+    actsUpon: XtdRelActsUponConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    associates: XtdRelAssociatesConnection!
+    collectedBy: XtdRelCollectsConnection!
+    composedBy: XtdRelComposesConnection!
+    composes: XtdRelComposesConnection!
     documentedBy: XtdRelDocumentsConnection!
-    groupedBy(input: PagingInput): XtdRelGroupsConnection!
-    groups(input: PagingInput): XtdRelGroupsConnection!
-    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
-    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    groupedBy: XtdRelGroupsConnection!
+    groups: XtdRelGroupsConnection!
+    specializedBy: XtdRelSpecializesConnection!
+    specializes: XtdRelSpecializesConnection!
 }
 
 
@@ -162,18 +162,18 @@ type XtdClassification implements XtdRoot, XtdObject {
     versionDate: String!
     names: [Translation!]!
     descriptions: [Translation!]!
-    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
-    actsUpon(input: PagingInput): XtdRelActsUponConnection!
-    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
-    associates(input: PagingInput): XtdRelAssociatesConnection!
-    collectedBy(input: PagingInput): XtdRelCollectsConnection!
-    composedBy(input: PagingInput): XtdRelComposesConnection!
-    composes(input: PagingInput): XtdRelComposesConnection!
+    actedUponBy: XtdRelActsUponConnection!
+    actsUpon: XtdRelActsUponConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    associates: XtdRelAssociatesConnection!
+    collectedBy: XtdRelCollectsConnection!
+    composedBy: XtdRelComposesConnection!
+    composes: XtdRelComposesConnection!
     documentedBy: XtdRelDocumentsConnection!
-    groupedBy(input: PagingInput): XtdRelGroupsConnection!
-    groups(input: PagingInput): XtdRelGroupsConnection!
-    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
-    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    groupedBy: XtdRelGroupsConnection!
+    groups: XtdRelGroupsConnection!
+    specializedBy: XtdRelSpecializesConnection!
+    specializes: XtdRelSpecializesConnection!
 }
 
 type XtdMeasureWithUnit implements XtdRoot, XtdObject {
@@ -184,18 +184,18 @@ type XtdMeasureWithUnit implements XtdRoot, XtdObject {
     descriptions: [Translation!]!
     unitComponent: XtdUnit
     valueDomain: [XtdValue!]!
-    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
-    actsUpon(input: PagingInput): XtdRelActsUponConnection!
-    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
-    associates(input: PagingInput): XtdRelAssociatesConnection!
-    collectedBy(input: PagingInput): XtdRelCollectsConnection!
-    composedBy(input: PagingInput): XtdRelComposesConnection!
-    composes(input: PagingInput): XtdRelComposesConnection!
+    actedUponBy: XtdRelActsUponConnection!
+    actsUpon: XtdRelActsUponConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    associates: XtdRelAssociatesConnection!
+    collectedBy: XtdRelCollectsConnection!
+    composedBy: XtdRelComposesConnection!
+    composes: XtdRelComposesConnection!
     documentedBy: XtdRelDocumentsConnection!
-    groupedBy(input: PagingInput): XtdRelGroupsConnection!
-    groups(input: PagingInput): XtdRelGroupsConnection!
-    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
-    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    groupedBy: XtdRelGroupsConnection!
+    groups: XtdRelGroupsConnection!
+    specializedBy: XtdRelSpecializesConnection!
+    specializes: XtdRelSpecializesConnection!
 }
 
 type XtdProperty implements XtdRoot, XtdObject {
@@ -204,18 +204,18 @@ type XtdProperty implements XtdRoot, XtdObject {
     versionDate: String!
     names: [Translation!]!
     descriptions: [Translation!]!
-    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
-    actsUpon(input: PagingInput): XtdRelActsUponConnection!
-    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
-    associates(input: PagingInput): XtdRelAssociatesConnection!
-    collectedBy(input: PagingInput): XtdRelCollectsConnection!
-    composedBy(input: PagingInput): XtdRelComposesConnection!
-    composes(input: PagingInput): XtdRelComposesConnection!
+    actedUponBy: XtdRelActsUponConnection!
+    actsUpon: XtdRelActsUponConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    associates: XtdRelAssociatesConnection!
+    collectedBy: XtdRelCollectsConnection!
+    composedBy: XtdRelComposesConnection!
+    composes: XtdRelComposesConnection!
     documentedBy: XtdRelDocumentsConnection!
-    groupedBy(input: PagingInput): XtdRelGroupsConnection!
-    groups(input: PagingInput): XtdRelGroupsConnection!
-    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
-    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    groupedBy: XtdRelGroupsConnection!
+    groups: XtdRelGroupsConnection!
+    specializedBy: XtdRelSpecializesConnection!
+    specializes: XtdRelSpecializesConnection!
 }
 
 
@@ -225,18 +225,18 @@ type XtdUnit implements XtdRoot, XtdObject {
     versionDate: String!
     names: [Translation!]!
     descriptions: [Translation!]!
-    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
-    actsUpon(input: PagingInput): XtdRelActsUponConnection!
-    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
-    associates(input: PagingInput): XtdRelAssociatesConnection!
-    collectedBy(input: PagingInput): XtdRelCollectsConnection!
-    composedBy(input: PagingInput): XtdRelComposesConnection!
-    composes(input: PagingInput): XtdRelComposesConnection!
+    actedUponBy: XtdRelActsUponConnection!
+    actsUpon: XtdRelActsUponConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    associates: XtdRelAssociatesConnection!
+    collectedBy: XtdRelCollectsConnection!
+    composedBy: XtdRelComposesConnection!
+    composes: XtdRelComposesConnection!
     documentedBy: XtdRelDocumentsConnection!
-    groupedBy(input: PagingInput): XtdRelGroupsConnection!
-    groups(input: PagingInput): XtdRelGroupsConnection!
-    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
-    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    groupedBy: XtdRelGroupsConnection!
+    groups: XtdRelGroupsConnection!
+    specializedBy: XtdRelSpecializesConnection!
+    specializes: XtdRelSpecializesConnection!
 }
 
 enum XtdValueTypeEnum {
@@ -274,18 +274,18 @@ type XtdValue implements XtdRoot, XtdObject {
     valueRole: XtdValueRoleEnum!
     valueType: XtdValueTypeEnum!
     nominalValue: String
-    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
-    actsUpon(input: PagingInput): XtdRelActsUponConnection!
-    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
-    associates(input: PagingInput): XtdRelAssociatesConnection!
-    collectedBy(input: PagingInput): XtdRelCollectsConnection!
-    composedBy(input: PagingInput): XtdRelComposesConnection!
-    composes(input: PagingInput): XtdRelComposesConnection!
+    actedUponBy: XtdRelActsUponConnection!
+    actsUpon: XtdRelActsUponConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    associates: XtdRelAssociatesConnection!
+    collectedBy: XtdRelCollectsConnection!
+    composedBy: XtdRelComposesConnection!
+    composes: XtdRelComposesConnection!
     documentedBy: XtdRelDocumentsConnection!
-    groupedBy(input: PagingInput): XtdRelGroupsConnection!
-    groups(input: PagingInput): XtdRelGroupsConnection!
-    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
-    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    groupedBy: XtdRelGroupsConnection!
+    groups: XtdRelGroupsConnection!
+    specializedBy: XtdRelSpecializesConnection!
+    specializes: XtdRelSpecializesConnection!
 }
 
 type XtdBag implements XtdRoot, XtdCollection {
@@ -294,18 +294,18 @@ type XtdBag implements XtdRoot, XtdCollection {
     versionDate: String!
     names: [Translation!]!
     descriptions: [Translation!]!
-    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
-    actsUpon(input: PagingInput): XtdRelActsUponConnection!
-    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
-    associates(input: PagingInput): XtdRelAssociatesConnection!
-    collectedBy(input: PagingInput): XtdRelCollectsConnection!
-    collects(input: PagingInput): XtdRelCollectsConnection!
-    composedBy(input: PagingInput): XtdRelComposesConnection!
-    composes(input: PagingInput): XtdRelComposesConnection!
-    groupedBy(input: PagingInput): XtdRelGroupsConnection!
-    groups(input: PagingInput): XtdRelGroupsConnection!
-    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
-    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    actedUponBy: XtdRelActsUponConnection!
+    actsUpon: XtdRelActsUponConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    associates: XtdRelAssociatesConnection!
+    collectedBy: XtdRelCollectsConnection!
+    collects: XtdRelCollectsConnection!
+    composedBy: XtdRelComposesConnection!
+    composes: XtdRelComposesConnection!
+    groupedBy: XtdRelGroupsConnection!
+    groups: XtdRelGroupsConnection!
+    specializedBy: XtdRelSpecializesConnection!
+    specializes: XtdRelSpecializesConnection!
 }
 
 type XtdNest implements XtdRoot, XtdCollection {
@@ -314,18 +314,18 @@ type XtdNest implements XtdRoot, XtdCollection {
     versionDate: String!
     names: [Translation!]!
     descriptions: [Translation!]!
-    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
-    actsUpon(input: PagingInput): XtdRelActsUponConnection!
-    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
-    associates(input: PagingInput): XtdRelAssociatesConnection!
-    collectedBy(input: PagingInput): XtdRelCollectsConnection!
-    collects(input: PagingInput): XtdRelCollectsConnection!
-    composedBy(input: PagingInput): XtdRelComposesConnection!
-    composes(input: PagingInput): XtdRelComposesConnection!
-    groupedBy(input: PagingInput): XtdRelGroupsConnection!
-    groups(input: PagingInput): XtdRelGroupsConnection!
-    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
-    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    actedUponBy: XtdRelActsUponConnection!
+    actsUpon: XtdRelActsUponConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    associates: XtdRelAssociatesConnection!
+    collectedBy: XtdRelCollectsConnection!
+    collects: XtdRelCollectsConnection!
+    composedBy: XtdRelComposesConnection!
+    composes: XtdRelComposesConnection!
+    groupedBy: XtdRelGroupsConnection!
+    groups: XtdRelGroupsConnection!
+    specializedBy: XtdRelSpecializesConnection!
+    specializes: XtdRelSpecializesConnection!
 }
 
 type XtdRelAssignsCollections implements XtdRoot, XtdRelationship {
@@ -336,17 +336,17 @@ type XtdRelAssignsCollections implements XtdRoot, XtdRelationship {
     descriptions: [Translation!]!
     relatingObject: XtdObject!
     relatedCollections: [XtdCollection!]!
-    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
-    actsUpon(input: PagingInput): XtdRelActsUponConnection!
-    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
-    associates(input: PagingInput): XtdRelAssociatesConnection!
-    collectedBy(input: PagingInput): XtdRelCollectsConnection!
-    composedBy(input: PagingInput): XtdRelComposesConnection!
-    composes(input: PagingInput): XtdRelComposesConnection!
-    groupedBy(input: PagingInput): XtdRelGroupsConnection!
-    groups(input: PagingInput): XtdRelGroupsConnection!
-    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
-    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    actedUponBy: XtdRelActsUponConnection!
+    actsUpon: XtdRelActsUponConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    associates: XtdRelAssociatesConnection!
+    collectedBy: XtdRelCollectsConnection!
+    composedBy: XtdRelComposesConnection!
+    composes: XtdRelComposesConnection!
+    groupedBy: XtdRelGroupsConnection!
+    groups: XtdRelGroupsConnection!
+    specializedBy: XtdRelSpecializesConnection!
+    specializes: XtdRelSpecializesConnection!
 }
 
 type XtdRelAssignsPropertyWithValues implements XtdRoot, XtdRelationship {
@@ -358,17 +358,17 @@ type XtdRelAssignsPropertyWithValues implements XtdRoot, XtdRelationship {
     relatingObject: XtdObject!
     relatedProperty: XtdProperty!
     relatedValues: [XtdValue!]!
-    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
-    actsUpon(input: PagingInput): XtdRelActsUponConnection!
-    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
-    associates(input: PagingInput): XtdRelAssociatesConnection!
-    collectedBy(input: PagingInput): XtdRelCollectsConnection!
-    composedBy(input: PagingInput): XtdRelComposesConnection!
-    composes(input: PagingInput): XtdRelComposesConnection!
-    groupedBy(input: PagingInput): XtdRelGroupsConnection!
-    groups(input: PagingInput): XtdRelGroupsConnection!
-    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
-    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    actedUponBy: XtdRelActsUponConnection!
+    actsUpon: XtdRelActsUponConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    associates: XtdRelAssociatesConnection!
+    collectedBy: XtdRelCollectsConnection!
+    composedBy: XtdRelComposesConnection!
+    composes: XtdRelComposesConnection!
+    groupedBy: XtdRelGroupsConnection!
+    groups: XtdRelGroupsConnection!
+    specializedBy: XtdRelSpecializesConnection!
+    specializes: XtdRelSpecializesConnection!
 }
 
 type XtdRelCollects implements XtdRoot, XtdRelationship {
@@ -378,18 +378,18 @@ type XtdRelCollects implements XtdRoot, XtdRelationship {
     names: [Translation!]!
     descriptions: [Translation!]!
     relatingCollection: XtdCollection!
-    relatedThings: [XtdRoot!]!
-    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
-    actsUpon(input: PagingInput): XtdRelActsUponConnection!
-    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
-    associates(input: PagingInput): XtdRelAssociatesConnection!
-    collectedBy(input: PagingInput): XtdRelCollectsConnection!
-    composedBy(input: PagingInput): XtdRelComposesConnection!
-    composes(input: PagingInput): XtdRelComposesConnection!
-    groupedBy(input: PagingInput): XtdRelGroupsConnection!
-    groups(input: PagingInput): XtdRelGroupsConnection!
-    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
-    specializes(input: PagingInput): XtdRelSpecializesConnection!
+    relatedThings: XtdRootConnection!
+    actedUponBy: XtdRelActsUponConnection!
+    actsUpon: XtdRelActsUponConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    associates: XtdRelAssociatesConnection!
+    collectedBy: XtdRelCollectsConnection!
+    composedBy: XtdRelComposesConnection!
+    composes: XtdRelComposesConnection!
+    groupedBy: XtdRelGroupsConnection!
+    groups: XtdRelGroupsConnection!
+    specializedBy: XtdRelSpecializesConnection!
+    specializes: XtdRelSpecializesConnection!
 }
 
 type XtdRelDocuments implements XtdRoot, XtdRelationship {
@@ -399,18 +399,18 @@ type XtdRelDocuments implements XtdRoot, XtdRelationship {
     names: [Translation!]!
     descriptions: [Translation!]!
     relatingDocument: XtdExternalDocument!
-    relatedThings: [XtdRoot!]!
-    collectedBy(input: PagingInput): XtdRelCollectsConnection!
-    associates(input: PagingInput): XtdRelAssociatesConnection!
-    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
-    groups(input: PagingInput): XtdRelGroupsConnection!
-    groupedBy(input: PagingInput): XtdRelGroupsConnection!
-    specializes(input: PagingInput): XtdRelSpecializesConnection!
-    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
-    composes(input: PagingInput): XtdRelComposesConnection!
-    composedBy(input: PagingInput): XtdRelComposesConnection!
-    actsUpon(input: PagingInput): XtdRelActsUponConnection!
-    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
+    relatedThings: XtdRootConnection!
+    actedUponBy: XtdRelActsUponConnection!
+    actsUpon: XtdRelActsUponConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    associates: XtdRelAssociatesConnection!
+    collectedBy: XtdRelCollectsConnection!
+    composedBy: XtdRelComposesConnection!
+    composes: XtdRelComposesConnection!
+    groupedBy: XtdRelGroupsConnection!
+    groups: XtdRelGroupsConnection!
+    specializedBy: XtdRelSpecializesConnection!
+    specializes: XtdRelSpecializesConnection!
 }
 
 type XtdRelAssociates implements XtdRoot, XtdRelationship {
@@ -420,18 +420,18 @@ type XtdRelAssociates implements XtdRoot, XtdRelationship {
     names: [Translation!]!
     descriptions: [Translation!]!
     relatingThing: XtdObject!
-    relatedThings(input: PagingInput): XtdObjectConnection!
-    collectedBy(input: PagingInput): XtdRelCollectsConnection!
-    associates(input: PagingInput): XtdRelAssociatesConnection!
-    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
-    groups(input: PagingInput): XtdRelGroupsConnection!
-    groupedBy(input: PagingInput): XtdRelGroupsConnection!
-    specializes(input: PagingInput): XtdRelSpecializesConnection!
-    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
-    composes(input: PagingInput): XtdRelComposesConnection!
-    composedBy(input: PagingInput): XtdRelComposesConnection!
-    actsUpon(input: PagingInput): XtdRelActsUponConnection!
-    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
+    relatedThings: XtdObjectConnection!
+    actedUponBy: XtdRelActsUponConnection!
+    actsUpon: XtdRelActsUponConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    associates: XtdRelAssociatesConnection!
+    collectedBy: XtdRelCollectsConnection!
+    composedBy: XtdRelComposesConnection!
+    composes: XtdRelComposesConnection!
+    groupedBy: XtdRelGroupsConnection!
+    groups: XtdRelGroupsConnection!
+    specializedBy: XtdRelSpecializesConnection!
+    specializes: XtdRelSpecializesConnection!
 }
 
 type XtdRelGroups implements XtdRoot, XtdRelationship {
@@ -441,18 +441,18 @@ type XtdRelGroups implements XtdRoot, XtdRelationship {
     names: [Translation!]!
     descriptions: [Translation!]!
     relatingThing: XtdRoot!
-    relatedThings(input: PagingInput): XtdRootConnection!
-    collectedBy(input: PagingInput): XtdRelCollectsConnection!
-    associates(input: PagingInput): XtdRelAssociatesConnection!
-    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
-    groups(input: PagingInput): XtdRelGroupsConnection!
-    groupedBy(input: PagingInput): XtdRelGroupsConnection!
-    specializes(input: PagingInput): XtdRelSpecializesConnection!
-    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
-    composes(input: PagingInput): XtdRelComposesConnection!
-    composedBy(input: PagingInput): XtdRelComposesConnection!
-    actsUpon(input: PagingInput): XtdRelActsUponConnection!
-    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
+    relatedThings: XtdRootConnection!
+    actedUponBy: XtdRelActsUponConnection!
+    actsUpon: XtdRelActsUponConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    associates: XtdRelAssociatesConnection!
+    collectedBy: XtdRelCollectsConnection!
+    composedBy: XtdRelComposesConnection!
+    composes: XtdRelComposesConnection!
+    groupedBy: XtdRelGroupsConnection!
+    groups: XtdRelGroupsConnection!
+    specializedBy: XtdRelSpecializesConnection!
+    specializes: XtdRelSpecializesConnection!
 }
 
 type XtdRelSpecializes implements XtdRoot, XtdRelationship {
@@ -462,18 +462,18 @@ type XtdRelSpecializes implements XtdRoot, XtdRelationship {
     names: [Translation!]!
     descriptions: [Translation!]!
     relatingThing: XtdRoot!
-    relatedThings(input: PagingInput): XtdRootConnection!
-    collectedBy(input: PagingInput): XtdRelCollectsConnection!
-    associates(input: PagingInput): XtdRelAssociatesConnection!
-    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
-    groups(input: PagingInput): XtdRelGroupsConnection!
-    groupedBy(input: PagingInput): XtdRelGroupsConnection!
-    specializes(input: PagingInput): XtdRelSpecializesConnection!
-    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
-    composes(input: PagingInput): XtdRelComposesConnection!
-    composedBy(input: PagingInput): XtdRelComposesConnection!
-    actsUpon(input: PagingInput): XtdRelActsUponConnection!
-    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
+    relatedThings: XtdRootConnection!
+    actedUponBy: XtdRelActsUponConnection!
+    actsUpon: XtdRelActsUponConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    associates: XtdRelAssociatesConnection!
+    collectedBy: XtdRelCollectsConnection!
+    composedBy: XtdRelComposesConnection!
+    composes: XtdRelComposesConnection!
+    groupedBy: XtdRelGroupsConnection!
+    groups: XtdRelGroupsConnection!
+    specializedBy: XtdRelSpecializesConnection!
+    specializes: XtdRelSpecializesConnection!
 }
 
 type XtdRelComposes implements XtdRoot, XtdRelationship {
@@ -483,18 +483,18 @@ type XtdRelComposes implements XtdRoot, XtdRelationship {
     names: [Translation!]!
     descriptions: [Translation!]!
     relatingThing: XtdRoot!
-    relatedThings(input: PagingInput): XtdRootConnection!
-    collectedBy(input: PagingInput): XtdRelCollectsConnection!
-    associates(input: PagingInput): XtdRelAssociatesConnection!
-    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
-    groups(input: PagingInput): XtdRelGroupsConnection!
-    groupedBy(input: PagingInput): XtdRelGroupsConnection!
-    specializes(input: PagingInput): XtdRelSpecializesConnection!
-    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
-    composes(input: PagingInput): XtdRelComposesConnection!
-    composedBy(input: PagingInput): XtdRelComposesConnection!
-    actsUpon(input: PagingInput): XtdRelActsUponConnection!
-    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
+    relatedThings: XtdRootConnection!
+    actedUponBy: XtdRelActsUponConnection!
+    actsUpon: XtdRelActsUponConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    associates: XtdRelAssociatesConnection!
+    collectedBy: XtdRelCollectsConnection!
+    composedBy: XtdRelComposesConnection!
+    composes: XtdRelComposesConnection!
+    groupedBy: XtdRelGroupsConnection!
+    groups: XtdRelGroupsConnection!
+    specializedBy: XtdRelSpecializesConnection!
+    specializes: XtdRelSpecializesConnection!
 }
 
 type XtdRelActsUpon implements XtdRoot, XtdRelationship {
@@ -504,18 +504,18 @@ type XtdRelActsUpon implements XtdRoot, XtdRelationship {
     names: [Translation!]!
     descriptions: [Translation!]!
     relatingThing: XtdRoot!
-    relatedThings(input: PagingInput): XtdRootConnection!
-    collectedBy(input: PagingInput): XtdRelCollectsConnection!
-    associates(input: PagingInput): XtdRelAssociatesConnection!
-    associatedBy(input: PagingInput): XtdRelAssociatesConnection!
-    groups(input: PagingInput): XtdRelGroupsConnection!
-    groupedBy(input: PagingInput): XtdRelGroupsConnection!
-    specializes(input: PagingInput): XtdRelSpecializesConnection!
-    specializedBy(input: PagingInput): XtdRelSpecializesConnection!
-    composes(input: PagingInput): XtdRelComposesConnection!
-    composedBy(input: PagingInput): XtdRelComposesConnection!
-    actsUpon(input: PagingInput): XtdRelActsUponConnection!
-    actedUponBy(input: PagingInput): XtdRelActsUponConnection!
+    relatedThings: XtdRootConnection!
+    actedUponBy: XtdRelActsUponConnection!
+    actsUpon: XtdRelActsUponConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    associates: XtdRelAssociatesConnection!
+    collectedBy: XtdRelCollectsConnection!
+    composedBy: XtdRelComposesConnection!
+    composes: XtdRelComposesConnection!
+    groupedBy: XtdRelGroupsConnection!
+    groups: XtdRelGroupsConnection!
+    specializedBy: XtdRelSpecializesConnection!
+    specializes: XtdRelSpecializesConnection!
 }
 
 # Connections
@@ -681,9 +681,4 @@ type SearchResultConnection {
     nodes: [CatalogItem!]!
     pageInfo: PageInfo!
     totalElements: Int!
-}
-
-input PagingInput {
-    pageNumber: Int
-    pageSize: Int
 }

@@ -29,7 +29,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,prometheus
+        include: auditevents,health,info,prometheus
 
 graphql:
   servlet:
@@ -42,4 +42,14 @@ graphql:
 
 logging:
   level:
-    de.bentrm.datcat: DEBUG
+    de:
+      bentrm:
+        datacat:
+          repository: TRACE
+    org:
+      neo4j:
+        ogm:
+          drivers:
+            bolt:
+              request:
+                BoltRequest: DEBUG

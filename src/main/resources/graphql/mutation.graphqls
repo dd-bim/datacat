@@ -4,29 +4,13 @@ input TextInput {
     value: String!
 }
 
-input FacetInput {
-    id: ID
-    names: [TextInput!]!
-    descriptions: [TextInput!]!
-    targets: [EntityTypes!]!
-}
-
-input FacetUpdateInput {
-    id: ID!
-    names: [TextInput!]!
-    descriptions: [TextInput!]!
-    targets: [EntityTypes!]!
-}
-
 input EntityInput {
     id: ID
-    facets: [ID!]!
     names: [TextInput!]!
 }
 
 input EntityUpdateInput {
     id: ID!
-    facets: [ID!]!
     names: [TextInput!]!
 }
 
@@ -34,7 +18,6 @@ input RootInput {
     id: ID
     versionId: String!
     versionDate: String!
-    facets: [ID!]!
     names: [TextInput!]!
     descriptions: [TextInput!]!
 }
@@ -43,7 +26,6 @@ input RootUpdateInput {
     id: ID!
     versionId: String!
     versionDate: String!
-    facets: [ID!]!
     names: [TextInput!]!
     descriptions: [TextInput!]!
 }
@@ -52,7 +34,6 @@ input ValueInput {
     id: ID
     versionId: String!
     versionDate: String!
-    facets: [ID!]!
     names: [TextInput!]!
     descriptions: [TextInput!]!
     toleranceType: XtdToleranceTypeEnum!
@@ -67,7 +48,6 @@ input ValueUpdateInput {
     id: ID!
     versionId: String!
     versionDate: String!
-    facets: [ID!]!
     names: [TextInput!]!
     descriptions: [TextInput!]!
     toleranceType: XtdToleranceTypeEnum!
@@ -82,7 +62,6 @@ input MeasureInput {
     id: ID
     versionId: String!
     versionDate: String!
-    facets: [ID!]!
     names: [TextInput!]!
     descriptions: [TextInput!]!
     unitComponent: ID
@@ -93,7 +72,6 @@ input MeasureUpdateInput {
     id: ID!
     versionId: String!
     versionDate: String!
-    facets: [ID!]!
     names: [TextInput!]!
     descriptions: [TextInput!]!
     unitComponent: ID
@@ -104,7 +82,6 @@ input DocumentsInput {
     id: ID
     versionId: String!
     versionDate: String!
-    facets: [ID!]!
     names: [TextInput!]!
     descriptions: [TextInput!]!
     relatingDocument: ID!
@@ -115,7 +92,6 @@ input DocumentsUpdateInput {
     id: ID!
     versionId: String!
     versionDate: String!
-    facets: [ID!]!
     names: [TextInput!]!
     descriptions: [TextInput!]!
     relatingDocument: ID!
@@ -126,7 +102,6 @@ input AssignsCollectionsInput {
     id: ID
     versionId: String!
     versionDate: String!
-    facets: [ID!]!
     names: [TextInput!]!
     descriptions: [TextInput!]!
     relatingObject: ID!
@@ -137,7 +112,6 @@ input AssignsCollectionsUpdateInput {
     id: ID!
     versionId: String!
     versionDate: String!
-    facets: [ID!]!
     names: [TextInput!]!
     descriptions: [TextInput!]!
     relatingObject: ID!
@@ -148,7 +122,6 @@ input AssignsPropertyWithValuesInput {
     id: ID
     versionId: String!
     versionDate: String!
-    facets: [ID!]!
     names: [TextInput!]!
     descriptions: [TextInput!]!
     relatingObject: ID!
@@ -160,7 +133,6 @@ input AssignsPropertyWithValuesUpdateInput {
     id: ID!
     versionId: String!
     versionDate: String!
-    facets: [ID!]!
     names: [TextInput!]!
     descriptions: [TextInput!]!
     relatingObject: ID!
@@ -172,7 +144,6 @@ input CollectsInput {
     id: ID
     versionId: String!
     versionDate: String!
-    facets: [ID!]!
     names: [TextInput!]!
     descriptions: [TextInput!]!
     relatingCollection: ID!
@@ -183,7 +154,6 @@ input CollectsUpdateInput {
     id: ID!
     versionId: String!
     versionDate: String!
-    facets: [ID!]!
     names: [TextInput!]!
     descriptions: [TextInput!]!
     relatingCollection: ID!
@@ -194,7 +164,6 @@ input AssociationInput {
     id: ID
     versionId: String!
     versionDate: String!
-    facets: [ID!]!
     names: [TextInput!]!
     descriptions: [TextInput!]
     relatingThing: ID!
@@ -205,7 +174,6 @@ input AssociationUpdateInput {
     id: ID!
     versionId: String!
     versionDate: String!
-    facets: [ID!]!
     names: [TextInput!]!
     descriptions: [TextInput!]
     relatingThing: ID!
@@ -213,10 +181,6 @@ input AssociationUpdateInput {
 }
 
 type Mutation {
-    createFacet(input: FacetInput!): Facet
-    updateFacet(input: FacetUpdateInput!): Facet
-    deleteFacet(id: ID!): Facet
-
     createExternalDocument(input: EntityInput!): XtdExternalDocument
     updateExternalDocument(input: EntityUpdateInput!): XtdExternalDocument
     deleteExternalDocument(id: ID!): XtdExternalDocument

@@ -15,24 +15,6 @@ interface Entity {
     lastModifiedBy: String!
 }
 
-type Facet implements Entity {
-    id: ID!
-    label: String!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    names: [Translation!]!
-    descriptions: [Translation!]!
-    targets: [EntityTypes!]!
-}
-
-type FacetConnection {
-    nodes: [Facet!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
-}
-
 interface CatalogItem implements Entity {
     id: ID!
     label: String!
@@ -41,7 +23,6 @@ interface CatalogItem implements Entity {
     lastModified: String!
     lastModifiedBy: String!
     names: [Translation!]!
-    facets: [Facet!]!
 }
 
 # Xtd misc
@@ -59,7 +40,6 @@ extend type XtdExternalDocument implements Entity, CatalogItem {
     createdBy: String!
     lastModified: String!
     lastModifiedBy: String!
-    facets: [Facet!]!
 }
 
 extend interface XtdRoot implements Entity, CatalogItem {
@@ -68,7 +48,6 @@ extend interface XtdRoot implements Entity, CatalogItem {
     createdBy: String!
     lastModified: String!
     lastModifiedBy: String!
-    facets: [Facet!]!
 }
 
 # XtdObjects
@@ -79,7 +58,6 @@ extend interface XtdObject implements Entity, CatalogItem {
     createdBy: String!
     lastModified: String!
     lastModifiedBy: String!
-    facets: [Facet!]!
 }
 
 extend type XtdActivity implements Entity, CatalogItem {
@@ -88,7 +66,6 @@ extend type XtdActivity implements Entity, CatalogItem {
     createdBy: String!
     lastModified: String!
     lastModifiedBy: String!
-    facets: [Facet!]!
 }
 
 extend type XtdActor implements Entity, CatalogItem {
@@ -97,7 +74,6 @@ extend type XtdActor implements Entity, CatalogItem {
     createdBy: String!
     lastModified: String!
     lastModifiedBy: String!
-    facets: [Facet!]!
 }
 
 extend type XtdClassification implements Entity, CatalogItem {
@@ -106,7 +82,6 @@ extend type XtdClassification implements Entity, CatalogItem {
     createdBy: String!
     lastModified: String!
     lastModifiedBy: String!
-    facets: [Facet!]!
 }
 
 extend type XtdMeasureWithUnit implements Entity, CatalogItem {
@@ -115,7 +90,6 @@ extend type XtdMeasureWithUnit implements Entity, CatalogItem {
     createdBy: String!
     lastModified: String!
     lastModifiedBy: String!
-    facets: [Facet!]!
 }
 
 extend type XtdProperty implements Entity, CatalogItem {
@@ -124,7 +98,6 @@ extend type XtdProperty implements Entity, CatalogItem {
     createdBy: String!
     lastModified: String!
     lastModifiedBy: String!
-    facets: [Facet!]!
 }
 
 extend type XtdSubject implements Entity, CatalogItem {
@@ -133,7 +106,6 @@ extend type XtdSubject implements Entity, CatalogItem {
     createdBy: String!
     lastModified: String!
     lastModifiedBy: String!
-    facets: [Facet!]!
 }
 
 extend type XtdUnit implements Entity, CatalogItem {
@@ -142,7 +114,6 @@ extend type XtdUnit implements Entity, CatalogItem {
     createdBy: String!
     lastModified: String!
     lastModifiedBy: String!
-    facets: [Facet!]!
 }
 
 extend type XtdValue implements Entity, CatalogItem {
@@ -151,7 +122,6 @@ extend type XtdValue implements Entity, CatalogItem {
     createdBy: String!
     lastModified: String!
     lastModifiedBy: String!
-    facets: [Facet!]!
 }
 
 extend interface XtdCollection implements Entity, CatalogItem {
@@ -160,7 +130,6 @@ extend interface XtdCollection implements Entity, CatalogItem {
     createdBy: String!
     lastModified: String!
     lastModifiedBy: String!
-    facets: [Facet!]!
 }
 
 extend type XtdBag implements Entity, CatalogItem {
@@ -169,7 +138,6 @@ extend type XtdBag implements Entity, CatalogItem {
     createdBy: String!
     lastModified: String!
     lastModifiedBy: String!
-    facets: [Facet!]!
 }
 
 extend type XtdNest implements Entity, CatalogItem {
@@ -178,7 +146,6 @@ extend type XtdNest implements Entity, CatalogItem {
     createdBy: String!
     lastModified: String!
     lastModifiedBy: String!
-    facets: [Facet!]!
 }
 
 extend interface XtdRelationship implements Entity, CatalogItem {
@@ -187,7 +154,6 @@ extend interface XtdRelationship implements Entity, CatalogItem {
     createdBy: String!
     lastModified: String!
     lastModifiedBy: String!
-    facets: [Facet!]!
 }
 
 extend type XtdRelAssignsCollections implements Entity, CatalogItem {
@@ -196,7 +162,6 @@ extend type XtdRelAssignsCollections implements Entity, CatalogItem {
     createdBy: String!
     lastModified: String!
     lastModifiedBy: String!
-    facets: [Facet!]!
 }
 
 extend type XtdRelAssignsPropertyWithValues implements Entity, CatalogItem {
@@ -205,7 +170,6 @@ extend type XtdRelAssignsPropertyWithValues implements Entity, CatalogItem {
     createdBy: String!
     lastModified: String!
     lastModifiedBy: String!
-    facets: [Facet!]!
 }
 
 extend type XtdRelCollects implements Entity, CatalogItem {
@@ -214,7 +178,6 @@ extend type XtdRelCollects implements Entity, CatalogItem {
     createdBy: String!
     lastModified: String!
     lastModifiedBy: String!
-    facets: [Facet!]!
 }
 
 extend type XtdRelDocuments implements Entity, CatalogItem {
@@ -223,7 +186,6 @@ extend type XtdRelDocuments implements Entity, CatalogItem {
     createdBy: String!
     lastModified: String!
     lastModifiedBy: String!
-    facets: [Facet!]!
 }
 
 extend type XtdRelAssociates implements Entity, CatalogItem {
@@ -232,7 +194,6 @@ extend type XtdRelAssociates implements Entity, CatalogItem {
     createdBy: String!
     lastModified: String!
     lastModifiedBy: String!
-    facets: [Facet!]!
 }
 
 extend type XtdRelGroups implements Entity, CatalogItem {
@@ -241,7 +202,6 @@ extend type XtdRelGroups implements Entity, CatalogItem {
     createdBy: String!
     lastModified: String!
     lastModifiedBy: String!
-    facets: [Facet!]!
 }
 
 extend type XtdRelSpecializes implements Entity, CatalogItem {
@@ -250,7 +210,6 @@ extend type XtdRelSpecializes implements Entity, CatalogItem {
     createdBy: String!
     lastModified: String!
     lastModifiedBy: String!
-    facets: [Facet!]!
 }
 
 extend type XtdRelComposes implements Entity, CatalogItem {
@@ -259,7 +218,6 @@ extend type XtdRelComposes implements Entity, CatalogItem {
     createdBy: String!
     lastModified: String!
     lastModifiedBy: String!
-    facets: [Facet!]!
 }
 
 extend type XtdRelActsUpon implements Entity, CatalogItem {
@@ -268,7 +226,6 @@ extend type XtdRelActsUpon implements Entity, CatalogItem {
     createdBy: String!
     lastModified: String!
     lastModifiedBy: String!
-    facets: [Facet!]!
 }
 
 # inputs
@@ -308,7 +265,6 @@ enum EntityTypes {
 
 input SearchInput {
     query: String
-    queryScope: QueryScopes
     entityTypeIn: [EntityTypes!]
     entityTypeNotIn: [EntityTypes!]
     idIn: [String!]
@@ -317,15 +273,8 @@ input SearchInput {
     pageSize: Int
 }
 
-enum QueryScopes {
-    ALL
-    NAMES
-    DESCRIPTIONS
-}
-
 input FilterInput {
     query: String
-    queryScope: QueryScopes
     idIn: [String!]
     idNotIn: [String!]
     pageNumber: Int
@@ -337,8 +286,6 @@ input FilterInput {
 type Query {
     statistics: CatalogStatistics!
     node(id: ID!): Entity
-    facet(id: ID!): Facet
-    facets(input: FilterInput): FacetConnection!
     language(languageCode: ID!): XtdLanguage
     search(input: SearchInput): SearchResultConnection!
     externalDocuments(input: FilterInput): XtdExternalDocumentConnection!

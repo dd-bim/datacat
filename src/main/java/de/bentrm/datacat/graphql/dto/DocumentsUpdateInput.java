@@ -1,13 +1,18 @@
 package de.bentrm.datacat.graphql.dto;
 
 import de.bentrm.datacat.validation.IdConstraint;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class DocumentsUpdateInput extends RootUpdateInput {
 
     @NotBlank @IdConstraint
@@ -15,21 +20,4 @@ public class DocumentsUpdateInput extends RootUpdateInput {
 
     private @NotNull
     final List<@NotBlank @IdConstraint String> relatedThings = new ArrayList<>();
-
-    public String getRelatingDocument() {
-        return relatingDocument;
-    }
-
-    public List<String> getRelatedThings() {
-        return relatedThings;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this)
-                .appendSuper(super.toString())
-                .append("relatingDocument", relatingDocument)
-                .append("relatedThings", relatedThings)
-                .toString();
-    }
 }
