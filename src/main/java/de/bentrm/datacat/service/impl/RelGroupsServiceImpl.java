@@ -8,15 +8,11 @@ import de.bentrm.datacat.graphql.dto.AssociationUpdateInput;
 import de.bentrm.datacat.repository.RelGroupsRepository;
 import de.bentrm.datacat.repository.RootRepository;
 import de.bentrm.datacat.service.RelGroupsService;
-import de.bentrm.datacat.service.Specification;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,16 +60,6 @@ public class RelGroupsServiceImpl
         mapRelated(entity, newRelatedIds);
     }
 
-    @Override
-    public Page<XtdRelGroups> findByRelatingThingId(@NotBlank String relatingObjectId, Pageable pageable) {
-        return repository.findAllGroupedBy(relatingObjectId, pageable);
-    }
-
-    @Override
-    public @NotNull Page<XtdRelGroups> findByRelatedThingId(@NotBlank String relatedObjectId, Pageable pageable) {
-        return repository.findAllGrouping(relatedObjectId, pageable);
-    }
-
     private void mapRelating(XtdRelGroups entity, String relatingId) {
         thingRepository
                 .findById(relatingId)
@@ -84,10 +70,8 @@ public class RelGroupsServiceImpl
     }
 
     private void mapRelated(XtdRelGroups entity, List<String> relatedIds) {
-        final Specification spec = Specification
-                .unspecified()
-                .setIdIn(relatedIds);
-        final Page<XtdRoot> relatedThings = thingRepository.findAll(spec);
-        entity.getRelatedThings().addAll(relatedThings.getContent());
+        List<XtdRoot> target = new ArrayList<>();
+        thingRepository.findAllById(relatedIds).forEach(target::add);
+        entity.getRelatedThings().addAll(target);
     }
 }

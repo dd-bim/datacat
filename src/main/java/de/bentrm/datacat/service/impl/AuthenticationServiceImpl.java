@@ -3,7 +3,6 @@ package de.bentrm.datacat.service.impl;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import de.bentrm.datacat.auth.JwtPreAuthenticatedAuthenticationToken;
 import de.bentrm.datacat.auth.JwtUserDetails;
@@ -15,7 +14,6 @@ import de.bentrm.datacat.properties.AppProperties;
 import de.bentrm.datacat.repository.EmailConfirmationRepository;
 import de.bentrm.datacat.repository.UserRepository;
 import de.bentrm.datacat.service.*;
-import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.audit.listener.AuditApplicationEvent;
@@ -57,9 +55,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public static final String AUTHENTICATION_FAILURE = "AUTHENTICATION_FAILURE";
 
     @Autowired
-    private MeterRegistry meterRegistry;
-
-    @Autowired
     private AppProperties properties;
 
     @Autowired
@@ -79,7 +74,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Autowired
     private EmailService emailService;
-
 
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
@@ -158,28 +152,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void login(@NotBlank String token) {
-        meterRegistry.counter("datacat.metrics.auth", "token", token).increment();
-
-        DecodedJWT jwt;
-        try {
-            jwt = jwtVerifier.verify(token);
-        } catch (JWTVerificationException e) {
-            meterRegistry.counter("datacat.metrics.auth.error", "token", token, "type", e.getClass().getName()).increment();
-            throw e;
-        }
-
+        DecodedJWT jwt = jwtVerifier.verify(token);
         final String username = jwt.getSubject();
+
         final User user = userRepository
                 .findByUsername(username)
-                .orElseThrow(() -> {
-                    log.warn("Bad token: {jwt}");
-                    meterRegistry.counter("datacat.metrics.auth.unknown", "username", username).increment();
-                    return new UsernameNotFoundException("The provided username is unknown.");
-                });
+                .orElseThrow(() -> new UsernameNotFoundException("The provided username is unknown."));
 
         if (user.isLocked()) {
-            log.warn("Bad token: {}", jwt);
-            meterRegistry.counter("datacat.metrics.auth.locked", "username", username).increment();
             throw new LockedException("The account is locked - invalid token.");
         }
 
@@ -190,8 +170,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 userDetails.getUsername(),
                 userDetails.getAuthorities(),
                 webAuthenticationDetails);
+
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        applicationEventPublisher.publishEvent(new AuditApplicationEvent(Instant.now(), authenticationToken.getName(), AUTHENTICATION_SUCCESS, new HashMap<>()));
+        applicationEventPublisher.publishEvent(new AuditApplicationEvent(Instant.now(), username, AUTHENTICATION_SUCCESS, new HashMap<>()));
     }
 
     private void publishAuthenticationFailure(String username) {

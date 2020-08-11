@@ -9,12 +9,11 @@ import de.bentrm.datacat.repository.CollectionRepository;
 import de.bentrm.datacat.repository.ObjectRepository;
 import de.bentrm.datacat.repository.RelAssignsCollectionsRepository;
 import de.bentrm.datacat.service.RelAssignsCollectionsService;
-import de.bentrm.datacat.service.Specification;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -74,10 +73,9 @@ public class RelAssignsCollectionsServiceImpl
     }
 
     private void mapRelated(XtdRelAssignsCollections entity, List<String> relatedIds) {
-        final Specification spec = Specification
-                .unspecified()
-                .setIdIn(relatedIds);
-        final Page<XtdCollection> relatedThings = collectionRepository.findAll(spec);
-        entity.getRelatedCollections().addAll(relatedThings.getContent());
+        final Iterable<XtdCollection> relatedThings = collectionRepository.findAllById(relatedIds);
+        List<XtdCollection> target = new ArrayList<>();
+        relatedThings.forEach(target::add);
+        entity.getRelatedCollections().addAll(target);
     }
 }

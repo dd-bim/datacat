@@ -8,12 +8,11 @@ import de.bentrm.datacat.repository.ExternalDocumentRepository;
 import de.bentrm.datacat.repository.RelDocumentsRepository;
 import de.bentrm.datacat.repository.RootRepository;
 import de.bentrm.datacat.service.RelDocumentsService;
-import de.bentrm.datacat.service.Specification;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,10 +72,8 @@ public class RelDocumentsServiceImpl
     }
 
     private void mapRelated(XtdRelDocuments entity, List<String> relatedIds) {
-        Specification spec = Specification
-                .unspecified()
-                .setIdIn(relatedIds);
-        Page<XtdRoot> relatedThings = thingsRepository.findAll(spec);
-        entity.getRelatedThings().addAll(relatedThings.getContent());
+        List<XtdRoot> target = new ArrayList<>();
+        thingsRepository.findAllById(relatedIds).forEach(target::add);
+        entity.getRelatedThings().addAll(target);
     }
 }

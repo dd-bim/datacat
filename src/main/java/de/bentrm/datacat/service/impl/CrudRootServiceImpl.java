@@ -1,20 +1,19 @@
 package de.bentrm.datacat.service.impl;
 
-import de.bentrm.datacat.domain.Translation;
 import de.bentrm.datacat.domain.XtdRoot;
 import de.bentrm.datacat.graphql.dto.RootInput;
 import de.bentrm.datacat.graphql.dto.RootUpdateInput;
 import de.bentrm.datacat.graphql.dto.TextInput;
 import de.bentrm.datacat.repository.GraphEntityRepository;
 import de.bentrm.datacat.service.CrudEntityService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 
-import static de.bentrm.datacat.service.impl.ServiceUtil.mapTextInputToTranslationSet;
-
+@Slf4j
 public abstract class CrudRootServiceImpl<
         T extends XtdRoot,
         C extends RootInput,
@@ -36,10 +35,8 @@ public abstract class CrudRootServiceImpl<
         entity.setVersionId(dto.getVersionId());
         entity.setVersionDate(dto.getVersionDate());
 
-        List<TextInput> descriptions = dto.getDescriptions();
-        for (TextInput input : descriptions) {
-            final Translation translation = inputMapper.toTranslation(input);
-            entity.getDescriptions().add(translation);
+        for (TextInput input : dto.getDescriptions()) {
+            entity.setDescription(input.getId(), input.getLanguageCode(), List.of(input.getValue()));
         }
     }
 
@@ -50,7 +47,10 @@ public abstract class CrudRootServiceImpl<
         entity.setVersionId(dto.getVersionId());
         entity.setVersionDate(dto.getVersionDate());
 
-        mapTextInputToTranslationSet(entity.getDescriptions(), dto.getDescriptions());
+        List<TextInput> descriptions = dto.getDescriptions();
+        for (TextInput input : descriptions) {
+            entity.setDescription(input.getId(), input.getLanguageCode(), List.of(input.getValue()));
+        }
     }
 
     @Transactional
@@ -63,7 +63,7 @@ public abstract class CrudRootServiceImpl<
 
             // delete groups relationships of this entity
             entity.getGroups().forEach(relation -> {
-                logger.debug("Deleting Relationship {}", relation);
+                log.debug("Deleting Relationship {}", relation);
                 relGroupsService.delete(relation.getId());
             });
 

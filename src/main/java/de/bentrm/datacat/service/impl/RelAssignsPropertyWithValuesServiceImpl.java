@@ -10,12 +10,11 @@ import de.bentrm.datacat.repository.PropertyRepository;
 import de.bentrm.datacat.repository.RelAssignsPropertyWithValuesRepository;
 import de.bentrm.datacat.repository.ValueRepository;
 import de.bentrm.datacat.service.RelAssignsPropertyWithValuesService;
-import de.bentrm.datacat.service.Specification;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -93,10 +92,9 @@ public class RelAssignsPropertyWithValuesServiceImpl
     }
 
     private void mapRelatedValues(XtdRelAssignsPropertyWithValues entity, List<String> relatedIds) {
-        final Specification spec = Specification
-                .unspecified()
-                .setIdIn(relatedIds);
-        final Page<XtdValue> relatedThings = valueRepository.findAll(spec);
-        entity.getRelatedValues().addAll(relatedThings.getContent());
+        final Iterable<XtdValue> relatedThings = valueRepository.findAllById(relatedIds);
+        List<XtdValue> target = new ArrayList<>();
+        relatedThings.forEach(target::add);
+        entity.getRelatedValues().addAll(target);
     }
 }

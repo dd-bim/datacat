@@ -8,15 +8,11 @@ import de.bentrm.datacat.graphql.dto.AssociationUpdateInput;
 import de.bentrm.datacat.repository.RelComposesRepository;
 import de.bentrm.datacat.repository.RootRepository;
 import de.bentrm.datacat.service.RelComposesService;
-import de.bentrm.datacat.service.Specification;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,16 +60,6 @@ public class RelComposesServiceImpl
         mapRelated(entity, newRelatedIds);
     }
 
-    @Override
-    public Page<XtdRelComposes> findByRelatingThingId(@NotBlank String relatingObjectId, Pageable pageable) {
-        return repository.findAllComposedBy(relatingObjectId, pageable);
-    }
-
-    @Override
-    public @NotNull Page<XtdRelComposes> findByRelatedThingId(@NotBlank String relatedObjectId, Pageable pageable) {
-        return repository.findAllComposing(relatedObjectId, pageable);
-    }
-
     private void mapRelating(XtdRelComposes entity, String relatingCollectionId) {
         thingRepository
                 .findById(relatingCollectionId)
@@ -84,10 +70,8 @@ public class RelComposesServiceImpl
     }
 
     private void mapRelated(XtdRelComposes entity, List<String> relatedThingsIds) {
-        final Specification spec = Specification
-                .unspecified()
-                .setIdIn(relatedThingsIds);
-        final Page<XtdRoot> relatedThings = thingRepository.findAll(spec);
-        entity.getRelatedThings().addAll(relatedThings.getContent());
+        List<XtdRoot> target = new ArrayList<>();
+        thingRepository.findAllById(relatedThingsIds).forEach(target::add);
+        entity.getRelatedThings().addAll(target);
     }
 }

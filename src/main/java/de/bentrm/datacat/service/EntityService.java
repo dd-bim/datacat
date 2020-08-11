@@ -1,8 +1,8 @@
 package de.bentrm.datacat.service;
 
 import de.bentrm.datacat.domain.Entity;
+import de.bentrm.datacat.specification.QuerySpecification;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.validation.constraints.NotNull;
@@ -15,9 +15,11 @@ public interface EntityService<T extends Entity> {
     @NotNull Optional<T> findById(@NotNull String id);
 
     @PreAuthorize("hasRole('READONLY')")
-    @NotNull Page<T> search(@NotNull Specification specification);
+    @NotNull List<T> findAllByIds(@NotNull List<String> ids);
 
     @PreAuthorize("hasRole('READONLY')")
-    @NotNull Page<T> findByIds(@NotNull List<String> ids, @NotNull Pageable pageable);
+    @NotNull Page<T> findAll(@NotNull QuerySpecification specification);
 
+    @PreAuthorize("hasRole('READONLY')")
+    @NotNull long count(@NotNull QuerySpecification specification);
 }

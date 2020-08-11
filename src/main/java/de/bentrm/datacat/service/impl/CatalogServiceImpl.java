@@ -1,13 +1,14 @@
 package de.bentrm.datacat.service.impl;
 
 import de.bentrm.datacat.domain.CatalogItem;
-import de.bentrm.datacat.domain.Entity;
+import de.bentrm.datacat.domain.XtdRoot;
 import de.bentrm.datacat.graphql.dto.CatalogItemStatistics;
 import de.bentrm.datacat.graphql.dto.CatalogStatistics;
 import de.bentrm.datacat.repository.CatalogItemRepository;
-import de.bentrm.datacat.repository.EntityRepository;
+import de.bentrm.datacat.repository.RootRepository;
 import de.bentrm.datacat.service.CatalogService;
-import de.bentrm.datacat.service.Specification;
+import de.bentrm.datacat.specification.CatalogItemSpecification;
+import de.bentrm.datacat.specification.RootSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -25,10 +26,10 @@ import java.util.Optional;
 public class CatalogServiceImpl implements CatalogService {
 
     @Autowired
-    private EntityRepository entityRepository;
+    private CatalogItemRepository catalogItemRepository;
 
     @Autowired
-    private CatalogItemRepository catalogItemRepository;
+    private RootRepository rootRepository;
 
     @Override
     public CatalogStatistics getStatistics() {
@@ -43,17 +44,32 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
-    public @NotNull Optional<Entity> getEntity(@NotBlank String id) {
-        return entityRepository.findById(id);
-    }
-
-    @Override
     public @NotNull Optional<CatalogItem> getCatalogItem(@NotBlank String id) {
         return catalogItemRepository.findById(id);
     }
 
     @Override
-    public @NotNull Page<CatalogItem> searchCatalogItem(@NotNull Specification specification) {
+    public @NotNull Optional<XtdRoot> getRootItem(@NotNull String id) {
+        return rootRepository.findById(id);
+    }
+
+    @Override
+    public @NotNull Page<CatalogItem> findAllCatalogItems(@NotNull CatalogItemSpecification specification) {
         return catalogItemRepository.findAll(specification);
+    }
+
+    @Override
+    public long countCatalogItems(@NotNull CatalogItemSpecification specification) {
+        return catalogItemRepository.count(specification);
+    }
+
+    @Override
+    public @NotNull Page<XtdRoot> findAllRootItems(@NotNull RootSpecification specification) {
+        return rootRepository.findAll(specification);
+    }
+
+    @Override
+    public long countRootItems(@NotNull RootSpecification specification) {
+        return rootRepository.count(specification);
     }
 }

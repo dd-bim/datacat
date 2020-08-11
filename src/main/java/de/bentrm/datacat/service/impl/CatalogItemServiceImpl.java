@@ -1,34 +1,30 @@
 package de.bentrm.datacat.service.impl;
 
 import de.bentrm.datacat.domain.CatalogItem;
-import de.bentrm.datacat.domain.Facet;
-import de.bentrm.datacat.domain.Translation;
 import de.bentrm.datacat.graphql.dto.EntityInput;
 import de.bentrm.datacat.graphql.dto.EntityUpdateInput;
 import de.bentrm.datacat.graphql.dto.InputMapper;
 import de.bentrm.datacat.graphql.dto.TextInput;
-import de.bentrm.datacat.repository.FacetRepository;
 import de.bentrm.datacat.repository.GraphEntityRepository;
 import de.bentrm.datacat.service.CrudEntityService;
 import de.bentrm.datacat.service.RelGroupsService;
-import de.bentrm.datacat.service.Specification;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import de.bentrm.datacat.specification.QuerySpecification;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
-import static de.bentrm.datacat.service.impl.ServiceUtil.mapTextInputToTranslationSet;
+import static de.bentrm.datacat.service.impl.ServiceUtil.sanitizeTextInputValue;
 
+@Slf4j
 @Validated
 @Transactional(readOnly = true)
 public abstract class CatalogItemServiceImpl<
@@ -38,16 +34,11 @@ public abstract class CatalogItemServiceImpl<
         R extends GraphEntityRepository<T>>
         implements CrudEntityService<T, C, U> {
 
-    Logger logger = LoggerFactory.getLogger(SubjectServiceImpl.class);
-
     protected final R repository;
 
     @Autowired
     @Lazy
     protected RelGroupsService relGroupsService;
-
-    @Autowired
-    private FacetRepository facetRepository;
 
     @Autowired
     protected InputMapper inputMapper;
@@ -69,15 +60,8 @@ public abstract class CatalogItemServiceImpl<
 
         List<TextInput> names = dto.getNames();
         for (TextInput name : names) {
-            final Translation translation = inputMapper.toTranslation(name);
-            entity.getNames().add(translation);
+            entity.setName(name.getId(), name.getLanguageCode(), sanitizeTextInputValue(name.getValue()));
         }
-
-        final Specification specification = Specification
-                .unspecified()
-                .setIdIn(dto.getFacets());
-        final Page<Facet> all = facetRepository.findAll(specification);
-        entity.getFacets().addAll(all.getContent());
     }
 
     @Transactional
@@ -87,25 +71,18 @@ public abstract class CatalogItemServiceImpl<
                 .findById(dto.getId())
                 .orElseThrow(() -> new IllegalArgumentException("No Object with id " + dto.getId() + " found."));
 
-        logger.debug("Updating entity {}", entity);
+        log.debug("Updating entity {}", entity);
         updateEntityProperties(entity, dto);
-        logger.debug("New state {}", entity);
+        log.debug("New state {}", entity);
 
         return repository.save(entity);
     }
 
     protected void updateEntityProperties(T entity, U dto) {
-        final Set<Translation> persistentNamesSet = entity.getNames();
-        final List<TextInput> textInput = dto.getNames();
-
-        mapTextInputToTranslationSet(persistentNamesSet, textInput);
-
-        final Specification specification = Specification
-                .unspecified()
-                .setIdIn(dto.getFacets());
-        final Page<Facet> all = facetRepository.findAll(specification);
-        entity.getFacets().retainAll(all.getContent());
-        entity.getFacets().addAll(all.getContent());
+        List<TextInput> names = dto.getNames();
+        for (TextInput name : names) {
+            entity.setName(name.getId(), name.getLanguageCode(), sanitizeTextInputValue(name.getValue()));
+        }
     }
 
     // TODO: Delete all relationships that this entity is on the relating side of
@@ -123,17 +100,21 @@ public abstract class CatalogItemServiceImpl<
     }
 
     @Override
-    public @NotNull Page<T> findByIds(@NotNull List<String> ids, @NotNull Pageable pageable) {
-        final Specification spec = Specification.unspecified();
-        spec.setIdIn(ids);
-        spec.setPageNumber(pageable.getPageNumber());
-        spec.setPageSize(pageable.getPageSize());
-        return repository.findAll(spec);
+    public @NotNull Page<T> findAll(@NotNull QuerySpecification specification) {
+        return repository.findAll(specification);
     }
 
     @Override
-    public @NotNull Page<T> search(@NotNull Specification specification) {
-        return repository.findAll(specification);
+    public @NotNull long count(@NotNull QuerySpecification specification) {
+        return repository.count(specification);
+    }
+
+    @Override
+    public @NotNull List<T> findAllByIds(@NotNull List<String> ids) {
+        Iterable<T> source = repository.findAllById(ids);
+        List<T> target = new ArrayList<>();
+        source.forEach(target::add);
+        return target;
     }
 
     protected abstract T newEntityInstance();

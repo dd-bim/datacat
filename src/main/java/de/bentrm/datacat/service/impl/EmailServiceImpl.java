@@ -3,6 +3,7 @@ package de.bentrm.datacat.service.impl;
 import de.bentrm.datacat.domain.EmailConfirmationRequest;
 import de.bentrm.datacat.properties.AppProperties;
 import de.bentrm.datacat.service.EmailService;
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.StringSubstitutor;
 import org.hibernate.validator.constraints.URL;
@@ -27,7 +28,7 @@ public class EmailServiceImpl implements EmailService {
 
             Please open ${confirmUrl}${token} and enter your confirmation token: ${token}
 
-            If you did not register at ${homeUrl}, someone else may have used your email address
+            If you did not register at ${url}, someone else may have used your email address
             to open an account. In this case, please ignore this message.
 
             Kind regards
@@ -39,6 +40,7 @@ public class EmailServiceImpl implements EmailService {
     @Autowired
     private AppProperties properties;
 
+    @Timed("datacat.service.email.send")
     @Override
     public void sendEmailConfirmation(@NotNull EmailConfirmationRequest emailConfirmationRequest) {
         final var emailProperties = properties.getMail();

@@ -9,12 +9,11 @@ import de.bentrm.datacat.repository.CollectionRepository;
 import de.bentrm.datacat.repository.RelCollectsRepository;
 import de.bentrm.datacat.repository.RootRepository;
 import de.bentrm.datacat.service.RelCollectsService;
-import de.bentrm.datacat.service.Specification;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -74,10 +73,9 @@ public class RelCollectsServiceImpl
     }
 
     private void mapRelated(XtdRelCollects entity, List<String> relatedThingsIds) {
-        final Specification spec = Specification
-                .unspecified()
-                .setIdIn(relatedThingsIds);
-        final Page<XtdRoot> relatedThings = thingRepository.findAll(spec);
-        entity.getRelatedThings().addAll(relatedThings.getContent());
+        var relatedThings = thingRepository.findAllById(relatedThingsIds);
+        List<XtdRoot> target = new ArrayList<>();
+        relatedThings.forEach(target::add);
+        entity.getRelatedThings().addAll(target);
     }
 }

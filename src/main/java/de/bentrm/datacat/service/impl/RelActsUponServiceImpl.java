@@ -8,17 +8,11 @@ import de.bentrm.datacat.graphql.dto.AssociationUpdateInput;
 import de.bentrm.datacat.repository.RelActsUponRepository;
 import de.bentrm.datacat.repository.RootRepository;
 import de.bentrm.datacat.service.RelActsUponService;
-import de.bentrm.datacat.service.Specification;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,8 +22,6 @@ import java.util.stream.Collectors;
 public class RelActsUponServiceImpl
         extends CrudRootServiceImpl<XtdRelActsUpon, AssociationInput, AssociationUpdateInput, RelActsUponRepository>
         implements RelActsUponService {
-
-    Logger logger = LoggerFactory.getLogger(RelActsUponServiceImpl.class);
 
     private final RootRepository thingRepository;
 
@@ -68,16 +60,6 @@ public class RelActsUponServiceImpl
         mapRelatedThings(entity, submittedIds);
     }
 
-    @Override
-    public Page<XtdRelActsUpon> findByRelatingThingId(@NotBlank String relatingObjectId, Pageable pageable) {
-        return repository.findAllActedUponBy(relatingObjectId, pageable);
-    }
-
-    @Override
-    public @NotNull Page<XtdRelActsUpon> findByRelatedThingId(@NotBlank String relatedObjectId, Pageable pageable) {
-        return repository.findAllActingUpon(relatedObjectId, pageable);
-    }
-
     private void mapRelatingThing(XtdRelActsUpon entity, String relatingThingId) {
         thingRepository
                 .findById(relatingThingId)
@@ -88,10 +70,9 @@ public class RelActsUponServiceImpl
     }
 
     private void mapRelatedThings(XtdRelActsUpon entity, List<String> relatedThingsIds) {
-        final Specification spec = Specification
-                .unspecified()
-                .setIdIn(relatedThingsIds);
-        final Page<XtdRoot> relatedThings = thingRepository.findAll(spec);
-        entity.getRelatedThings().addAll(relatedThings.getContent());
+        final Iterable<XtdRoot> relatedThings = thingRepository.findAllById(relatedThingsIds);
+        List<XtdRoot> target = new ArrayList<>();
+        relatedThings.forEach(target::add);
+        entity.getRelatedThings().addAll(target);
     }
 }

@@ -8,15 +8,11 @@ import de.bentrm.datacat.graphql.dto.AssociationUpdateInput;
 import de.bentrm.datacat.repository.RelAssociatesRepository;
 import de.bentrm.datacat.repository.RootRepository;
 import de.bentrm.datacat.service.RelAssociatesService;
-import de.bentrm.datacat.service.Specification;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,16 +60,6 @@ public class RelAssociatesServiceImpl
         mapRelated(entity, newRelatedIds);
     }
 
-    @Override
-    public Page<XtdRelAssociates> findByRelatingThingId(@NotBlank String relatingObjectId, Pageable pageable) {
-        return repository.findAllAssociatedBy(relatingObjectId, pageable);
-    }
-
-    @Override
-    public @NotNull Page<XtdRelAssociates> findByRelatedThingId(@NotBlank String relatedObjectId, Pageable pageable) {
-        return repository.findAllAssociating(relatedObjectId, pageable);
-    }
-
     private void mapRelating(XtdRelAssociates entity, String relatingId) {
         thingRepository
                 .findById(relatingId)
@@ -84,10 +70,9 @@ public class RelAssociatesServiceImpl
     }
 
     private void mapRelated(XtdRelAssociates entity, List<String> relatedIds) {
-        final Specification spec = Specification
-                .unspecified()
-                .setIdIn(relatedIds);
-        final Page<XtdRoot> relatedThings = thingRepository.findAll(spec);
-        entity.getRelatedThings().addAll(relatedThings.getContent());
+        var relatedThings = thingRepository.findAllById(relatedIds);
+        List<XtdRoot> target = new ArrayList<>();
+        relatedThings.forEach(target::add);
+        entity.getRelatedThings().addAll(target);
     }
 }
