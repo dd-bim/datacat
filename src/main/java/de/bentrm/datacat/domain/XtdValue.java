@@ -21,17 +21,6 @@ public class XtdValue extends XtdObject {
 
     private String nominalValue;
 
-    @Override
-    public String getLabel() {
-        if (this.nominalValue != null) {
-            if (this.valueType != null) {
-                return String.format("%s (%s::%s)", super.getLabel(), this.valueType, this.nominalValue);
-            }
-            return String.format("%s (%s)", super.getLabel(), this.nominalValue);
-        }
-        return super.getLabel();
-    }
-
     public String getLowerTolerance() {
         return lowerTolerance;
     }

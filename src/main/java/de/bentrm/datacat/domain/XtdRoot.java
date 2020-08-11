@@ -6,6 +6,7 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @NodeEntity(label = XtdRoot.LABEL)
@@ -30,6 +31,9 @@ public abstract class XtdRoot extends CatalogItem {
 
     @Relationship(type = XtdRelAssociates.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
     private final Set<XtdRelAssociates> associatedBy = new HashSet<>();
+
+    @Relationship(type = XtdRelDocuments.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
+    private final Set<XtdRelDocuments> documentedBy = new HashSet<>();
 
     @Relationship(type = XtdRelGroups.RELATIONSHIP_TYPE)
     private final Set<XtdRelGroups> groups = new HashSet<>();
@@ -95,6 +99,10 @@ public abstract class XtdRoot extends CatalogItem {
         return associatedBy;
     }
 
+    public Set<XtdRelDocuments> getDocumentedBy() {
+        return documentedBy;
+    }
+
     public Set<XtdRelGroups> getGroups() {
         return groups;
     }
@@ -125,6 +133,20 @@ public abstract class XtdRoot extends CatalogItem {
 
     public Set<XtdRelActsUpon> getActedUponBy() {
         return actedUponBy;
+    }
+
+    public void setDescription(String id, String languageTag, List<String> values) {
+        final Translation translation = this.descriptions.stream()
+                .filter(x -> id != null && !id.isBlank() && x.getId().equals(id))
+                .peek(x -> {
+                    if (!x.getLanguageCode().equals(languageTag)) {
+                        throw new IllegalArgumentException("The language code of a translation may not be changed.");
+                    }
+                    x.setValues(values);
+                })
+                .findFirst()
+                .orElseGet(() -> new Translation(id, languageTag, values));
+        this.descriptions.add(translation);
     }
 
     @Override

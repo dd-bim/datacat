@@ -1,47 +1,43 @@
 package de.bentrm.datacat.domain;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
+@Data
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+@ToString(callSuper = true)
 @NodeEntity(label = "Translation")
 public class Translation extends Entity {
 
+    @EqualsAndHashCode.Include
     @NotBlank
-    private String languageCode;
+    private final String languageCode;
 
+    @Index
     @NotBlank
     private String label;
 
+    @EqualsAndHashCode.Include
     @NotEmpty
     private final List<@NotBlank String> values = new ArrayList<>();
 
-    public Translation() {
-    }
-
-    public Translation(@NotBlank String languageCode, @NotEmpty List<@NotBlank String> values) {
-        this.setLanguageCode(languageCode);
-        this.setValues(values);
-    }
-
-    public Translation(@NotBlank String id, @NotBlank String languageCode, @NotEmpty List<@NotBlank String> values) {
-        this.setId(id);
-        this.setLanguageCode(languageCode);
+    public Translation(@Nullable String id, @NotBlank String languageCode, @NotEmpty List<@NotBlank String> values) {
+        this.id = id != null && !id.isBlank() ? id : null;
+        this.languageCode = languageCode;
         this.setValues(values);
     }
 
     public String getLanguageCode() {
         return languageCode;
-    }
-
-    public void setLanguageCode(String languageCode) {
-        this.languageCode = languageCode;
     }
 
     public String getLabel() {
@@ -52,29 +48,9 @@ public class Translation extends Entity {
         return List.copyOf(values);
     }
 
-    public void setValue(String value) {
-        final String[] strings = value.split(",");
-        final List<String> trimmed = Arrays.stream(strings)
-                .map(String::trim)
-                .filter(x -> !x.isEmpty())
-                .collect(Collectors.toList());
-        this.setValues(trimmed);
-    }
-
-    public void setValues(List<String> values) {
+    void setValues(List<String> values) {
         this.values.clear();
         this.values.addAll(values);
         this.label = String.join(", ", this.values);
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this)
-                .appendSuper(super.toString())
-                .append("id", id)
-                .append("languageCode", languageCode)
-                .append("label", label)
-                .append("values", values)
-                .toString();
     }
 }

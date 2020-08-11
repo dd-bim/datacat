@@ -1,56 +1,58 @@
 package de.bentrm.datacat.domain;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Properties;
 import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.lang.Nullable;
 
-import java.util.HashSet;
-import java.util.Set;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import java.util.*;
 
+@Slf4j
+@Data
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+@ToString(callSuper = true)
 @NodeEntity(label = "CatalogItem")
-@PropertyQueryHint({
-        "(root)-[:NAMED|DESCRIBED*0..1]->(:Translation)",
-        "(root)-[:HAS_FACET]->(:Facet)-[:NAMED|DESCRIBED*0..1]->(:Translation)",
-        "(root)-[:DOCUMENTS]-()-[:NAMED|DESCRIBED*0..1]->(:Translation)",
-        "(root)-[:COLLECTS]-()-[:NAMED|DESCRIBED*0..1]->(:Translation)",
-        "(root)-[:ASSIGNS_COLLECTIONS]-()-[:NAMED|DESCRIBED*0..1]->(:Translation)",
-        "(root)-[:ASSIGNS_PROPERTY_WITH_VALUES]-()-[:NAMED|DESCRIBED*0..1]->(:Translation)",
-        "(root)-[:ASSOCIATES]-()-[:NAMED|DESCRIBED*0..1]->(:Translation)",
-        "(root)-[:COMPOSES]-()-[:NAMED|DESCRIBED*0..1]->(:Translation)",
-        "(root)-[:GROUPS]-()-[:NAMED|DESCRIBED*0..1]->(:Translation)",
-        "(root)-[:SPECIALIZES]-()-[:NAMED|DESCRIBED*0..1]->(:Translation)",
-        "(root)-[:ACTS_UPON]-()-[:NAMED|DESCRIBED*0..1]->(:Translation)",
-        "(root)-[:HAS_UNIT_COMPONENT|HAS_VALUE_DOMAIN*0..1]->()-[:NAMED|DESCRIBED*0..1]->(:Translation)",
-})
 public abstract class CatalogItem extends Entity {
+
+    public static final String DEFAULT_LANGUAGE_TAG = "de";
+
+    // Primary use case for this property is search and lookup optimization
+    // TODO: Add external full text search component to improve on this mechanic
+    @Setter(AccessLevel.NONE)
+    @Properties
+    private final Map<String, String> labels = new HashMap<>();
 
     @Relationship(type = "NAMED")
     private final Set<Translation> names = new HashSet<>();
 
-    @Relationship(type = "HAS_FACET")
-    private final Set<Facet> facets = new HashSet<>();
+    public String getLabel() {
+        return this.getLabel(DEFAULT_LANGUAGE_TAG);
+    }
+
+    public String getLabel(String languageTag) {
+        return this.labels.getOrDefault(languageTag, this.id);
+    }
 
     public Set<Translation> getNames() {
-        return this.names;
+        return Set.copyOf(this.names);
     }
 
-    public Set<Facet> getFacets() {
-        return this.facets;
-    }
-
-    public String getLabel() {
-        return this.getNames().stream()
-                .map(Translation::getLabel)
-                .reduce((a, b) -> a + ", " + b)
-                .orElseGet(() -> String.format("<%s>", this.getId()));
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this)
-                .append("label", this.getLabel())
-                .append("names", names)
-                .append("facets", facets)
-                .toString();
+    public void setName(@Nullable String id, @NotBlank String languageTag, @NotEmpty List<@NotBlank String> values) {
+        final Translation translation = this.names.stream()
+                .filter(x -> id != null && !id.isBlank() && x.getId().equals(id))
+                .peek(x -> {
+                    if (!x.getLanguageCode().equals(languageTag)) {
+                        throw new IllegalArgumentException("The language code of a translation may not be changed.");
+                    }
+                    x.setValues(values);
+                })
+                .findFirst()
+                .orElseGet(() -> new Translation(id, languageTag, values));
+        this.names.add(translation);
+        this.labels.put(translation.getLanguageCode(), translation.getLabel());
     }
 }
