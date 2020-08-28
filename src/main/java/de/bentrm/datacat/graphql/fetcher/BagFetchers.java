@@ -55,13 +55,21 @@ public class BagFetchers extends AbstractEntityFetchers<XtdBag, RootInput, RootU
                     .entityTypeIn(List.of("XtdRelCollects"))
                     .idIn(source.getCollects().stream().map(Entity::getId).collect(Collectors.toList()))
                     .build();
+
+            // only the size of the connection is accessed
             if (!env.getSelectionSet().containsAnyOf("nodes/*", "pageInfo/*")) {
+                // property might have been fetched and populated before so we can count the sets size
+                if (source.getCollects() != null) {
+                    return Connection.empty(source.getCollects().size());
+                }
                 final @NotNull long count = catalogService.countRootItems(specification);
                 return Connection.empty(count);
             }
+
+            // the property needs to be populated
             @NotNull final Page<XtdRoot> page = catalogService.findAllRootItems(specification);
             final List<XtdRelCollects> content = page.get().map(x -> (XtdRelCollects) x).collect(Collectors.toList());
-            return new Connection<>(content, PageInfo.of(page), (long) page.getSize());
+            return new Connection<>(content, PageInfo.of(page), page.getTotalElements());
         };
     }
 }
