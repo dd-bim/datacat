@@ -72,13 +72,13 @@ public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
 
     private RuntimeWiring getRuntimeWiring() {
         attributeFetchers.forEach(fetcher -> {
-            log.debug("Registering AttributeFetcher {}", fetcher.getClass());
+            log.trace("Registering AttributeFetcher {}", fetcher.getClass());
             builder.type(fetcher.getTypeName(), wiring -> wiring.dataFetchers(fetcher.getAttributeFetchers()));
         });
 
         builder.type("Query", wiring -> {
             queryFetchers.forEach(fetcher -> {
-                log.debug("Registering QueryFetchers {}", fetcher.getClass());
+                log.trace("Registering QueryFetchers {}", fetcher.getClass());
                 wiring.dataFetchers(fetcher.getQueryFetchers());
             });
             return wiring;
@@ -86,7 +86,7 @@ public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
 
         builder.type("Mutation", wiring -> {
             mutationFetchers.forEach(fetcher -> {
-                log.debug("Registering MutationFetchers {}", fetcher.getClass());
+                log.trace("Registering MutationFetchers {}", fetcher.getClass());
                 wiring.dataFetchers(fetcher.getMutationFetchers());
             });
             return wiring;
@@ -111,7 +111,7 @@ public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
 
     public BufferedInputStream getSchemaFileImputStream(String location) throws IOException {
         final Resource resource = resourceLoader.getResource(location);
-        log.debug("Classpath resource {} available: {}", location, resource.exists());
+        log.trace("Classpath resource {} available: {}", location, resource.exists());
         final InputStream inputStream = resource.getInputStream();
         return new BufferedInputStream(inputStream);
     }

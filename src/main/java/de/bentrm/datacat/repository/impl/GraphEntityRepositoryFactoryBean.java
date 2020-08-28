@@ -26,7 +26,7 @@ public class GraphEntityRepositoryFactoryBean<R extends GraphEntityRepository<T>
 
     public GraphEntityRepositoryFactoryBean(Class<? extends R> repositoryInterface) {
         super(repositoryInterface);
-        logger.debug("New GraphEntityRepositoryFactoryBean for interface {} initialized.", repositoryInterface);
+        logger.trace("New GraphEntityRepositoryFactoryBean for interface {} initialized.", repositoryInterface);
     }
 
     @Autowired
@@ -63,7 +63,7 @@ public class GraphEntityRepositoryFactoryBean<R extends GraphEntityRepository<T>
 
         public GraphEntityRepositoryFactory(Session session, MappingContext<Neo4jPersistentEntity<?>, Neo4jPersistentProperty> mappingContext) {
             super(session, mappingContext);
-            logger.debug("New GraphEntityRepositoryFactory initialized from session {} and mapping context {}", session, mappingContext);
+            logger.trace("New GraphEntityRepositoryFactory initialized from session {} and mapping context {}", session, mappingContext);
         }
 
         @Override

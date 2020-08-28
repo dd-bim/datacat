@@ -71,9 +71,9 @@ public abstract class CatalogItemServiceImpl<
                 .findById(dto.getId())
                 .orElseThrow(() -> new IllegalArgumentException("No Object with id " + dto.getId() + " found."));
 
-        log.debug("Updating entity {}", entity);
+        log.trace("Updating entity {}", entity);
         updateEntityProperties(entity, dto);
-        log.debug("New state {}", entity);
+        log.trace("New state {}", entity);
 
         return repository.save(entity);
     }
