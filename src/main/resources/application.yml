@@ -39,17 +39,3 @@ graphql:
     tracing-enabled: "'metrics-only'"
     actuator-metrics: true
     exception-handlers-enabled: true
-
-logging:
-  level:
-    de:
-      bentrm:
-        datacat:
-          repository: TRACE
-    org:
-      neo4j:
-        ogm:
-          drivers:
-            bolt:
-              request:
-                BoltRequest: DEBUG
