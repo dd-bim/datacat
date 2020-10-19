@@ -1,10 +1,10 @@
 package de.bentrm.datacat.graphql.dto;
 
-import de.bentrm.datacat.domain.XtdToleranceTypeEnum;
+import de.bentrm.datacat.catalog.domain.ToleranceType;
 
 public interface ToleranceComponentInput {
 
-    XtdToleranceTypeEnum getToleranceType();
+    ToleranceType getToleranceType();
 
     String getLowerTolerance();
 

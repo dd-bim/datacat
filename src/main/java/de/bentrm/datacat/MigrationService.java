@@ -1,7 +1,7 @@
 package de.bentrm.datacat;
 
-import de.bentrm.datacat.domain.Migration;
-import de.bentrm.datacat.repository.MigrationRepository;
+import de.bentrm.datacat.base.domain.Migration;
+import de.bentrm.datacat.base.repository.MigrationRepository;
 import de.bentrm.datacat.util.QueryStatisticsWrapper;
 import de.bentrm.datacat.util.UtilMapper;
 import lombok.extern.slf4j.Slf4j;

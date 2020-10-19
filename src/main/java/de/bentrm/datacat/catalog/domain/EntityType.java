@@ -1,0 +1,35 @@
+package de.bentrm.datacat.catalog.domain;
+
+// TODO: Rename to CatalogItemType
+public enum EntityType {
+    XtdExternalDocument,
+    XtdRoot,
+    XtdObject,
+    XtdActivity,
+    XtdActor,
+    XtdClassification,
+    XtdMeasureWithUnit,
+    XtdProperty,
+    XtdSubject,
+    XtdUnit,
+    XtdValue,
+    XtdCollection,
+    XtdBag,
+    XtdNest,
+    XtdRelationship,
+    XtdRelActsUpon,
+    XtdRelAssignsCollections,
+    XtdRelAssignsMeasures,
+    XtdRelAssignsProperties,
+    XtdRelAssignsPropertyWithValues,
+    XtdRelAssignsUnit,
+    XtdRelAssignsValues,
+    XtdRelAssociates,
+    XtdRelClassifies,
+    XtdRelCollects,
+    XtdRelComposes,
+    XtdRelDocuments,
+    XtdRelGroups,
+    XtdRelSequences,
+    XtdRelSpecializes
+}

@@ -1,8 +1,9 @@
 package de.bentrm.datacat.graphql;
 
-import de.bentrm.datacat.graphql.fetcher.AttributeFetchers;
-import de.bentrm.datacat.graphql.fetcher.MutationFetchers;
-import de.bentrm.datacat.graphql.fetcher.QueryFetchers;
+import de.bentrm.datacat.graphql.fetchers.AttributeFetchers;
+import de.bentrm.datacat.graphql.fetchers.MutationFetchers;
+import de.bentrm.datacat.graphql.fetchers.QueryFetchers;
+import de.bentrm.datacat.graphql.resolver.CustomResolver;
 import graphql.GraphQLError;
 import graphql.kickstart.spring.error.ThrowableGraphQLError;
 import graphql.schema.GraphQLSchema;
@@ -35,13 +36,14 @@ public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
             "classpath:graphql/auth.graphqls",
             "classpath:graphql/admin.graphqls",
             "classpath:graphql/query.graphqls",
+            "classpath:graphql/management.graphqls",
             "classpath:graphql/mutation.graphqls"
     };
 
     private ResourceLoader resourceLoader;
 
     @Autowired
-    private TypeResolvers typeResolvers;
+    private List<CustomResolver> customResolvers;
 
     @Autowired
     private List<AttributeFetchers> attributeFetchers;
@@ -65,8 +67,13 @@ public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
     @Bean
     GraphQLSchema schema() throws IOException {
         parseSchema();
-        typeResolvers.mapTypeResolvers(builder);
+
+        customResolvers.forEach(resolver -> {
+            builder.type(resolver.getTypeName(), wiring -> wiring.typeResolver(resolver));
+        });
+
         RuntimeWiring wiring = getRuntimeWiring();
+
         return schemaGenerator.makeExecutableSchema(typeRegistry, wiring);
     }
 

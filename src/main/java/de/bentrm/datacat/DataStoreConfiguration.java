@@ -1,6 +1,6 @@
 package de.bentrm.datacat;
 
-import de.bentrm.datacat.repository.impl.GraphEntityRepositoryFactoryBean;
+import de.bentrm.datacat.base.repository.GraphEntityRepositoryFactoryBean;
 import org.neo4j.ogm.session.SessionFactory;
 import org.neo4j.ogm.session.event.EventListener;
 import org.springframework.beans.factory.BeanFactory;
@@ -21,7 +21,11 @@ import java.util.Optional;
 @Configuration
 @EnableConfigurationProperties({Neo4jProperties.class})
 @EnableNeo4jRepositories(
-        basePackages = {"de.bentrm.datacat.repository"},
+        basePackages = {
+                "de.bentrm.datacat.base.repository",
+                "de.bentrm.datacat.auth.repository",
+                "de.bentrm.datacat.catalog.repository"
+        },
         repositoryFactoryBeanClass = GraphEntityRepositoryFactoryBean.class
 )
 @EnableTransactionManagement
@@ -36,9 +40,10 @@ public class DataStoreConfiguration {
     SessionFactory sessionFactory(org.neo4j.ogm.config.Configuration configuration, BeanFactory beanFactory, ObjectProvider<EventListener> eventListeners) {
         SessionFactory sessionFactory = new SessionFactory(
                 configuration,
-                "de.bentrm.datacat.domain",
-                "de.bentrm.datacat.domain.collection",
-                "de.bentrm.datacat.domain.relationship");
+                "de.bentrm.datacat.base.domain",
+                "de.bentrm.datacat.auth.domain",
+                "de.bentrm.datacat.catalog.domain"
+        );
         eventListeners.orderedStream().forEach(sessionFactory::register);
         return sessionFactory;
     }

@@ -1,6 +1,6 @@
 package de.bentrm.datacat.auth;
 
-import de.bentrm.datacat.service.AuthenticationService;
+import de.bentrm.datacat.auth.service.AuthenticationService;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import org.jetbrains.annotations.NotNull;

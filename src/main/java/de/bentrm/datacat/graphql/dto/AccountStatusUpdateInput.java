@@ -1,6 +1,6 @@
 package de.bentrm.datacat.graphql.dto;
 
-import de.bentrm.datacat.service.AccountStatus;
+import de.bentrm.datacat.auth.service.AccountStatus;
 import lombok.Data;
 
 @Data

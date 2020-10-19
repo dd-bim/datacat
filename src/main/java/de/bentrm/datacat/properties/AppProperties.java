@@ -1,6 +1,6 @@
 package de.bentrm.datacat.properties;
 
-import de.bentrm.datacat.domain.Role;
+import de.bentrm.datacat.auth.domain.Role;
 import lombok.Data;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.boot.context.properties.ConfigurationProperties;
