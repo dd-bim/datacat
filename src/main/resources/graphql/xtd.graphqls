@@ -1,27 +1,41 @@
-type XtdLanguage {
-    id: ID!
-    languageNameInEnglish: String!
-    languageNameInSelf: String!
-}
-
 type Translation {
     id: ID!
-    label: String!
-    values: [String!]!
-    language: XtdLanguage!
+    value: String!
+    language: Language!
 }
 
-type XtdExternalDocument {
+input LocalizationInput {
+    languageTags: [String!]
+}
+
+interface Concept {
     id: ID!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
     names: [Translation!]!
+    description(input: LocalizationInput): String
+    descriptions: [Translation!]!
+}
+
+type XtdExternalDocument implements Concept {
+    id: ID!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
+    names: [Translation!]!
+    description(input: LocalizationInput): String
+    descriptions: [Translation!]!
     documents: XtdRelDocumentsConnection!
 }
 
-interface XtdRoot {
+interface XtdRoot implements Concept {
     id: ID!
-    versionId: String!
-    versionDate: String!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
     names: [Translation!]!
+    description(input: LocalizationInput): String
     descriptions: [Translation!]!
     actedUponBy: XtdRelActsUponConnection!
     actsUpon: XtdRelActsUponConnection!
@@ -36,11 +50,13 @@ interface XtdRoot {
     specializes: XtdRelSpecializesConnection!
 }
 
-interface XtdObject implements XtdRoot {
+interface XtdObject implements Concept, XtdRoot {
     id: ID!
-    versionId: String!
-    versionDate: String!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
     names: [Translation!]!
+    description(input: LocalizationInput): String
     descriptions: [Translation!]!
     actedUponBy: XtdRelActsUponConnection!
     actsUpon: XtdRelActsUponConnection!
@@ -54,13 +70,18 @@ interface XtdObject implements XtdRoot {
     groups: XtdRelGroupsConnection!
     specializedBy: XtdRelSpecializesConnection!
     specializes: XtdRelSpecializesConnection!
+    assignedCollections: XtdRelAssignsCollectionsConnection!
+    assignedProperties: XtdRelAssignsPropertiesConnection!
+    assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
 }
 
-interface XtdCollection implements XtdRoot {
+interface XtdCollection implements Concept, XtdRoot {
     id: ID!
-    versionId: String!
-    versionDate: String!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
     names: [Translation!]!
+    description(input: LocalizationInput): String
     descriptions: [Translation!]!
     actedUponBy: XtdRelActsUponConnection!
     actsUpon: XtdRelActsUponConnection!
@@ -74,52 +95,26 @@ interface XtdCollection implements XtdRoot {
     groups: XtdRelGroupsConnection!
     specializedBy: XtdRelSpecializesConnection!
     specializes: XtdRelSpecializesConnection!
+    assignedTo: XtdRelAssignsCollectionsConnection!
 }
 
-interface XtdRelationship implements XtdRoot {
+interface XtdRelationship implements Concept {
     id: ID!
-    versionId: String!
-    versionDate: String!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
     names: [Translation!]!
+    description(input: LocalizationInput): String
     descriptions: [Translation!]!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
-    collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
 }
 
-type XtdActivity implements XtdRoot, XtdObject {
+type XtdActivity implements Concept, XtdRoot, XtdObject {
     id: ID!
-    versionId: String!
-    versionDate: String!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
     names: [Translation!]!
-    descriptions: [Translation!]!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
-    collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
-    documentedBy: XtdRelDocumentsConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
-}
-
-type XtdActor implements XtdRoot, XtdObject {
-    id: ID!
-    versionId: String!
-    versionDate: String!
-    names: [Translation!]!
+    description(input: LocalizationInput): String
     descriptions: [Translation!]!
     actedUponBy: XtdRelActsUponConnection!
     actsUpon: XtdRelActsUponConnection!
@@ -133,13 +128,18 @@ type XtdActor implements XtdRoot, XtdObject {
     groups: XtdRelGroupsConnection!
     specializedBy: XtdRelSpecializesConnection!
     specializes: XtdRelSpecializesConnection!
+    assignedCollections: XtdRelAssignsCollectionsConnection!
+    assignedProperties: XtdRelAssignsPropertiesConnection!
+    assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
 }
 
-type XtdSubject implements XtdRoot, XtdObject {
+type XtdActor implements Concept, XtdRoot, XtdObject {
     id: ID!
-    versionId: String!
-    versionDate: String!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
     names: [Translation!]!
+    description(input: LocalizationInput): String
     descriptions: [Translation!]!
     actedUponBy: XtdRelActsUponConnection!
     actsUpon: XtdRelActsUponConnection!
@@ -153,14 +153,18 @@ type XtdSubject implements XtdRoot, XtdObject {
     groups: XtdRelGroupsConnection!
     specializedBy: XtdRelSpecializesConnection!
     specializes: XtdRelSpecializesConnection!
+    assignedCollections: XtdRelAssignsCollectionsConnection!
+    assignedProperties: XtdRelAssignsPropertiesConnection!
+    assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
 }
 
-
-type XtdClassification implements XtdRoot, XtdObject {
+type XtdSubject implements Concept, XtdRoot, XtdObject {
     id: ID!
-    versionId: String!
-    versionDate: String!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
     names: [Translation!]!
+    description(input: LocalizationInput): String
     descriptions: [Translation!]!
     actedUponBy: XtdRelActsUponConnection!
     actsUpon: XtdRelActsUponConnection!
@@ -174,13 +178,44 @@ type XtdClassification implements XtdRoot, XtdObject {
     groups: XtdRelGroupsConnection!
     specializedBy: XtdRelSpecializesConnection!
     specializes: XtdRelSpecializesConnection!
+    assignedCollections: XtdRelAssignsCollectionsConnection!
+    assignedProperties: XtdRelAssignsPropertiesConnection!
+    assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
 }
 
-type XtdMeasureWithUnit implements XtdRoot, XtdObject {
+
+type XtdClassification implements Concept, XtdRoot, XtdObject {
     id: ID!
-    versionId: String!
-    versionDate: String!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
     names: [Translation!]!
+    description(input: LocalizationInput): String
+    descriptions: [Translation!]!
+    actedUponBy: XtdRelActsUponConnection!
+    actsUpon: XtdRelActsUponConnection!
+    associatedBy: XtdRelAssociatesConnection!
+    associates: XtdRelAssociatesConnection!
+    collectedBy: XtdRelCollectsConnection!
+    composedBy: XtdRelComposesConnection!
+    composes: XtdRelComposesConnection!
+    documentedBy: XtdRelDocumentsConnection!
+    groupedBy: XtdRelGroupsConnection!
+    groups: XtdRelGroupsConnection!
+    specializedBy: XtdRelSpecializesConnection!
+    specializes: XtdRelSpecializesConnection!
+    assignedCollections: XtdRelAssignsCollectionsConnection!
+    assignedProperties: XtdRelAssignsPropertiesConnection!
+    assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
+}
+
+type XtdMeasureWithUnit implements Concept, XtdRoot, XtdObject {
+    id: ID!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
+    names: [Translation!]!
+    description(input: LocalizationInput): String
     descriptions: [Translation!]!
     unitComponent: XtdUnit
     valueDomain: [XtdValue!]!
@@ -196,13 +231,18 @@ type XtdMeasureWithUnit implements XtdRoot, XtdObject {
     groups: XtdRelGroupsConnection!
     specializedBy: XtdRelSpecializesConnection!
     specializes: XtdRelSpecializesConnection!
+    assignedCollections: XtdRelAssignsCollectionsConnection!
+    assignedProperties: XtdRelAssignsPropertiesConnection!
+    assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
 }
 
-type XtdProperty implements XtdRoot, XtdObject {
+type XtdProperty implements Concept, XtdRoot, XtdObject {
     id: ID!
-    versionId: String!
-    versionDate: String!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
     names: [Translation!]!
+    description(input: LocalizationInput): String
     descriptions: [Translation!]!
     actedUponBy: XtdRelActsUponConnection!
     actsUpon: XtdRelActsUponConnection!
@@ -216,14 +256,20 @@ type XtdProperty implements XtdRoot, XtdObject {
     groups: XtdRelGroupsConnection!
     specializedBy: XtdRelSpecializesConnection!
     specializes: XtdRelSpecializesConnection!
+    assignedCollections: XtdRelAssignsCollectionsConnection!
+    assignedProperties: XtdRelAssignsPropertiesConnection!
+    assignedTo: XtdRelAssignsPropertiesConnection
+    assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
 }
 
 
-type XtdUnit implements XtdRoot, XtdObject {
+type XtdUnit implements Concept, XtdRoot, XtdObject {
     id: ID!
-    versionId: String!
-    versionDate: String!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
     names: [Translation!]!
+    description(input: LocalizationInput): String
     descriptions: [Translation!]!
     actedUponBy: XtdRelActsUponConnection!
     actsUpon: XtdRelActsUponConnection!
@@ -237,42 +283,24 @@ type XtdUnit implements XtdRoot, XtdObject {
     groups: XtdRelGroupsConnection!
     specializedBy: XtdRelSpecializesConnection!
     specializes: XtdRelSpecializesConnection!
+    assignedCollections: XtdRelAssignsCollectionsConnection!
+    assignedProperties: XtdRelAssignsPropertiesConnection!
+    assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
 }
 
-enum XtdValueTypeEnum {
-    Nil
-    XtdString
-    XtdNumber
-    XtdInteger
-    XtdReal
-    XtdBoolean
-    XtdLogical
-}
-
-enum XtdToleranceTypeEnum {
-    Nil
-    Realvalue
-    Percentage
-}
-
-enum XtdValueRoleEnum {
-    Nil
-    Nominal
-    Maximum
-    Minimum
-}
-
-type XtdValue implements XtdRoot, XtdObject {
+type XtdValue implements Concept, XtdRoot, XtdObject {
     id: ID!
-    versionId: String!
-    versionDate: String!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
     names: [Translation!]!
+    description(input: LocalizationInput): String
     descriptions: [Translation!]!
-    toleranceType: XtdToleranceTypeEnum!
+    toleranceType: ToleranceType
     lowerTolerance: String
     upperTolerance: String
-    valueRole: XtdValueRoleEnum!
-    valueType: XtdValueTypeEnum!
+    valueRole: ValueRole
+    valueType: ValueType
     nominalValue: String
     actedUponBy: XtdRelActsUponConnection!
     actsUpon: XtdRelActsUponConnection!
@@ -286,13 +314,18 @@ type XtdValue implements XtdRoot, XtdObject {
     groups: XtdRelGroupsConnection!
     specializedBy: XtdRelSpecializesConnection!
     specializes: XtdRelSpecializesConnection!
+    assignedCollections: XtdRelAssignsCollectionsConnection!
+    assignedProperties: XtdRelAssignsPropertiesConnection!
+    assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
 }
 
-type XtdBag implements XtdRoot, XtdCollection {
+type XtdBag implements Concept, XtdRoot, XtdCollection {
     id: ID!
-    versionId: String!
-    versionDate: String!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
     names: [Translation!]!
+    description(input: LocalizationInput): String
     descriptions: [Translation!]!
     actedUponBy: XtdRelActsUponConnection!
     actsUpon: XtdRelActsUponConnection!
@@ -306,13 +339,16 @@ type XtdBag implements XtdRoot, XtdCollection {
     groups: XtdRelGroupsConnection!
     specializedBy: XtdRelSpecializesConnection!
     specializes: XtdRelSpecializesConnection!
+    assignedTo: XtdRelAssignsCollectionsConnection!
 }
 
-type XtdNest implements XtdRoot, XtdCollection {
+type XtdNest implements Concept, XtdRoot, XtdCollection {
     id: ID!
-    versionId: String!
-    versionDate: String!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
     names: [Translation!]!
+    description(input: LocalizationInput): String
     descriptions: [Translation!]!
     actedUponBy: XtdRelActsUponConnection!
     actsUpon: XtdRelActsUponConnection!
@@ -326,196 +362,176 @@ type XtdNest implements XtdRoot, XtdCollection {
     groups: XtdRelGroupsConnection!
     specializedBy: XtdRelSpecializesConnection!
     specializes: XtdRelSpecializesConnection!
+    assignedTo: XtdRelAssignsCollectionsConnection!
 }
 
-type XtdRelAssignsCollections implements XtdRoot, XtdRelationship {
+type XtdRelAssignsCollections implements Concept, XtdRelationship {
     id: ID!
-    versionId: String!
-    versionDate: String!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
     names: [Translation!]!
+    description(input: LocalizationInput): String
     descriptions: [Translation!]!
     relatingObject: XtdObject!
     relatedCollections: [XtdCollection!]!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
-    collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
 }
 
-type XtdRelAssignsPropertyWithValues implements XtdRoot, XtdRelationship {
+type XtdRelAssignsMeasures implements Concept, XtdRelationship {
     id: ID!
-    versionId: String!
-    versionDate: String!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
     names: [Translation!]!
+    description(input: LocalizationInput): String
+    descriptions: [Translation!]!
+    relatingProperty: XtdProperty!
+    relatedMeasures: [XtdMeasureWithUnit!]!
+}
+
+type XtdRelAssignsProperties implements Concept, XtdRelationship {
+    id: ID!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
+    names: [Translation!]!
+    description(input: LocalizationInput): String
+    descriptions: [Translation!]!
+    relatingObject: XtdObject!
+    relatedProperties: [XtdProperty!]!
+}
+
+type XtdRelAssignsPropertyWithValues implements Concept, XtdRelationship {
+    id: ID!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
+    names: [Translation!]!
+    description(input: LocalizationInput): String
     descriptions: [Translation!]!
     relatingObject: XtdObject!
     relatedProperty: XtdProperty!
     relatedValues: [XtdValue!]!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
-    collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
 }
 
-type XtdRelCollects implements XtdRoot, XtdRelationship {
+type XtdRelAssignsUnits implements Concept, XtdRelationship {
     id: ID!
-    versionId: String!
-    versionDate: String!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
     names: [Translation!]!
+    description(input: LocalizationInput): String
+    descriptions: [Translation!]!
+    relatingMeasure: XtdMeasureWithUnit!
+    relatedUnits: [XtdUnit!]!
+}
+
+type XtdRelAssignsValues implements Concept, XtdRelationship {
+    id: ID!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
+    names: [Translation!]!
+    description(input: LocalizationInput): String
+    descriptions: [Translation!]!
+    relatingMeasure: XtdMeasureWithUnit!
+    relatedValues: [XtdValue!]!
+}
+
+type XtdRelCollects implements Concept, XtdRelationship {
+    id: ID!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
+    names: [Translation!]!
+    description(input: LocalizationInput): String
     descriptions: [Translation!]!
     relatingCollection: XtdCollection!
-    relatedThings: XtdRootConnection!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
-    collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
+    relatedThings: [XtdRoot!]!
 }
 
-type XtdRelDocuments implements XtdRoot, XtdRelationship {
+type XtdRelDocuments implements Concept, XtdRelationship {
     id: ID!
-    versionId: String!
-    versionDate: String!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
     names: [Translation!]!
+    description(input: LocalizationInput): String
     descriptions: [Translation!]!
     relatingDocument: XtdExternalDocument!
-    relatedThings: XtdRootConnection!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
-    collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
+    relatedThings: [XtdRoot!]!
 }
 
-type XtdRelAssociates implements XtdRoot, XtdRelationship {
+type XtdRelAssociates implements Concept, XtdRelationship {
     id: ID!
-    versionId: String!
-    versionDate: String!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
     names: [Translation!]!
+    description(input: LocalizationInput): String
     descriptions: [Translation!]!
     relatingThing: XtdObject!
     relatedThings: XtdObjectConnection!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
-    collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
 }
 
-type XtdRelGroups implements XtdRoot, XtdRelationship {
+type XtdRelGroups implements Concept, XtdRelationship {
     id: ID!
-    versionId: String!
-    versionDate: String!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
     names: [Translation!]!
+    description(input: LocalizationInput): String
     descriptions: [Translation!]!
     relatingThing: XtdRoot!
     relatedThings: XtdRootConnection!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
-    collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
 }
 
-type XtdRelSpecializes implements XtdRoot, XtdRelationship {
+type XtdRelSequences implements Concept, XtdRelationship {
     id: ID!
-    versionId: String!
-    versionDate: String!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
     names: [Translation!]!
+    description(input: LocalizationInput): String
+    descriptions: [Translation!]!
+    relatingActivity: XtdActivity!
+    relatedActivity: XtdActivity!
+}
+
+type XtdRelSpecializes implements Concept, XtdRelationship {
+    id: ID!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
+    names: [Translation!]!
+    description(input: LocalizationInput): String
     descriptions: [Translation!]!
     relatingThing: XtdRoot!
     relatedThings: XtdRootConnection!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
-    collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
 }
 
-type XtdRelComposes implements XtdRoot, XtdRelationship {
+type XtdRelComposes implements Concept, XtdRelationship {
     id: ID!
-    versionId: String!
-    versionDate: String!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
     names: [Translation!]!
+    description(input: LocalizationInput): String
     descriptions: [Translation!]!
     relatingThing: XtdRoot!
     relatedThings: XtdRootConnection!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
-    collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
 }
 
-type XtdRelActsUpon implements XtdRoot, XtdRelationship {
+type XtdRelActsUpon implements Concept, XtdRelationship {
     id: ID!
-    versionId: String!
-    versionDate: String!
+    versionId: String
+    versionDate: String
+    name(input: LocalizationInput): String
     names: [Translation!]!
+    description(input: LocalizationInput): String
     descriptions: [Translation!]!
     relatingThing: XtdRoot!
     relatedThings: XtdRootConnection!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
-    collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
 }
 
 # Connections
@@ -627,6 +643,12 @@ type XtdRelAssignsCollectionsConnection {
     totalElements: Int!
 }
 
+type XtdRelAssignsPropertiesConnection {
+    nodes: [XtdRelAssignsProperties!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
 type XtdRelAssignsPropertyWithValuesConnection {
     nodes: [XtdRelAssignsPropertyWithValues!]!
     pageInfo: PageInfo!
@@ -658,6 +680,12 @@ type XtdRelGroupsConnection {
     totalElements: Int!
 }
 
+type XtdRelSequencesConnection {
+    nodes: [XtdRelSequences!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
 type XtdRelSpecializesConnection {
     nodes: [XtdRelSpecializes!]!
     pageInfo: PageInfo!
@@ -673,12 +701,6 @@ type XtdRelComposesConnection {
 
 type XtdRelActsUponConnection {
     nodes: [XtdRelActsUpon!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
-}
-
-type SearchResultConnection {
-    nodes: [CatalogItem!]!
     pageInfo: PageInfo!
     totalElements: Int!
 }
