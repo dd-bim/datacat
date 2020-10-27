@@ -21,7 +21,7 @@
     </parent>
 
     <properties>
-        <java.version>14</java.version>
+        <java.version>15</java.version>
         <commons-text.version>1.8</commons-text.version>
         <graphql-spring-boot-starter.version>7.0.1</graphql-spring-boot-starter.version>
         <java-jwt.version>3.10.3</java-jwt.version>
