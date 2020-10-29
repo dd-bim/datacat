@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class MeasureWithUnitFetchers extends AbstractEntityFetchers<XtdMeasureWithUnit, NewMeasureService> {
+public class MeasureWithUnitFetchers extends ObjectFetchers<XtdMeasureWithUnit, NewMeasureService> {
 
     public MeasureWithUnitFetchers(NewMeasureService entityService) {
         super(entityService);

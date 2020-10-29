@@ -5,7 +5,7 @@ import de.bentrm.datacat.catalog.service.NewUnitService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UnitFetchers extends AbstractEntityFetchers<XtdUnit, NewUnitService> {
+public class UnitFetchers extends ObjectFetchers<XtdUnit, NewUnitService> {
 
     public UnitFetchers(NewUnitService entityService) {
         super(entityService);

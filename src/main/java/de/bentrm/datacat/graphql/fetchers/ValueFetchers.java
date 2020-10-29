@@ -5,7 +5,7 @@ import de.bentrm.datacat.catalog.service.NewValueService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ValueFetchers extends AbstractEntityFetchers<XtdValue, NewValueService> {
+public class ValueFetchers extends ObjectFetchers<XtdValue, NewValueService> {
 
 
     public ValueFetchers(NewValueService entityService) {

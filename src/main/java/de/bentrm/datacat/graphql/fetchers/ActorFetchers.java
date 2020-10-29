@@ -5,7 +5,7 @@ import de.bentrm.datacat.catalog.service.NewActorService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ActorFetchers extends AbstractEntityFetchers<XtdActor, NewActorService> {
+public class ActorFetchers extends ObjectFetchers<XtdActor, NewActorService> {
 
     public ActorFetchers(NewActorService service) {
         super(service);
