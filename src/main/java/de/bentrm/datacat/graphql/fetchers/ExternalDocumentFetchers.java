@@ -4,7 +4,7 @@ import de.bentrm.datacat.base.domain.Entity;
 import de.bentrm.datacat.catalog.domain.XtdExternalDocument;
 import de.bentrm.datacat.catalog.domain.XtdRelDocuments;
 import de.bentrm.datacat.catalog.service.DocumentsService;
-import de.bentrm.datacat.catalog.service.NewExternalDocumentService;
+import de.bentrm.datacat.catalog.service.ExternalDocumentService;
 import de.bentrm.datacat.graphql.Connection;
 import graphql.schema.DataFetcher;
 import org.springframework.stereotype.Component;
@@ -17,11 +17,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
-public class ExternalDocumentFetchers extends AbstractEntityFetchers<XtdExternalDocument, NewExternalDocumentService> {
+public class ExternalDocumentFetchers extends AbstractEntityFetchers<XtdExternalDocument, ExternalDocumentService> {
 
     private final DocumentsService documentsService;
 
-    public ExternalDocumentFetchers(NewExternalDocumentService entityService, DocumentsService documentsService) {
+    public ExternalDocumentFetchers(ExternalDocumentService entityService, DocumentsService documentsService) {
         super(entityService);
         this.documentsService = documentsService;
     }

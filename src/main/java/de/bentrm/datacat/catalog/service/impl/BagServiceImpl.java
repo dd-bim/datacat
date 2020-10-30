@@ -3,8 +3,8 @@ package de.bentrm.datacat.catalog.service.impl;
 import de.bentrm.datacat.base.specification.QuerySpecification;
 import de.bentrm.datacat.catalog.domain.XtdBag;
 import de.bentrm.datacat.catalog.repository.BagRepository;
+import de.bentrm.datacat.catalog.service.BagService;
 import de.bentrm.datacat.catalog.service.EntityMapper;
-import de.bentrm.datacat.catalog.service.NewBagService;
 import de.bentrm.datacat.catalog.service.value.EntryValue;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -18,13 +18,13 @@ import java.util.Optional;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class NewBagServiceImpl implements NewBagService {
+public class BagServiceImpl implements BagService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final BagRepository repository;
     private final QueryServiceDelegate<XtdBag> queryDelegate;
 
-    public NewBagServiceImpl(BagRepository repository) {
+    public BagServiceImpl(BagRepository repository) {
         this.repository = repository;
         this.queryDelegate = new QueryServiceDelegate<>(repository);
     }

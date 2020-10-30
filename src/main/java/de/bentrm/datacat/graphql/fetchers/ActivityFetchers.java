@@ -1,13 +1,13 @@
 package de.bentrm.datacat.graphql.fetchers;
 
 import de.bentrm.datacat.catalog.domain.XtdActivity;
-import de.bentrm.datacat.catalog.service.NewActivityService;
+import de.bentrm.datacat.catalog.service.ActivityService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ActivityFetchers extends ObjectFetchers<XtdActivity, NewActivityService> {
+public class ActivityFetchers extends ObjectFetchers<XtdActivity, ActivityService> {
 
-    public ActivityFetchers(NewActivityService service) {
+    public ActivityFetchers(ActivityService service) {
         super(service);
     }
 

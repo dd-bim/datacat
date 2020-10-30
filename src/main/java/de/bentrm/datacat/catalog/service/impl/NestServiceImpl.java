@@ -1,10 +1,10 @@
 package de.bentrm.datacat.catalog.service.impl;
 
 import de.bentrm.datacat.base.specification.QuerySpecification;
-import de.bentrm.datacat.catalog.domain.XtdExternalDocument;
-import de.bentrm.datacat.catalog.repository.ExternalDocumentRepository;
+import de.bentrm.datacat.catalog.domain.XtdNest;
+import de.bentrm.datacat.catalog.repository.NestRepository;
 import de.bentrm.datacat.catalog.service.EntityMapper;
-import de.bentrm.datacat.catalog.service.NewExternalDocumentService;
+import de.bentrm.datacat.catalog.service.NestService;
 import de.bentrm.datacat.catalog.service.value.EntryValue;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -18,37 +18,37 @@ import java.util.Optional;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class NewExternalDocumentServiceImpl implements NewExternalDocumentService {
+public class NestServiceImpl implements NestService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
-    private final ExternalDocumentRepository repository;
-    private final QueryServiceDelegate<XtdExternalDocument> queryDelegate;
+    private final NestRepository repository;
+    private final QueryServiceDelegate<XtdNest> queryDelegate;
 
-    public NewExternalDocumentServiceImpl(ExternalDocumentRepository repository) {
+    public NestServiceImpl(NestRepository repository) {
         this.repository = repository;
         this.queryDelegate = new QueryServiceDelegate<>(repository);
     }
 
     @Transactional
     @Override
-    public @NotNull XtdExternalDocument create(EntryValue value) {
-        final XtdExternalDocument item = new XtdExternalDocument();
+    public @NotNull XtdNest create(EntryValue value) {
+        final XtdNest item = new XtdNest();
         entityMapper.setProperties(value, item);
         return repository.save(item);
     }
 
     @Override
-    public @NotNull Optional<XtdExternalDocument> findById(@NotNull String id) {
+    public @NotNull Optional<XtdNest> findById(@NotNull String id) {
         return queryDelegate.findById(id);
     }
 
     @Override
-    public @NotNull List<XtdExternalDocument> findAllByIds(@NotNull List<String> ids) {
+    public @NotNull List<XtdNest> findAllByIds(@NotNull List<String> ids) {
         return queryDelegate.findAllByIds(ids);
     }
 
     @Override
-    public @NotNull Page<XtdExternalDocument> findAll(@NotNull QuerySpecification specification) {
+    public @NotNull Page<XtdNest> findAll(@NotNull QuerySpecification specification) {
         return queryDelegate.findAll(specification);
     }
 

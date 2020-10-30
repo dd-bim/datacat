@@ -1,10 +1,10 @@
 package de.bentrm.datacat.catalog.service.impl;
 
 import de.bentrm.datacat.base.specification.QuerySpecification;
-import de.bentrm.datacat.catalog.domain.XtdProperty;
-import de.bentrm.datacat.catalog.repository.PropertyRepository;
+import de.bentrm.datacat.catalog.domain.XtdExternalDocument;
+import de.bentrm.datacat.catalog.repository.ExternalDocumentRepository;
 import de.bentrm.datacat.catalog.service.EntityMapper;
-import de.bentrm.datacat.catalog.service.NewPropertyService;
+import de.bentrm.datacat.catalog.service.ExternalDocumentService;
 import de.bentrm.datacat.catalog.service.value.EntryValue;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -18,37 +18,37 @@ import java.util.Optional;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class NewPropertyServiceImpl implements NewPropertyService {
+public class ExternalDocumentServiceImpl implements ExternalDocumentService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
-    private final PropertyRepository repository;
-    private final QueryServiceDelegate<XtdProperty> queryDelegate;
+    private final ExternalDocumentRepository repository;
+    private final QueryServiceDelegate<XtdExternalDocument> queryDelegate;
 
-    public NewPropertyServiceImpl(PropertyRepository repository) {
+    public ExternalDocumentServiceImpl(ExternalDocumentRepository repository) {
         this.repository = repository;
         this.queryDelegate = new QueryServiceDelegate<>(repository);
     }
 
     @Transactional
     @Override
-    public @NotNull XtdProperty create(EntryValue value) {
-        final XtdProperty item = new XtdProperty();
+    public @NotNull XtdExternalDocument create(EntryValue value) {
+        final XtdExternalDocument item = new XtdExternalDocument();
         entityMapper.setProperties(value, item);
         return repository.save(item);
     }
 
     @Override
-    public @NotNull Optional<XtdProperty> findById(@NotNull String id) {
+    public @NotNull Optional<XtdExternalDocument> findById(@NotNull String id) {
         return queryDelegate.findById(id);
     }
 
     @Override
-    public @NotNull List<XtdProperty> findAllByIds(@NotNull List<String> ids) {
+    public @NotNull List<XtdExternalDocument> findAllByIds(@NotNull List<String> ids) {
         return queryDelegate.findAllByIds(ids);
     }
 
     @Override
-    public @NotNull Page<XtdProperty> findAll(@NotNull QuerySpecification specification) {
+    public @NotNull Page<XtdExternalDocument> findAll(@NotNull QuerySpecification specification) {
         return queryDelegate.findAll(specification);
     }
 

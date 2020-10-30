@@ -1,13 +1,13 @@
 package de.bentrm.datacat.graphql.fetchers;
 
 import de.bentrm.datacat.catalog.domain.XtdNest;
-import de.bentrm.datacat.catalog.service.NewNestService;
+import de.bentrm.datacat.catalog.service.NestService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class NestFetchers extends CollectionFetchers<XtdNest, NewNestService> {
+public class NestFetchers extends CollectionFetchers<XtdNest, NestService> {
 
-    public NestFetchers(NewNestService service) {
+    public NestFetchers(NestService service) {
         super(service);
     }
 

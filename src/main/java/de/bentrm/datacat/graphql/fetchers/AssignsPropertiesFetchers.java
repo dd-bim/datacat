@@ -5,7 +5,7 @@ import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsProperties;
 import de.bentrm.datacat.catalog.service.CatalogService;
-import de.bentrm.datacat.catalog.service.NewPropertyService;
+import de.bentrm.datacat.catalog.service.PropertyService;
 import graphql.schema.DataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,7 +21,7 @@ public class AssignsPropertiesFetchers extends EntryFetchers implements Attribut
     private CatalogService catalogService;
 
     @Autowired
-    private NewPropertyService propertyService;
+    private PropertyService propertyService;
 
     @Autowired
 

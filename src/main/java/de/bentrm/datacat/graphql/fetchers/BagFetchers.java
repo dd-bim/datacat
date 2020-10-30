@@ -1,13 +1,13 @@
 package de.bentrm.datacat.graphql.fetchers;
 
 import de.bentrm.datacat.catalog.domain.XtdBag;
-import de.bentrm.datacat.catalog.service.NewBagService;
+import de.bentrm.datacat.catalog.service.BagService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class BagFetchers extends CollectionFetchers<XtdBag, NewBagService> {
+public class BagFetchers extends CollectionFetchers<XtdBag, BagService> {
 
-    public BagFetchers(NewBagService entityService) {
+    public BagFetchers(BagService entityService) {
         super(entityService);
     }
 

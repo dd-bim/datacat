@@ -1,14 +1,14 @@
 package de.bentrm.datacat.graphql.fetchers;
 
 import de.bentrm.datacat.catalog.domain.XtdValue;
-import de.bentrm.datacat.catalog.service.NewValueService;
+import de.bentrm.datacat.catalog.service.ValueService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ValueFetchers extends ObjectFetchers<XtdValue, NewValueService> {
+public class ValueFetchers extends ObjectFetchers<XtdValue, ValueService> {
 
 
-    public ValueFetchers(NewValueService entityService) {
+    public ValueFetchers(ValueService entityService) {
         super(entityService);
     }
 

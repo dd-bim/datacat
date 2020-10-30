@@ -1,13 +1,13 @@
 package de.bentrm.datacat.graphql.fetchers;
 
 import de.bentrm.datacat.catalog.domain.XtdProperty;
-import de.bentrm.datacat.catalog.service.NewPropertyService;
+import de.bentrm.datacat.catalog.service.PropertyService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PropertyFetchers extends ObjectFetchers<XtdProperty, NewPropertyService> {
+public class PropertyFetchers extends ObjectFetchers<XtdProperty, PropertyService> {
 
-    public PropertyFetchers(NewPropertyService entityService) {
+    public PropertyFetchers(PropertyService entityService) {
         super(entityService);
     }
 

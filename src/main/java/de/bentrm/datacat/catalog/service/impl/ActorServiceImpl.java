@@ -3,8 +3,8 @@ package de.bentrm.datacat.catalog.service.impl;
 import de.bentrm.datacat.base.specification.QuerySpecification;
 import de.bentrm.datacat.catalog.domain.XtdActor;
 import de.bentrm.datacat.catalog.repository.ActorRepository;
+import de.bentrm.datacat.catalog.service.ActorService;
 import de.bentrm.datacat.catalog.service.EntityMapper;
-import de.bentrm.datacat.catalog.service.NewActorService;
 import de.bentrm.datacat.catalog.service.value.EntryValue;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -18,13 +18,13 @@ import java.util.Optional;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class NewActorServiceImpl implements NewActorService {
+public class ActorServiceImpl implements ActorService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final ActorRepository repository;
     private final QueryServiceDelegate<XtdActor> queryDelegate;
 
-    public NewActorServiceImpl(ActorRepository repository) {
+    public ActorServiceImpl(ActorRepository repository) {
         this.repository = repository;
         this.queryDelegate = new QueryServiceDelegate<>(repository);
     }

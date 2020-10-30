@@ -3,7 +3,7 @@ package de.bentrm.datacat.graphql.fetchers;
 import de.bentrm.datacat.catalog.domain.DomainValueRelationship;
 import de.bentrm.datacat.catalog.domain.XtdMeasureWithUnit;
 import de.bentrm.datacat.catalog.domain.XtdValue;
-import de.bentrm.datacat.catalog.service.NewMeasureService;
+import de.bentrm.datacat.catalog.service.MeasureService;
 import graphql.schema.DataFetcher;
 import org.springframework.stereotype.Component;
 
@@ -12,9 +12,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class MeasureWithUnitFetchers extends ObjectFetchers<XtdMeasureWithUnit, NewMeasureService> {
+public class MeasureWithUnitFetchers extends ObjectFetchers<XtdMeasureWithUnit, MeasureService> {
 
-    public MeasureWithUnitFetchers(NewMeasureService entityService) {
+    public MeasureWithUnitFetchers(MeasureService entityService) {
         super(entityService);
     }
 

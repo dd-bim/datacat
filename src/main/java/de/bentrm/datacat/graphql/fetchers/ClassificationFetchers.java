@@ -1,13 +1,13 @@
 package de.bentrm.datacat.graphql.fetchers;
 
 import de.bentrm.datacat.catalog.domain.XtdClassification;
-import de.bentrm.datacat.catalog.service.NewClassificationService;
+import de.bentrm.datacat.catalog.service.ClassificationService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ClassificationFetchers extends ObjectFetchers<XtdClassification, NewClassificationService> {
+public class ClassificationFetchers extends ObjectFetchers<XtdClassification, ClassificationService> {
 
-    public ClassificationFetchers(NewClassificationService entityService) {
+    public ClassificationFetchers(ClassificationService entityService) {
         super(entityService);
     }
 

@@ -1,10 +1,10 @@
 package de.bentrm.datacat.catalog.service.impl;
 
 import de.bentrm.datacat.base.specification.QuerySpecification;
-import de.bentrm.datacat.catalog.domain.XtdSubject;
-import de.bentrm.datacat.catalog.repository.SubjectRepository;
+import de.bentrm.datacat.catalog.domain.XtdMeasureWithUnit;
+import de.bentrm.datacat.catalog.repository.MeasureWithUnitRepository;
 import de.bentrm.datacat.catalog.service.EntityMapper;
-import de.bentrm.datacat.catalog.service.NewSubjectService;
+import de.bentrm.datacat.catalog.service.MeasureService;
 import de.bentrm.datacat.catalog.service.value.EntryValue;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -18,37 +18,37 @@ import java.util.Optional;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class NewSubjectServiceImpl implements NewSubjectService {
+public class MeasureServiceImpl implements MeasureService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
-    private final SubjectRepository repository;
-    private final QueryServiceDelegate<XtdSubject> queryDelegate;
+    private final MeasureWithUnitRepository repository;
+    private final QueryServiceDelegate<XtdMeasureWithUnit> queryDelegate;
 
-    public NewSubjectServiceImpl(SubjectRepository repository) {
+    public MeasureServiceImpl(MeasureWithUnitRepository repository) {
         this.repository = repository;
         this.queryDelegate = new QueryServiceDelegate<>(repository);
     }
 
     @Transactional
     @Override
-    public @NotNull XtdSubject create(EntryValue value) {
-        final XtdSubject item = new XtdSubject();
+    public @NotNull XtdMeasureWithUnit create(EntryValue value) {
+        final XtdMeasureWithUnit item = new XtdMeasureWithUnit();
         entityMapper.setProperties(value, item);
         return repository.save(item);
     }
 
     @Override
-    public @NotNull Optional<XtdSubject> findById(@NotNull String id) {
+    public @NotNull Optional<XtdMeasureWithUnit> findById(@NotNull String id) {
         return queryDelegate.findById(id);
     }
 
     @Override
-    public @NotNull List<XtdSubject> findAllByIds(@NotNull List<String> ids) {
+    public @NotNull List<XtdMeasureWithUnit> findAllByIds(@NotNull List<String> ids) {
         return queryDelegate.findAllByIds(ids);
     }
 
     @Override
-    public @NotNull Page<XtdSubject> findAll(@NotNull QuerySpecification specification) {
+    public @NotNull Page<XtdMeasureWithUnit> findAll(@NotNull QuerySpecification specification) {
         return queryDelegate.findAll(specification);
     }
 

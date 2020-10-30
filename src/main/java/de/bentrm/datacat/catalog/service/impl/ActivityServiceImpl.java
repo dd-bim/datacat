@@ -1,10 +1,10 @@
 package de.bentrm.datacat.catalog.service.impl;
 
 import de.bentrm.datacat.base.specification.QuerySpecification;
-import de.bentrm.datacat.catalog.domain.XtdUnit;
-import de.bentrm.datacat.catalog.repository.UnitRepository;
+import de.bentrm.datacat.catalog.domain.XtdActivity;
+import de.bentrm.datacat.catalog.repository.ActivityRepository;
+import de.bentrm.datacat.catalog.service.ActivityService;
 import de.bentrm.datacat.catalog.service.EntityMapper;
-import de.bentrm.datacat.catalog.service.NewUnitService;
 import de.bentrm.datacat.catalog.service.value.EntryValue;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -18,37 +18,37 @@ import java.util.Optional;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class NewUnitServiceImpl implements NewUnitService {
+public class ActivityServiceImpl implements ActivityService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
-    private final UnitRepository repository;
-    private final QueryServiceDelegate<XtdUnit> queryDelegate;
+    private final ActivityRepository repository;
+    private final QueryServiceDelegate<XtdActivity> queryDelegate;
 
-    public NewUnitServiceImpl(UnitRepository repository) {
+    public ActivityServiceImpl(ActivityRepository repository) {
         this.repository = repository;
         this.queryDelegate = new QueryServiceDelegate<>(repository);
     }
 
     @Transactional
     @Override
-    public @NotNull XtdUnit create(EntryValue value) {
-        final XtdUnit item = new XtdUnit();
+    public @NotNull XtdActivity create(EntryValue value) {
+        final XtdActivity item = new XtdActivity();
         entityMapper.setProperties(value, item);
         return repository.save(item);
     }
 
     @Override
-    public @NotNull Optional<XtdUnit> findById(@NotNull String id) {
+    public @NotNull Optional<XtdActivity> findById(@NotNull String id) {
         return queryDelegate.findById(id);
     }
 
     @Override
-    public @NotNull List<XtdUnit> findAllByIds(@NotNull List<String> ids) {
+    public @NotNull List<XtdActivity> findAllByIds(@NotNull List<String> ids) {
         return queryDelegate.findAllByIds(ids);
     }
 
     @Override
-    public @NotNull Page<XtdUnit> findAll(@NotNull QuerySpecification specification) {
+    public @NotNull Page<XtdActivity> findAll(@NotNull QuerySpecification specification) {
         return queryDelegate.findAll(specification);
     }
 

@@ -32,27 +32,27 @@ public class ContentFetchers implements MutationFetchers {
     private CatalogService catalogService;
 
     @Autowired
-    private NewActivityService activityService;
+    private ActivityService activityService;
     @Autowired
-    private NewActorService actorService;
+    private ActorService actorService;
     @Autowired
-    private NewBagService bagService;
+    private BagService bagService;
     @Autowired
-    private NewClassificationService classificationService;
+    private ClassificationService classificationService;
     @Autowired
-    private NewExternalDocumentService externalDocumentService;
+    private ExternalDocumentService externalDocumentService;
     @Autowired
-    private NewMeasureService measureService;
+    private MeasureService measureService;
     @Autowired
-    private NewNestService nestService;
+    private NestService nestService;
     @Autowired
-    private NewPropertyService propertyService;
+    private PropertyService propertyService;
     @Autowired
-    private NewSubjectService subjectService;
+    private SubjectService subjectService;
     @Autowired
-    private NewUnitService unitService;
+    private UnitService unitService;
     @Autowired
-    private NewValueService valueService;
+    private ValueService valueService;
 
     @Autowired
     private ActsUponService actsUponService;

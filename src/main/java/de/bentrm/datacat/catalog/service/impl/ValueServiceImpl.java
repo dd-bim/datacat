@@ -7,7 +7,7 @@ import de.bentrm.datacat.catalog.domain.ValueType;
 import de.bentrm.datacat.catalog.domain.XtdValue;
 import de.bentrm.datacat.catalog.repository.ValueRepository;
 import de.bentrm.datacat.catalog.service.EntityMapper;
-import de.bentrm.datacat.catalog.service.NewValueService;
+import de.bentrm.datacat.catalog.service.ValueService;
 import de.bentrm.datacat.catalog.service.value.EntryValue;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -25,13 +25,13 @@ import java.util.Optional;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class NewValueServiceImpl implements NewValueService {
+public class ValueServiceImpl implements ValueService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final ValueRepository repository;
     private final QueryServiceDelegate<XtdValue> queryDelegate;
 
-    public NewValueServiceImpl(ValueRepository repository) {
+    public ValueServiceImpl(ValueRepository repository) {
         this.repository = repository;
         this.queryDelegate = new QueryServiceDelegate<>(repository);
     }
