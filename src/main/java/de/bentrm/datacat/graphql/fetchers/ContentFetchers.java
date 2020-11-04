@@ -288,8 +288,9 @@ public class ContentFetchers implements MutationFetchers {
         return environment -> {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final SetNominalValueInput input = apiInputMapper.toSetNominalValueInput(argument);
-            final XtdValue xtdValue = valueService.setNominalValue(input.getId(), input.getValueRole(),
-                    input.getValueType(), input.getNominalValue());
+            final NominalValueInput nominalValue = input.getNominalValue();
+            final XtdValue xtdValue = valueService.setNominalValue(input.getId(), nominalValue.getValueRole(),
+                    nominalValue.getValueType(), nominalValue.getNominalValue());
             return payloadMapper.toSetNominalValuePayload(xtdValue);
         };
     }

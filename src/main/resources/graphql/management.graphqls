@@ -273,11 +273,15 @@ enum ValueType {
     Logical
 }
 
-input SetNominalValueInput {
-    id: ID!
+input NominalValueInput {
     valueRole: ValueRole!
     valueType: ValueType!
     nominalValue: String
+}
+
+input SetNominalValueInput {
+    id: ID!
+    nominalValue: NominalValueInput!
 }
 
 type SetNominalValuePayload {
