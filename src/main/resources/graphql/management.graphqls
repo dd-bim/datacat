@@ -235,11 +235,15 @@ enum ToleranceType {
     Percentage
 }
 
-input SetToleranceInput {
-    id: ID!
+input ToleranceInput {
     toleranceType: ToleranceType!
     lowerTolerance: String
     upperTolerance: String
+}
+
+input SetToleranceInput {
+    id: ID!
+    tolerance: ToleranceInput!
 }
 
 type SetTolerancePayload {

@@ -267,8 +267,9 @@ public class ContentFetchers implements MutationFetchers {
         return environment -> {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final SetToleranceInput input = apiInputMapper.toSetToleranceInput(argument);
-            final XtdValue value = valueService.setTolerance(input.getId(), input.getToleranceType(),
-                    input.getLowerTolerance(), input.getUpperTolerance());
+            final ToleranceInput tolerance = input.getTolerance();
+            final XtdValue value = valueService.setTolerance(input.getId(), tolerance.getToleranceType(),
+                    tolerance.getLowerTolerance(), tolerance.getUpperTolerance());
             return payloadMapper.toSetTolerancePayload(value);
         };
     }
