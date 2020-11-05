@@ -18,8 +18,15 @@ public interface CatalogService {
 
     CatalogStatistics getStatistics();
 
+    /**
+     * Deletes a catalog item guarding against accidentially deleting relationship
+     * entries. Throws if no entry is found.
+     *
+     * @param id
+     * @return The deleted entry.
+     */
     @PreAuthorize("hasRole('USER')")
-    @NotNull XtdRoot deleteEntry(@NotBlank String id);
+    @NotNull CatalogItem deleteEntry(@NotBlank String id);
 
     @PreAuthorize("hasRole('USER')")
     @NotNull XtdRelationship deleteRelationship(@NotBlank String id);

@@ -64,10 +64,13 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Transactional
     @Override
-    public @NotNull XtdRoot deleteEntry(String id) {
-        final XtdRoot root = rootRepository.findById(id).orElseThrow();
-        rootRepository.delete(root);
-        return root;
+    public @NotNull CatalogItem deleteEntry(String id) {
+        final CatalogItem entry = catalogItemRepository.findById(id).orElseThrow();
+        if (entry instanceof XtdRelationship) {
+            throw new NoSuchElementException();
+        }
+        catalogItemRepository.delete(entry);
+        return entry;
     }
 
     @Transactional

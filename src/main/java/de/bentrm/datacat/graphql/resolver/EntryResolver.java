@@ -32,6 +32,9 @@ public class EntryResolver implements CustomResolver {
         if (obj instanceof XtdClassification) {
             return schema.getObjectType(XtdClassification.LABEL);
         }
+        if (obj instanceof XtdExternalDocument) {
+            return schema.getObjectType(XtdExternalDocument.LABEL);
+        }
         if (obj instanceof XtdMeasureWithUnit) {
             return schema.getObjectType(XtdMeasureWithUnit.LABEL);
         }
