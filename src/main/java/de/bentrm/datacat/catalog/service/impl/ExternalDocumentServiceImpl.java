@@ -22,11 +22,11 @@ public class ExternalDocumentServiceImpl implements ExternalDocumentService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final ExternalDocumentRepository repository;
-    private final QueryServiceDelegate<XtdExternalDocument> queryDelegate;
+    private final QueryDelegate<XtdExternalDocument> queryDelegate;
 
     public ExternalDocumentServiceImpl(ExternalDocumentRepository repository) {
         this.repository = repository;
-        this.queryDelegate = new QueryServiceDelegate<>(repository);
+        this.queryDelegate = new QueryDelegate<>(repository);
     }
 
     @Transactional

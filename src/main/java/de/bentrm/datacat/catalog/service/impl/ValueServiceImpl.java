@@ -29,11 +29,11 @@ public class ValueServiceImpl implements ValueService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final ValueRepository repository;
-    private final QueryServiceDelegate<XtdValue> queryDelegate;
+    private final QueryDelegate<XtdValue> queryDelegate;
 
     public ValueServiceImpl(ValueRepository repository) {
         this.repository = repository;
-        this.queryDelegate = new QueryServiceDelegate<>(repository);
+        this.queryDelegate = new QueryDelegate<>(repository);
     }
 
     @Transactional

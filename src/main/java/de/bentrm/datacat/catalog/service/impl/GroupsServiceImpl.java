@@ -27,12 +27,12 @@ public class GroupsServiceImpl implements GroupsService {
     private final RelGroupsRepository groupsRepository;
     private final RootRepository rootRepository;
 
-    private final QueryServiceDelegate<XtdRelGroups> queryDelegate;
+    private final QueryDelegate<XtdRelGroups> queryDelegate;
 
     public GroupsServiceImpl(RelGroupsRepository repository, RootRepository rootRepository) {
         this.groupsRepository = repository;
         this.rootRepository = rootRepository;
-        this.queryDelegate = new QueryServiceDelegate<>(repository);
+        this.queryDelegate = new QueryDelegate<>(repository);
     }
 
     @Transactional

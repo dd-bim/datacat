@@ -28,7 +28,7 @@ public class AssignsPropertyWithValuesServiceImpl implements AssignsPropertyWith
     private final ObjectRepository objectRepository;
     private final PropertyRepository propertyRepository;
 
-    private final QueryServiceDelegate<XtdRelAssignsPropertyWithValues> queryDelegate;
+    private final QueryDelegate<XtdRelAssignsPropertyWithValues> queryDelegate;
 
     public AssignsPropertyWithValuesServiceImpl(RelAssignsPropertyWithValuesRepository repository,
                                                 ObjectRepository objectRepository,
@@ -36,7 +36,7 @@ public class AssignsPropertyWithValuesServiceImpl implements AssignsPropertyWith
         this.repository = repository;
         this.objectRepository = objectRepository;
         this.propertyRepository = propertyRepository;
-        this.queryDelegate = new QueryServiceDelegate<>(repository);
+        this.queryDelegate = new QueryDelegate<>(repository);
     }
 
     @Transactional

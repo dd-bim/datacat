@@ -11,11 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class QueryServiceDelegate<T extends Entity> implements QueryService<T> {
+public class QueryDelegate<T extends Entity> implements QueryService<T> {
 
     private final GraphEntityRepository<T> repository;
 
-    QueryServiceDelegate(GraphEntityRepository<T> repository) {
+    QueryDelegate(GraphEntityRepository<T> repository) {
         this.repository = repository;
     }
 

@@ -22,11 +22,11 @@ public class UnitServiceImpl implements UnitService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final UnitRepository repository;
-    private final QueryServiceDelegate<XtdUnit> queryDelegate;
+    private final QueryDelegate<XtdUnit> queryDelegate;
 
     public UnitServiceImpl(UnitRepository repository) {
         this.repository = repository;
-        this.queryDelegate = new QueryServiceDelegate<>(repository);
+        this.queryDelegate = new QueryDelegate<>(repository);
     }
 
     @Transactional

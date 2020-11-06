@@ -30,14 +30,14 @@ public class DocumentsServiceImpl implements DocumentsService {
     private final ExternalDocumentRepository externalDocumentRepository;
     private final RootRepository rootRepository;
 
-    private final QueryServiceDelegate<XtdRelDocuments> queryDelegate;
+    private final QueryDelegate<XtdRelDocuments> queryDelegate;
 
     public DocumentsServiceImpl(RelDocumentsRepository repository,
                                 ExternalDocumentRepository externalDocumentRepository, RootRepository rootRepository) {
         this.documentsRepository = repository;
         this.externalDocumentRepository = externalDocumentRepository;
         this.rootRepository = rootRepository;
-        this.queryDelegate = new QueryServiceDelegate<>(repository);
+        this.queryDelegate = new QueryDelegate<>(repository);
     }
 
     @Transactional

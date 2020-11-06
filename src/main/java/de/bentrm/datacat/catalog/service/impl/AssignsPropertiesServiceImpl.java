@@ -30,7 +30,7 @@ public class AssignsPropertiesServiceImpl implements AssignsPropertiesService {
     private final ObjectRepository objectRepository;
     private final PropertyRepository propertyRepository;
 
-    private final QueryServiceDelegate<XtdRelAssignsProperties> queryDelegate;
+    private final QueryDelegate<XtdRelAssignsProperties> queryDelegate;
 
     public AssignsPropertiesServiceImpl(RelAssignsPropertiesRepository repository,
                                         ObjectRepository objectRepository,
@@ -38,7 +38,7 @@ public class AssignsPropertiesServiceImpl implements AssignsPropertiesService {
         this.assignsCollectionsRepository = repository;
         this.objectRepository = objectRepository;
         this.propertyRepository = propertyRepository;
-        this.queryDelegate = new QueryServiceDelegate<>(repository);
+        this.queryDelegate = new QueryDelegate<>(repository);
     }
 
     @Transactional

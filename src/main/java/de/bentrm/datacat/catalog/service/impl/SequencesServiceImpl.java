@@ -26,12 +26,12 @@ public class SequencesServiceImpl implements SequencesService {
     private final RelSequencesRepository sequencesRepository;
     private final ActivityRepository activityRepository;
 
-    private final QueryServiceDelegate<XtdRelSequences> queryDelegate;
+    private final QueryDelegate<XtdRelSequences> queryDelegate;
 
     public SequencesServiceImpl(RelSequencesRepository repository, ActivityRepository activityRepository) {
         this.sequencesRepository = repository;
         this.activityRepository = activityRepository;
-        this.queryDelegate = new QueryServiceDelegate<>(repository);
+        this.queryDelegate = new QueryDelegate<>(repository);
     }
 
     @Transactional

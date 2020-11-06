@@ -22,11 +22,11 @@ public class ActorServiceImpl implements ActorService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final ActorRepository repository;
-    private final QueryServiceDelegate<XtdActor> queryDelegate;
+    private final QueryDelegate<XtdActor> queryDelegate;
 
     public ActorServiceImpl(ActorRepository repository) {
         this.repository = repository;
-        this.queryDelegate = new QueryServiceDelegate<>(repository);
+        this.queryDelegate = new QueryDelegate<>(repository);
     }
 
     @Transactional

@@ -22,11 +22,11 @@ public class PropertyServiceImpl implements PropertyService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final PropertyRepository repository;
-    private final QueryServiceDelegate<XtdProperty> queryDelegate;
+    private final QueryDelegate<XtdProperty> queryDelegate;
 
     public PropertyServiceImpl(PropertyRepository repository) {
         this.repository = repository;
-        this.queryDelegate = new QueryServiceDelegate<>(repository);
+        this.queryDelegate = new QueryDelegate<>(repository);
     }
 
     @Transactional

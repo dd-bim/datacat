@@ -22,11 +22,11 @@ public class SubjectServiceImpl implements SubjectService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final SubjectRepository repository;
-    private final QueryServiceDelegate<XtdSubject> queryDelegate;
+    private final QueryDelegate<XtdSubject> queryDelegate;
 
     public SubjectServiceImpl(SubjectRepository repository) {
         this.repository = repository;
-        this.queryDelegate = new QueryServiceDelegate<>(repository);
+        this.queryDelegate = new QueryDelegate<>(repository);
     }
 
     @Transactional

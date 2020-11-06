@@ -22,11 +22,11 @@ public class ActivityServiceImpl implements ActivityService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final ActivityRepository repository;
-    private final QueryServiceDelegate<XtdActivity> queryDelegate;
+    private final QueryDelegate<XtdActivity> queryDelegate;
 
     public ActivityServiceImpl(ActivityRepository repository) {
         this.repository = repository;
-        this.queryDelegate = new QueryServiceDelegate<>(repository);
+        this.queryDelegate = new QueryDelegate<>(repository);
     }
 
     @Transactional

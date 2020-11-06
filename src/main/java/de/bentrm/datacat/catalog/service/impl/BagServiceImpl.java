@@ -22,11 +22,11 @@ public class BagServiceImpl implements BagService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final BagRepository repository;
-    private final QueryServiceDelegate<XtdBag> queryDelegate;
+    private final QueryDelegate<XtdBag> queryDelegate;
 
     public BagServiceImpl(BagRepository repository) {
         this.repository = repository;
-        this.queryDelegate = new QueryServiceDelegate<>(repository);
+        this.queryDelegate = new QueryDelegate<>(repository);
     }
 
     @Transactional

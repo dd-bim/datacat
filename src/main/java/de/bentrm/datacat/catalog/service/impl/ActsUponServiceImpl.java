@@ -27,12 +27,12 @@ public class ActsUponServiceImpl implements ActsUponService {
     private final RelActsUponRepository actsUponRepository;
     private final RootRepository rootRepository;
 
-    private final QueryServiceDelegate<XtdRelActsUpon> queryDelegate;
+    private final QueryDelegate<XtdRelActsUpon> queryDelegate;
 
     public ActsUponServiceImpl(RelActsUponRepository repository, RootRepository rootRepository) {
         this.actsUponRepository = repository;
         this.rootRepository = rootRepository;
-        this.queryDelegate = new QueryServiceDelegate<>(repository);
+        this.queryDelegate = new QueryDelegate<>(repository);
     }
 
     @Transactional

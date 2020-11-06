@@ -22,11 +22,11 @@ public class ClassificationServiceImpl implements ClassificationService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final ClassificationRepository repository;
-    private final QueryServiceDelegate<XtdClassification> queryDelegate;
+    private final QueryDelegate<XtdClassification> queryDelegate;
 
     public ClassificationServiceImpl(ClassificationRepository repository) {
         this.repository = repository;
-        this.queryDelegate = new QueryServiceDelegate<>(repository);
+        this.queryDelegate = new QueryDelegate<>(repository);
     }
 
     @Transactional

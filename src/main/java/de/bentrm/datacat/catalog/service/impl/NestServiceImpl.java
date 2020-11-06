@@ -22,11 +22,11 @@ public class NestServiceImpl implements NestService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final NestRepository repository;
-    private final QueryServiceDelegate<XtdNest> queryDelegate;
+    private final QueryDelegate<XtdNest> queryDelegate;
 
     public NestServiceImpl(NestRepository repository) {
         this.repository = repository;
-        this.queryDelegate = new QueryServiceDelegate<>(repository);
+        this.queryDelegate = new QueryDelegate<>(repository);
     }
 
     @Transactional

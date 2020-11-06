@@ -27,12 +27,12 @@ public class ComposesServiceImpl implements ComposesService {
     private final RelComposesRepository composesRepository;
     private final RootRepository rootRepository;
 
-    private final QueryServiceDelegate<XtdRelComposes> queryDelegate;
+    private final QueryDelegate<XtdRelComposes> queryDelegate;
 
     public ComposesServiceImpl(RelComposesRepository repository, RootRepository rootRepository) {
         this.composesRepository = repository;
         this.rootRepository = rootRepository;
-        this.queryDelegate = new QueryServiceDelegate<>(repository);
+        this.queryDelegate = new QueryDelegate<>(repository);
     }
 
     @Transactional

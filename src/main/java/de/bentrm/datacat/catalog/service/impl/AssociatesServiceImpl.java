@@ -27,12 +27,12 @@ public class AssociatesServiceImpl implements AssociatesService {
     private final RelAssociatesRepository groupsRepository;
     private final RootRepository rootRepository;
 
-    private final QueryServiceDelegate<XtdRelAssociates> queryDelegate;
+    private final QueryDelegate<XtdRelAssociates> queryDelegate;
 
     public AssociatesServiceImpl(RelAssociatesRepository repository, RootRepository rootRepository) {
         this.groupsRepository = repository;
         this.rootRepository = rootRepository;
-        this.queryDelegate = new QueryServiceDelegate<>(repository);
+        this.queryDelegate = new QueryDelegate<>(repository);
     }
 
     @Transactional

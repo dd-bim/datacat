@@ -30,13 +30,13 @@ public class CollectsServiceImpl implements CollectsService {
     private final CollectionRepository collectionRepository;
     private final RootRepository rootRepository;
 
-    private final QueryServiceDelegate<XtdRelCollects> queryDelegate;
+    private final QueryDelegate<XtdRelCollects> queryDelegate;
 
     public CollectsServiceImpl(RelCollectsRepository repository, CollectionRepository collectionRepository, RootRepository rootRepository) {
         this.collectsRepository = repository;
         this.collectionRepository = collectionRepository;
         this.rootRepository = rootRepository;
-        this.queryDelegate = new QueryServiceDelegate<>(repository);
+        this.queryDelegate = new QueryDelegate<>(repository);
     }
 
     @Transactional

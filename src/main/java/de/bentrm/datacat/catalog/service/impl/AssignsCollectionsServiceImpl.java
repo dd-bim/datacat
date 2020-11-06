@@ -30,14 +30,14 @@ public class AssignsCollectionsServiceImpl implements AssignsCollectionsService 
     private final ObjectRepository objectRepository;
     private final CollectionRepository collectionRepository;
 
-    private final QueryServiceDelegate<XtdRelAssignsCollections> queryDelegate;
+    private final QueryDelegate<XtdRelAssignsCollections> queryDelegate;
 
     public AssignsCollectionsServiceImpl(RelAssignsCollectionsRepository repository, ObjectRepository objectRepository,
                                          CollectionRepository collectionRepository) {
         this.assignsCollectionsRepository = repository;
         this.objectRepository = objectRepository;
         this.collectionRepository = collectionRepository;
-        this.queryDelegate = new QueryServiceDelegate<>(repository);
+        this.queryDelegate = new QueryDelegate<>(repository);
     }
 
     @Transactional

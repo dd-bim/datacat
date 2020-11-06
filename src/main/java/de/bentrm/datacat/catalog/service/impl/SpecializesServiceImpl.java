@@ -27,12 +27,12 @@ public class SpecializesServiceImpl implements SpecializesService {
     private final RelSpecializesRepository specializesRepository;
     private final RootRepository rootRepository;
 
-    private final QueryServiceDelegate<XtdRelSpecializes> queryDelegate;
+    private final QueryDelegate<XtdRelSpecializes> queryDelegate;
 
     public SpecializesServiceImpl(RelSpecializesRepository repository, RootRepository rootRepository) {
         this.specializesRepository = repository;
         this.rootRepository = rootRepository;
-        this.queryDelegate = new QueryServiceDelegate<>(repository);
+        this.queryDelegate = new QueryDelegate<>(repository);
     }
 
     @Transactional

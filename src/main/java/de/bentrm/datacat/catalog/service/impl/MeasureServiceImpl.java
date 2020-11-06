@@ -22,11 +22,11 @@ public class MeasureServiceImpl implements MeasureService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final MeasureWithUnitRepository repository;
-    private final QueryServiceDelegate<XtdMeasureWithUnit> queryDelegate;
+    private final QueryDelegate<XtdMeasureWithUnit> queryDelegate;
 
     public MeasureServiceImpl(MeasureWithUnitRepository repository) {
         this.repository = repository;
-        this.queryDelegate = new QueryServiceDelegate<>(repository);
+        this.queryDelegate = new QueryDelegate<>(repository);
     }
 
     @Transactional
