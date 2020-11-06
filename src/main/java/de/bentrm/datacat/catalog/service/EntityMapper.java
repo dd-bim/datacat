@@ -19,8 +19,6 @@ public interface EntityMapper {
 
     EntityMapper INSTANCE = Mappers.getMapper(EntityMapper.class);
 
-    org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(EntityMapperImpl.class);
-
     default void setProperties(EntryValue dto, @MappingTarget CatalogItem item) {
         setProperties(item, dto.getId(), dto.getVersion(), dto.getNames(), dto.getDescriptions());
     }
