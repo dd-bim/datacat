@@ -44,6 +44,7 @@ interface XtdRoot implements Concept {
     collectedBy: XtdRelCollectsConnection!
     composedBy: XtdRelComposesConnection!
     composes: XtdRelComposesConnection!
+    documentedBy: XtdRelDocumentsConnection!
     groupedBy: XtdRelGroupsConnection!
     groups: XtdRelGroupsConnection!
     specializedBy: XtdRelSpecializesConnection!
@@ -91,6 +92,7 @@ interface XtdCollection implements Concept, XtdRoot {
     collects: XtdRelCollectsConnection!
     composedBy: XtdRelComposesConnection!
     composes: XtdRelComposesConnection!
+    documentedBy: XtdRelDocumentsConnection!
     groupedBy: XtdRelGroupsConnection!
     groups: XtdRelGroupsConnection!
     specializedBy: XtdRelSpecializesConnection!
@@ -335,6 +337,7 @@ type XtdBag implements Concept, XtdRoot, XtdCollection {
     collects: XtdRelCollectsConnection!
     composedBy: XtdRelComposesConnection!
     composes: XtdRelComposesConnection!
+    documentedBy: XtdRelDocumentsConnection!
     groupedBy: XtdRelGroupsConnection!
     groups: XtdRelGroupsConnection!
     specializedBy: XtdRelSpecializesConnection!
@@ -358,6 +361,7 @@ type XtdNest implements Concept, XtdRoot, XtdCollection {
     collects: XtdRelCollectsConnection!
     composedBy: XtdRelComposesConnection!
     composes: XtdRelComposesConnection!
+    documentedBy: XtdRelDocumentsConnection!
     groupedBy: XtdRelGroupsConnection!
     groups: XtdRelGroupsConnection!
     specializedBy: XtdRelSpecializesConnection!
