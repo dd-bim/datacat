@@ -14,6 +14,7 @@ import de.bentrm.datacat.graphql.fetcher.DescriptionFetcher;
 import de.bentrm.datacat.graphql.fetcher.NameFetcher;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,17 +23,18 @@ import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
+@Getter
 @Slf4j
-public abstract class AbstractEntityFetchers<
+public abstract class AbstractFetchers<
         T extends Entity,
         S extends QueryService<T>>
         implements AttributeFetchers, QueryFetchers {
 
-    protected final ObjectMapper objectMapper = new ObjectMapper();
-    protected final S entityService;
-    protected CatalogService catalogService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final S entityService;
+    private CatalogService catalogService;
 
-    public AbstractEntityFetchers(S entityService) {
+    public AbstractFetchers(S entityService) {
         this.entityService = entityService;
     }
 

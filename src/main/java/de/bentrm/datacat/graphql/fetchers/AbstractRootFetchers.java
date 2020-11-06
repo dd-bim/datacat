@@ -7,14 +7,16 @@ import de.bentrm.datacat.graphql.fetcher.CollectsFetcher;
 import de.bentrm.datacat.graphql.fetcher.ComposesFetcher;
 import de.bentrm.datacat.graphql.fetcher.DocumentsFetcher;
 import graphql.schema.DataFetcher;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 
+@Getter
 @Slf4j
 public abstract class AbstractRootFetchers<T extends XtdRoot, S extends QueryService<T>>
-        extends AbstractEntityFetchers<T, S> {
+        extends AbstractFetchers<T, S> {
 
     private AssociatesFetcher associatesFetcher;
     private CollectsFetcher collectsFetcher;
@@ -31,8 +33,8 @@ public abstract class AbstractRootFetchers<T extends XtdRoot, S extends QuerySer
     }
 
     @Autowired
-    public void setCollectsFetcher(CollectsService collectsService) {
-        this.collectsFetcher = new CollectsFetcher(collectsService);
+    public void setCollectsFetcher(CollectsService service) {
+        this.collectsFetcher = new CollectsFetcher(service);
     }
 
     @Autowired

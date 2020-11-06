@@ -5,7 +5,7 @@ import de.bentrm.datacat.catalog.service.BagService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class BagFetchers extends CollectionFetchers<XtdBag, BagService> {
+public class BagFetchers extends AbstractCollectionFetchers<XtdBag, BagService> {
 
     public BagFetchers(BagService entityService) {
         super(entityService);

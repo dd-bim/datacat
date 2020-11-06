@@ -5,7 +5,7 @@ import de.bentrm.datacat.catalog.service.ClassificationService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ClassificationFetchers extends ObjectFetchers<XtdClassification, ClassificationService> {
+public class ClassificationFetchers extends AbstractObjectFetchers<XtdClassification, ClassificationService> {
 
     public ClassificationFetchers(ClassificationService entityService) {
         super(entityService);

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 @Component
-public class ExternalDocumentFetchers extends AbstractEntityFetchers<XtdExternalDocument, ExternalDocumentService> {
+public class ExternalDocumentFetchers extends AbstractFetchers<XtdExternalDocument, ExternalDocumentService> {
 
     private final DocumentsFetcher documentsFetcher;
 

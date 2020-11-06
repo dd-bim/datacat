@@ -5,7 +5,7 @@ import de.bentrm.datacat.catalog.service.ActivityService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ActivityFetchers extends ObjectFetchers<XtdActivity, ActivityService> {
+public class ActivityFetchers extends AbstractObjectFetchers<XtdActivity, ActivityService> {
 
     public ActivityFetchers(ActivityService service) {
         super(service);

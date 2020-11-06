@@ -5,7 +5,7 @@ import de.bentrm.datacat.catalog.service.SubjectService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SubjectFetchers extends ObjectFetchers<XtdSubject, SubjectService> {
+public class SubjectFetchers extends AbstractObjectFetchers<XtdSubject, SubjectService> {
 
     public SubjectFetchers(SubjectService entityService) {
         super(entityService);

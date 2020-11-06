@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class RelAssociatesFetchers
-        extends AbstractEntityFetchers<XtdRelAssociates, AssociatesService> {
+        extends AbstractFetchers<XtdRelAssociates, AssociatesService> {
 
     public RelAssociatesFetchers(AssociatesService entityService) {
         super(entityService);
@@ -53,7 +53,7 @@ public class RelAssociatesFetchers
             List<String> ids = root.getAssociates().stream()
                     .map(XtdRelAssociates::getId)
                     .collect(Collectors.toList());
-            var content = entityService.findAllByIds(ids);
+            var content = getEntityService().findAllByIds(ids);
             return Connection.of(content);
         };
     }
@@ -64,7 +64,7 @@ public class RelAssociatesFetchers
             List<String> ids = source.getAssociatedBy().stream()
                     .map(XtdRelAssociates::getId)
                     .collect(Collectors.toList());
-            var content = entityService.findAllByIds(ids);
+            var content = getEntityService().findAllByIds(ids);
             return Connection.of(content);
         };
     }

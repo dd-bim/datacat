@@ -5,7 +5,7 @@ import de.bentrm.datacat.catalog.service.NestService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class NestFetchers extends CollectionFetchers<XtdNest, NestService> {
+public class NestFetchers extends AbstractCollectionFetchers<XtdNest, NestService> {
 
     public NestFetchers(NestService service) {
         super(service);

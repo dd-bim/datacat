@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class RelActsUponFetchers extends AbstractEntityFetchers<XtdRelActsUpon, ActsUponService> {
+public class RelActsUponFetchers extends AbstractFetchers<XtdRelActsUpon, ActsUponService> {
 
     public RelActsUponFetchers(ActsUponService entityService) {
         super(entityService);
@@ -52,7 +52,7 @@ public class RelActsUponFetchers extends AbstractEntityFetchers<XtdRelActsUpon, 
             List<String> ids = root.getActsUpon().stream()
                     .map(XtdRelActsUpon::getId)
                     .collect(Collectors.toList());
-            List<XtdRelActsUpon> results = entityService.findAllByIds(ids);
+            List<XtdRelActsUpon> results = getEntityService().findAllByIds(ids);
             return Connection.of(results);
         };
     }
@@ -63,7 +63,7 @@ public class RelActsUponFetchers extends AbstractEntityFetchers<XtdRelActsUpon, 
             List<String> ids = source.getActedUponBy().stream()
                     .map(XtdRelActsUpon::getId)
                     .collect(Collectors.toList());
-            List<XtdRelActsUpon> list = entityService.findAllByIds(ids);
+            List<XtdRelActsUpon> list = getEntityService().findAllByIds(ids);
             return Connection.of(list);
         };
     }

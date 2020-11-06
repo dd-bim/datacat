@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class RelAssignsCollectionsFetchers
-        extends AbstractEntityFetchers<XtdRelAssignsCollections, AssignsCollectionsService> {
+        extends AbstractFetchers<XtdRelAssignsCollections, AssignsCollectionsService> {
 
     public RelAssignsCollectionsFetchers(AssignsCollectionsService entityService) {
         super(entityService);
@@ -52,7 +52,7 @@ public class RelAssignsCollectionsFetchers
         return environment -> {
             final XtdRelAssignsCollections source = environment.getSource();
             final String id = source.getRelatingObject().getId();
-            return catalogService.getObject(id).orElseThrow();
+            return getCatalogService().getObject(id).orElseThrow();
         };
     }
 
@@ -62,7 +62,7 @@ public class RelAssignsCollectionsFetchers
             final List<String> relatedCollectionsIds = source.getRelatedCollections().stream()
                     .map(CatalogItem::getId)
                     .collect(Collectors.toList());
-            return catalogService.getAllCollectionsById(relatedCollectionsIds);
+            return getCatalogService().getAllCollectionsById(relatedCollectionsIds);
         };
     }
 }

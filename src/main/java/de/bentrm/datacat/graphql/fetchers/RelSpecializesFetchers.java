@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Component
 public class RelSpecializesFetchers
-        extends AbstractEntityFetchers<XtdRelSpecializes, SpecializesService> {
+        extends AbstractFetchers<XtdRelSpecializes, SpecializesService> {
 
     public RelSpecializesFetchers(SpecializesService entityService) {
         super(entityService);

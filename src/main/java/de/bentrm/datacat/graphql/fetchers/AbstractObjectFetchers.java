@@ -12,13 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 
-public abstract class ObjectFetchers<T extends XtdObject, S extends QueryService<T>>
+public abstract class AbstractObjectFetchers<T extends XtdObject, S extends QueryService<T>>
         extends AbstractRootFetchers<T, S> {
 
     private AssignsCollectionsFetcher assignsCollectionsFetcher;
     private AssignsPropertiesFetcher assignsPropertiesFetcher;
 
-    public ObjectFetchers(S entityService) {
+    public AbstractObjectFetchers(S entityService) {
         super(entityService);
     }
 

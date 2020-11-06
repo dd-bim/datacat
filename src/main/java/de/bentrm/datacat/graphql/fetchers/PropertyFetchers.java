@@ -5,7 +5,7 @@ import de.bentrm.datacat.catalog.service.PropertyService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PropertyFetchers extends ObjectFetchers<XtdProperty, PropertyService> {
+public class PropertyFetchers extends AbstractObjectFetchers<XtdProperty, PropertyService> {
 
     public PropertyFetchers(PropertyService entityService) {
         super(entityService);

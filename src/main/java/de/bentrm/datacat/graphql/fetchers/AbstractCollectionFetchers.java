@@ -2,30 +2,26 @@ package de.bentrm.datacat.graphql.fetchers;
 
 import de.bentrm.datacat.catalog.domain.XtdCollection;
 import de.bentrm.datacat.catalog.service.AssignsCollectionsService;
-import de.bentrm.datacat.catalog.service.CollectsService;
 import de.bentrm.datacat.catalog.service.QueryService;
 import de.bentrm.datacat.graphql.fetcher.AssignsCollectionsFetcher;
-import de.bentrm.datacat.graphql.fetcher.CollectsFetcher;
 import de.bentrm.datacat.graphql.fetcher.TagsFetcher;
 import graphql.schema.DataFetcher;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 
-public abstract class CollectionFetchers<T extends XtdCollection, S extends QueryService<T>>
-        extends AbstractEntityFetchers<T, S> {
+@Getter
+@Slf4j
+public abstract class AbstractCollectionFetchers<T extends XtdCollection, S extends QueryService<T>>
+        extends AbstractRootFetchers<T, S> {
 
-    private CollectsFetcher collectsFetcher;
     private AssignsCollectionsFetcher assignsCollectionsFetcher;
 
 
-    public CollectionFetchers(S entityService) {
-        super(entityService);
-    }
-
-    @Autowired
-    public void setCollectsFetcher(CollectsService collectsService) {
-        this.collectsFetcher = new CollectsFetcher(collectsService);
+    public AbstractCollectionFetchers(S service) {
+        super(service);
     }
 
     @Autowired
@@ -37,8 +33,8 @@ public abstract class CollectionFetchers<T extends XtdCollection, S extends Quer
     public Map<String, DataFetcher> getAttributeFetchers() {
         final Map<String, DataFetcher> fetchers = super.getAttributeFetchers();
         fetchers.put("tags", new TagsFetcher());
-        fetchers.put("collects", collectsFetcher.collects());
-        fetchers.put("collectedBy", collectsFetcher.collectedBy());
+        fetchers.put("collects", getCollectsFetcher().collects());
+        fetchers.put("collectedBy", getCollectsFetcher().collectedBy());
         fetchers.put("assignedTo", assignsCollectionsFetcher.assignedTo());
         return fetchers;
     }

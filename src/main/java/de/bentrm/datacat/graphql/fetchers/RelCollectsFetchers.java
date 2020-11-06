@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 public class RelCollectsFetchers
-        extends AbstractEntityFetchers<XtdRelCollects, CollectsService> {
+        extends AbstractFetchers<XtdRelCollects, CollectsService> {
 
     public RelCollectsFetchers(CollectsService entityService) {
         super(entityService);
@@ -55,7 +55,7 @@ public class RelCollectsFetchers
         return environment -> {
             final XtdRelCollects source = environment.getSource();
             final String id = source.getRelatingCollection().getId();
-            final CatalogItem collection = catalogService.getEntryById(id).orElseThrow();
+            final CatalogItem collection = getCatalogService().getEntryById(id).orElseThrow();
             return (XtdCollection) collection;
         };
     }
@@ -66,7 +66,7 @@ public class RelCollectsFetchers
             final List<String> relatedThingsIds = source.getRelatedThings().stream()
                     .map(CatalogItem::getId)
                     .collect(Collectors.toList());
-            return catalogService.getAllEntriesById(relatedThingsIds);
+            return getCatalogService().getAllEntriesById(relatedThingsIds);
         };
     }
 }

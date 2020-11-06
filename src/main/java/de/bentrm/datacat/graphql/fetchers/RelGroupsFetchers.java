@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Component
 public class RelGroupsFetchers
-        extends AbstractEntityFetchers<XtdRelGroups, GroupsService> {
+        extends AbstractFetchers<XtdRelGroups, GroupsService> {
 
     public RelGroupsFetchers(GroupsService entityService) {
         super(entityService);
