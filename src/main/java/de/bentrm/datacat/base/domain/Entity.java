@@ -2,6 +2,7 @@ package de.bentrm.datacat.base.domain;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.neo4j.ogm.annotation.GeneratedValue;
 import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.annotation.Version;
@@ -18,6 +19,7 @@ import java.time.Instant;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(onlyExplicitlyIncluded = true)
 public abstract class Entity {
 
     public static final String PREFIX = "Xtd";
