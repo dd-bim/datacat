@@ -15,9 +15,6 @@ public abstract class XtdObject extends XtdRoot {
     public static final String TITLE_PLURAL = "Objects";
     public static final String LABEL = PREFIX + TITLE;
 
-    @Relationship(type = XtdRelDocuments.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
-    private final Set<XtdRelDocuments> documentedBy = new HashSet<>();
-
     @Relationship(type = XtdRelAssignsCollections.RELATIONSHIP_TYPE)
     private final Set<XtdRelAssignsCollections> assignedCollections = new HashSet<>();
 
