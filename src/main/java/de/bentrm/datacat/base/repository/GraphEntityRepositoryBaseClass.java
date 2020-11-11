@@ -6,7 +6,6 @@ import org.neo4j.ogm.cypher.query.Pagination;
 import org.neo4j.ogm.cypher.query.SortOrder;
 import org.neo4j.ogm.model.Result;
 import org.neo4j.ogm.session.Session;
-import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -58,12 +57,6 @@ public class GraphEntityRepositoryBaseClass<T>
                 final String[] properties = sort.get().map(Sort.Order::getProperty).toArray(String[]::new);
                 final SortOrder sortOrder = new SortOrder(SortOrder.Direction.valueOf(direction.name()), properties);
                 items = session.loadAll(entityType, specification.getFilters(), sortOrder, pagination, 1);
-
-
-
-                log.debug("Target class: {}", AopProxyUtils.ultimateTargetClass(session));
-
-                log.debug("Statements: {}", session);
             }
         } else {
             pageable = PageRequest.of(0, (int) Math.max(count, 10));
