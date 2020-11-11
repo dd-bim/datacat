@@ -260,7 +260,7 @@ type XtdProperty implements Concept, XtdRoot, XtdObject {
     specializes: XtdRelSpecializesConnection!
     assignedCollections: XtdRelAssignsCollectionsConnection!
     assignedProperties: XtdRelAssignsPropertiesConnection!
-    assignedTo: XtdRelAssignsPropertiesConnection
+    assignedTo: XtdRelAssignsPropertiesConnection!
     assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
 }
 
