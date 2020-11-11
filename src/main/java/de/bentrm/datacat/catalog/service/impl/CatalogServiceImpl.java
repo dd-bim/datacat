@@ -4,7 +4,6 @@ import de.bentrm.datacat.catalog.domain.*;
 import de.bentrm.datacat.catalog.repository.*;
 import de.bentrm.datacat.catalog.service.CatalogService;
 import de.bentrm.datacat.catalog.service.value.HierarchyValue;
-import de.bentrm.datacat.catalog.service.value.ValueMapper;
 import de.bentrm.datacat.catalog.specification.CatalogItemSpecification;
 import de.bentrm.datacat.catalog.specification.RootSpecification;
 import de.bentrm.datacat.graphql.dto.CatalogItemStatistics;
@@ -21,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 public class CatalogServiceImpl implements CatalogService {
 
     @Autowired
-    private ValueMapper valueMapper;
+    private TranslationRespository translationRespository;
 
     @Autowired
     private TagRepository tagRepository;
@@ -69,7 +69,22 @@ public class CatalogServiceImpl implements CatalogService {
         if (entry instanceof XtdRelationship) {
             throw new NoSuchElementException();
         }
+
+        final Consumer<Translation> deleteTranslation = translation -> {
+            translationRespository.delete(translation);
+            log.debug("Translation deleted: {}", translation);
+        };
+        entry.getNames().forEach(deleteTranslation);
+        entry.getDescriptions().forEach(deleteTranslation);
+
+        final List<XtdRelationship> ownedRelationships = entry.getOwnedRelationships();
+        ownedRelationships.forEach(relationship -> {
+            relationshipRepository.delete(relationship);
+            log.debug("Relationship deleted: {}", relationship);
+        });
+
         catalogItemRepository.delete(entry);
+        log.debug("Catalog item deleted: {}", entry);
         return entry;
     }
 
@@ -77,7 +92,16 @@ public class CatalogServiceImpl implements CatalogService {
     @Override
     public @NotNull XtdRelationship deleteRelationship(@NotBlank String id) {
         final XtdRelationship relationship = relationshipRepository.findById(id).orElseThrow();
+
+        final Consumer<Translation> deleteTranslation = translation -> {
+            translationRespository.delete(translation);
+            log.debug("Translation deleted: {}", translation);
+        };
+        relationship.getNames().forEach(deleteTranslation);
+        relationship.getDescriptions().forEach(deleteTranslation);
+
         relationshipRepository.delete(relationship);
+        log.debug("Relationship deleted: {}", relationship);
         return relationship;
     }
 
