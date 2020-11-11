@@ -6,8 +6,12 @@ import lombok.ToString;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Getter
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
@@ -66,4 +70,12 @@ public abstract class XtdRoot extends CatalogItem {
     @ToString.Exclude
     @Relationship(type = XtdRelActsUpon.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
     private final Set<XtdRelActsUpon> actedUponBy = new HashSet<>();
+
+    @Override
+    public List<XtdRelationship> getOwnedRelationships() {
+        return Stream
+                .of(associates, composes, groups, actsUpon)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+    }
 }

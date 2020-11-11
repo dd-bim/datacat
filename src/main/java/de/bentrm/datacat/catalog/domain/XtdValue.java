@@ -24,7 +24,4 @@ public class XtdValue extends XtdObject {
     private ValueType valueType;
 
     private String nominalValue;
-
-//    @Relationship(type = "RELATED_VALUES", direction = Relationship.INCOMING)
-//    private Set<XtdRelAssignsPropertyWithValues> domainValueOf;
 }

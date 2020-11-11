@@ -169,4 +169,10 @@ public abstract class CatalogItem extends Entity {
         Assert.notNull(tag, "tag may not be null");
         return this.tags.remove(tag);
     }
+
+    /**
+     * Returns a list of all relationships this item is on the owning side on.
+     * @return A list of relationships.
+     */
+    public abstract List<XtdRelationship> getOwnedRelationships();
 }
