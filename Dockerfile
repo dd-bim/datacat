@@ -1,11 +1,18 @@
-FROM adoptopenjdk:15-jre-hotspot-bionic as builder
+FROM maven:3.6.3-adoptopenjdk-15 as builder
 WORKDIR application
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} application.jar
+
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+COPY src/ ./src
+RUN ls -lisah
+RUN mvn package && cp target/*.jar application.jar
+RUN ls -lisah
 RUN java -Djarmode=layertools -jar application.jar extract
 
 FROM adoptopenjdk:15-jre-hotspot-bionic
 WORKDIR application
+COPY LICENSE .
 COPY --from=builder application/dependencies/ ./
 COPY --from=builder application/spring-boot-loader/ ./
 COPY --from=builder application/snapshot-dependencies/ ./
