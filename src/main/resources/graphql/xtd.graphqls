@@ -221,6 +221,7 @@ type XtdMeasureWithUnit implements Concept, XtdRoot, XtdObject {
     descriptions: [Translation!]!
     unitComponent: XtdUnit
     valueDomain: [XtdValue!]!
+    assignedTo: XtdRelAssignsMeasuresConnection!
     actedUponBy: XtdRelActsUponConnection!
     actsUpon: XtdRelActsUponConnection!
     associatedBy: XtdRelAssociatesConnection!
@@ -246,6 +247,7 @@ type XtdProperty implements Concept, XtdRoot, XtdObject {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    assignedMeasures: XtdRelAssignsMeasuresConnection!
     actedUponBy: XtdRelActsUponConnection!
     actsUpon: XtdRelActsUponConnection!
     associatedBy: XtdRelAssociatesConnection!
@@ -649,6 +651,12 @@ type XtdRelAssignsCollectionsConnection {
 
 type XtdRelAssignsPropertiesConnection {
     nodes: [XtdRelAssignsProperties!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+type XtdRelAssignsMeasuresConnection {
+    nodes: [XtdRelAssignsMeasures!]!
     pageInfo: PageInfo!
     totalElements: Int!
 }
