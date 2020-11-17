@@ -1,0 +1,56 @@
+package de.bentrm.datacat.graphql.fetcher;
+
+import de.bentrm.datacat.catalog.domain.XtdExternalDocument;
+import de.bentrm.datacat.catalog.domain.XtdRelDocuments;
+import de.bentrm.datacat.catalog.service.DocumentsService;
+import de.bentrm.datacat.catalog.service.ExternalDocumentService;
+import de.bentrm.datacat.graphql.Connection;
+import graphql.schema.DataFetcher;
+import graphql.schema.DataFetchingEnvironment;
+import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+@Component
+public class ExternalDocumentFetchers extends AbstractFetchers<XtdExternalDocument> {
+
+    private final RelationshipFetcher<XtdRelDocuments> documents;
+
+    public ExternalDocumentFetchers(ExternalDocumentService entityService,
+                                    DocumentsService documentsService) {
+        super(entityService);
+
+        this.documents = new RelationshipFetcher<>(documentsService) {
+            @Override
+            public Connection<XtdRelDocuments> get(DataFetchingEnvironment environment) throws Exception {
+                final XtdExternalDocument source = environment.getSource();
+                final Set<XtdRelDocuments> fieldValues = source.getDocuments();
+                return get(fieldValues, environment);
+            }
+        };
+    }
+
+    @Override
+    public String getTypeName() {
+        return "XtdExternalDocument";
+    }
+
+    @Override
+    public String getFetcherName() {
+        return "externalDocument";
+    }
+
+    @Override
+    public String getListFetcherName() {
+        return "externalDocuments";
+    }
+
+    @Override
+    public Map<String, DataFetcher> getAttributeFetchers() {
+        final Map<String, DataFetcher> fetchers = new HashMap<>(super.getAttributeFetchers());
+        fetchers.put("documents", documents);
+        return fetchers;
+    }
+}

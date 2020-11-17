@@ -1,8 +1,8 @@
 package de.bentrm.datacat.graphql;
 
-import de.bentrm.datacat.graphql.fetchers.AttributeFetchers;
-import de.bentrm.datacat.graphql.fetchers.MutationFetchers;
-import de.bentrm.datacat.graphql.fetchers.QueryFetchers;
+import de.bentrm.datacat.graphql.fetcher.AttributeFetchers;
+import de.bentrm.datacat.graphql.fetcher.MutationFetchers;
+import de.bentrm.datacat.graphql.fetcher.QueryFetchers;
 import de.bentrm.datacat.graphql.resolver.CustomResolver;
 import graphql.GraphQLError;
 import graphql.kickstart.spring.error.ThrowableGraphQLError;

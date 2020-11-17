@@ -10,7 +10,7 @@ import java.util.Locale;
 
 public class DescriptionFetcher extends LocalizedAttributeFetcher implements DataFetcher<String> {
     @Override
-    public String get(DataFetchingEnvironment environment) throws Exception {
+    public String get(DataFetchingEnvironment environment) {
         final CatalogItem source = environment.getSource();
         final List<Locale.LanguageRange> priorityList = getPriorityList(environment);
         return source
