@@ -1,17 +1,21 @@
 package de.bentrm.datacat.catalog.domain;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Relationship;
 
-@Getter
-@Setter
+import java.util.ArrayList;
+import java.util.List;
+
+@Data
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+@ToString(callSuper = true, onlyExplicitlyIncluded = true)
 @NodeEntity(label = XtdValue.LABEL)
 public class XtdValue extends XtdObject {
 
-    public static final String TITLE = "Value";
-    public static final String TITLE_PLURAL = "Values";
-    public static final String LABEL = PREFIX + TITLE;
+    public static final String LABEL = "XtdValue";
 
     private ToleranceType toleranceType;
 
@@ -24,4 +28,7 @@ public class XtdValue extends XtdObject {
     private ValueType valueType;
 
     private String nominalValue;
+
+    @Relationship(type = XtdRelAssignsValues.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
+    private List<XtdRelAssignsValues> assignedTo = new ArrayList<>();
 }

@@ -1,43 +1,28 @@
 package de.bentrm.datacat.catalog.domain;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.HashSet;
+import java.util.Set;
 
+@Data
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+@ToString(callSuper = true, onlyExplicitlyIncluded = true)
 @NodeEntity(label = XtdMeasureWithUnit.LABEL)
 public class XtdMeasureWithUnit extends XtdObject {
 
-    public static final String TITLE = "Measure";
-    public static final String TITLE_PLURAL = "Measures";
-    public static final String LABEL = PREFIX + "MeasureWithUnit";
+    public static final String LABEL = "XtdMeasureWithUnit";
 
-    @Relationship(type = "HAS_UNIT_COMPONENT")
-    private XtdUnit unitComponent;
+    @Relationship(type = XtdRelAssignsUnits.RELATIONSHIP_TYPE)
+    private final Set<XtdRelAssignsUnits> assignedUnits = new HashSet<>();
 
-    @Relationship(type = "HAS_VALUE_DOMAIN")
-    private final SortedSet<DomainValueRelationship> valueDomain = new TreeSet<>();
+    @Relationship(type = XtdRelAssignsValues.RELATIONSHIP_TYPE)
+    private final Set<XtdRelAssignsValues> assignedValues = new HashSet<>();
 
-    public XtdUnit getUnitComponent() {
-        return unitComponent;
-    }
-
-    public void setUnitComponent(XtdUnit unitComponent) {
-        this.unitComponent = unitComponent;
-    }
-
-    public SortedSet<DomainValueRelationship> getValueDomain() {
-        return valueDomain;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this)
-                .appendSuper(super.toString())
-                .append("unitComponent", unitComponent)
-                .append("valueDomain", valueDomain)
-                .toString();
-    }
+    @Relationship(type = XtdRelAssignsMeasures.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
+    private final Set<XtdRelAssignsMeasures> assignedTo = new HashSet<>();
 }

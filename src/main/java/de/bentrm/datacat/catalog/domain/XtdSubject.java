@@ -7,12 +7,8 @@ import org.neo4j.ogm.annotation.NodeEntity;
 
 @Getter
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-@ToString(callSuper = true)
+@ToString(callSuper = true, onlyExplicitlyIncluded = true)
 @NodeEntity(label = XtdSubject.LABEL)
 public class XtdSubject extends XtdObject {
-
-    public static final String TITLE = "Subject";
-    public static final String TITLE_PLURAL = "Subjects";
-    public static final String LABEL = PREFIX + TITLE;
-
+    public static final String LABEL = "XtdSubject";
 }

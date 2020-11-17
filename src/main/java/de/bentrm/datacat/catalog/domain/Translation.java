@@ -18,16 +18,18 @@ import java.util.Locale;
 
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-@ToString(callSuper = true)
+@ToString(callSuper = true, onlyExplicitlyIncluded = true)
 @NodeEntity(label = "Translation")
 public class Translation extends Entity {
 
     @EqualsAndHashCode.Include
+    @ToString.Include
     @NotBlank
     @Property("languageCode")
     private final String languageTag;
 
     @EqualsAndHashCode.Include
+    @ToString.Include
     @Index
     @NotBlank
     @Property("label")

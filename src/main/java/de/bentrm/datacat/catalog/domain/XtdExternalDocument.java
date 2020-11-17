@@ -1,6 +1,8 @@
 package de.bentrm.datacat.catalog.domain;
 
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
@@ -11,13 +13,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Getter
+@Data
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+@ToString(callSuper = true, onlyExplicitlyIncluded = true)
 @NodeEntity(label = XtdExternalDocument.LABEL)
 public class XtdExternalDocument extends CatalogItem {
 
-    public static final String TITLE = "ExternalDocument";
-    public static final String TITLE_PLURAL = "ExternalDocuments";
-    public static final String LABEL = PREFIX + TITLE;
+    public static final String LABEL = "XtdExternalDocument";
 
     @Relationship(type = XtdRelDocuments.RELATIONSHIP_TYPE)
     private Set<XtdRelDocuments> documents = new HashSet<>();

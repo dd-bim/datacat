@@ -1,12 +1,14 @@
 package de.bentrm.datacat.catalog.domain;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.neo4j.ogm.annotation.NodeEntity;
 
+@Data
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+@ToString(callSuper = true, onlyExplicitlyIncluded = true)
 @NodeEntity(label = XtdActivity.LABEL)
 public class XtdActivity extends XtdObject {
-
-    public static final String TITLE = "Activity";
-    public static final String TITLE_PLURAL = "Activities";
-    public static final String LABEL = PREFIX + TITLE;
-
+    public static final String LABEL = "XtdActivity";
 }

@@ -1,11 +1,17 @@
 package de.bentrm.datacat.catalog.domain;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@Data
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+@ToString(callSuper = true, onlyExplicitlyIncluded = true)
 @NodeEntity(label = XtdRelDocuments.LABEL)
 public class XtdRelDocuments extends XtdRelationship {
 
@@ -17,16 +23,4 @@ public class XtdRelDocuments extends XtdRelationship {
 
     @Relationship(type = RELATIONSHIP_TYPE)
     private final Set<XtdRoot> relatedThings = new HashSet<>();
-
-    public XtdExternalDocument getRelatingDocument() {
-        return relatingDocument;
-    }
-
-    public void setRelatingDocument(XtdExternalDocument relatingDocument) {
-        this.relatingDocument = relatingDocument;
-    }
-
-    public Set<XtdRoot> getRelatedThings() {
-        return this.relatedThings;
-    }
 }

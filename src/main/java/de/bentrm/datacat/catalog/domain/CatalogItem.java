@@ -15,32 +15,30 @@ import java.util.*;
 @Slf4j
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-@ToString(callSuper = true)
+@ToString(callSuper = true, onlyExplicitlyIncluded = true)
 @NodeEntity(label = "CatalogItem")
 public abstract class CatalogItem extends Entity {
 
     public static final String DEFAULT_LANGUAGE_TAG = "de";
 
+    @ToString.Include
     protected String versionId;
 
+    @ToString.Include
     protected String versionDate;
 
     // Primary use case for this property is search and lookup optimization
     // TODO: Add external full text search component to improve on this mechanic
     @Setter(AccessLevel.NONE)
-    @ToString.Exclude
     @Properties
     private final Map<String, String> labels = new HashMap<>();
 
-    @ToString.Exclude
     @Relationship(type = "NAMED")
     private final Set<Translation> names = new HashSet<>();
 
-    @ToString.Exclude
     @Relationship(type = "DESCRIBED")
     protected final Set<Translation> descriptions = new HashSet<>();
 
-    @ToString.Exclude
     @Relationship(type = "TAGGED")
     protected final Set<Tag> tags = new HashSet<>();
 

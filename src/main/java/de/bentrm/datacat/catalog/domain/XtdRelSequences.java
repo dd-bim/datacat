@@ -1,8 +1,14 @@
 package de.bentrm.datacat.catalog.domain;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
+@Data
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+@ToString(callSuper = true, onlyExplicitlyIncluded = true)
 @NodeEntity(label = XtdRelSequences.LABEL)
 public class XtdRelSequences extends XtdRelationship {
 
@@ -14,22 +20,4 @@ public class XtdRelSequences extends XtdRelationship {
 
     @Relationship(type = RELATIONSHIP_TYPE)
     private XtdActivity relatedActivity;
-
-    public XtdActivity getRelatingActivity() {
-        return relatingActivity;
-    }
-
-    public XtdRelSequences setRelatingActivity(XtdActivity relatingActivity) {
-        this.relatingActivity = relatingActivity;
-        return this;
-    }
-
-    public XtdActivity getRelatedActivity() {
-        return relatedActivity;
-    }
-
-    public XtdRelSequences setRelatedActivity(XtdActivity relatedActivity) {
-        this.relatedActivity = relatedActivity;
-        return this;
-    }
 }
