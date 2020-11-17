@@ -22,32 +22,36 @@ import java.time.Instant;
 @ToString(onlyExplicitlyIncluded = true)
 public abstract class Entity {
 
-    public static final String PREFIX = "Xtd";
-
     @Id
     @NotBlank
     @GeneratedValue(strategy = UuidStrategy.class)
     @EqualsAndHashCode.Include
+    @ToString.Include
     private String id;
 
     @NotNull
     @Version
+    @ToString.Include
     private Long version;
 
     @NotNull
     @CreatedDate
+    @ToString.Include
     private Instant created;
 
     @NotBlank
     @CreatedBy
+    @ToString.Include
     private String createdBy;
 
     @NotNull
     @LastModifiedDate
+    @ToString.Include
     private Instant lastModified;
 
     @NotBlank
     @LastModifiedBy
+    @ToString.Include
     private String lastModifiedBy;
 
     public void setId(String id) {
