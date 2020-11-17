@@ -35,8 +35,8 @@ public class RelationshipResolver implements CustomResolver {
         if (obj instanceof XtdRelAssignsPropertyWithValues) {
             return schema.getObjectType(XtdRelAssignsPropertyWithValues.LABEL);
         }
-        if (obj instanceof XtdRelAssignsUnit) {
-            return schema.getObjectType(XtdRelAssignsUnit.LABEL);
+        if (obj instanceof XtdRelAssignsUnits) {
+            return schema.getObjectType(XtdRelAssignsUnits.LABEL);
         }
         if (obj instanceof XtdRelAssignsValues) {
             return schema.getObjectType(XtdRelAssignsValues.LABEL);

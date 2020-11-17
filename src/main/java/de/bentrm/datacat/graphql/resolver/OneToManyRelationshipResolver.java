@@ -32,8 +32,8 @@ public class OneToManyRelationshipResolver implements CustomResolver {
         if (obj instanceof XtdRelAssignsProperties) {
             return schema.getObjectType(XtdRelAssignsProperties.LABEL);
         }
-        if (obj instanceof XtdRelAssignsUnit) {
-            return schema.getObjectType(XtdRelAssignsUnit.LABEL);
+        if (obj instanceof XtdRelAssignsUnits) {
+            return schema.getObjectType(XtdRelAssignsUnits.LABEL);
         }
         if (obj instanceof XtdRelAssignsValues) {
             return schema.getObjectType(XtdRelAssignsValues.LABEL);
