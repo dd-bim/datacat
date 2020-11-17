@@ -196,6 +196,14 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
+    public @NotNull List<XtdRoot> getAllRootItemsById(List<String> ids) {
+        final Iterable<XtdRoot> items = rootRepository.findAllById(ids);
+        final List<XtdRoot> results = new ArrayList<>();
+        items.forEach(results::add);
+        return results;
+    }
+
+    @Override
     public @NotNull List<XtdObject> getAllObjectsById(List<String> ids) {
         final Iterable<XtdObject> items = objectRepository.findAllById(ids);
         final List<XtdObject> results = new ArrayList<>();

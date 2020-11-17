@@ -62,6 +62,9 @@ public interface CatalogService {
     @NotNull List<CatalogItem> getAllEntriesById(List<String> ids);
 
     @PreAuthorize("hasRole('READONLY')")
+    @NotNull List<XtdRoot> getAllRootItemsById(List<String> ids);
+
+    @PreAuthorize("hasRole('READONLY')")
     @NotNull List<XtdObject> getAllObjectsById(List<String> ids);
 
     @PreAuthorize("hasRole('READONLY')")
