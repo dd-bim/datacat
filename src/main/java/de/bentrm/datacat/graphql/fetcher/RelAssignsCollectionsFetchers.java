@@ -9,7 +9,9 @@ import de.bentrm.datacat.catalog.service.CatalogService;
 import graphql.schema.DataFetcher;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -50,5 +52,13 @@ public class RelAssignsCollectionsFetchers extends AbstractFetchers<XtdRelAssign
     @Override
     public String getListFetcherName() {
         return "assignsCollectionsRelations";
+    }
+
+    @Override
+    public Map<String, DataFetcher> getAttributeFetchers() {
+        final Map<String, DataFetcher> fetchers = new HashMap<>(super.getAttributeFetchers());
+        fetchers.put("relatingObject", relatingObject);
+        fetchers.put("relatedCollections", relatedCollections);
+        return fetchers;
     }
 }
