@@ -5,5 +5,5 @@ import de.bentrm.datacat.catalog.domain.XtdNest;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface NestRepository extends GraphEntityRepository<XtdNest> {
+public interface NestRepository extends GraphEntityRepository<XtdNest>, NestRepositoryExtension {
 }

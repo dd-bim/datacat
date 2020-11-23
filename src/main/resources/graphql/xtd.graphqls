@@ -168,6 +168,8 @@ type XtdSubject implements Concept, XtdRoot, XtdObject {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    groupOfProperties: [XtdNest!]!
+    properties: [XtdProperty!]!
     actedUponBy: XtdRelActsUponConnection!
     actsUpon: XtdRelActsUponConnection!
     associatedBy: XtdRelAssociatesConnection!

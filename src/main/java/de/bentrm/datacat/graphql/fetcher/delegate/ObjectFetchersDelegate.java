@@ -7,7 +7,6 @@ import de.bentrm.datacat.catalog.service.AssignsCollectionsService;
 import de.bentrm.datacat.catalog.service.AssignsPropertiesService;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.fetcher.RelationshipFetcher;
-import de.bentrm.datacat.graphql.fetcher.TagsFetcher;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -48,7 +47,6 @@ public class ObjectFetchersDelegate implements FetchingDelegate {
     @Override
     public Map<String, DataFetcher> getFetchers() {
         return Map.of(
-                "tags", new TagsFetcher(),
                 "assignedCollections", assignedCollectionsFetcher,
                 "assignedProperties", assignedPropertiesFetcher
         );
