@@ -52,11 +52,20 @@ public interface CatalogService {
     @PreAuthorize("hasRole('USER')")
     @NotNull CatalogItem deleteDescription(@NotBlank String id, @NotBlank String descriptionId);
 
-    @PreAuthorize("hasRole('USER')")
-    @NotNull CatalogItem tag(String conceptId, String tagId);
+    @PreAuthorize("hasRole('ADMIN')")
+    @NotNull Tag createTag(String id, @NotBlank String name);
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @NotNull Tag updateTag(@NotBlank String id, @NotBlank String name);
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @NotNull Tag deleteTag(@NotBlank String id);
 
     @PreAuthorize("hasRole('USER')")
-    @NotNull CatalogItem untag(String conceptId, String tagId);
+    @NotNull CatalogItem addTag(@NotBlank String entryId, @NotBlank String tagId);
+
+    @PreAuthorize("hasRole('USER')")
+    @NotNull CatalogItem removeTag(@NotBlank String entryId, @NotBlank String tagId);
 
     @PreAuthorize("hasRole('READONLY')")
     @NotNull List<CatalogItem> getAllEntriesById(List<String> ids);

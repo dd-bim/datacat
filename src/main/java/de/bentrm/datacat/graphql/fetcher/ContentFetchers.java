@@ -1,6 +1,8 @@
 package de.bentrm.datacat.graphql.fetcher;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.bentrm.datacat.catalog.domain.CatalogItem;
+import de.bentrm.datacat.catalog.domain.Tag;
 import de.bentrm.datacat.catalog.domain.XtdRelationship;
 import de.bentrm.datacat.catalog.domain.XtdValue;
 import de.bentrm.datacat.catalog.service.*;
@@ -22,6 +24,8 @@ import java.util.Map;
 @Validated
 public class ContentFetchers implements MutationFetchers {
 
+    private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
     private final String INPUT_ARGUMENT = "input";
 
     @Autowired
@@ -30,6 +34,8 @@ public class ContentFetchers implements MutationFetchers {
     private PayloadMapper payloadMapper;
     @Autowired
     private CatalogService catalogService;
+    @Autowired
+    private TagService tagService;
 
     @Autowired
     private ActivityService activityService;
@@ -106,6 +112,13 @@ public class ContentFetchers implements MutationFetchers {
         fetchers.put("setNominalValue", setNominalValue());
         fetchers.put("unsetNominalValue", unsetNominalValue());
 
+        fetchers.put("createTag",  createTag());
+        fetchers.put("updateTag", updateTag());
+        fetchers.put("deleteTag", deleteTag());
+        fetchers.put("addTag", addTag());
+        fetchers.put("removeTag", removeTag());
+
+
         return fetchers;
     }
 
@@ -130,7 +143,7 @@ public class ContentFetchers implements MutationFetchers {
             };
 
             if (input.getTags() != null) {
-                input.getTags().forEach(tagId -> catalogService.tag(item.getId(), tagId));
+                input.getTags().forEach(tagId -> catalogService.addTag(item.getId(), tagId));
             }
 
             return payloadMapper.toCreateEntryPayload(item);
@@ -307,6 +320,53 @@ public class ContentFetchers implements MutationFetchers {
             final UnsetNominalValueInput input = apiInputMapper.toUnsetNominalValueInput(argument);
             final XtdValue xtdValue = valueService.unsetNominalValue(input.getId());
             return payloadMapper.toUnsetNominalValuePayload(xtdValue);
+        };
+    }
+
+    private DataFetcher<CreateTagPayload> createTag() {
+        return environment -> {
+            final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
+            final CreateTagInput input = OBJECT_MAPPER.convertValue(argument, CreateTagInput.class);
+            final Tag tag = catalogService.createTag(input.getId(), input.getName());
+            return new CreateTagPayload(tag);
+        };
+    }
+
+    private DataFetcher<UpdateTagPayload> updateTag() {
+        return environment -> {
+            final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
+            final UpdateTagInput input = OBJECT_MAPPER.convertValue(argument, UpdateTagInput.class);
+            final Tag tag = catalogService.updateTag(input.getId(), input.getName());
+            return new UpdateTagPayload(tag);
+        };
+    }
+
+    private DataFetcher<DeleteTagPayload> deleteTag() {
+        return environment -> {
+            final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
+            final DeleteTagInput input = OBJECT_MAPPER.convertValue(argument, DeleteTagInput.class);
+            final Tag tag = catalogService.deleteTag(input.getId());
+            return new DeleteTagPayload(tag);
+        };
+    }
+
+    private DataFetcher<AddTagPayload> addTag() {
+        return environment -> {
+            final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
+            final AddTagInput input = OBJECT_MAPPER.convertValue(argument, AddTagInput.class);
+            final CatalogItem catalogItem = catalogService.addTag(input.getEntryId(), input.getTagId());
+            final Tag tag = tagService.findById(input.getTagId());
+            return new AddTagPayload(catalogItem, tag);
+        };
+    }
+
+    private DataFetcher<RemoveTagPayload> removeTag() {
+        return environment -> {
+            final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
+            final RemoveTagInput input = OBJECT_MAPPER.convertValue(argument, RemoveTagInput.class);
+            final CatalogItem catalogItem = catalogService.removeTag(input.getEntryId(), input.getTagId());
+            final Tag tag = tagService.findById(input.getTagId());
+            return new RemoveTagPayload(catalogItem, tag);
         };
     }
 }

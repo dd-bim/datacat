@@ -296,7 +296,52 @@ type UnsetNominalValuePayload {
     entry: XtdValue
 }
 
-extend type Mutation {
+input CreateTagInput {
+    name: String!
+}
+
+type CreateTagPayload {
+    tag: Tag
+}
+
+input UpdateTagInput {
+    id: ID!
+    name: String!
+}
+
+type UpdateTagPayload {
+    tag: Tag
+}
+
+input DeleteTagInput {
+    id: ID!
+}
+
+type DeleteTagPayload {
+    tag: Tag
+}
+
+input AddTagInput {
+    entryId: ID!
+    tagId: ID!
+}
+
+type AddTagPayload {
+    entry: Entry
+    tag: Tag
+}
+
+input RemoveTagInput {
+    entryId: ID!
+    tagId: ID!
+}
+
+type RemoveTagPayload {
+    entry: Entry
+    tag: Tag
+}
+
+type Mutation {
 
     # Creates a new catalog entry of the defined entry type.
     createEntry(input: CreateEntryInput!): CreateEntryPayload
@@ -352,4 +397,19 @@ extend type Mutation {
 
     # Unsets the nominal value component of a value entry.
     unsetNominalValue(input: UnsetNominalValueInput!): UnsetNominalValuePayload
+
+    # Creates a new user defined tag.
+    createTag(input: CreateTagInput!): CreateTagPayload
+
+    # Updates an existing user defined tag.
+    updateTag(input: UpdateTagInput!): UpdateTagPayload
+
+    # Deletes an existing user defined tag.
+    deleteTag(input: DeleteTagInput!): DeleteTagPayload
+
+    # Tags a concept entity with the given user defined tag.
+    addTag(input: AddTagInput!): AddTagPayload
+
+    # Removes a tag from an existing user defined tag.
+    removeTag(input: RemoveTagInput!): RemoveTagPayload
 }

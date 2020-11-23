@@ -39,11 +39,7 @@ type LocalizedText {
 
 type Tag {
     id: ID!
-    scope: String!
-    localizedName: String!
-    names: [LocalizedText!]!
-    localizedDescription: String
-    descriptions: [LocalizedText!]!
+    name: String!
     created: String!
     createdBy: String!
     lastModified: String!

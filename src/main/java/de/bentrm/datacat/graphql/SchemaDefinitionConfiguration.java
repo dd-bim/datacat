@@ -36,8 +36,7 @@ public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
             "classpath:graphql/auth.graphqls",
             "classpath:graphql/admin.graphqls",
             "classpath:graphql/query.graphqls",
-            "classpath:graphql/management.graphqls",
-            "classpath:graphql/mutation.graphqls"
+            "classpath:graphql/management.graphqls"
     };
 
     private ResourceLoader resourceLoader;

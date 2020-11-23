@@ -171,8 +171,34 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Transactional
     @Override
-    public CatalogItem tag(String conceptId, String tagId) {
-        CatalogItem item = catalogItemRepository.findById(conceptId).orElseThrow();
+    public @NotNull Tag createTag(String id, String name) {
+        final Tag tag = new Tag();
+        if (id != null) tag.setId(id);
+        tag.setName(name);
+        return tagRepository.save(tag);
+    }
+
+    @Transactional
+    @Override
+    public @NotNull Tag updateTag(String id, String name) {
+        final Tag tag = tagRepository.findById(id).orElseThrow();
+        tag.setName(name);
+        return tagRepository.save(tag);
+    }
+
+    @NotNull
+    @Override
+    public @NotNull Tag deleteTag(String id) {
+        Assert.notNull(id, "id may not be null.");
+        final Tag tag = tagRepository.findById(id).orElseThrow();
+        tagRepository.delete(tag);
+        return tag;
+    }
+
+    @Transactional
+    @Override
+    public CatalogItem addTag(String entryId, String tagId) {
+        CatalogItem item = catalogItemRepository.findById(entryId).orElseThrow();
         final Tag tag = tagRepository.findById(tagId).orElseThrow();
         item.addTag(tag);
         return catalogItemRepository.save(item);
@@ -180,8 +206,8 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Transactional
     @Override
-    public CatalogItem untag(String conceptId, String tagId) {
-        final CatalogItem item = catalogItemRepository.findById(conceptId).orElseThrow();
+    public CatalogItem removeTag(String entryId, String tagId) {
+        final CatalogItem item = catalogItemRepository.findById(entryId).orElseThrow();
         final Tag tag = tagRepository.findById(tagId).orElseThrow();
         item.removeTag(tag);
         return catalogItemRepository.save(item);
