@@ -1,29 +1,29 @@
 package de.bentrm.datacat.graphql.fetcher;
 
-import de.bentrm.datacat.catalog.domain.XtdRelActsUpon;
-import de.bentrm.datacat.catalog.service.ActsUponService;
+import de.bentrm.datacat.catalog.domain.XtdRelGroups;
 import de.bentrm.datacat.catalog.service.CatalogService;
+import de.bentrm.datacat.catalog.service.GroupsService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RelActsUponFetchers extends AssociationFetchers<XtdRelActsUpon> {
+public class GroupsFetchers extends AssociationFetchers<XtdRelGroups> {
 
-    public RelActsUponFetchers(ActsUponService entityService, CatalogService catalogService) {
+    public GroupsFetchers(GroupsService entityService, CatalogService catalogService) {
         super(entityService, catalogService);
     }
 
     @Override
     public String getTypeName() {
-        return "XtdRelActsUpon";
+        return "XtdRelGroups";
     }
 
     @Override
     public String getFetcherName() {
-        return "actsUponRelation";
+        return "groupsRelation";
     }
 
     @Override
     public String getListFetcherName() {
-        return "actsUponRelations";
+        return "groupsRelations";
     }
 }

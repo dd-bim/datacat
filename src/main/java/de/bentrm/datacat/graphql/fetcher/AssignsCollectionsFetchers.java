@@ -15,13 +15,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class RelAssignsCollectionsFetchers extends AbstractFetchers<XtdRelAssignsCollections> {
+public class AssignsCollectionsFetchers extends AbstractFetchers<XtdRelAssignsCollections> {
 
     private final DataFetcher<XtdObject> relatingObject;
     private final DataFetcher<List<XtdCollection>> relatedCollections;
 
-    public RelAssignsCollectionsFetchers(AssignsCollectionsService entityService,
-                                         CatalogService catalogService) {
+    public AssignsCollectionsFetchers(AssignsCollectionsService entityService,
+                                      CatalogService catalogService) {
         super(entityService);
 
         this.relatingObject = environment -> {

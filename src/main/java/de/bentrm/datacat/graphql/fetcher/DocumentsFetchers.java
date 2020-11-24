@@ -15,14 +15,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class RelDocumentsFetchers extends AbstractFetchers<XtdRelDocuments> {
+public class DocumentsFetchers extends AbstractFetchers<XtdRelDocuments> {
 
     private final DataFetcher<XtdExternalDocument> relatingDocument;
     private final DataFetcher<List<XtdRoot>> relatedThings;
 
-    public RelDocumentsFetchers(DocumentsService entityService,
-                                ExternalDocumentService externalDocumentService,
-                                CatalogService catalogService) {
+    public DocumentsFetchers(DocumentsService entityService,
+                             ExternalDocumentService externalDocumentService,
+                             CatalogService catalogService) {
         super(entityService);
 
         this.relatingDocument = environment -> {

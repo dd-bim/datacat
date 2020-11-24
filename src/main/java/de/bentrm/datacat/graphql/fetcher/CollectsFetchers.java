@@ -17,13 +17,13 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class RelCollectsFetchers extends AbstractFetchers<XtdRelCollects> {
+public class CollectsFetchers extends AbstractFetchers<XtdRelCollects> {
 
     private final DataFetcher<XtdCollection> relatingCollection;
     private final DataFetcher<List<XtdRoot>> relatedThings;
 
-    public RelCollectsFetchers(CollectsService entityService,
-                               CatalogService catalogService) {
+    public CollectsFetchers(CollectsService entityService,
+                            CatalogService catalogService) {
         super(entityService);
 
         this.relatingCollection = environment -> {

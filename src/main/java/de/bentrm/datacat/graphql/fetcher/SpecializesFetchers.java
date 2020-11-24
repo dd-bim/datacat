@@ -6,9 +6,9 @@ import de.bentrm.datacat.catalog.service.SpecializesService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RelSpecializesFetchers extends AssociationFetchers<XtdRelSpecializes> {
+public class SpecializesFetchers extends AssociationFetchers<XtdRelSpecializes> {
 
-    public RelSpecializesFetchers(SpecializesService entityService, CatalogService catalogService) {
+    public SpecializesFetchers(SpecializesService entityService, CatalogService catalogService) {
         super(entityService, catalogService);
     }
 

@@ -5,9 +5,9 @@ import de.bentrm.datacat.catalog.service.AssignsPropertyWithValuesService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RelAssignsPropertyWithValuesFetchers extends AbstractFetchers<XtdRelAssignsPropertyWithValues> {
+public class AssignsPropertyWithValuesFetchers extends AbstractFetchers<XtdRelAssignsPropertyWithValues> {
 
-    public RelAssignsPropertyWithValuesFetchers(AssignsPropertyWithValuesService entityService) {
+    public AssignsPropertyWithValuesFetchers(AssignsPropertyWithValuesService entityService) {
         super(entityService);
     }
 
