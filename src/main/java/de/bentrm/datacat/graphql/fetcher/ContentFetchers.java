@@ -9,10 +9,10 @@ import de.bentrm.datacat.catalog.service.*;
 import de.bentrm.datacat.catalog.service.value.EntryValue;
 import de.bentrm.datacat.catalog.service.value.OneToManyRelationshipValue;
 import de.bentrm.datacat.catalog.service.value.OneToOneRelationshipValue;
+import de.bentrm.datacat.catalog.service.value.QualifiedOneToManyRelationshipValue;
 import de.bentrm.datacat.graphql.input.*;
 import de.bentrm.datacat.graphql.payload.*;
 import graphql.schema.DataFetcher;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
@@ -85,6 +85,9 @@ public class ContentFetchers implements MutationFetchers {
     @Autowired
     private SpecializesService specializesService;
 
+    @Autowired
+    private AssignsPropertyWithValuesService assignsPropertyWithValuesService;
+
     @Override
     public Map<String, DataFetcher> getMutationFetchers() {
         Map<String, DataFetcher> fetchers = new HashMap<>();
@@ -112,7 +115,7 @@ public class ContentFetchers implements MutationFetchers {
         fetchers.put("setNominalValue", setNominalValue());
         fetchers.put("unsetNominalValue", unsetNominalValue());
 
-        fetchers.put("createTag",  createTag());
+        fetchers.put("createTag", createTag());
         fetchers.put("updateTag", updateTag());
         fetchers.put("deleteTag", deleteTag());
         fetchers.put("addTag", addTag());
@@ -162,8 +165,8 @@ public class ContentFetchers implements MutationFetchers {
     protected DataFetcher<CreateOneToOneRelationshipPayload> createOneToOneRelationship() {
         return environment -> {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
-            final CreateOneToOneRelationshipInput input = apiInputMapper.toCreateOneToOneRelationshipInput(argument);
-            OneToOneRelationshipValue value = apiInputMapper.toOneToOneRelationshipValue(input);
+            final CreateOneToOneRelationshipInput input = OBJECT_MAPPER.convertValue(argument, CreateOneToOneRelationshipInput.class);
+            OneToOneRelationshipValue value = apiInputMapper.toValue(input);
 
             // Other sequencing relationships may be added here later
             var item = switch (input.getRelationshipType()) {
@@ -177,9 +180,10 @@ public class ContentFetchers implements MutationFetchers {
     protected DataFetcher<CreateOneToManyRelationshipPayload> createOneToManyRelationship() {
         return environment -> {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
-            final CreateOneToManyRelationshipInput input = apiInputMapper.toCreateOneToManyRelationshipInput(argument);
-            final OneToManyRelationshipValue value = apiInputMapper.toOneToManyRelationshipValue(input);
+            final CreateOneToManyRelationshipInput input = OBJECT_MAPPER.convertValue(argument, CreateOneToManyRelationshipInput.class);
+            final OneToManyRelationshipValue value = apiInputMapper.toValue(input);
 
+            // TODO: Classifies
             var item = switch (input.getRelationshipType()) {
                 case ActsUpon -> actsUponService.create(value);
                 case AssignsCollections -> assignsCollectionsService.create(value);
@@ -189,8 +193,8 @@ public class ContentFetchers implements MutationFetchers {
                 case Associates -> associatesService.create(value);
                 case Collects -> collectsService.create(value);
                 case Composes -> composesService.create(value);
-                case Groups -> groupsService.create(value);
                 case Documents -> documentsService.create(value);
+                case Groups -> groupsService.create(value);
                 case Specializes -> specializesService.create(value);
                 default -> throw new IllegalStateException("Unexpected value: " + input.getRelationshipType());
             };
@@ -201,7 +205,16 @@ public class ContentFetchers implements MutationFetchers {
 
     protected DataFetcher createQualifiedOneToOneRelationship() {
         return environment -> {
-            throw new NotImplementedException("Not yet implemented.");
+            final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
+            final CreateQualifiedOneToManyRelationshipInput input = OBJECT_MAPPER.convertValue(argument, CreateQualifiedOneToManyRelationshipInput.class);
+            final QualifiedOneToManyRelationshipValue value = apiInputMapper.toValue(input);
+
+            // Other qualified relationships may be added here later
+            var item = switch (input.getRelationshipType()) {
+                case AssignsPropertyWithValues -> assignsPropertyWithValuesService.create(value);
+            };
+
+            return payloadMapper.toCreateQualifiedOneToOneRelationshipPayload(item);
         };
     }
 

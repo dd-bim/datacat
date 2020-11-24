@@ -2,10 +2,7 @@ package de.bentrm.datacat.graphql.input;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.bentrm.datacat.catalog.domain.EntityType;
-import de.bentrm.datacat.catalog.service.value.EntryValue;
-import de.bentrm.datacat.catalog.service.value.OneToManyRelationshipValue;
-import de.bentrm.datacat.catalog.service.value.OneToOneRelationshipValue;
-import de.bentrm.datacat.catalog.service.value.TranslationValue;
+import de.bentrm.datacat.catalog.service.value.*;
 import de.bentrm.datacat.graphql.EntryType;
 import org.apache.commons.lang3.LocaleUtils;
 import org.mapstruct.Mapper;
@@ -48,18 +45,6 @@ public interface ApiInputMapper {
 
     default DeleteEntryInput toDeleteEntryInput(Map<String, Object> argument) {
         return OBJECT_MAPPER.convertValue(argument, DeleteEntryInput.class);
-    }
-
-    default CreateOneToOneRelationshipInput toCreateOneToOneRelationshipInput(Map<String, Object> argument) {
-        return OBJECT_MAPPER.convertValue(argument, CreateOneToOneRelationshipInput.class);
-    }
-
-    default CreateOneToManyRelationshipInput toCreateOneToManyRelationshipInput(Map<String, Object> argument) {
-        return OBJECT_MAPPER.convertValue(argument, CreateOneToManyRelationshipInput.class);
-    }
-
-    default CreateQualifiedOneToManyRelationshipInput toCreateTernaryRefInput(Map<String, Object> argument) {
-        return OBJECT_MAPPER.convertValue(argument, CreateQualifiedOneToManyRelationshipInput.class);
     }
 
     default DeleteRelationshipInput toDeleteRelationshipInput(Map<String, Object> argument) {
@@ -116,9 +101,11 @@ public interface ApiInputMapper {
 
     EntryValue toEntryValue(EntryPropertiesInput input);
 
-    OneToOneRelationshipValue toOneToOneRelationshipValue(CreateOneToOneRelationshipInput input);
+    OneToOneRelationshipValue toValue(CreateOneToOneRelationshipInput input);
 
-    OneToManyRelationshipValue toOneToManyRelationshipValue(CreateOneToManyRelationshipInput input);
+    OneToManyRelationshipValue toValue(CreateOneToManyRelationshipInput input);
+
+    QualifiedOneToManyRelationshipValue toValue(CreateQualifiedOneToManyRelationshipInput input);
 
     default List<TranslationValue> toTranslationValue(List<TranslationInput> inputs) {
         if (inputs == null) {

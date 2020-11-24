@@ -7,7 +7,7 @@ import de.bentrm.datacat.catalog.repository.PropertyRepository;
 import de.bentrm.datacat.catalog.repository.RelAssignsPropertyWithValuesRepository;
 import de.bentrm.datacat.catalog.service.AssignsPropertyWithValuesService;
 import de.bentrm.datacat.catalog.service.EntityMapper;
-import de.bentrm.datacat.catalog.service.value.QualifiedOneToOneRelationshipValue;
+import de.bentrm.datacat.catalog.service.value.QualifiedOneToManyRelationshipValue;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -39,9 +39,10 @@ public class AssignsPropertyWithValuesServiceImpl implements AssignsPropertyWith
         this.queryDelegate = new QueryDelegate<>(repository);
     }
 
+    // TODO
     @Transactional
     @Override
-    public @NotNull XtdRelAssignsPropertyWithValues create(QualifiedOneToOneRelationshipValue value) {
+    public @NotNull XtdRelAssignsPropertyWithValues create(QualifiedOneToManyRelationshipValue value) {
         final XtdRelAssignsPropertyWithValues relation = new XtdRelAssignsPropertyWithValues();
 
         throw new NotImplementedException();
