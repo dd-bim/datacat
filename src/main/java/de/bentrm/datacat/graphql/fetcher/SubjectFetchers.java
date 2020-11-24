@@ -46,12 +46,12 @@ public class SubjectFetchers extends AbstractFetchers<XtdSubject> {
 
     @Override
     public String getFetcherName() {
-        return "subject";
+        return "getSubject";
     }
 
     @Override
     public String getListFetcherName() {
-        return "subjects";
+        return "findSubjects";
     }
 
     @Override

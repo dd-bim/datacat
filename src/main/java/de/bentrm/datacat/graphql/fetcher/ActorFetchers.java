@@ -31,12 +31,12 @@ public class ActorFetchers extends AbstractFetchers<XtdActor> {
 
     @Override
     public String getFetcherName() {
-        return "actor";
+        return "getActor";
     }
 
     @Override
     public String getListFetcherName() {
-        return "actors";
+        return "findActors";
     }
 
     @Override

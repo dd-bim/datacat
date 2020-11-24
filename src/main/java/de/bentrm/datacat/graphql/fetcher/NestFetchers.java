@@ -31,12 +31,12 @@ public class NestFetchers extends AbstractFetchers<XtdNest> {
 
     @Override
     public String getFetcherName() {
-        return "nest";
+        return "getNest";
     }
 
     @Override
     public String getListFetcherName() {
-        return "nests";
+        return "findNests";
     }
 
     @Override

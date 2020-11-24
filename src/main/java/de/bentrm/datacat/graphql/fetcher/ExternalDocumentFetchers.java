@@ -39,12 +39,12 @@ public class ExternalDocumentFetchers extends AbstractFetchers<XtdExternalDocume
 
     @Override
     public String getFetcherName() {
-        return "externalDocument";
+        return "getExternalDocument";
     }
 
     @Override
     public String getListFetcherName() {
-        return "externalDocuments";
+        return "findExternalDocuments";
     }
 
     @Override

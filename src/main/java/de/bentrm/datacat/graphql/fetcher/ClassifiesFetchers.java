@@ -52,7 +52,7 @@ public class ClassifiesFetchers extends AbstractFetchers<XtdRelClassifies> {
 
     @Override
     public String getListFetcherName() {
-        return "findClassified";
+        return "findClassifies";
     }
 
     @Override

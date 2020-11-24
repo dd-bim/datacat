@@ -51,12 +51,12 @@ public class ClassificationFetchers extends AbstractFetchers<XtdClassification> 
 
     @Override
     public String getFetcherName() {
-        return "classification";
+        return "getClassification";
     }
 
     @Override
     public String getListFetcherName() {
-        return "classifications";
+        return "findClassifications";
     }
 
     @Override

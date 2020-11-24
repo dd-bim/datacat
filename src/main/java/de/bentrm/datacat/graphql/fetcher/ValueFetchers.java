@@ -31,12 +31,12 @@ public class ValueFetchers extends AbstractFetchers<XtdValue> {
 
     @Override
     public String getFetcherName() {
-        return "value";
+        return "getValue";
     }
 
     @Override
     public String getListFetcherName() {
-        return "values";
+        return "findValues";
     }
 
     @Override

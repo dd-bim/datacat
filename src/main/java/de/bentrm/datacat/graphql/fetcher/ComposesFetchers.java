@@ -19,11 +19,11 @@ public class ComposesFetchers extends AssociationFetchers<XtdRelComposes> {
 
     @Override
     public String getFetcherName() {
-        return "composesRelation";
+        return "getComposes";
     }
 
     @Override
     public String getListFetcherName() {
-        return "composesRelations";
+        return "findComposes";
     }
 }

@@ -49,12 +49,12 @@ public class CollectsFetchers extends AbstractFetchers<XtdRelCollects> {
 
     @Override
     public String getFetcherName() {
-        return "collectsRelation";
+        return "getCollects";
     }
 
     @Override
     public String getListFetcherName() {
-        return "collectsRelations";
+        return "findCollects";
     }
 
     @Override

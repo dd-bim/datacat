@@ -405,76 +405,76 @@ type Query {
 
     node(id: ID!): Entity
 
-    objectById(id: ID!): XtdObject @deprecated
-
-    collectionById(id: ID!): XtdCollection @deprecated
-
-    relationshipById(id: ID!): XtdRelationship @deprecated
-
     search(input: SearchInput): SearchResultConnection!
 
     hierarchy(input: HierarchyFilterInput!): HierarchyPayload!
 
-    tag(id: ID!): Tag!
-    tags(input: FilterInput): TagConnection!
+    getTag(id: ID!): Tag!
+    findTags(input: FilterInput): TagConnection!
 
-    externalDocument(id: ID!): XtdExternalDocument
-    externalDocuments(input: FilterInput): XtdExternalDocumentConnection!
+    getExternalDocument(id: ID!): XtdExternalDocument
+    findExternalDocuments(input: FilterInput): XtdExternalDocumentConnection!
 
-    actor(id: ID!): XtdActor
-    actors(input: FilterInput): XtdActorConnection!
+    getActor(id: ID!): XtdActor
+    findActors(input: FilterInput): XtdActorConnection!
 
-    activity(id: ID!): XtdActivity
-    activities(input: FilterInput): XtdActivityConnection!
+    getActivity(id: ID!): XtdActivity
+    findActivities(input: FilterInput): XtdActivityConnection!
 
-    classification(id: ID!): XtdClassification
-    classifications(input: FilterInput): XtdClassificationConnection!
+    getClassification(id: ID!): XtdClassification
+    findClassifications(input: FilterInput): XtdClassificationConnection!
 
-    measure(id: ID!): XtdMeasureWithUnit
-    measures(input: FilterInput): XtdMeasureWithUnitConnection!
+    getMeasure(id: ID!): XtdMeasureWithUnit
+    findMeasures(input: FilterInput): XtdMeasureWithUnitConnection!
 
-    property(id: ID!): XtdProperty
-    properties(input: FilterInput): XtdPropertyConnection!
+    getProperty(id: ID!): XtdProperty
+    findProperties(input: FilterInput): XtdPropertyConnection!
 
-    subject(id: ID!): XtdSubject
-    subjects(input: FilterInput): XtdSubjectConnection!
+    getSubject(id: ID!): XtdSubject
+    findSubjects(input: FilterInput): XtdSubjectConnection!
 
-    unit(id: ID!): XtdUnit
-    units(input: FilterInput): XtdUnitConnection!
+    getUnit(id: ID!): XtdUnit
+    findUnits(input: FilterInput): XtdUnitConnection!
 
-    value(id: ID!): XtdValue
-    values(input: FilterInput): XtdValueConnection!
+    getValue(id: ID!): XtdValue
+    findValues(input: FilterInput): XtdValueConnection!
 
-    bag(id: ID!): XtdBag
-    bags(input: FilterInput): XtdBagConnection!
+    getBag(id: ID!): XtdBag
+    findBags(input: FilterInput): XtdBagConnection!
 
-    nest(id: ID!): XtdNest
-    nests(input: FilterInput): XtdNestConnection!
+    getNest(id: ID!): XtdNest
+    findNests(input: FilterInput): XtdNestConnection!
 
-    assignsCollectionRelation(id: ID!): XtdRelAssignsCollections
-    assignsCollectionsRelations(input: FilterInput): XtdRelAssignsCollectionsConnection!
+    getAssignsCollections(id: ID!): XtdRelAssignsCollections
+    findAssignsCollections(input: FilterInput): XtdRelAssignsCollectionsConnection!
 
-    assignsPropertyWithValuesRelation(id: ID!): XtdRelAssignsPropertyWithValues
-    assignsPropertyWithValuesRelations(input: FilterInput): XtdRelAssignsPropertyWithValuesConnection!
+    getAssignsPropertyWithValues(id: ID!): XtdRelAssignsPropertyWithValues
+    findAassignsPropertyWithValues(input: FilterInput): XtdRelAssignsPropertyWithValuesConnection!
 
-    documetsRelation(id: ID!): XtdRelDocuments
-    documentsRelations(input: FilterInput): XtdRelDocumentsConnection!
+    getDocuments(id: ID!): XtdRelDocuments
+    findDocuments(input: FilterInput): XtdRelDocumentsConnection!
 
-    collectsRelation(id: ID!): XtdRelCollects
-    collectsRelations(input: FilterInput): XtdRelCollectsConnection!
+    getCollects(id: ID!): XtdRelCollects
+    findCollects(input: FilterInput): XtdRelCollectsConnection!
 
-    associatesRelation(id: ID!): XtdRelAssociates
-    associatesRelations(input: FilterInput): XtdRelAssociatesConnection!
+    getAssociates(id: ID!): XtdRelAssociates
+    findAssociates(input: FilterInput): XtdRelAssociatesConnection!
 
-    groupsRelation(id: ID!): XtdRelGroups
-    groupsRelations(input: FilterInput): XtdRelGroupsConnection!
+    getGroups(id: ID!): XtdRelGroups
+    findGroups(input: FilterInput): XtdRelGroupsConnection!
 
-    specialiesRelation(id: ID!): XtdRelSpecializes
-    specializesRelations(input: FilterInput): XtdRelSpecializesConnection!
+    getSpecialies(id: ID!): XtdRelSpecializes
+    findSpecializes(input: FilterInput): XtdRelSpecializesConnection!
 
-    composesRelation(id: ID!): XtdRelComposes
-    composesRelations(input: FilterInput): XtdRelComposesConnection!
+    getComposes(id: ID!): XtdRelComposes
+    findComposes(input: FilterInput): XtdRelComposesConnection!
 
-    actsUponRelation(id: ID!): XtdRelActsUpon
-    actsUponRelations(input: FilterInput): XtdRelActsUponConnection!
+    getActsUpon(id: ID!): XtdRelActsUpon
+    findActsUpon(input: FilterInput): XtdRelActsUponConnection!
+
+    getAssignsProperties(id: ID!): XtdRelAssignsProperties
+    findAssignsProperties(input: FilterInput): XtdRelAssignsPropertiesConnection
+
+    getAssignsUnits(id: ID!): XtdRelAssignsUnits
+    findAssignsUnits(input: FilterInput): XtdRelAssignsUnitsConnection
 }

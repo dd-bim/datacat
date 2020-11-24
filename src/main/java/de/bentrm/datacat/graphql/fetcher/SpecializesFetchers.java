@@ -19,11 +19,11 @@ public class SpecializesFetchers extends AssociationFetchers<XtdRelSpecializes> 
 
     @Override
     public String getFetcherName() {
-        return "specializesRelation";
+        return "getSpecializes";
     }
 
     @Override
     public String getListFetcherName() {
-        return "specializesRelations";
+        return "findSpecializes";
     }
 }

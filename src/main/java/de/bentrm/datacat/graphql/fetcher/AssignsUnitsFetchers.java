@@ -2,11 +2,11 @@ package de.bentrm.datacat.graphql.fetcher;
 
 import de.bentrm.datacat.catalog.domain.CatalogItem;
 import de.bentrm.datacat.catalog.domain.XtdMeasureWithUnit;
-import de.bentrm.datacat.catalog.domain.XtdRelAssignsValues;
-import de.bentrm.datacat.catalog.domain.XtdValue;
-import de.bentrm.datacat.catalog.service.AssignsValuesRelationshipService;
+import de.bentrm.datacat.catalog.domain.XtdRelAssignsUnits;
+import de.bentrm.datacat.catalog.domain.XtdUnit;
+import de.bentrm.datacat.catalog.service.AssignsUnitsRelationshipService;
 import de.bentrm.datacat.catalog.service.MeasureService;
-import de.bentrm.datacat.catalog.service.ValueService;
+import de.bentrm.datacat.catalog.service.UnitService;
 import graphql.schema.DataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,28 +17,28 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class AssignsValuesFetchers extends AbstractFetchers<XtdRelAssignsValues> {
+public class AssignsUnitsFetchers extends AbstractFetchers<XtdRelAssignsUnits> {
 
     private final DataFetcher<XtdMeasureWithUnit> relatingMeasure;
-    private final DataFetcher<List<XtdValue>> relatedValues;
+    private final DataFetcher<List<XtdUnit>> relatedUnits;
 
-    public AssignsValuesFetchers(AssignsValuesRelationshipService entityService,
-                                 MeasureService measureService,
-                                 ValueService valueService) {
+    public AssignsUnitsFetchers(AssignsUnitsRelationshipService entityService,
+                                MeasureService measureService,
+                                UnitService unitService) {
         super(entityService);
 
         this.relatingMeasure = environment -> {
-            final XtdRelAssignsValues source = environment.getSource();
+            final XtdRelAssignsUnits source = environment.getSource();
             final String id = source.getRelatingMeasure().getId();
             return measureService.findById(id).orElseThrow();
         };
 
-        this.relatedValues = environment -> {
-            final XtdRelAssignsValues source = environment.getSource();
-            final List<String> relatedValuesId = source.getRelatedValues().stream()
+        this.relatedUnits = environment -> {
+            final XtdRelAssignsUnits source = environment.getSource();
+            final List<String> relatedValuesId = source.getRelatedUnits().stream()
                     .map(CatalogItem::getId)
                     .collect(Collectors.toList());
-            return valueService.findAllByIds(relatedValuesId);
+            return unitService.findAllByIds(relatedValuesId);
         };
     }
 
@@ -46,24 +46,24 @@ public class AssignsValuesFetchers extends AbstractFetchers<XtdRelAssignsValues>
 
     @Override
     public String getTypeName() {
-        return "XtdRelAssignsValues";
+        return "XtdRelAssignsUnits";
     }
 
     @Override
     public String getFetcherName() {
-        return "getAssignsValues";
+        return "getAssignsUnits";
     }
 
     @Override
     public String getListFetcherName() {
-        return "findAssignsValues";
+        return "findAssignsUnits";
     }
 
     @Override
     public Map<String, DataFetcher> getAttributeFetchers() {
         final Map<String, DataFetcher> fetchers = new HashMap<>(super.getAttributeFetchers());
         fetchers.put("relatingMeasure", relatingMeasure);
-        fetchers.put("relatedValues", relatedValues);
+        fetchers.put("relatedUnits", relatedUnits);
         return fetchers;
     }
 }

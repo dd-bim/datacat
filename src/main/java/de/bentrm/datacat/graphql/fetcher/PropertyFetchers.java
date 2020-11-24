@@ -64,12 +64,12 @@ public class PropertyFetchers extends AbstractFetchers<XtdProperty> {
 
     @Override
     public String getFetcherName() {
-        return "property";
+        return "getProperty";
     }
 
     @Override
     public String getListFetcherName() {
-        return "properties";
+        return "findProperties";
     }
 
     @Override

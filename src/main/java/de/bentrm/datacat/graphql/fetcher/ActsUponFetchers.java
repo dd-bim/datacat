@@ -19,11 +19,11 @@ public class ActsUponFetchers extends AssociationFetchers<XtdRelActsUpon> {
 
     @Override
     public String getFetcherName() {
-        return "actsUponRelation";
+        return "getActsUpon";
     }
 
     @Override
     public String getListFetcherName() {
-        return "actsUponRelations";
+        return "findActsUpon";
     }
 }

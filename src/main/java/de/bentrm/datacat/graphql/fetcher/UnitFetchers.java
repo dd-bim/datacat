@@ -47,12 +47,12 @@ public class UnitFetchers extends AbstractFetchers<XtdUnit> {
 
     @Override
     public String getFetcherName() {
-        return "unit";
+        return "getUnit";
     }
 
     @Override
     public String getListFetcherName() {
-        return "units";
+        return "findUnits";
     }
 
     @Override

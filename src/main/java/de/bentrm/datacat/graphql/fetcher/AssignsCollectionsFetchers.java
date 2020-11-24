@@ -46,12 +46,12 @@ public class AssignsCollectionsFetchers extends AbstractFetchers<XtdRelAssignsCo
 
     @Override
     public String getFetcherName() {
-        return "assignsCollectionsRelation";
+        return "getAssignsCollections";
     }
 
     @Override
     public String getListFetcherName() {
-        return "assignsCollectionsRelations";
+        return "findAssignsCollections";
     }
 
     @Override

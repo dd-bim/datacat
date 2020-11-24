@@ -31,12 +31,12 @@ public class ActivityFetchers extends AbstractFetchers<XtdActivity> {
 
     @Override
     public String getFetcherName() {
-        return "activity";
+        return "getActivity";
     }
 
     @Override
     public String getListFetcherName() {
-        return "activities";
+        return "findActivities";
     }
 
     @Override

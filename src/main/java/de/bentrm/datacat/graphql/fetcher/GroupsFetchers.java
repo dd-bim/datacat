@@ -19,11 +19,11 @@ public class GroupsFetchers extends AssociationFetchers<XtdRelGroups> {
 
     @Override
     public String getFetcherName() {
-        return "groupsRelation";
+        return "getGroups";
     }
 
     @Override
     public String getListFetcherName() {
-        return "groupsRelations";
+        return "findGroups";
     }
 }

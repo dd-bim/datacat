@@ -31,12 +31,12 @@ public class BagFetchers extends AbstractFetchers<XtdBag> {
 
     @Override
     public String getFetcherName() {
-        return "bag";
+        return "getBag";
     }
 
     @Override
     public String getListFetcherName() {
-        return "bags";
+        return "findBags";
     }
 
     @Override

@@ -18,11 +18,11 @@ public class AssignsPropertyWithValuesFetchers extends AbstractFetchers<XtdRelAs
 
     @Override
     public String getFetcherName() {
-        return "assignsPropertyWithValuesRelation";
+        return "getAssignsPropertyWithValues";
     }
 
     @Override
     public String getListFetcherName() {
-        return "assignsPropertyWithValuesRelations";
+        return "findAssignsPropertyWithValues";
     }
 }

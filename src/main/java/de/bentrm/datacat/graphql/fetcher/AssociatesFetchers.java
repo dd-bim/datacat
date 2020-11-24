@@ -19,11 +19,11 @@ public class AssociatesFetchers extends AssociationFetchers<XtdRelAssociates> {
 
     @Override
     public String getFetcherName() {
-        return "associatesRelation";
+        return "getAssociates";
     }
 
     @Override
     public String getListFetcherName() {
-        return "associatesRelations";
+        return "findAssociates";
     }
 }

@@ -40,8 +40,8 @@ public class TagFetchers implements AttributeFetchers, QueryFetchers {
     @Override
     public Map<String, DataFetcher> getQueryFetchers() {
         return Map.of(
-                "tag", findById(),
-                "tags", findAll()
+                "getTag", findById(),
+                "findTags", findAll()
         );
     }
 

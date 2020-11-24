@@ -47,12 +47,12 @@ public class DocumentsFetchers extends AbstractFetchers<XtdRelDocuments> {
 
     @Override
     public String getFetcherName() {
-        return "documentsRelation";
+        return "getDocuments";
     }
 
     @Override
     public String getListFetcherName() {
-        return "documentsRelations";
+        return "findDocuments";
     }
 
     @Override

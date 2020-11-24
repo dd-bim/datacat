@@ -74,12 +74,12 @@ public class MeasureFetchers extends AbstractFetchers<XtdMeasureWithUnit> {
 
     @Override
     public String getFetcherName() {
-        return "measure";
+        return "getMeasure";
     }
 
     @Override
     public String getListFetcherName() {
-        return "measures";
+        return "findMeasures";
     }
 
     @Override
