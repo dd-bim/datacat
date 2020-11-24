@@ -1,10 +1,10 @@
 package de.bentrm.datacat.auth.service;
 
 import de.bentrm.datacat.auth.domain.User;
+import de.bentrm.datacat.auth.service.dto.ProfileDto;
+import de.bentrm.datacat.auth.service.dto.ProfileUpdateDto;
 import de.bentrm.datacat.base.repository.UserRepository;
 import de.bentrm.datacat.catalog.service.value.ValueMapper;
-import de.bentrm.datacat.service.dto.ProfileDto;
-import de.bentrm.datacat.service.dto.ProfileUpdateDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;

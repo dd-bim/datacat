@@ -3,10 +3,10 @@ package de.bentrm.datacat.catalog.service.value;
 import de.bentrm.datacat.auth.domain.Role;
 import de.bentrm.datacat.auth.domain.User;
 import de.bentrm.datacat.auth.service.AccountStatus;
-import de.bentrm.datacat.service.dto.AccountDto;
-import de.bentrm.datacat.service.dto.AccountUpdateDto;
-import de.bentrm.datacat.service.dto.ProfileDto;
-import de.bentrm.datacat.service.dto.ProfileUpdateDto;
+import de.bentrm.datacat.auth.service.dto.AccountDto;
+import de.bentrm.datacat.auth.service.dto.AccountUpdateDto;
+import de.bentrm.datacat.auth.service.dto.ProfileDto;
+import de.bentrm.datacat.auth.service.dto.ProfileUpdateDto;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 

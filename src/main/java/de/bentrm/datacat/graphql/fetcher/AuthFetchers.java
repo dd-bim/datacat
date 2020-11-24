@@ -2,11 +2,11 @@ package de.bentrm.datacat.graphql.fetcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.bentrm.datacat.auth.service.*;
+import de.bentrm.datacat.auth.service.dto.ProfileDto;
 import de.bentrm.datacat.graphql.dto.LoginInput;
 import de.bentrm.datacat.graphql.dto.ProfileUpdateInput;
 import de.bentrm.datacat.graphql.dto.SignupInput;
 import de.bentrm.datacat.graphql.dto.SpecificationMapper;
-import de.bentrm.datacat.service.dto.ProfileDto;
 import graphql.GraphQLError;
 import graphql.kickstart.spring.error.ThrowableGraphQLError;
 import graphql.schema.DataFetcher;

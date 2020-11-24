@@ -1,4 +1,4 @@
-package de.bentrm.datacat.service.dto;
+package de.bentrm.datacat.auth.service.dto;
 
 import de.bentrm.datacat.auth.service.AccountStatus;
 import lombok.Builder;

@@ -1,8 +1,8 @@
 package de.bentrm.datacat.auth.service;
 
+import de.bentrm.datacat.auth.service.dto.AccountDto;
+import de.bentrm.datacat.auth.service.dto.AccountUpdateDto;
 import de.bentrm.datacat.auth.specification.UserSpecification;
-import de.bentrm.datacat.service.dto.AccountDto;
-import de.bentrm.datacat.service.dto.AccountUpdateDto;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 

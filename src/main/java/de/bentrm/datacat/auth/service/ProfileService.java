@@ -1,7 +1,7 @@
 package de.bentrm.datacat.auth.service;
 
-import de.bentrm.datacat.service.dto.ProfileDto;
-import de.bentrm.datacat.service.dto.ProfileUpdateDto;
+import de.bentrm.datacat.auth.service.dto.ProfileDto;
+import de.bentrm.datacat.auth.service.dto.ProfileUpdateDto;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.validation.Valid;

@@ -2,14 +2,14 @@ package de.bentrm.datacat.graphql.fetcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.bentrm.datacat.auth.service.AdminService;
+import de.bentrm.datacat.auth.service.dto.AccountDto;
+import de.bentrm.datacat.auth.service.dto.AccountUpdateDto;
 import de.bentrm.datacat.auth.specification.UserSpecification;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.dto.AccountFilterInput;
 import de.bentrm.datacat.graphql.dto.AccountStatusUpdateInput;
 import de.bentrm.datacat.graphql.dto.AccountUpdateInput;
 import de.bentrm.datacat.graphql.dto.SpecificationMapper;
-import de.bentrm.datacat.service.dto.AccountDto;
-import de.bentrm.datacat.service.dto.AccountUpdateDto;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingFieldSelectionSet;
 import lombok.extern.slf4j.Slf4j;
