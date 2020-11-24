@@ -24,6 +24,7 @@
         <lombok.version>1.18.12</lombok.version>
         <mapstruct.version>1.4.1.Final</mapstruct.version>
         <spring-boot.version>2.3.4.RELEASE</spring-boot.version>
+        <testcontainers.version>1.15.0</testcontainers.version>
     </properties>
 
     <repositories>
@@ -116,6 +117,25 @@
             <groupId>com.graphql-java</groupId>
             <artifactId>graphql-java</artifactId>
             <version>${graphql-java.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>neo4j</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
