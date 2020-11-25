@@ -5,5 +5,5 @@ import lombok.Data;
 
 @Data
 public class SetTolerancePayload {
-    XtdValue entry;
+    XtdValue catalogEntry;
 }

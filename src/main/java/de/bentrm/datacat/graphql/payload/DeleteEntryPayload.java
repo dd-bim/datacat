@@ -5,5 +5,5 @@ import lombok.Data;
 
 @Data
 public class DeleteEntryPayload {
-    CatalogItem entry;
+    CatalogItem catalogEntry;
 }

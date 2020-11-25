@@ -5,5 +5,5 @@ import lombok.Data;
 
 @Data
 public class SetVersionPayload {
-    CatalogItem entry;
+    CatalogItem catalogEntry;
 }

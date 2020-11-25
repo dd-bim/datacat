@@ -1,9 +1,9 @@
 package de.bentrm.datacat.graphql.input;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.bentrm.datacat.catalog.domain.CatalogEntryType;
 import de.bentrm.datacat.catalog.domain.EntityType;
 import de.bentrm.datacat.catalog.service.value.*;
-import de.bentrm.datacat.graphql.EntryType;
 import org.apache.commons.lang3.LocaleUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValueCheckStrategy;
@@ -99,7 +99,7 @@ public interface ApiInputMapper {
         return OBJECT_MAPPER.convertValue(arguments, HierarchyFilterInput.class);
     }
 
-    EntryValue toEntryValue(EntryPropertiesInput input);
+    CatalogEntryProperties toEntryValue(EntryPropertiesInput input);
 
     OneToOneRelationshipValue toValue(CreateOneToOneRelationshipInput input);
 
@@ -133,6 +133,6 @@ public interface ApiInputMapper {
             @ValueMapping(source = "Unit", target = "XtdUnit"),
             @ValueMapping(source = "Value", target = "XtdValue")
     })
-    EntityType entryTypeToEntityType(EntryType entryType);
+    EntityType entryTypeToEntityType(CatalogEntryType catalogEntryType);
 
 }

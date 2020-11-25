@@ -339,22 +339,22 @@ enum EntityTypes {
     XtdRelSpecializes
 }
 
-input EntryTypeFilterInput {
-    in: [EntryType!]
+input CatalogEntryTypeFilterInput {
+    in: [CatalogEntryType!]
 }
 
 input TagFilterInput {
     in: [ID!]
 }
 
-input EntryFilterInput {
-    entryType: EntryTypeFilterInput
+input CatalogEntryFilterInput {
+    catalogEntryType: CatalogEntryTypeFilterInput
     tags: TagFilterInput
 }
 
 input SearchInput {
     query: String
-    filters: [EntryFilterInput!]
+    filters: [CatalogEntryFilterInput!]
     entityTypeIn: [EntityTypes!]
     entityTypeNotIn: [EntityTypes!]
     idIn: [ID!]
@@ -365,8 +365,8 @@ input SearchInput {
 }
 
 input HierarchyRootNodeFilterInput {
-    entryTypeIn: [EntryType!]
-    entryTypeNotIn: [EntryType!]
+    catalogEntryTypeIn: [CatalogEntryType!]
+    catalogEntryTypeNotIn: [CatalogEntryType!]
     idIn: [ID!]
     idNotIn: [ID!]
     tagged: [ID!]

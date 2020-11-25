@@ -1,6 +1,6 @@
 package de.bentrm.datacat.graphql.input;
 
-import de.bentrm.datacat.graphql.EntryType;
+import de.bentrm.datacat.catalog.domain.CatalogEntryType;
 import lombok.Data;
 
 import javax.validation.Valid;
@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 public class CreateEntryInput {
-    @NotNull EntryType entryType;
+    @NotNull CatalogEntryType catalogEntryType;
     @NotNull @Valid EntryPropertiesInput properties;
     List<String> tags;
 }

@@ -8,11 +8,11 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EntryResolver implements CustomResolver {
+public class CatalogEntryResolver implements CustomResolver {
 
     @Override
     public String getTypeName() {
-        return "Entry";
+        return "CatalogEntry";
     }
 
     @Override

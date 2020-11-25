@@ -5,5 +5,5 @@ import lombok.Data;
 
 @Data
 public class UnsetNominalValuePayload {
-    XtdValue entry;
+    XtdValue catalogEntry;
 }

@@ -6,6 +6,6 @@ import lombok.Value;
 
 @Value
 public class RemoveTagPayload {
-    CatalogItem entry;
+    CatalogItem catalogEntry;
     Tag tag;
 }

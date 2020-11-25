@@ -1,4 +1,4 @@
-enum EntryType {
+enum CatalogEntryType {
     Actor
     Activity
     Bag
@@ -12,7 +12,7 @@ enum EntryType {
     Value
 }
 
-union Entry =
+union CatalogEntry =
     | XtdActor
     | XtdActivity
     | XtdBag
@@ -37,22 +37,22 @@ input PropertiesInput {
     descriptions: [TranslationInput!]
 }
 
-input CreateEntryInput {
-    entryType: EntryType!
+input CreateCatalogEntryInput {
+    catalogEntryType: CatalogEntryType!
     properties: PropertiesInput!
     tags: [ID!]
 }
 
-input DeleteEntryInput {
+input DeleteCatalogEntryInput {
     id: ID!
 }
 
-type CreateEntryPayload {
-    entry: Entry
+type CreateCatalogEntryPayload {
+    catalogEntry: CatalogEntry
 }
 
 type DeleteEntryPayload {
-    entry: Entry
+    catalogEntry: CatalogEntry
 }
 
 enum OneToOneRelationshipType {
@@ -162,7 +162,7 @@ input SetVersionInput {
 }
 
 type SetVersionPayload {
-    entry: Entry
+    catalogEntry: CatalogEntry
 }
 
 input TranslationInput {
@@ -177,57 +177,57 @@ input TranslationUpdateInput {
 }
 
 input AddNameInput {
-    entryId: ID!
+    catalogEntryId: ID!
     name: TranslationInput!
 }
 
 input UpdateNameInput {
-    entryId: ID!
+    catalogEntryId: ID!
     name: TranslationUpdateInput!
 }
 
 input DeleteNameInput {
-    entryId: ID!
+    catalogEntryId: ID!
     nameId: ID!
 }
 
 type AddNamePayload {
-    entry: Entry
+    catalogEntry: CatalogEntry
 }
 
 type UpdateNamePayload {
-    entry: Entry
+    catalogEntry: CatalogEntry
 }
 
 type DeleteNamePayload {
-    entry: Entry
+    catalogEntry: CatalogEntry
 }
 
 input AddDescriptionInput {
-    entryId: ID!
+    catalogEntryId: ID!
     description: TranslationInput!
 }
 
 input UpdateDescriptionInput {
-    entryId: ID!
+    catalogEntryId: ID!
     description: TranslationUpdateInput!
 }
 
 input DeleteDescriptionInput {
-    entryId: ID!
+    catalogEntryId: ID!
     descriptionId: ID!
 }
 
 type AddDescriptionPayload {
-    entry: Entry
+    catalogEntry: CatalogEntry
 }
 
 type UpdateDescriptionPayload {
-    entry: Entry
+    catalogEntry: CatalogEntry
 }
 
 type DeleteDescriptionPayload {
-    entry: Entry
+    catalogEntry: CatalogEntry
 }
 
 enum ToleranceType {
@@ -247,7 +247,7 @@ input SetToleranceInput {
 }
 
 type SetTolerancePayload {
-    entry: XtdValue
+    catalogEntry: XtdValue
 }
 
 input UnsetToleranceInput {
@@ -255,7 +255,7 @@ input UnsetToleranceInput {
 }
 
 type UnsetTolerancePayload {
-    entry: XtdValue
+    catalogEntry: XtdValue
 }
 
 enum ValueRole {
@@ -285,7 +285,7 @@ input SetNominalValueInput {
 }
 
 type SetNominalValuePayload {
-    entry: XtdValue
+    catalogEntry: XtdValue
 }
 
 input UnsetNominalValueInput {
@@ -293,7 +293,7 @@ input UnsetNominalValueInput {
 }
 
 type UnsetNominalValuePayload {
-    entry: XtdValue
+    catalogEntry: XtdValue
 }
 
 input CreateTagInput {
@@ -322,32 +322,32 @@ type DeleteTagPayload {
 }
 
 input AddTagInput {
-    entryId: ID!
+    catalogEntryId: ID!
     tagId: ID!
 }
 
 type AddTagPayload {
-    entry: Entry
+    catalogEntry: CatalogEntry
     tag: Tag
 }
 
 input RemoveTagInput {
-    entryId: ID!
+    catalogEntryId: ID!
     tagId: ID!
 }
 
 type RemoveTagPayload {
-    entry: Entry
+    catalogEntry: CatalogEntry
     tag: Tag
 }
 
 type Mutation {
 
     # Creates a new catalog entry of the defined entry type.
-    createEntry(input: CreateEntryInput!): CreateEntryPayload
+    createCatalogEntry(input: CreateCatalogEntryInput!): CreateCatalogEntryPayload
 
     # Deletes the entry from the catalog.
-    deleteEntry(input: DeleteEntryInput!): DeleteEntryPayload
+    deleteEntry(input: DeleteCatalogEntryInput!): DeleteEntryPayload
 
     # Creates a relationship between two related catalog entries.
     createOneToOneRelationship(input: CreateOneToOneRelationshipInput!): CreateOneToOneRelationshipPayload

@@ -5,5 +5,5 @@ import lombok.Data;
 
 @Data
 public class UpdateDescriptionPayload {
-    CatalogItem entry;
+    CatalogItem catalogEntry;
 }
