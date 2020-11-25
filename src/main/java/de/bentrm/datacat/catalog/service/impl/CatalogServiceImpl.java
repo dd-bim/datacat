@@ -78,26 +78,34 @@ public class CatalogServiceImpl implements CatalogService {
     @Transactional
     @Override
     public @NotNull CatalogItem deleteEntry(String id) {
+        log.trace("Deleting catalog entry with id {}...", id);
         final CatalogItem entry = catalogItemRepository.findById(id).orElseThrow();
+
         if (entry instanceof XtdRelationship) {
-            throw new NoSuchElementException();
+            throw new NoSuchElementException("Retrieved catalog entry is a catalog relationship.");
         }
 
         final Consumer<Translation> deleteTranslation = translation -> {
             translationRespository.delete(translation);
-            log.debug("Translation deleted: {}", translation);
+            log.trace("Deleted translation of catalog entry {}: {}", id, translation);
         };
+
+        log.trace("Purging name entities...");
         entry.getNames().forEach(deleteTranslation);
+
+        log.trace("Purging description entities...");
         entry.getDescriptions().forEach(deleteTranslation);
 
+        log.trace("Cascading into catalog relationships owned by catalog entry {}...", id);
         final List<XtdRelationship> ownedRelationships = entry.getOwnedRelationships();
         ownedRelationships.forEach(relationship -> {
             relationshipRepository.delete(relationship);
-            log.debug("Relationship deleted: {}", relationship);
+            log.trace("Owned Relationship of catalog entry {} deleted: {}", id, relationship);
         });
 
         catalogItemRepository.delete(entry);
-        log.debug("Catalog item deleted: {}", entry);
+        log.trace("Catalog item deleted: {}", entry);
+
         return entry;
     }
 
