@@ -56,7 +56,7 @@ public abstract class Entity {
 
     public void setId(String id) {
         Assert.hasText(id, "id may not be null or blank.");
-        this.id = id;
+        this.id = id.trim();
     }
 
     public void setCreated(Instant created) {
