@@ -3,6 +3,7 @@ package de.bentrm.datacat.catalog.service.impl;
 import de.bentrm.datacat.catalog.domain.*;
 import de.bentrm.datacat.catalog.repository.*;
 import de.bentrm.datacat.catalog.service.CatalogService;
+import de.bentrm.datacat.catalog.service.value.CatalogEntryProperties;
 import de.bentrm.datacat.catalog.service.value.HierarchyValue;
 import de.bentrm.datacat.catalog.specification.CatalogItemSpecification;
 import de.bentrm.datacat.catalog.specification.RootSpecification;
@@ -28,6 +29,9 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 @Service
 public class CatalogServiceImpl implements CatalogService {
+
+    @Autowired
+    private CatalogEntryFactory catalogEntryFactory;
 
     @Autowired
     private TranslationRespository translationRespository;
@@ -60,6 +64,15 @@ public class CatalogServiceImpl implements CatalogService {
             }
         });
         return statistics;
+    }
+
+    @Transactional
+    @Override
+    public @NotNull CatalogItem createCatalogEntry(CatalogEntryType type, CatalogEntryProperties properties) {
+        final CatalogItem catalogEntry = catalogEntryFactory.create(type, properties);
+        final CatalogItem persistentCatalogEntry = catalogItemRepository.save(catalogEntry);
+        log.trace("Persisted new catalog entry: {}", persistentCatalogEntry);
+        return catalogEntry;
     }
 
     @Transactional

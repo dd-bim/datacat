@@ -7,9 +7,7 @@ import de.bentrm.datacat.catalog.domain.XtdSubject;
 import de.bentrm.datacat.catalog.repository.NestRepository;
 import de.bentrm.datacat.catalog.repository.PropertyRepository;
 import de.bentrm.datacat.catalog.repository.SubjectRepository;
-import de.bentrm.datacat.catalog.service.EntityMapper;
 import de.bentrm.datacat.catalog.service.SubjectService;
-import de.bentrm.datacat.catalog.service.value.EntryValue;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,8 +24,6 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class SubjectServiceImpl implements SubjectService {
 
-    private final EntityMapper entityMapper = EntityMapper.INSTANCE;
-    private final SubjectRepository repository;
     private final NestRepository nestRepository;
     private final PropertyRepository propertyRepository;
     private final QueryDelegate<XtdSubject> queryDelegate;
@@ -35,18 +31,9 @@ public class SubjectServiceImpl implements SubjectService {
     public SubjectServiceImpl(SubjectRepository repository,
                               NestRepository nestRepository,
                               PropertyRepository propertyRepository) {
-        this.repository = repository;
         this.nestRepository = nestRepository;
         this.propertyRepository = propertyRepository;
         this.queryDelegate = new QueryDelegate<>(repository);
-    }
-
-    @Transactional
-    @Override
-    public @NotNull XtdSubject create(EntryValue value) {
-        final XtdSubject item = new XtdSubject();
-        entityMapper.setProperties(value, item);
-        return repository.save(item);
     }
 
     @Override

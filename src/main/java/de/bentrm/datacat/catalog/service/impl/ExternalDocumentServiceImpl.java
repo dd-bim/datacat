@@ -3,9 +3,7 @@ package de.bentrm.datacat.catalog.service.impl;
 import de.bentrm.datacat.base.specification.QuerySpecification;
 import de.bentrm.datacat.catalog.domain.XtdExternalDocument;
 import de.bentrm.datacat.catalog.repository.ExternalDocumentRepository;
-import de.bentrm.datacat.catalog.service.EntityMapper;
 import de.bentrm.datacat.catalog.service.ExternalDocumentService;
-import de.bentrm.datacat.catalog.service.value.EntryValue;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,21 +18,10 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class ExternalDocumentServiceImpl implements ExternalDocumentService {
 
-    private final EntityMapper entityMapper = EntityMapper.INSTANCE;
-    private final ExternalDocumentRepository repository;
     private final QueryDelegate<XtdExternalDocument> queryDelegate;
 
     public ExternalDocumentServiceImpl(ExternalDocumentRepository repository) {
-        this.repository = repository;
         this.queryDelegate = new QueryDelegate<>(repository);
-    }
-
-    @Transactional
-    @Override
-    public @NotNull XtdExternalDocument create(EntryValue value) {
-        final XtdExternalDocument item = new XtdExternalDocument();
-        entityMapper.setProperties(value, item);
-        return repository.save(item);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package de.bentrm.datacat.catalog.service;
 
 import de.bentrm.datacat.catalog.domain.*;
+import de.bentrm.datacat.catalog.service.value.CatalogEntryProperties;
 import de.bentrm.datacat.catalog.service.value.HierarchyValue;
 import de.bentrm.datacat.catalog.specification.CatalogItemSpecification;
 import de.bentrm.datacat.catalog.specification.RootSpecification;
@@ -8,6 +9,7 @@ import de.bentrm.datacat.graphql.dto.CatalogStatistics;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -19,10 +21,20 @@ public interface CatalogService {
     CatalogStatistics getStatistics();
 
     /**
+     * Constructs and persists a new catalog entry.
+     *
+     * @param type The xtd type of the new entry.
+     * @param properties The properties of the new catalog entry.
+     * @return A new persistent catalog entry.
+     */
+    @PreAuthorize("hasRole('USER')")
+    @NotNull CatalogItem createCatalogEntry(@NotNull CatalogEntryType type, @Valid CatalogEntryProperties properties);
+
+    /**
      * Deletes a catalog item guarding against accidentially deleting relationship
      * entries. Throws if no entry is found.
      *
-     * @param id
+     * @param id The id of the catalog entry that should be deleted.
      * @return The deleted entry.
      */
     @PreAuthorize("hasRole('USER')")

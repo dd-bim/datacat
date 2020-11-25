@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Value
-public class EntryValue {
+public class CatalogEntryProperties {
     String id;
     VersionValue version;
     @NotNull List<@NotNull @Valid TranslationValue> names;

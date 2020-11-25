@@ -4,8 +4,6 @@ import de.bentrm.datacat.base.specification.QuerySpecification;
 import de.bentrm.datacat.catalog.domain.XtdActor;
 import de.bentrm.datacat.catalog.repository.ActorRepository;
 import de.bentrm.datacat.catalog.service.ActorService;
-import de.bentrm.datacat.catalog.service.EntityMapper;
-import de.bentrm.datacat.catalog.service.value.EntryValue;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,21 +18,10 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class ActorServiceImpl implements ActorService {
 
-    private final EntityMapper entityMapper = EntityMapper.INSTANCE;
-    private final ActorRepository repository;
     private final QueryDelegate<XtdActor> queryDelegate;
 
     public ActorServiceImpl(ActorRepository repository) {
-        this.repository = repository;
         this.queryDelegate = new QueryDelegate<>(repository);
-    }
-
-    @Transactional
-    @Override
-    public @NotNull XtdActor create(EntryValue value) {
-        final XtdActor item = new XtdActor();
-        entityMapper.setProperties(value, item);
-        return repository.save(item);
     }
 
     @Override

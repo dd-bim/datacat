@@ -4,8 +4,6 @@ import de.bentrm.datacat.base.specification.QuerySpecification;
 import de.bentrm.datacat.catalog.domain.XtdActivity;
 import de.bentrm.datacat.catalog.repository.ActivityRepository;
 import de.bentrm.datacat.catalog.service.ActivityService;
-import de.bentrm.datacat.catalog.service.EntityMapper;
-import de.bentrm.datacat.catalog.service.value.EntryValue;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,21 +18,10 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class ActivityServiceImpl implements ActivityService {
 
-    private final EntityMapper entityMapper = EntityMapper.INSTANCE;
-    private final ActivityRepository repository;
     private final QueryDelegate<XtdActivity> queryDelegate;
 
     public ActivityServiceImpl(ActivityRepository repository) {
-        this.repository = repository;
         this.queryDelegate = new QueryDelegate<>(repository);
-    }
-
-    @Transactional
-    @Override
-    public @NotNull XtdActivity create(EntryValue value) {
-        final XtdActivity item = new XtdActivity();
-        entityMapper.setProperties(value, item);
-        return repository.save(item);
     }
 
     @Override

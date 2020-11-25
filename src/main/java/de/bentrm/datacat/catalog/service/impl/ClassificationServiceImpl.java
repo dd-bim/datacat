@@ -4,8 +4,6 @@ import de.bentrm.datacat.base.specification.QuerySpecification;
 import de.bentrm.datacat.catalog.domain.XtdClassification;
 import de.bentrm.datacat.catalog.repository.ClassificationRepository;
 import de.bentrm.datacat.catalog.service.ClassificationService;
-import de.bentrm.datacat.catalog.service.EntityMapper;
-import de.bentrm.datacat.catalog.service.value.EntryValue;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,21 +18,10 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class ClassificationServiceImpl implements ClassificationService {
 
-    private final EntityMapper entityMapper = EntityMapper.INSTANCE;
-    private final ClassificationRepository repository;
     private final QueryDelegate<XtdClassification> queryDelegate;
 
     public ClassificationServiceImpl(ClassificationRepository repository) {
-        this.repository = repository;
         this.queryDelegate = new QueryDelegate<>(repository);
-    }
-
-    @Transactional
-    @Override
-    public @NotNull XtdClassification create(EntryValue value) {
-        final XtdClassification item = new XtdClassification();
-        entityMapper.setProperties(value, item);
-        return repository.save(item);
     }
 
     @Override

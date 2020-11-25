@@ -6,7 +6,7 @@ import de.bentrm.datacat.catalog.domain.Tag;
 import de.bentrm.datacat.catalog.domain.XtdRelationship;
 import de.bentrm.datacat.catalog.domain.XtdValue;
 import de.bentrm.datacat.catalog.service.*;
-import de.bentrm.datacat.catalog.service.value.EntryValue;
+import de.bentrm.datacat.catalog.service.value.CatalogEntryProperties;
 import de.bentrm.datacat.catalog.service.value.OneToManyRelationshipValue;
 import de.bentrm.datacat.catalog.service.value.OneToOneRelationshipValue;
 import de.bentrm.datacat.catalog.service.value.QualifiedOneToManyRelationshipValue;
@@ -36,27 +36,6 @@ public class ContentFetchers implements MutationFetchers {
     private CatalogService catalogService;
     @Autowired
     private TagService tagService;
-
-    @Autowired
-    private ActivityService activityService;
-    @Autowired
-    private ActorService actorService;
-    @Autowired
-    private BagService bagService;
-    @Autowired
-    private ClassificationService classificationService;
-    @Autowired
-    private ExternalDocumentService externalDocumentService;
-    @Autowired
-    private MeasureService measureService;
-    @Autowired
-    private NestService nestService;
-    @Autowired
-    private PropertyService propertyService;
-    @Autowired
-    private SubjectService subjectService;
-    @Autowired
-    private UnitService unitService;
     @Autowired
     private ValueService valueService;
 
@@ -92,7 +71,7 @@ public class ContentFetchers implements MutationFetchers {
     public Map<String, DataFetcher> getMutationFetchers() {
         Map<String, DataFetcher> fetchers = new HashMap<>();
 
-        fetchers.put("createEntry", createEntry());
+        fetchers.put("createCatalogEntry", createCatalogEntry());
         fetchers.put("deleteEntry", deleteEntry());
 
         fetchers.put("createOneToOneRelationship", createOneToOneRelationship());
@@ -125,31 +104,19 @@ public class ContentFetchers implements MutationFetchers {
         return fetchers;
     }
 
-    protected DataFetcher<CreateEntryPayload> createEntry() {
+    protected DataFetcher<CreateEntryPayload> createCatalogEntry() {
         return environment -> {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final CreateEntryInput input = apiInputMapper.toCreateEntryInput(argument);
-            final EntryValue value = apiInputMapper.toEntryValue(input.getProperties());
+            final CatalogEntryProperties value = apiInputMapper.toEntryValue(input.getProperties());
 
-            var item = switch (input.getEntryType()) {
-                case Activity -> activityService.create(value);
-                case Actor -> actorService.create(value);
-                case Bag -> bagService.create(value);
-                case Classification -> classificationService.create(value);
-                case ExternalDocument -> externalDocumentService.create(value);
-                case Measure -> measureService.create(value);
-                case Nest -> nestService.create(value);
-                case Property -> propertyService.create(value);
-                case Subject -> subjectService.create(value);
-                case Unit -> unitService.create(value);
-                case Value -> valueService.create(value);
-            };
+            final CatalogItem catalogEntry = catalogService.createCatalogEntry(input.getCatalogEntryType(), value);
 
             if (input.getTags() != null) {
-                input.getTags().forEach(tagId -> catalogService.addTag(item.getId(), tagId));
+                input.getTags().forEach(tagId -> catalogService.addTag(catalogEntry.getId(), tagId));
             }
 
-            return payloadMapper.toCreateEntryPayload(item);
+            return payloadMapper.toCreateEntryPayload(catalogEntry);
         };
     }
 

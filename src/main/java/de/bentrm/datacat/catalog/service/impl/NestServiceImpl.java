@@ -3,9 +3,7 @@ package de.bentrm.datacat.catalog.service.impl;
 import de.bentrm.datacat.base.specification.QuerySpecification;
 import de.bentrm.datacat.catalog.domain.XtdNest;
 import de.bentrm.datacat.catalog.repository.NestRepository;
-import de.bentrm.datacat.catalog.service.EntityMapper;
 import de.bentrm.datacat.catalog.service.NestService;
-import de.bentrm.datacat.catalog.service.value.EntryValue;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,21 +18,10 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class NestServiceImpl implements NestService {
 
-    private final EntityMapper entityMapper = EntityMapper.INSTANCE;
-    private final NestRepository repository;
     private final QueryDelegate<XtdNest> queryDelegate;
 
     public NestServiceImpl(NestRepository repository) {
-        this.repository = repository;
         this.queryDelegate = new QueryDelegate<>(repository);
-    }
-
-    @Transactional
-    @Override
-    public @NotNull XtdNest create(EntryValue value) {
-        final XtdNest item = new XtdNest();
-        entityMapper.setProperties(value, item);
-        return repository.save(item);
     }
 
     @Override

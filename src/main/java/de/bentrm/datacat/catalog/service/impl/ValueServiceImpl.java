@@ -6,9 +6,7 @@ import de.bentrm.datacat.catalog.domain.ValueRole;
 import de.bentrm.datacat.catalog.domain.ValueType;
 import de.bentrm.datacat.catalog.domain.XtdValue;
 import de.bentrm.datacat.catalog.repository.ValueRepository;
-import de.bentrm.datacat.catalog.service.EntityMapper;
 import de.bentrm.datacat.catalog.service.ValueService;
-import de.bentrm.datacat.catalog.service.value.EntryValue;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.data.domain.Page;
@@ -27,21 +25,12 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class ValueServiceImpl implements ValueService {
 
-    private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final ValueRepository repository;
     private final QueryDelegate<XtdValue> queryDelegate;
 
     public ValueServiceImpl(ValueRepository repository) {
         this.repository = repository;
         this.queryDelegate = new QueryDelegate<>(repository);
-    }
-
-    @Transactional
-    @Override
-    public @NotNull XtdValue create(EntryValue value) {
-        final XtdValue item = new XtdValue();
-        entityMapper.setProperties(value, item);
-        return repository.save(item);
     }
 
     @Transactional

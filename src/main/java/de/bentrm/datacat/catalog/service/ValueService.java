@@ -9,7 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-public interface ValueService extends QueryService<XtdValue>, ItemService<XtdValue> {
+public interface ValueService extends QueryService<XtdValue> {
 
     @PreAuthorize("hasRole('USER')")
     XtdValue setTolerance(@NotBlank String id, @NotNull ToleranceType toleranceType,

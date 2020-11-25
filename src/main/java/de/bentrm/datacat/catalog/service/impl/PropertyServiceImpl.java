@@ -3,9 +3,7 @@ package de.bentrm.datacat.catalog.service.impl;
 import de.bentrm.datacat.base.specification.QuerySpecification;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.repository.PropertyRepository;
-import de.bentrm.datacat.catalog.service.EntityMapper;
 import de.bentrm.datacat.catalog.service.PropertyService;
-import de.bentrm.datacat.catalog.service.value.EntryValue;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,21 +18,10 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class PropertyServiceImpl implements PropertyService {
 
-    private final EntityMapper entityMapper = EntityMapper.INSTANCE;
-    private final PropertyRepository repository;
     private final QueryDelegate<XtdProperty> queryDelegate;
 
     public PropertyServiceImpl(PropertyRepository repository) {
-        this.repository = repository;
         this.queryDelegate = new QueryDelegate<>(repository);
-    }
-
-    @Transactional
-    @Override
-    public @NotNull XtdProperty create(EntryValue value) {
-        final XtdProperty item = new XtdProperty();
-        entityMapper.setProperties(value, item);
-        return repository.save(item);
     }
 
     @Override

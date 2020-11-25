@@ -7,6 +7,7 @@ import de.bentrm.datacat.auth.service.dto.AccountDto;
 import de.bentrm.datacat.auth.service.dto.AccountUpdateDto;
 import de.bentrm.datacat.auth.service.dto.ProfileDto;
 import de.bentrm.datacat.auth.service.dto.ProfileUpdateDto;
+import de.bentrm.datacat.catalog.domain.CatalogItem;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -25,6 +26,11 @@ public interface ValueMapper {
         if (roles.contains(Role.USER)) return AccountStatus.Verified;
         return AccountStatus.Unverified;
     }
+
+    @Mapping(target = "version", ignore = true)
+    @Mapping(target = "versionId", source = "version.versionId")
+    @Mapping(target = "versionDate", source = "version.versionDate")
+    void setProperties(CatalogEntryProperties properties, @MappingTarget CatalogItem catalogEntry);
 
     @Mapping(target = "username", source = "username")
     @Mapping(target = "profile", source = ".")

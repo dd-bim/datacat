@@ -3,9 +3,7 @@ package de.bentrm.datacat.catalog.service.impl;
 import de.bentrm.datacat.base.specification.QuerySpecification;
 import de.bentrm.datacat.catalog.domain.XtdUnit;
 import de.bentrm.datacat.catalog.repository.UnitRepository;
-import de.bentrm.datacat.catalog.service.EntityMapper;
 import de.bentrm.datacat.catalog.service.UnitService;
-import de.bentrm.datacat.catalog.service.value.EntryValue;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,21 +18,10 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class UnitServiceImpl implements UnitService {
 
-    private final EntityMapper entityMapper = EntityMapper.INSTANCE;
-    private final UnitRepository repository;
     private final QueryDelegate<XtdUnit> queryDelegate;
 
     public UnitServiceImpl(UnitRepository repository) {
-        this.repository = repository;
         this.queryDelegate = new QueryDelegate<>(repository);
-    }
-
-    @Transactional
-    @Override
-    public @NotNull XtdUnit create(EntryValue value) {
-        final XtdUnit item = new XtdUnit();
-        entityMapper.setProperties(value, item);
-        return repository.save(item);
     }
 
     @Override
