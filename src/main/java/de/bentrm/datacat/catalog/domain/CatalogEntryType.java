@@ -1,6 +1,6 @@
-package de.bentrm.datacat.graphql;
+package de.bentrm.datacat.catalog.domain;
 
-public enum EntryType {
+public enum CatalogEntryType {
     Actor,
     Activity,
     Bag,
