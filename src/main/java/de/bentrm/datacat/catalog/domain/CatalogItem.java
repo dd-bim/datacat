@@ -63,17 +63,12 @@ public abstract class CatalogItem extends Entity {
         return Optional.ofNullable(translation);
     }
 
-    public Set<Translation> getNames() {
-        return Set.copyOf(this.names);
-    }
-
     public void addName(String translationId, Locale locale, String value) {
         final Translation translation = new Translation(translationId, locale, value);
 
         Assert.isTrue(translationId == null || this.names.stream().filter(x -> x.getId().equals(translationId)).findFirst().isEmpty(), "The id is already taken.");
         Assert.isTrue(this.names.stream().filter(x -> x.getLocale().equals(locale)).findFirst().isEmpty(), "The given locale is already present in the set of translations.");
 
-        this.labels.put(translation.getLanguageTag(), translation.getValue());
         this.names.add(translation);
     }
 
@@ -86,11 +81,10 @@ public abstract class CatalogItem extends Entity {
                 .findFirst()
                 .orElseThrow();
 
-        this.labels.put(translation.getLanguageTag(), translation.getValue());
         translation.setValue(value.trim());
     }
 
-    public boolean deleteName(String translationId) {
+    public void deleteName(String translationId) {
         Assert.hasText(translationId, "A valid id must be given.");
         Assert.isTrue(this.names.size() > 1, "The only translation of an entry may not be deleted.");
 
@@ -99,8 +93,7 @@ public abstract class CatalogItem extends Entity {
                 .findFirst()
                 .orElseThrow();
 
-        this.labels.remove(translation.getLanguageTag());
-        return this.names.remove(translation);
+        this.names.remove(translation);
     }
 
     public Optional<Translation> getDescription(@NotNull List<Locale.LanguageRange> priorityList) {
@@ -129,7 +122,7 @@ public abstract class CatalogItem extends Entity {
         translation.setValue(value.trim());
     }
 
-    public boolean deleteDescription(String translationId) {
+    public void deleteDescription(String translationId) {
         Assert.hasText(translationId, "A valid id must be given.");
 
         final Translation translation = this.descriptions.stream()
@@ -137,7 +130,7 @@ public abstract class CatalogItem extends Entity {
                 .findFirst()
                 .orElseThrow();
 
-        return this.descriptions.remove(translation);
+        this.descriptions.remove(translation);
     }
 
     /**
@@ -161,11 +154,10 @@ public abstract class CatalogItem extends Entity {
      * Removes a tag from the collection.
      *
      * @param tag The tag to be removed.
-     * @return True if a tag has been removed.
      */
-    public boolean removeTag(Tag tag) {
+    public void removeTag(Tag tag) {
         Assert.notNull(tag, "tag may not be null");
-        return this.tags.remove(tag);
+        this.tags.remove(tag);
     }
 
     /**
