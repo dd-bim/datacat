@@ -7,6 +7,6 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class UpdateNameInput {
-    @NotNull String entryId;
+    @NotNull String catalogEntryId;
     @NotNull @Valid TranslationUpdateInput name;
 }

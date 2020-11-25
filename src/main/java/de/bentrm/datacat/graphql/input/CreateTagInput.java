@@ -6,7 +6,7 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 public class CreateTagInput {
-    private String id;
+    private String tagId;
 
     @NotBlank
     private String name;

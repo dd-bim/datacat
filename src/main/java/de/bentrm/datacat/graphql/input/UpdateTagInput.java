@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 public class UpdateTagInput {
 
     @NotBlank
-    private String id;
+    private String tagId;
 
     @NotBlank
     private String name;

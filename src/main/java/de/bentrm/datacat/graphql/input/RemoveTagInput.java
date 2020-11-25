@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class RemoveTagInput {
     @NotBlank
-    private String entryId;
+    private String catalogEntryId;
 
     @NotBlank
     private String tagId;

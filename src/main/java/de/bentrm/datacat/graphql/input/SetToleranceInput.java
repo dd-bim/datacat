@@ -8,6 +8,6 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class SetToleranceInput {
-    @NotBlank String id;
+    @NotBlank String valueId;
     @NotNull @Valid ToleranceInput tolerance;
 }

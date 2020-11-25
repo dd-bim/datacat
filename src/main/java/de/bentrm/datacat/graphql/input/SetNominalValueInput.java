@@ -8,6 +8,6 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class SetNominalValueInput {
-    @NotBlank String id;
+    @NotBlank String valueId;
     @NotNull @Valid NominalValueInput nominalValue;
 }

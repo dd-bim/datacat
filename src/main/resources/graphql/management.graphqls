@@ -44,14 +44,14 @@ input CreateCatalogEntryInput {
 }
 
 input DeleteCatalogEntryInput {
-    id: ID!
+    catalogEntryId: ID!
 }
 
 type CreateCatalogEntryPayload {
     catalogEntry: CatalogEntry
 }
 
-type DeleteEntryPayload {
+type DeleteCatalogEntryPayload {
     catalogEntry: CatalogEntry
 }
 
@@ -157,7 +157,7 @@ type DeleteRelationshipPayload {
 }
 
 input SetVersionInput {
-    id: ID!
+    catalogEntryId: ID!
     version: VersionInput!
 }
 
@@ -172,7 +172,7 @@ input TranslationInput {
 }
 
 input TranslationUpdateInput {
-    id: ID!
+    translationId: ID!
     value: String!
 }
 
@@ -242,7 +242,7 @@ input ToleranceInput {
 }
 
 input SetToleranceInput {
-    id: ID!
+    valueId: ID!
     tolerance: ToleranceInput!
 }
 
@@ -251,7 +251,7 @@ type SetTolerancePayload {
 }
 
 input UnsetToleranceInput {
-    id: ID!
+    valueId: ID!
 }
 
 type UnsetTolerancePayload {
@@ -280,7 +280,7 @@ input NominalValueInput {
 }
 
 input SetNominalValueInput {
-    id: ID!
+    valueId: ID!
     nominalValue: NominalValueInput!
 }
 
@@ -289,7 +289,7 @@ type SetNominalValuePayload {
 }
 
 input UnsetNominalValueInput {
-    id: ID!
+    valueId: ID!
 }
 
 type UnsetNominalValuePayload {
@@ -305,7 +305,7 @@ type CreateTagPayload {
 }
 
 input UpdateTagInput {
-    id: ID!
+    tagId: ID!
     name: String!
 }
 
@@ -314,7 +314,7 @@ type UpdateTagPayload {
 }
 
 input DeleteTagInput {
-    id: ID!
+    tagId: ID!
 }
 
 type DeleteTagPayload {
@@ -347,7 +347,7 @@ type Mutation {
     createCatalogEntry(input: CreateCatalogEntryInput!): CreateCatalogEntryPayload
 
     # Deletes the entry from the catalog.
-    deleteEntry(input: DeleteCatalogEntryInput!): DeleteEntryPayload
+    deleteCatalogEntry(input: DeleteCatalogEntryInput!): DeleteCatalogEntryPayload
 
     # Creates a relationship between two related catalog entries.
     createOneToOneRelationship(input: CreateOneToOneRelationshipInput!): CreateOneToOneRelationshipPayload

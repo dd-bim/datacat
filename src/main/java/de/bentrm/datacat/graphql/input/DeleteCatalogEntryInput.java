@@ -5,6 +5,6 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 
 @Data
-public class DeleteEntryInput {
-    @NotBlank String id;
+public class DeleteCatalogEntryInput {
+    @NotBlank String catalogEntryId;
 }

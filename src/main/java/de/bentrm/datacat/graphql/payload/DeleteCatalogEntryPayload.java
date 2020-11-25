@@ -4,6 +4,6 @@ import de.bentrm.datacat.catalog.domain.CatalogItem;
 import lombok.Data;
 
 @Data
-public class DeleteEntryPayload {
+public class DeleteCatalogEntryPayload {
     CatalogItem catalogEntry;
 }

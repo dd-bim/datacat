@@ -43,8 +43,8 @@ public interface ApiInputMapper {
         return OBJECT_MAPPER.convertValue(argument, CreateEntryInput.class);
     }
 
-    default DeleteEntryInput toDeleteEntryInput(Map<String, Object> argument) {
-        return OBJECT_MAPPER.convertValue(argument, DeleteEntryInput.class);
+    default DeleteCatalogEntryInput toDeleteEntryInput(Map<String, Object> argument) {
+        return OBJECT_MAPPER.convertValue(argument, DeleteCatalogEntryInput.class);
     }
 
     default DeleteRelationshipInput toDeleteRelationshipInput(Map<String, Object> argument) {

@@ -6,5 +6,5 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 public class DeleteTagInput {
-    @NotBlank String id;
+    @NotBlank String tagId;
 }

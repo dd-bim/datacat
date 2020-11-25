@@ -72,7 +72,7 @@ public class ContentFetchers implements MutationFetchers {
         Map<String, DataFetcher> fetchers = new HashMap<>();
 
         fetchers.put("createCatalogEntry", createCatalogEntry());
-        fetchers.put("deleteEntry", deleteEntry());
+        fetchers.put("deleteCatalogEntry", deleteCatalogEntry());
 
         fetchers.put("createOneToOneRelationship", createOneToOneRelationship());
         fetchers.put("createOneToManyRelationship", createOneToManyRelationship());
@@ -120,11 +120,11 @@ public class ContentFetchers implements MutationFetchers {
         };
     }
 
-    protected DataFetcher<DeleteEntryPayload> deleteEntry() {
+    protected DataFetcher<DeleteCatalogEntryPayload> deleteCatalogEntry() {
         return environment -> {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
-            final DeleteEntryInput input = apiInputMapper.toDeleteEntryInput(argument);
-            final CatalogItem item = catalogService.deleteEntry(input.getId());
+            final DeleteCatalogEntryInput input = apiInputMapper.toDeleteEntryInput(argument);
+            final CatalogItem item = catalogService.deleteEntry(input.getCatalogEntryId());
             return payloadMapper.toDeleteEntryPayload(item);
         };
     }
@@ -199,7 +199,7 @@ public class ContentFetchers implements MutationFetchers {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final SetVersionInput input = apiInputMapper.toSetVersionInput(argument);
             final VersionInput version = input.getVersion();
-            final CatalogItem item = catalogService.setVersion(input.getId(), version.getVersionId(), version.getVersionDate());
+            final CatalogItem item = catalogService.setVersion(input.getCatalogEntryId(), version.getVersionId(), version.getVersionDate());
             return payloadMapper.toSetVersionPayload(item);
         };
     }
@@ -209,7 +209,7 @@ public class ContentFetchers implements MutationFetchers {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final AddNameInput input = apiInputMapper.toAddNameInput(argument);
             final TranslationInput name = input.getName();
-            final CatalogItem item = catalogService.addName(input.getEntryId(), name.getId(), name.getLocale(), name.getValue());
+            final CatalogItem item = catalogService.addName(input.getCatalogEntryId(), name.getId(), name.getLocale(), name.getValue());
             return payloadMapper.toAddNamePayload(item);
         };
     }
@@ -219,7 +219,7 @@ public class ContentFetchers implements MutationFetchers {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final UpdateNameInput input = apiInputMapper.toUpdateNameInput(argument);
             final TranslationUpdateInput name = input.getName();
-            final CatalogItem item = catalogService.updateName(input.getEntryId(), name.getId(), name.getValue());
+            final CatalogItem item = catalogService.updateName(input.getCatalogEntryId(), name.getTranslationId(), name.getValue());
             return payloadMapper.toUpdateNamePayload(item);
         };
     }
@@ -228,7 +228,7 @@ public class ContentFetchers implements MutationFetchers {
         return environment -> {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final DeleteNameInput input = apiInputMapper.toDeleteNameInput(argument);
-            final CatalogItem item = catalogService.deleteName(input.getEntryId(), input.getNameId());
+            final CatalogItem item = catalogService.deleteName(input.getCatalogEntryId(), input.getNameId());
             return payloadMapper.toDeleteNamePayload(item);
         };
     }
@@ -238,7 +238,7 @@ public class ContentFetchers implements MutationFetchers {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final AddDescriptionInput input = apiInputMapper.toAddDescriptionInput(argument);
             final TranslationInput name = input.getDescription();
-            final CatalogItem item = catalogService.addDescription(input.getEntryId(), name.getId(), name.getLocale(), name.getValue());
+            final CatalogItem item = catalogService.addDescription(input.getCatalogEntryId(), name.getId(), name.getLocale(), name.getValue());
             return payloadMapper.toAddDescriptionPayload(item);
         };
     }
@@ -248,7 +248,7 @@ public class ContentFetchers implements MutationFetchers {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final UpdateDescriptionInput input = apiInputMapper.toUpdateDescriptionInput(argument);
             final TranslationUpdateInput name = input.getDescription();
-            final CatalogItem item = catalogService.updateDescription(input.getEntryId(), name.getId(), name.getValue());
+            final CatalogItem item = catalogService.updateDescription(input.getCatalogEntryId(), name.getTranslationId(), name.getValue());
             return payloadMapper.toUpdateDescriptionPayload(item);
         };
     }
@@ -257,7 +257,7 @@ public class ContentFetchers implements MutationFetchers {
         return environment -> {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final DeleteDescriptionInput input = apiInputMapper.toDeleteDescriptionInput(argument);
-            final CatalogItem item = catalogService.deleteDescription(input.getEntryId(), input.getDescriptionId());
+            final CatalogItem item = catalogService.deleteDescription(input.getCatalogEntryId(), input.getDescriptionId());
             return payloadMapper.toDeleteDescriptionPayload(item);
         };
     }
@@ -267,7 +267,7 @@ public class ContentFetchers implements MutationFetchers {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final SetToleranceInput input = apiInputMapper.toSetToleranceInput(argument);
             final ToleranceInput tolerance = input.getTolerance();
-            final XtdValue value = valueService.setTolerance(input.getId(), tolerance.getToleranceType(),
+            final XtdValue value = valueService.setTolerance(input.getValueId(), tolerance.getToleranceType(),
                     tolerance.getLowerTolerance(), tolerance.getUpperTolerance());
             return payloadMapper.toSetTolerancePayload(value);
         };
@@ -277,7 +277,7 @@ public class ContentFetchers implements MutationFetchers {
         return environment -> {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final UnsetToleranceInput input = apiInputMapper.toUnsetToleranceInput(argument);
-            final XtdValue value = valueService.unsetTolerance(input.getId());
+            final XtdValue value = valueService.unsetTolerance(input.getValueId());
             return payloadMapper.toUnsetTolerancePayload(value);
 
         };
@@ -288,7 +288,7 @@ public class ContentFetchers implements MutationFetchers {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final SetNominalValueInput input = apiInputMapper.toSetNominalValueInput(argument);
             final NominalValueInput nominalValue = input.getNominalValue();
-            final XtdValue xtdValue = valueService.setNominalValue(input.getId(), nominalValue.getValueRole(),
+            final XtdValue xtdValue = valueService.setNominalValue(input.getValueId(), nominalValue.getValueRole(),
                     nominalValue.getValueType(), nominalValue.getNominalValue());
             return payloadMapper.toSetNominalValuePayload(xtdValue);
         };
@@ -298,7 +298,7 @@ public class ContentFetchers implements MutationFetchers {
         return environment -> {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final UnsetNominalValueInput input = apiInputMapper.toUnsetNominalValueInput(argument);
-            final XtdValue xtdValue = valueService.unsetNominalValue(input.getId());
+            final XtdValue xtdValue = valueService.unsetNominalValue(input.getValueId());
             return payloadMapper.toUnsetNominalValuePayload(xtdValue);
         };
     }
@@ -307,7 +307,7 @@ public class ContentFetchers implements MutationFetchers {
         return environment -> {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final CreateTagInput input = OBJECT_MAPPER.convertValue(argument, CreateTagInput.class);
-            final Tag tag = catalogService.createTag(input.getId(), input.getName());
+            final Tag tag = catalogService.createTag(input.getTagId(), input.getName());
             return new CreateTagPayload(tag);
         };
     }
@@ -316,7 +316,7 @@ public class ContentFetchers implements MutationFetchers {
         return environment -> {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final UpdateTagInput input = OBJECT_MAPPER.convertValue(argument, UpdateTagInput.class);
-            final Tag tag = catalogService.updateTag(input.getId(), input.getName());
+            final Tag tag = catalogService.updateTag(input.getTagId(), input.getName());
             return new UpdateTagPayload(tag);
         };
     }
@@ -325,7 +325,7 @@ public class ContentFetchers implements MutationFetchers {
         return environment -> {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final DeleteTagInput input = OBJECT_MAPPER.convertValue(argument, DeleteTagInput.class);
-            final Tag tag = catalogService.deleteTag(input.getId());
+            final Tag tag = catalogService.deleteTag(input.getTagId());
             return new DeleteTagPayload(tag);
         };
     }
@@ -334,7 +334,7 @@ public class ContentFetchers implements MutationFetchers {
         return environment -> {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final AddTagInput input = OBJECT_MAPPER.convertValue(argument, AddTagInput.class);
-            final CatalogItem catalogItem = catalogService.addTag(input.getEntryId(), input.getTagId());
+            final CatalogItem catalogItem = catalogService.addTag(input.getCatalogEntryId(), input.getTagId());
             final Tag tag = tagService.findById(input.getTagId());
             return new AddTagPayload(catalogItem, tag);
         };
@@ -344,7 +344,7 @@ public class ContentFetchers implements MutationFetchers {
         return environment -> {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final RemoveTagInput input = OBJECT_MAPPER.convertValue(argument, RemoveTagInput.class);
-            final CatalogItem catalogItem = catalogService.removeTag(input.getEntryId(), input.getTagId());
+            final CatalogItem catalogItem = catalogService.removeTag(input.getCatalogEntryId(), input.getTagId());
             final Tag tag = tagService.findById(input.getTagId());
             return new RemoveTagPayload(catalogItem, tag);
         };

@@ -6,6 +6,6 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class TranslationUpdateInput {
-    @NotNull String id;
+    @NotNull String translationId;
     @NotNull String value;
 }

@@ -12,7 +12,7 @@ public interface PayloadMapper {
     CreateEntryPayload toCreateEntryPayload(CatalogItem item);
 
     @Mapping(source = "item", target = "catalogEntry")
-    DeleteEntryPayload toDeleteEntryPayload(CatalogItem item);
+    DeleteCatalogEntryPayload toDeleteEntryPayload(CatalogItem item);
 
     @Mapping(source = "relationship", target = "relationship")
     CreateOneToOneRelationshipPayload toCreateOneToOneRelationshipPayload(XtdRelSequences relationship);

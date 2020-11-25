@@ -6,6 +6,6 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class SetVersionInput {
-    @NotNull String id;
+    @NotNull String catalogEntryId;
     @NotNull VersionInput version;
 }
