@@ -21,7 +21,7 @@ public class XtdProperty extends XtdObject {
 
     public static final String LABEL = "XtdProperty";
 
-    @Relationship(type = XtdRelAssignsMeasures.LABEL)
+    @Relationship(type = XtdRelAssignsMeasures.RELATIONSHIP_TYPE)
     private final Set<XtdRelAssignsMeasures> assignedMeasures = new HashSet<>();
 
     @Relationship(type = "RELATED_PROPERTY", direction = Relationship.INCOMING)
