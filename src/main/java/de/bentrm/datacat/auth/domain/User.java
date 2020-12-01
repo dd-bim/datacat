@@ -1,8 +1,8 @@
 package de.bentrm.datacat.auth.domain;
 
 import de.bentrm.datacat.base.domain.Entity;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
@@ -15,12 +15,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Getter
-@Setter
-@ToString
+@Data
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+@ToString(callSuper = true, onlyExplicitlyIncluded = true)
 @NodeEntity(label = "User")
 public class User extends Entity implements UserDetails {
 
+    @ToString.Include
+    @EqualsAndHashCode.Include
     @Index(unique = true)
     @NotBlank
     protected String username;
@@ -28,9 +30,11 @@ public class User extends Entity implements UserDetails {
     @NotBlank
     private String password;
 
+    @ToString.Include
     @NotBlank
     private String firstName;
 
+    @ToString.Include
     @NotBlank
     private String lastName;
 
