@@ -6,14 +6,12 @@ import org.springframework.boot.actuate.audit.InMemoryAuditEventRepository;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import javax.validation.Validator;
 
-@Configuration
+@SpringBootApplication
 @ConfigurationPropertiesScan({"de.bentrm.datacat.properties"})
-@SpringBootApplication()
 public class Application {
 
     public static void main(String[] args) {
