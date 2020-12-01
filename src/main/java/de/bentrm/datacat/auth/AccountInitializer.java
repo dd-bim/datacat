@@ -11,6 +11,8 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 public class AccountInitializer implements ApplicationRunner {
@@ -29,18 +31,25 @@ public class AccountInitializer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
+        log.info("Running account initialization...");
         final var users = properties.getUsers();
+
+        for (User value : userRepository.findAll()) {
+            log.debug("User present: {}", value);
+        }
 
         for (var entry : users.entrySet()) {
             final String username = entry.getKey();
             final var userProperties = entry.getValue();
 
-            if (userRepository.findByUsername(username).isPresent()) {
+            final Optional<User> match = userRepository.findByUsername(username);
+            log.debug("Current user with username {}: {}", username, match);
+            if (match.isPresent()) {
                 log.info("Account with username {} found... skipping account creation.", username);
                 continue;
             }
 
-            log.info("Adding new account {}...", username);
+            log.info("Adding new account '{}'...", username);
             final User user = propertyMapper.toUser(username, userProperties);
 
             String password = userProperties.getPassword();
