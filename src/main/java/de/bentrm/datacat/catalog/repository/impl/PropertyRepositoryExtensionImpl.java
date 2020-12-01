@@ -1,5 +1,6 @@
-package de.bentrm.datacat.catalog.repository;
+package de.bentrm.datacat.catalog.repository.impl;
 
+import de.bentrm.datacat.catalog.repository.PropertyRepositoryExtension;
 import lombok.extern.slf4j.Slf4j;
 import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;

@@ -1,5 +1,6 @@
-package de.bentrm.datacat.catalog.repository;
+package de.bentrm.datacat.catalog.repository.impl;
 
+import de.bentrm.datacat.catalog.repository.NestRepositoryExtension;
 import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;
 
