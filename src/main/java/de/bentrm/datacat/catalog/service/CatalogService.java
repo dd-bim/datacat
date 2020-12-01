@@ -113,9 +113,6 @@ public interface CatalogService {
     long countCatalogItems(@NotNull CatalogItemSpecification specification);
 
     @PreAuthorize("hasRole('READONLY')")
-    @NotNull Page<XtdRoot> findAllRootItems(@NotNull RootSpecification specification);
-
-    @PreAuthorize("hasRole('READONLY')")
     long countRootItems(@NotNull RootSpecification specification);
 
     @PreAuthorize("hasRole('READONLY')")

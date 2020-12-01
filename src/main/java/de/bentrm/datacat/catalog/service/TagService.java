@@ -1,5 +1,6 @@
 package de.bentrm.datacat.catalog.service;
 
+import de.bentrm.datacat.base.specification.QuerySpecification;
 import de.bentrm.datacat.catalog.domain.Tag;
 import de.bentrm.datacat.catalog.specification.TagSpecification;
 import org.springframework.data.domain.Page;
@@ -14,4 +15,6 @@ public interface TagService {
 
     @PreAuthorize("hasRole('USER')")
     @NotNull Page<Tag> findAll(@NotNull TagSpecification specification);
+
+    @NotNull long count(@NotNull QuerySpecification specification);
 }

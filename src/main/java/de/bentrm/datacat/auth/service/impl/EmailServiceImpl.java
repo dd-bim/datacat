@@ -1,6 +1,7 @@
-package de.bentrm.datacat.auth.service;
+package de.bentrm.datacat.auth.service.impl;
 
 import de.bentrm.datacat.auth.domain.EmailConfirmationRequest;
+import de.bentrm.datacat.auth.service.EmailService;
 import de.bentrm.datacat.properties.AppProperties;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;

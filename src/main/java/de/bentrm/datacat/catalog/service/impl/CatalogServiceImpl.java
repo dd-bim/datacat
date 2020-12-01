@@ -1,7 +1,9 @@
 package de.bentrm.datacat.catalog.service.impl;
 
+import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.*;
-import de.bentrm.datacat.catalog.repository.*;
+import de.bentrm.datacat.catalog.repository.CatalogItemRepository;
+import de.bentrm.datacat.catalog.repository.HierarchyDao;
 import de.bentrm.datacat.catalog.service.CatalogService;
 import de.bentrm.datacat.catalog.service.value.CatalogEntryProperties;
 import de.bentrm.datacat.catalog.service.value.HierarchyValue;
@@ -10,8 +12,15 @@ import de.bentrm.datacat.catalog.specification.RootSpecification;
 import de.bentrm.datacat.graphql.dto.CatalogItemStatistics;
 import de.bentrm.datacat.graphql.dto.CatalogStatistics;
 import lombok.extern.slf4j.Slf4j;
+import org.neo4j.ogm.cypher.query.Pagination;
+import org.neo4j.ogm.cypher.query.SortOrder;
+import org.neo4j.ogm.session.Session;
+import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,28 +40,34 @@ import java.util.stream.Collectors;
 public class CatalogServiceImpl implements CatalogService {
 
     @Autowired
+    private SessionFactory sessionFactory;
+
+    @Autowired
+    private HierarchyDao hierarchyDao;
+
+    @Autowired
     private CatalogEntryFactory catalogEntryFactory;
 
     @Autowired
-    private TranslationRespository translationRespository;
+    private EntityRepository<Translation> translationRespository;
 
     @Autowired
-    private TagRepository tagRepository;
+    private EntityRepository<Tag> tagRepository;
 
     @Autowired
     private CatalogItemRepository catalogItemRepository;
 
     @Autowired
-    private RootRepository rootRepository;
+    private EntityRepository<XtdRoot> rootRepository;
 
     @Autowired
-    private ObjectRepository objectRepository;
+    private EntityRepository<XtdObject> objectRepository;
 
     @Autowired
-    private CollectionRepository collectionRepository;
+    private EntityRepository<XtdCollection> collectionRepository;
 
     @Autowired
-    private RelationshipRepository relationshipRepository;
+    private EntityRepository<XtdRelationship> relationshipRepository;
 
     @Override
     public CatalogStatistics getStatistics() {
@@ -293,37 +308,57 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public Page<CatalogItem> findAllCatalogItems(CatalogItemSpecification specification) {
-        final Page<CatalogItem> all = catalogItemRepository.findAll(specification);
+        Collection<CatalogItem> catalogItems;
+        Pageable pageable;
+        final long count = countCatalogItems(specification);
+        final Session session = sessionFactory.openSession();
 
-        // TODO: Quickfix
-        final List<String> ids = all.getContent().stream().map(CatalogItem::getId).collect(Collectors.toList());
-        final List<CatalogItem> pageContent = new ArrayList<>();
-        final Iterable<CatalogItem> reloaded = catalogItemRepository.findAllById(ids);
-        reloaded.forEach(pageContent::add);
-        return PageableExecutionUtils.getPage(pageContent, all.getPageable(), all::getTotalElements);
+        final Optional<Pageable> paged = specification.getPageable();
+        if (paged.isPresent()) {
+            pageable = paged.get();
+            final Pagination pagination = new Pagination(pageable.getPageNumber(), pageable.getPageSize());
+
+            if (pageable.getSort().isUnsorted()) {
+                catalogItems = session.loadAll(CatalogItem.class, specification.getFilters(), pagination);
+            } else {
+                final Sort sort = pageable.getSort();
+                final Sort.Direction direction = sort.get().findFirst().map(Sort.Order::getDirection).get();
+                final String[] properties = sort.get().map(Sort.Order::getProperty).toArray(String[]::new);
+                final SortOrder sortOrder = new SortOrder(SortOrder.Direction.valueOf(direction.name()), properties);
+                catalogItems = session.loadAll(CatalogItem.class, specification.getFilters(), sortOrder, pagination);
+            }
+        } else {
+            pageable = PageRequest.of(0, (int) Math.max(count, 10));
+            catalogItems = session.loadAll(CatalogItem.class, specification.getFilters());
+        }
+
+        return PageableExecutionUtils.getPage(List.copyOf(catalogItems), pageable, () -> count);
+//        // TODO: Quickfix
+//        final List<String> ids = all.getContent().stream().map(CatalogItem::getId).collect(Collectors.toList());
+//        final List<CatalogItem> pageContent = new ArrayList<>();
+//        final Iterable<CatalogItem> reloaded = catalogItemRepository.findAllById(ids);
+//        reloaded.forEach(pageContent::add);
+//        return PageableExecutionUtils.getPage(pageContent, all.getPageable(), all::getTotalElements);
     }
 
     @Override
     public long countCatalogItems(CatalogItemSpecification specification) {
-        return catalogItemRepository.count(specification);
-    }
-
-    @Override
-    public Page<XtdRoot> findAllRootItems(RootSpecification specification) {
-        return rootRepository.findAll(specification);
+        final Session session = sessionFactory.openSession();
+        return session.count(CatalogItem.class, specification.getFilters());
     }
 
     @Override
     public long countRootItems(RootSpecification specification) {
-        return rootRepository.count(specification);
+        final Session session = sessionFactory.openSession();
+        return session.count(XtdRoot.class, specification.getFilters());
     }
 
     @Override
     public HierarchyValue getHierarchy(CatalogItemSpecification rootNodeSpecification, int depth) {
-        final Page<CatalogItem> rootNodes = catalogItemRepository.findAll(rootNodeSpecification);
+        final Page<CatalogItem> rootNodes = findAllCatalogItems(rootNodeSpecification);
         final List<String> rootNodeIds = rootNodes.map(CatalogItem::getId).stream().collect(Collectors.toList());
 
-        final List<List<String>> paths = catalogItemRepository.getHierarchyPaths(rootNodeIds, depth);
+        final List<List<String>> paths = hierarchyDao.getHierarchyPaths(rootNodeIds, depth);
 
         final Set<String> nodeIds = new HashSet<>();
         paths.forEach(nodeIds::addAll);

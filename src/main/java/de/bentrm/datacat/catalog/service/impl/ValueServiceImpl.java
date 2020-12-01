@@ -1,15 +1,14 @@
 package de.bentrm.datacat.catalog.service.impl;
 
-import de.bentrm.datacat.base.specification.QuerySpecification;
+import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.ToleranceType;
 import de.bentrm.datacat.catalog.domain.ValueRole;
 import de.bentrm.datacat.catalog.domain.ValueType;
 import de.bentrm.datacat.catalog.domain.XtdValue;
-import de.bentrm.datacat.catalog.repository.ValueRepository;
 import de.bentrm.datacat.catalog.service.ValueService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.springframework.data.domain.Page;
+import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -17,20 +16,14 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class ValueServiceImpl implements ValueService {
+public class ValueServiceImpl extends AbstractServiceImpl<XtdValue> implements ValueService {
 
-    private final ValueRepository repository;
-    private final QueryDelegate<XtdValue> queryDelegate;
-
-    public ValueServiceImpl(ValueRepository repository) {
-        this.repository = repository;
-        this.queryDelegate = new QueryDelegate<>(repository);
+    public ValueServiceImpl(SessionFactory sessionFactory, EntityRepository<XtdValue> repository) {
+        super(XtdValue.class, sessionFactory, repository);
     }
 
     @Transactional
@@ -58,23 +51,23 @@ public class ValueServiceImpl implements ValueService {
             }
         }
 
-        XtdValue item = queryDelegate.findById(id).orElseThrow();
+        XtdValue item = findById(id).orElseThrow();
         item.setToleranceType(toleranceType);
         item.setLowerTolerance(lowerTolerance != null ? lowerTolerance.trim() : null);
         item.setUpperTolerance(upperTolerance != null ? upperTolerance.trim() : null);
 
-        return repository.save(item);
+        return getRepository().save(item);
     }
 
     @Transactional
     @Override
     public XtdValue unsetTolerance(@NotBlank String id) {
-        XtdValue item = queryDelegate.findById(id).orElseThrow();
+        XtdValue item = findById(id).orElseThrow();
         item.setToleranceType(null);
         item.setLowerTolerance(null);
         item.setUpperTolerance(null);
 
-        return repository.save(item);
+        return getRepository().save(item);
     }
 
     @Transactional
@@ -92,42 +85,22 @@ public class ValueServiceImpl implements ValueService {
             case Boolean -> Boolean.parseBoolean(nominalValue);
         }
 
-        XtdValue item = queryDelegate.findById(id).orElseThrow();
+        XtdValue item = findById(id).orElseThrow();
         item.setValueRole(valueRole);
         item.setValueType(valueType);
         item.setNominalValue(nominalValue.trim());
 
-        return repository.save(item);
+        return getRepository().save(item);
     }
 
     @Transactional
     @Override
     public XtdValue unsetNominalValue(@NotBlank String id) {
-        XtdValue item = queryDelegate.findById(id).orElseThrow();
+        XtdValue item = findById(id).orElseThrow();
         item.setValueRole(null);
         item.setValueType(null);
         item.setNominalValue(null);
 
-        return repository.save(item);
-    }
-
-    @Override
-    public @NotNull Optional<XtdValue> findById(@NotNull String id) {
-        return queryDelegate.findById(id);
-    }
-
-    @Override
-    public @NotNull List<XtdValue> findAllByIds(@NotNull List<String> ids) {
-        return queryDelegate.findAllByIds(ids);
-    }
-
-    @Override
-    public @NotNull Page<XtdValue> findAll(@NotNull QuerySpecification specification) {
-        return queryDelegate.findAll(specification);
-    }
-
-    @Override
-    public @NotNull long count(@NotNull QuerySpecification specification) {
-        return queryDelegate.count(specification);
+        return getRepository().save(item);
     }
 }

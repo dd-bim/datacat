@@ -1,42 +1,35 @@
 package de.bentrm.datacat.catalog.service.impl;
 
-import de.bentrm.datacat.base.specification.QuerySpecification;
+import de.bentrm.datacat.base.repository.EntityRepository;
+import de.bentrm.datacat.catalog.domain.XtdObject;
+import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsPropertyWithValues;
-import de.bentrm.datacat.catalog.repository.ObjectRepository;
-import de.bentrm.datacat.catalog.repository.PropertyRepository;
-import de.bentrm.datacat.catalog.repository.RelAssignsPropertyWithValuesRepository;
 import de.bentrm.datacat.catalog.service.AssignsPropertyWithValuesService;
 import de.bentrm.datacat.catalog.service.EntityMapper;
 import de.bentrm.datacat.catalog.service.value.QualifiedOneToManyRelationshipValue;
 import org.apache.commons.lang3.NotImplementedException;
-import org.springframework.data.domain.Page;
+import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class AssignsPropertyWithValuesServiceImpl implements AssignsPropertyWithValuesService {
+public class AssignsPropertyWithValuesServiceImpl extends AbstractServiceImpl<XtdRelAssignsPropertyWithValues> implements AssignsPropertyWithValuesService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
-    private final RelAssignsPropertyWithValuesRepository repository;
-    private final ObjectRepository objectRepository;
-    private final PropertyRepository propertyRepository;
+    private final EntityRepository<XtdObject> objectRepository;
+    private final EntityRepository<XtdProperty> propertyRepository;
 
-    private final QueryDelegate<XtdRelAssignsPropertyWithValues> queryDelegate;
-
-    public AssignsPropertyWithValuesServiceImpl(RelAssignsPropertyWithValuesRepository repository,
-                                                ObjectRepository objectRepository,
-                                                PropertyRepository propertyRepository) {
-        this.repository = repository;
+    public AssignsPropertyWithValuesServiceImpl(SessionFactory sessionFactory, EntityRepository<XtdRelAssignsPropertyWithValues> repository,
+                                                EntityRepository<XtdObject> objectRepository,
+                                                EntityRepository<XtdProperty> propertyRepository) {
+        super(XtdRelAssignsPropertyWithValues.class, sessionFactory, repository);
         this.objectRepository = objectRepository;
         this.propertyRepository = propertyRepository;
-        this.queryDelegate = new QueryDelegate<>(repository);
     }
 
     // TODO
@@ -60,25 +53,5 @@ public class AssignsPropertyWithValuesServiceImpl implements AssignsPropertyWith
 //        relation.getRelatedProperties().addAll(related);
 //
 //        return assignsCollectionsRepository.save(relation);
-    }
-
-    @Override
-    public @NotNull Optional<XtdRelAssignsPropertyWithValues> findById(@NotNull String id) {
-        return queryDelegate.findById(id);
-    }
-
-    @Override
-    public @NotNull List<XtdRelAssignsPropertyWithValues> findAllByIds(@NotNull List<String> ids) {
-        return queryDelegate.findAllByIds(ids);
-    }
-
-    @Override
-    public @NotNull Page<XtdRelAssignsPropertyWithValues> findAll(@NotNull QuerySpecification specification) {
-        return queryDelegate.findAll(specification);
-    }
-
-    @Override
-    public @NotNull long count(@NotNull QuerySpecification specification) {
-        return queryDelegate.count(specification);
     }
 }

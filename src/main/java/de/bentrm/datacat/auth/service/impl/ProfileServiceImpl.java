@@ -1,6 +1,7 @@
-package de.bentrm.datacat.auth.service;
+package de.bentrm.datacat.auth.service.impl;
 
 import de.bentrm.datacat.auth.domain.User;
+import de.bentrm.datacat.auth.service.ProfileService;
 import de.bentrm.datacat.auth.service.dto.ProfileDto;
 import de.bentrm.datacat.auth.service.dto.ProfileUpdateDto;
 import de.bentrm.datacat.base.repository.UserRepository;

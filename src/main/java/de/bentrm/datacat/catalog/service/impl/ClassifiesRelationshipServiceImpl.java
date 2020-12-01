@@ -1,16 +1,13 @@
 package de.bentrm.datacat.catalog.service.impl;
 
-import de.bentrm.datacat.base.specification.QuerySpecification;
+import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.XtdClassification;
 import de.bentrm.datacat.catalog.domain.XtdRelClassifies;
 import de.bentrm.datacat.catalog.domain.XtdRoot;
-import de.bentrm.datacat.catalog.repository.ClassificationRepository;
-import de.bentrm.datacat.catalog.repository.ClassifiesRelationshipRepository;
-import de.bentrm.datacat.catalog.repository.RootRepository;
 import de.bentrm.datacat.catalog.service.ClassifiesRelationshipService;
 import de.bentrm.datacat.catalog.service.EntityMapper;
 import de.bentrm.datacat.catalog.service.value.OneToManyRelationshipValue;
-import org.springframework.data.domain.Page;
+import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -18,27 +15,23 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class ClassifiesRelationshipServiceImpl implements ClassifiesRelationshipService {
+public class ClassifiesRelationshipServiceImpl extends AbstractServiceImpl<XtdRelClassifies> implements ClassifiesRelationshipService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
-    private final ClassifiesRelationshipRepository classifiesRelationshipRepository;
-    private final ClassificationRepository classificationRepository;
-    private final RootRepository rootRepository;
+    private final EntityRepository<XtdClassification> classificationRepository;
+    private final EntityRepository<XtdRoot> rootRepository;
 
-    private final QueryDelegate<XtdRelClassifies> queryDelegate;
-
-    public ClassifiesRelationshipServiceImpl(ClassifiesRelationshipRepository repository,
-                                             ClassificationRepository classificationRepository,
-                                             RootRepository rootRepository) {
-        this.classifiesRelationshipRepository = repository;
+    public ClassifiesRelationshipServiceImpl(SessionFactory sessionFactory,
+                                             EntityRepository<XtdRelClassifies> repository,
+                                             EntityRepository<XtdClassification> classificationRepository,
+                                             EntityRepository<XtdRoot> rootRepository) {
+        super(XtdRelClassifies.class, sessionFactory, repository);
         this.classificationRepository = classificationRepository;
         this.rootRepository = rootRepository;
-        this.queryDelegate = new QueryDelegate<>(repository);
     }
 
     @Transactional
@@ -59,26 +52,6 @@ public class ClassifiesRelationshipServiceImpl implements ClassifiesRelationship
         }
         relation.getRelatedThings().addAll(related);
 
-        return classifiesRelationshipRepository.save(relation);
-    }
-
-    @Override
-    public @NotNull Optional<XtdRelClassifies> findById(@NotNull String id) {
-        return queryDelegate.findById(id);
-    }
-
-    @Override
-    public @NotNull List<XtdRelClassifies> findAllByIds(@NotNull List<String> ids) {
-        return queryDelegate.findAllByIds(ids);
-    }
-
-    @Override
-    public @NotNull Page<XtdRelClassifies> findAll(@NotNull QuerySpecification specification) {
-        return queryDelegate.findAll(specification);
-    }
-
-    @Override
-    public @NotNull long count(@NotNull QuerySpecification specification) {
-        return queryDelegate.count(specification);
+        return getRepository().save(relation);
     }
 }

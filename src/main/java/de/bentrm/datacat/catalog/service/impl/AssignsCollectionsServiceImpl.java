@@ -1,16 +1,13 @@
 package de.bentrm.datacat.catalog.service.impl;
 
-import de.bentrm.datacat.base.specification.QuerySpecification;
+import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.XtdCollection;
 import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsCollections;
-import de.bentrm.datacat.catalog.repository.CollectionRepository;
-import de.bentrm.datacat.catalog.repository.ObjectRepository;
-import de.bentrm.datacat.catalog.repository.RelAssignsCollectionsRepository;
 import de.bentrm.datacat.catalog.service.AssignsCollectionsService;
 import de.bentrm.datacat.catalog.service.EntityMapper;
 import de.bentrm.datacat.catalog.service.value.OneToManyRelationshipValue;
-import org.springframework.data.domain.Page;
+import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -18,26 +15,21 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class AssignsCollectionsServiceImpl implements AssignsCollectionsService {
+public class AssignsCollectionsServiceImpl extends AbstractServiceImpl<XtdRelAssignsCollections> implements AssignsCollectionsService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
-    private final RelAssignsCollectionsRepository assignsCollectionsRepository;
-    private final ObjectRepository objectRepository;
-    private final CollectionRepository collectionRepository;
+    private final EntityRepository<XtdObject> objectRepository;
+    private final EntityRepository<XtdCollection> collectionRepository;
 
-    private final QueryDelegate<XtdRelAssignsCollections> queryDelegate;
-
-    public AssignsCollectionsServiceImpl(RelAssignsCollectionsRepository repository, ObjectRepository objectRepository,
-                                         CollectionRepository collectionRepository) {
-        this.assignsCollectionsRepository = repository;
+    public AssignsCollectionsServiceImpl(SessionFactory sessionFactory, EntityRepository<XtdRelAssignsCollections> repository,
+                                         EntityRepository<XtdObject> objectRepository, EntityRepository<XtdCollection> collectionRepository) {
+        super(XtdRelAssignsCollections.class, sessionFactory, repository);
         this.objectRepository = objectRepository;
         this.collectionRepository = collectionRepository;
-        this.queryDelegate = new QueryDelegate<>(repository);
     }
 
     @Transactional
@@ -58,26 +50,6 @@ public class AssignsCollectionsServiceImpl implements AssignsCollectionsService 
         }
         relation.getRelatedCollections().addAll(related);
 
-        return assignsCollectionsRepository.save(relation);
-    }
-
-    @Override
-    public @NotNull Optional<XtdRelAssignsCollections> findById(@NotNull String id) {
-        return queryDelegate.findById(id);
-    }
-
-    @Override
-    public @NotNull List<XtdRelAssignsCollections> findAllByIds(@NotNull List<String> ids) {
-        return queryDelegate.findAllByIds(ids);
-    }
-
-    @Override
-    public @NotNull Page<XtdRelAssignsCollections> findAll(@NotNull QuerySpecification specification) {
-        return queryDelegate.findAll(specification);
-    }
-
-    @Override
-    public @NotNull long count(@NotNull QuerySpecification specification) {
-        return queryDelegate.count(specification);
+        return getRepository().save(relation);
     }
 }

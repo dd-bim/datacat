@@ -1,14 +1,13 @@
 package de.bentrm.datacat.catalog.service.impl;
 
-import de.bentrm.datacat.base.specification.QuerySpecification;
+import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.XtdNest;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.domain.XtdSubject;
 import de.bentrm.datacat.catalog.repository.NestRepository;
 import de.bentrm.datacat.catalog.repository.PropertyRepository;
-import de.bentrm.datacat.catalog.repository.SubjectRepository;
 import de.bentrm.datacat.catalog.service.SubjectService;
-import org.springframework.data.domain.Page;
+import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -17,43 +16,22 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class SubjectServiceImpl implements SubjectService {
+public class SubjectServiceImpl extends AbstractServiceImpl<XtdSubject> implements SubjectService {
 
     private final NestRepository nestRepository;
     private final PropertyRepository propertyRepository;
-    private final QueryDelegate<XtdSubject> queryDelegate;
 
-    public SubjectServiceImpl(SubjectRepository repository,
+    public SubjectServiceImpl(SessionFactory sessionFactory,
+                              EntityRepository<XtdSubject> repository,
                               NestRepository nestRepository,
                               PropertyRepository propertyRepository) {
+        super(XtdSubject.class, sessionFactory, repository);
         this.nestRepository = nestRepository;
         this.propertyRepository = propertyRepository;
-        this.queryDelegate = new QueryDelegate<>(repository);
-    }
-
-    @Override
-    public @NotNull Optional<XtdSubject> findById(@NotNull String id) {
-        return queryDelegate.findById(id);
-    }
-
-    @Override
-    public @NotNull List<XtdSubject> findAllByIds(@NotNull List<String> ids) {
-        return queryDelegate.findAllByIds(ids);
-    }
-
-    @Override
-    public @NotNull Page<XtdSubject> findAll(@NotNull QuerySpecification specification) {
-        return queryDelegate.findAll(specification);
-    }
-
-    @Override
-    public @NotNull long count(@NotNull QuerySpecification specification) {
-        return queryDelegate.count(specification);
     }
 
     @Override

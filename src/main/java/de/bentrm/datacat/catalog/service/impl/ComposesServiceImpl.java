@@ -1,14 +1,12 @@
 package de.bentrm.datacat.catalog.service.impl;
 
-import de.bentrm.datacat.base.specification.QuerySpecification;
+import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.XtdRelComposes;
 import de.bentrm.datacat.catalog.domain.XtdRoot;
-import de.bentrm.datacat.catalog.repository.RelComposesRepository;
-import de.bentrm.datacat.catalog.repository.RootRepository;
 import de.bentrm.datacat.catalog.service.ComposesService;
 import de.bentrm.datacat.catalog.service.EntityMapper;
 import de.bentrm.datacat.catalog.service.value.OneToManyRelationshipValue;
-import org.springframework.data.domain.Page;
+import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -16,23 +14,20 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class ComposesServiceImpl implements ComposesService {
+public class ComposesServiceImpl extends AbstractServiceImpl<XtdRelComposes> implements ComposesService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
-    private final RelComposesRepository composesRepository;
-    private final RootRepository rootRepository;
+    private final EntityRepository<XtdRoot> rootRepository;
 
-    private final QueryDelegate<XtdRelComposes> queryDelegate;
-
-    public ComposesServiceImpl(RelComposesRepository repository, RootRepository rootRepository) {
-        this.composesRepository = repository;
+    public ComposesServiceImpl(SessionFactory sessionFactory,
+                               EntityRepository<XtdRelComposes> repository,
+                               EntityRepository<XtdRoot> rootRepository) {
+        super(XtdRelComposes.class, sessionFactory, repository);
         this.rootRepository = rootRepository;
-        this.queryDelegate = new QueryDelegate<>(repository);
     }
 
     @Transactional
@@ -53,26 +48,6 @@ public class ComposesServiceImpl implements ComposesService {
         }
         ref.getRelatedThings().addAll(related);
 
-        return composesRepository.save(ref);
-    }
-
-    @Override
-    public @NotNull Optional<XtdRelComposes> findById(@NotNull String id) {
-        return queryDelegate.findById(id);
-    }
-
-    @Override
-    public @NotNull List<XtdRelComposes> findAllByIds(@NotNull List<String> ids) {
-        return queryDelegate.findAllByIds(ids);
-    }
-
-    @Override
-    public @NotNull Page<XtdRelComposes> findAll(@NotNull QuerySpecification specification) {
-        return queryDelegate.findAll(specification);
-    }
-
-    @Override
-    public @NotNull long count(@NotNull QuerySpecification specification) {
-        return queryDelegate.count(specification);
+        return getRepository().save(ref);
     }
 }

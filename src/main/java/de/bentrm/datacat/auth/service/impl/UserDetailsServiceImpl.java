@@ -1,4 +1,4 @@
-package de.bentrm.datacat.auth.service;
+package de.bentrm.datacat.auth.service.impl;
 
 import de.bentrm.datacat.base.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

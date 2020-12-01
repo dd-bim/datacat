@@ -1,4 +1,4 @@
-package de.bentrm.datacat.auth.service;
+package de.bentrm.datacat.auth.service.impl;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -9,6 +9,7 @@ import de.bentrm.datacat.auth.JwtUserDetails;
 import de.bentrm.datacat.auth.domain.EmailConfirmationRequest;
 import de.bentrm.datacat.auth.domain.Role;
 import de.bentrm.datacat.auth.domain.User;
+import de.bentrm.datacat.auth.service.*;
 import de.bentrm.datacat.base.repository.EmailConfirmationRepository;
 import de.bentrm.datacat.base.repository.UserRepository;
 import de.bentrm.datacat.graphql.dto.SignupInput;
