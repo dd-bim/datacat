@@ -17,14 +17,6 @@ datacat:
   mail:
     from: postmaster@localhost
 
-spring:
-  profiles:
-    active: dev
-  data.neo4j:
-    uri: "bolt://localhost:7687"
-    username: neo4j
-    password: secret
-
 management:
   endpoints:
     web:
