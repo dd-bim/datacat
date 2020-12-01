@@ -19,6 +19,7 @@ import org.springframework.core.io.support.ResourcePatternUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import javax.validation.constraints.NotNull;
 import java.io.BufferedReader;
@@ -66,12 +67,11 @@ public class MigrationService implements ApplicationRunner, ResourceLoaderAware 
         log.info("Importing migration resources...");
         for (Resource resource : resources) {
             final String filename = resource.getFilename();
-            assert filename != null;
+            Assert.notNull(filename, "Filename of migration may not be null");
 
             @NotNull final Optional<Migration> optionalMigration = migrationRepository.findById(filename);
             if (optionalMigration.isPresent()) {
-                final Migration migration = optionalMigration.get();
-                log.info("Skipping already imported migration: {}", migration.getId());
+                log.info("Skipping already imported migration: {}", filename);
                 continue;
             }
 
@@ -93,7 +93,7 @@ public class MigrationService implements ApplicationRunner, ResourceLoaderAware 
     private void runMigrations() {
         final Iterable<Migration> migrations = migrationRepository.findAll(Sort.by("id"));
 
-        log.info("Starting migration of graph schema.");
+        log.info("Starting execution of graph schema migration.");
         for (Migration migration : migrations) {
             if (migration.getAppliedAt() == null) {
                 log.info("Applying migration with id {}", migration.getId());
@@ -110,7 +110,7 @@ public class MigrationService implements ApplicationRunner, ResourceLoaderAware 
                 log.info("Skipping already applied migration with id {}", migration.getId());
             }
         }
-        log.info("Finished migration of graph schema.");
+        log.info("Finished execution of graph schema migration.");
     }
 
     @Override
