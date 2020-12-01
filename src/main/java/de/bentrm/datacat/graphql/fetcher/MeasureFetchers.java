@@ -13,12 +13,14 @@ import de.bentrm.datacat.graphql.fetcher.delegate.ObjectFetchersDelegate;
 import de.bentrm.datacat.graphql.fetcher.delegate.RootFetchersDelegate;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+@Slf4j
 @Component
 public class MeasureFetchers extends AbstractFetchers<XtdMeasureWithUnit> {
 
@@ -62,6 +64,7 @@ public class MeasureFetchers extends AbstractFetchers<XtdMeasureWithUnit> {
             public Connection<XtdRelAssignsMeasures> get(DataFetchingEnvironment environment) throws Exception {
                 final XtdMeasureWithUnit source = environment.getSource();
                 final Set<XtdRelAssignsMeasures> fieldValues = source.getAssignedTo();
+                log.trace("Assigned to: {}", fieldValues);
                 return get(fieldValues, environment);
             }
         };
