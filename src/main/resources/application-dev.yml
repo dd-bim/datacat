@@ -1,3 +1,7 @@
+logging:
+  level:
+    de.bentrm: debug
+
 datacat:
   users:
     admin:
