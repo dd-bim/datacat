@@ -335,7 +335,7 @@ public class ContentFetchers implements MutationFetchers {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final AddTagInput input = OBJECT_MAPPER.convertValue(argument, AddTagInput.class);
             final CatalogItem catalogItem = catalogService.addTag(input.getCatalogEntryId(), input.getTagId());
-            final Tag tag = tagService.findById(input.getTagId());
+            final Tag tag = tagService.findById(input.getTagId()).orElseThrow();
             return new AddTagPayload(catalogItem, tag);
         };
     }
@@ -345,7 +345,7 @@ public class ContentFetchers implements MutationFetchers {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final RemoveTagInput input = OBJECT_MAPPER.convertValue(argument, RemoveTagInput.class);
             final CatalogItem catalogItem = catalogService.removeTag(input.getCatalogEntryId(), input.getTagId());
-            final Tag tag = tagService.findById(input.getTagId());
+            final Tag tag = tagService.findById(input.getTagId()).orElseThrow();
             return new RemoveTagPayload(catalogItem, tag);
         };
     }

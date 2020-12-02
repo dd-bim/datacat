@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -45,7 +46,7 @@ public class TagFetchers implements AttributeFetchers, QueryFetchers {
         );
     }
 
-    private DataFetcher<Tag> findById() {
+    private DataFetcher<Optional<Tag>> findById() {
         return environment -> {
             String id = environment.getArgument("id");
             return tagService.findById(id);
