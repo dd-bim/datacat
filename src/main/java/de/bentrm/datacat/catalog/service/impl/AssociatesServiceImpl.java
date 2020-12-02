@@ -1,8 +1,9 @@
 package de.bentrm.datacat.catalog.service.impl;
 
-import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.XtdRelAssociates;
 import de.bentrm.datacat.catalog.domain.XtdRoot;
+import de.bentrm.datacat.catalog.repository.RelAssociatesRepository;
+import de.bentrm.datacat.catalog.repository.RootRepository;
 import de.bentrm.datacat.catalog.service.AssociatesService;
 import de.bentrm.datacat.catalog.service.EntityMapper;
 import de.bentrm.datacat.catalog.service.value.OneToManyRelationshipValue;
@@ -21,12 +22,12 @@ import java.util.List;
 public class AssociatesServiceImpl extends AbstractServiceImpl<XtdRelAssociates> implements AssociatesService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
-    private final EntityRepository<XtdRelAssociates> associatesRepository;
-    private final EntityRepository<XtdRoot> rootRepository;
+    private final RelAssociatesRepository associatesRepository;
+    private final RootRepository rootRepository;
 
     public AssociatesServiceImpl(SessionFactory sessionFactory,
-                                 EntityRepository<XtdRelAssociates> repository,
-                                 EntityRepository<XtdRoot> rootRepository) {
+                                 RelAssociatesRepository repository,
+                                 RootRepository rootRepository) {
         super(XtdRelAssociates.class, sessionFactory, repository);
         this.associatesRepository = repository;
         this.rootRepository = rootRepository;

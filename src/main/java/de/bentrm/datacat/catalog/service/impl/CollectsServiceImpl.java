@@ -1,9 +1,11 @@
 package de.bentrm.datacat.catalog.service.impl;
 
-import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.XtdCollection;
 import de.bentrm.datacat.catalog.domain.XtdRelCollects;
 import de.bentrm.datacat.catalog.domain.XtdRoot;
+import de.bentrm.datacat.catalog.repository.CollectionRepository;
+import de.bentrm.datacat.catalog.repository.RelCollectsRepository;
+import de.bentrm.datacat.catalog.repository.RootRepository;
 import de.bentrm.datacat.catalog.service.CollectsService;
 import de.bentrm.datacat.catalog.service.EntityMapper;
 import de.bentrm.datacat.catalog.service.value.OneToManyRelationshipValue;
@@ -22,13 +24,13 @@ import java.util.List;
 public class CollectsServiceImpl extends AbstractServiceImpl<XtdRelCollects> implements CollectsService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
-    private final EntityRepository<XtdCollection> collectionRepository;
-    private final EntityRepository<XtdRoot> rootRepository;
+    private final CollectionRepository collectionRepository;
+    private final RootRepository rootRepository;
 
     public CollectsServiceImpl(SessionFactory sessionFactory,
-                               EntityRepository<XtdRelCollects> repository,
-                               EntityRepository<XtdCollection> collectionRepository,
-                               EntityRepository<XtdRoot> rootRepository) {
+                               RelCollectsRepository repository,
+                               CollectionRepository collectionRepository,
+                               RootRepository rootRepository) {
         super(XtdRelCollects.class, sessionFactory, repository);
         this.collectionRepository = collectionRepository;
         this.rootRepository = rootRepository;

@@ -1,9 +1,9 @@
 package de.bentrm.datacat.catalog.service.impl;
 
-import de.bentrm.datacat.base.repository.EntityRepository;
-import de.bentrm.datacat.catalog.domain.XtdObject;
-import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsPropertyWithValues;
+import de.bentrm.datacat.catalog.repository.ObjectRepository;
+import de.bentrm.datacat.catalog.repository.PropertyRepository;
+import de.bentrm.datacat.catalog.repository.RelAssignsPropertyWithValuesRepository;
 import de.bentrm.datacat.catalog.service.AssignsPropertyWithValuesService;
 import de.bentrm.datacat.catalog.service.EntityMapper;
 import de.bentrm.datacat.catalog.service.value.QualifiedOneToManyRelationshipValue;
@@ -21,12 +21,13 @@ import javax.validation.constraints.NotNull;
 public class AssignsPropertyWithValuesServiceImpl extends AbstractServiceImpl<XtdRelAssignsPropertyWithValues> implements AssignsPropertyWithValuesService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
-    private final EntityRepository<XtdObject> objectRepository;
-    private final EntityRepository<XtdProperty> propertyRepository;
+    private final ObjectRepository objectRepository;
+    private final PropertyRepository propertyRepository;
 
-    public AssignsPropertyWithValuesServiceImpl(SessionFactory sessionFactory, EntityRepository<XtdRelAssignsPropertyWithValues> repository,
-                                                EntityRepository<XtdObject> objectRepository,
-                                                EntityRepository<XtdProperty> propertyRepository) {
+    public AssignsPropertyWithValuesServiceImpl(SessionFactory sessionFactory,
+                                                RelAssignsPropertyWithValuesRepository repository,
+                                                ObjectRepository objectRepository,
+                                                PropertyRepository propertyRepository) {
         super(XtdRelAssignsPropertyWithValues.class, sessionFactory, repository);
         this.objectRepository = objectRepository;
         this.propertyRepository = propertyRepository;

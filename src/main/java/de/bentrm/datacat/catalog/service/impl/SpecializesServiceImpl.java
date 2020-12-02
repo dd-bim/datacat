@@ -1,8 +1,9 @@
 package de.bentrm.datacat.catalog.service.impl;
 
-import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.XtdRelSpecializes;
 import de.bentrm.datacat.catalog.domain.XtdRoot;
+import de.bentrm.datacat.catalog.repository.RelSpecializesRepository;
+import de.bentrm.datacat.catalog.repository.RootRepository;
 import de.bentrm.datacat.catalog.service.EntityMapper;
 import de.bentrm.datacat.catalog.service.SpecializesService;
 import de.bentrm.datacat.catalog.service.value.OneToManyRelationshipValue;
@@ -21,9 +22,11 @@ import java.util.List;
 public class SpecializesServiceImpl extends AbstractServiceImpl<XtdRelSpecializes> implements SpecializesService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
-    private final EntityRepository<XtdRoot> rootRepository;
+    private final RootRepository rootRepository;
 
-    public SpecializesServiceImpl(SessionFactory sessionFactory, EntityRepository<XtdRelSpecializes> repository, EntityRepository<XtdRoot> rootRepository) {
+    public SpecializesServiceImpl(SessionFactory sessionFactory,
+                                  RelSpecializesRepository repository,
+                                  RootRepository rootRepository) {
         super(XtdRelSpecializes.class, sessionFactory, repository);
         this.rootRepository = rootRepository;
     }

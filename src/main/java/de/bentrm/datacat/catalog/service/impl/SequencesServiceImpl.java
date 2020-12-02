@@ -1,8 +1,9 @@
 package de.bentrm.datacat.catalog.service.impl;
 
-import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.XtdActivity;
 import de.bentrm.datacat.catalog.domain.XtdRelSequences;
+import de.bentrm.datacat.catalog.repository.ActivityRepository;
+import de.bentrm.datacat.catalog.repository.RelSequencesRepository;
 import de.bentrm.datacat.catalog.service.EntityMapper;
 import de.bentrm.datacat.catalog.service.SequencesService;
 import de.bentrm.datacat.catalog.service.value.OneToOneRelationshipValue;
@@ -19,9 +20,11 @@ import javax.validation.constraints.NotNull;
 public class SequencesServiceImpl extends AbstractServiceImpl<XtdRelSequences> implements SequencesService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
-    private final EntityRepository<XtdActivity> activityRepository;
+    private final ActivityRepository activityRepository;
 
-    public SequencesServiceImpl(SessionFactory sessionFactory, EntityRepository<XtdRelSequences> repository, EntityRepository<XtdActivity> activityRepository) {
+    public SequencesServiceImpl(SessionFactory sessionFactory,
+                                RelSequencesRepository repository,
+                                ActivityRepository activityRepository) {
         super(XtdRelSequences.class, sessionFactory, repository);
         this.activityRepository = activityRepository;
     }

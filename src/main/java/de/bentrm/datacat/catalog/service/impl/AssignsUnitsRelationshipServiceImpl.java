@@ -1,9 +1,11 @@
 package de.bentrm.datacat.catalog.service.impl;
 
-import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.XtdMeasureWithUnit;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsUnits;
 import de.bentrm.datacat.catalog.domain.XtdUnit;
+import de.bentrm.datacat.catalog.repository.AssignsUnitsRelationshipRepository;
+import de.bentrm.datacat.catalog.repository.MeasureRepository;
+import de.bentrm.datacat.catalog.repository.UnitRepository;
 import de.bentrm.datacat.catalog.service.AssignsUnitsRelationshipService;
 import de.bentrm.datacat.catalog.service.EntityMapper;
 import de.bentrm.datacat.catalog.service.value.OneToManyRelationshipValue;
@@ -22,13 +24,13 @@ import java.util.List;
 public class AssignsUnitsRelationshipServiceImpl extends AbstractServiceImpl<XtdRelAssignsUnits> implements AssignsUnitsRelationshipService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
-    private final EntityRepository<XtdMeasureWithUnit> measureWithUnitRepository;
-    private final EntityRepository<XtdUnit> unitRepository;
+    private final MeasureRepository measureWithUnitRepository;
+    private final UnitRepository unitRepository;
 
     public AssignsUnitsRelationshipServiceImpl(SessionFactory sessionFactory,
-                                               EntityRepository<XtdRelAssignsUnits> repository,
-                                               EntityRepository<XtdMeasureWithUnit> measureWithUnitRepository,
-                                               EntityRepository<XtdUnit> unitRepository) {
+                                               AssignsUnitsRelationshipRepository repository,
+                                               MeasureRepository measureWithUnitRepository,
+                                               UnitRepository unitRepository) {
         super(XtdRelAssignsUnits.class, sessionFactory, repository);
         this.measureWithUnitRepository = measureWithUnitRepository;
         this.unitRepository = unitRepository;

@@ -1,8 +1,9 @@
 package de.bentrm.datacat.catalog.service.impl;
 
-import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.XtdRelComposes;
 import de.bentrm.datacat.catalog.domain.XtdRoot;
+import de.bentrm.datacat.catalog.repository.RelComposesRepository;
+import de.bentrm.datacat.catalog.repository.RootRepository;
 import de.bentrm.datacat.catalog.service.ComposesService;
 import de.bentrm.datacat.catalog.service.EntityMapper;
 import de.bentrm.datacat.catalog.service.value.OneToManyRelationshipValue;
@@ -21,11 +22,11 @@ import java.util.List;
 public class ComposesServiceImpl extends AbstractServiceImpl<XtdRelComposes> implements ComposesService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
-    private final EntityRepository<XtdRoot> rootRepository;
+    private final RootRepository rootRepository;
 
     public ComposesServiceImpl(SessionFactory sessionFactory,
-                               EntityRepository<XtdRelComposes> repository,
-                               EntityRepository<XtdRoot> rootRepository) {
+                               RelComposesRepository repository,
+                               RootRepository rootRepository) {
         super(XtdRelComposes.class, sessionFactory, repository);
         this.rootRepository = rootRepository;
     }

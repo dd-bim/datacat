@@ -1,11 +1,11 @@
 package de.bentrm.datacat.catalog.service.impl;
 
-import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.XtdNest;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.domain.XtdSubject;
 import de.bentrm.datacat.catalog.repository.NestRepository;
 import de.bentrm.datacat.catalog.repository.PropertyRepository;
+import de.bentrm.datacat.catalog.repository.SubjectRepository;
 import de.bentrm.datacat.catalog.service.SubjectService;
 import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class SubjectServiceImpl extends AbstractServiceImpl<XtdSubject> implemen
     private final PropertyRepository propertyRepository;
 
     public SubjectServiceImpl(SessionFactory sessionFactory,
-                              EntityRepository<XtdSubject> repository,
+                              SubjectRepository repository,
                               NestRepository nestRepository,
                               PropertyRepository propertyRepository) {
         super(XtdSubject.class, sessionFactory, repository);

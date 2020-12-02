@@ -4,6 +4,9 @@ import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.XtdCollection;
 import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsCollections;
+import de.bentrm.datacat.catalog.repository.CollectionRepository;
+import de.bentrm.datacat.catalog.repository.ObjectRepository;
+import de.bentrm.datacat.catalog.repository.RelAssignsCollectionsRepository;
 import de.bentrm.datacat.catalog.service.AssignsCollectionsService;
 import de.bentrm.datacat.catalog.service.EntityMapper;
 import de.bentrm.datacat.catalog.service.value.OneToManyRelationshipValue;
@@ -25,8 +28,10 @@ public class AssignsCollectionsServiceImpl extends AbstractServiceImpl<XtdRelAss
     private final EntityRepository<XtdObject> objectRepository;
     private final EntityRepository<XtdCollection> collectionRepository;
 
-    public AssignsCollectionsServiceImpl(SessionFactory sessionFactory, EntityRepository<XtdRelAssignsCollections> repository,
-                                         EntityRepository<XtdObject> objectRepository, EntityRepository<XtdCollection> collectionRepository) {
+    public AssignsCollectionsServiceImpl(SessionFactory sessionFactory,
+                                         RelAssignsCollectionsRepository repository,
+                                         ObjectRepository objectRepository,
+                                         CollectionRepository collectionRepository) {
         super(XtdRelAssignsCollections.class, sessionFactory, repository);
         this.objectRepository = objectRepository;
         this.collectionRepository = collectionRepository;

@@ -1,7 +1,7 @@
 package de.bentrm.datacat.catalog.service.impl;
 
-import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.XtdClassification;
+import de.bentrm.datacat.catalog.repository.ClassificationRepository;
 import de.bentrm.datacat.catalog.service.ClassificationService;
 import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 @Transactional(readOnly = true)
 public class ClassificationServiceImpl extends AbstractServiceImpl<XtdClassification> implements ClassificationService {
 
-    public ClassificationServiceImpl(SessionFactory sessionFactory, EntityRepository<XtdClassification> repository) {
+    public ClassificationServiceImpl(SessionFactory sessionFactory, ClassificationRepository repository) {
         super(XtdClassification.class, sessionFactory, repository);
     }
 }

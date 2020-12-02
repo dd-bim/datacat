@@ -1,7 +1,7 @@
 package de.bentrm.datacat.catalog.service.impl;
 
-import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.XtdNest;
+import de.bentrm.datacat.catalog.repository.NestRepository;
 import de.bentrm.datacat.catalog.service.NestService;
 import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 @Transactional(readOnly = true)
 public class NestServiceImpl extends AbstractServiceImpl<XtdNest> implements NestService {
 
-    public NestServiceImpl(SessionFactory sessionFactory, EntityRepository<XtdNest> repository) {
+    public NestServiceImpl(SessionFactory sessionFactory, NestRepository repository) {
         super(XtdNest.class, sessionFactory, repository);
     }
 }

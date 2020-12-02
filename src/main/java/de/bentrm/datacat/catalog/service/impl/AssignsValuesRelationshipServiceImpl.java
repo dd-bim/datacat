@@ -1,9 +1,11 @@
 package de.bentrm.datacat.catalog.service.impl;
 
-import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.XtdMeasureWithUnit;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsValues;
 import de.bentrm.datacat.catalog.domain.XtdValue;
+import de.bentrm.datacat.catalog.repository.AssignsValuesRelationshipRepository;
+import de.bentrm.datacat.catalog.repository.MeasureRepository;
+import de.bentrm.datacat.catalog.repository.ValueRepository;
 import de.bentrm.datacat.catalog.service.AssignsValuesRelationshipService;
 import de.bentrm.datacat.catalog.service.EntityMapper;
 import de.bentrm.datacat.catalog.service.value.OneToManyRelationshipValue;
@@ -22,13 +24,13 @@ import java.util.List;
 public class AssignsValuesRelationshipServiceImpl extends AbstractServiceImpl<XtdRelAssignsValues> implements AssignsValuesRelationshipService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
-    private final EntityRepository<XtdMeasureWithUnit> measureWithUnitRepository;
-    private final EntityRepository<XtdValue> valueRepository;
+    private final MeasureRepository measureWithUnitRepository;
+    private final ValueRepository valueRepository;
 
     public AssignsValuesRelationshipServiceImpl(SessionFactory sessionFactory,
-                                                EntityRepository<XtdRelAssignsValues> repository,
-                                                EntityRepository<XtdMeasureWithUnit> measureWithUnitRepository,
-                                                EntityRepository<XtdValue> valueRepository) {
+                                                AssignsValuesRelationshipRepository repository,
+                                                MeasureRepository measureWithUnitRepository,
+                                                ValueRepository valueRepository) {
         super(XtdRelAssignsValues.class, sessionFactory, repository);
         this.measureWithUnitRepository = measureWithUnitRepository;
         this.valueRepository = valueRepository;

@@ -63,8 +63,9 @@ public class MeasureFetchers extends AbstractFetchers<XtdMeasureWithUnit> {
             @Override
             public Connection<XtdRelAssignsMeasures> get(DataFetchingEnvironment environment) throws Exception {
                 final XtdMeasureWithUnit source = environment.getSource();
+                log.trace("Current XtdMeasureWithUnit: {}", source);
                 final Set<XtdRelAssignsMeasures> fieldValues = source.getAssignedTo();
-                log.trace("Assigned to: {}", fieldValues);
+                log.trace("Fetching measure assignment: {}", fieldValues);
                 return get(fieldValues, environment);
             }
         };

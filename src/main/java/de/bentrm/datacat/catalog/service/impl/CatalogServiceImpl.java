@@ -1,9 +1,7 @@
 package de.bentrm.datacat.catalog.service.impl;
 
-import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.*;
-import de.bentrm.datacat.catalog.repository.CatalogItemRepository;
-import de.bentrm.datacat.catalog.repository.HierarchyDao;
+import de.bentrm.datacat.catalog.repository.*;
 import de.bentrm.datacat.catalog.service.CatalogService;
 import de.bentrm.datacat.catalog.service.value.CatalogEntryProperties;
 import de.bentrm.datacat.catalog.service.value.HierarchyValue;
@@ -49,25 +47,25 @@ public class CatalogServiceImpl implements CatalogService {
     private CatalogEntryFactory catalogEntryFactory;
 
     @Autowired
-    private EntityRepository<Translation> translationRespository;
+    private TranslationRespository translationRespository;
 
     @Autowired
-    private EntityRepository<Tag> tagRepository;
+    private TagRepository tagRepository;
 
     @Autowired
     private CatalogItemRepository catalogItemRepository;
 
     @Autowired
-    private EntityRepository<XtdRoot> rootRepository;
+    private RootRepository rootRepository;
 
     @Autowired
-    private EntityRepository<XtdObject> objectRepository;
+    private ObjectRepository objectRepository;
 
     @Autowired
-    private EntityRepository<XtdCollection> collectionRepository;
+    private CollectionRepository collectionRepository;
 
     @Autowired
-    private EntityRepository<XtdRelationship> relationshipRepository;
+    private RelationshipRepository relationshipRepository;
 
     @Override
     public CatalogStatistics getStatistics() {

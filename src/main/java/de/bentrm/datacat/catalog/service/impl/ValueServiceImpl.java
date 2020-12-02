@@ -1,10 +1,10 @@
 package de.bentrm.datacat.catalog.service.impl;
 
-import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.ToleranceType;
 import de.bentrm.datacat.catalog.domain.ValueRole;
 import de.bentrm.datacat.catalog.domain.ValueType;
 import de.bentrm.datacat.catalog.domain.XtdValue;
+import de.bentrm.datacat.catalog.repository.ValueRepository;
 import de.bentrm.datacat.catalog.service.ValueService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -22,7 +22,7 @@ import javax.validation.constraints.NotNull;
 @Transactional(readOnly = true)
 public class ValueServiceImpl extends AbstractServiceImpl<XtdValue> implements ValueService {
 
-    public ValueServiceImpl(SessionFactory sessionFactory, EntityRepository<XtdValue> repository) {
+    public ValueServiceImpl(SessionFactory sessionFactory, ValueRepository repository) {
         super(XtdValue.class, sessionFactory, repository);
     }
 

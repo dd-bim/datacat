@@ -8,6 +8,7 @@ import de.bentrm.datacat.catalog.service.AssignsMeasuresRelationshipService;
 import de.bentrm.datacat.catalog.service.MeasureService;
 import de.bentrm.datacat.catalog.service.PropertyService;
 import graphql.schema.DataFetcher;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class AssignsMeasuresFetchers extends AbstractFetchers<XtdRelAssignsMeasures> {
 
@@ -29,6 +31,7 @@ public class AssignsMeasuresFetchers extends AbstractFetchers<XtdRelAssignsMeasu
         this.relatingProperty = environment -> {
             final XtdRelAssignsMeasures source = environment.getSource();
             final String id = source.getRelatingProperty().getId();
+            log.trace("Retrieving relating property by id: {}", id);
             return propertyService.findById(id).orElseThrow();
         };
 
@@ -37,6 +40,7 @@ public class AssignsMeasuresFetchers extends AbstractFetchers<XtdRelAssignsMeasu
             final List<String> relatedMeasureIds = source.getRelatedMeasures().stream()
                     .map(CatalogItem::getId)
                     .collect(Collectors.toList());
+            log.trace("Retrieving related measures by ids: {}", relatedMeasureIds);
             return measureService.findAllByIds(relatedMeasureIds);
         };
     }
