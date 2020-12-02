@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.neo4j.ogm.annotation.GeneratedValue;
 import org.neo4j.ogm.annotation.Id;
+import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Version;
 import org.neo4j.ogm.id.UuidStrategy;
 import org.springframework.data.annotation.CreatedBy;
@@ -20,6 +21,7 @@ import java.time.Instant;
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true)
+@NodeEntity("Entity")
 public abstract class Entity {
 
     @Id
