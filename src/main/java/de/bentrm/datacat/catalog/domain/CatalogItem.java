@@ -33,9 +33,11 @@ public abstract class CatalogItem extends Entity {
     @Properties
     private final Map<String, String> labels = new HashMap<>();
 
+    @ToString.Include
     @Relationship(type = "NAMED")
     private final Set<Translation> names = new HashSet<>();
 
+    @ToString.Include
     @Relationship(type = "DESCRIBED")
     protected final Set<Translation> descriptions = new HashSet<>();
 
