@@ -239,6 +239,7 @@ type XtdMeasureWithUnit implements Concept, XtdRoot, XtdObject {
     assignedProperties: XtdRelAssignsPropertiesConnection!
     assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
     assignedUnits: XtdRelAssignsUnitsConnection!
+    assignedValues: XtdRelAssignsValuesConnection!
 }
 
 type XtdProperty implements Concept, XtdRoot, XtdObject {
@@ -324,6 +325,7 @@ type XtdValue implements Concept, XtdRoot, XtdObject {
     assignedCollections: XtdRelAssignsCollectionsConnection!
     assignedProperties: XtdRelAssignsPropertiesConnection!
     assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
+    assignedTo: XtdRelAssignsValuesConnection!
 }
 
 type XtdBag implements Concept, XtdRoot, XtdCollection {
@@ -672,6 +674,12 @@ type XtdRelAssignsPropertyWithValuesConnection {
 
 type XtdRelAssignsUnitsConnection {
     nodes: [XtdRelAssignsUnits!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+type XtdRelAssignsValuesConnection {
+    nodes: [XtdRelAssignsValues!]!
     pageInfo: PageInfo!
     totalElements: Int!
 }
