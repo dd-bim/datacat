@@ -15,7 +15,7 @@ import java.util.Set;
 @NodeEntity(label = XtdRelAssignsUnits.LABEL)
 public class XtdRelAssignsUnits extends XtdRelationship {
 
-    public static final String LABEL = "XtdRelAssignsUnit";
+    public static final String LABEL = "XtdRelAssignsUnits";
     public static final String RELATIONSHIP_TYPE = "ASSIGNS_UNIT";
 
     @Relationship(type = RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
