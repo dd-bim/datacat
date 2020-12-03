@@ -238,6 +238,7 @@ type XtdMeasureWithUnit implements Concept, XtdRoot, XtdObject {
     assignedCollections: XtdRelAssignsCollectionsConnection!
     assignedProperties: XtdRelAssignsPropertiesConnection!
     assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
+    assignedUnits: XtdRelAssignsUnitsConnection!
 }
 
 type XtdProperty implements Concept, XtdRoot, XtdObject {
@@ -276,6 +277,7 @@ type XtdUnit implements Concept, XtdRoot, XtdObject {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    assignedTo: XtdRelAssignsUnitsConnection!
     actedUponBy: XtdRelActsUponConnection!
     actsUpon: XtdRelActsUponConnection!
     associatedBy: XtdRelAssociatesConnection!

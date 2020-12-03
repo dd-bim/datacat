@@ -20,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import java.util.HashMap;
 import java.util.Map;
 
+// TODO: Partition service methods into smaller units
 @Component
 @Validated
 public class ContentFetchers implements MutationFetchers {
@@ -49,6 +50,8 @@ public class ContentFetchers implements MutationFetchers {
     private AssignsPropertiesService assignsPropertiesService;
     @Autowired
     private AssignsValuesRelationshipService assignsValuesRelationshipService;
+    @Autowired
+    private AssignsUnitsRelationshipService assignsUnitsRelationshipService;
     @Autowired
     private AssociatesService associatesService;
     @Autowired
@@ -144,6 +147,7 @@ public class ContentFetchers implements MutationFetchers {
         };
     }
 
+    // TODO: Use factory method to create relationships
     protected DataFetcher<CreateOneToManyRelationshipPayload> createOneToManyRelationship() {
         return environment -> {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
@@ -157,6 +161,7 @@ public class ContentFetchers implements MutationFetchers {
                 case AssignsMeasures -> assignsMeasuresRelationshipService.create(value);
                 case AssignsProperties -> assignsPropertiesService.create(value);
                 case AssignsValues -> assignsValuesRelationshipService.create(value);
+                case AssignsUnits -> assignsUnitsRelationshipService.create(value);
                 case Associates -> associatesService.create(value);
                 case Collects -> collectsService.create(value);
                 case Composes -> composesService.create(value);
