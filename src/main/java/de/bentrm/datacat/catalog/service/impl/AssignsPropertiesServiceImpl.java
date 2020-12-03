@@ -4,9 +4,9 @@ import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsProperties;
+import de.bentrm.datacat.catalog.repository.AssignsPropertiesRepository;
 import de.bentrm.datacat.catalog.repository.ObjectRepository;
 import de.bentrm.datacat.catalog.repository.PropertyRepository;
-import de.bentrm.datacat.catalog.repository.RelAssignsPropertiesRepository;
 import de.bentrm.datacat.catalog.service.AssignsPropertiesService;
 import de.bentrm.datacat.catalog.service.EntityMapper;
 import de.bentrm.datacat.catalog.service.value.OneToManyRelationshipValue;
@@ -29,7 +29,7 @@ public class AssignsPropertiesServiceImpl extends AbstractServiceImpl<XtdRelAssi
     private final EntityRepository<XtdProperty> propertyRepository;
 
     public AssignsPropertiesServiceImpl(SessionFactory sessionFactory,
-                                        RelAssignsPropertiesRepository repository,
+                                        AssignsPropertiesRepository repository,
                                         ObjectRepository objectRepository,
                                         PropertyRepository propertyRepository) {
         super(XtdRelAssignsProperties.class, sessionFactory, repository);

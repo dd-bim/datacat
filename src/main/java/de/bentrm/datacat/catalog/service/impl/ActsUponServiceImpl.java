@@ -3,7 +3,7 @@ package de.bentrm.datacat.catalog.service.impl;
 import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.XtdRelActsUpon;
 import de.bentrm.datacat.catalog.domain.XtdRoot;
-import de.bentrm.datacat.catalog.repository.RelActsUponRepository;
+import de.bentrm.datacat.catalog.repository.ActsUponRepository;
 import de.bentrm.datacat.catalog.service.ActsUponService;
 import de.bentrm.datacat.catalog.service.EntityMapper;
 import de.bentrm.datacat.catalog.service.value.OneToManyRelationshipValue;
@@ -24,7 +24,7 @@ public class ActsUponServiceImpl extends AbstractServiceImpl<XtdRelActsUpon> imp
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final EntityRepository<XtdRoot> rootRepository;
 
-    public ActsUponServiceImpl(SessionFactory sessionFactory, RelActsUponRepository repository,
+    public ActsUponServiceImpl(SessionFactory sessionFactory, ActsUponRepository repository,
                                EntityRepository<XtdRoot> rootRepository) {
         super(XtdRelActsUpon.class, sessionFactory, repository);
         this.rootRepository = rootRepository;

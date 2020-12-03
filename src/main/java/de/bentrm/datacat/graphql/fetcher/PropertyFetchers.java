@@ -3,7 +3,7 @@ package de.bentrm.datacat.graphql.fetcher;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsMeasures;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsProperties;
-import de.bentrm.datacat.catalog.service.AssignsMeasuresRelationshipService;
+import de.bentrm.datacat.catalog.service.AssignsMeasuresService;
 import de.bentrm.datacat.catalog.service.AssignsPropertiesService;
 import de.bentrm.datacat.catalog.service.PropertyService;
 import de.bentrm.datacat.graphql.Connection;
@@ -30,14 +30,14 @@ public class PropertyFetchers extends AbstractFetchers<XtdProperty> {
                             RootFetchersDelegate rootFetchersDelegate,
                             ObjectFetchersDelegate objectFetchersDelegate,
                             AssignsPropertiesService assignsPropertiesService,
-                            AssignsMeasuresRelationshipService assignsMeasuresRelationshipService) {
+                            AssignsMeasuresService assignsMeasuresService) {
         super(queryService);
 
         this.rootFetchersDelegate = rootFetchersDelegate;
         this.objectFetchersDelegate = objectFetchersDelegate;
 
 
-        this.assignedMeasuresFetcher = new RelationshipFetcher<>(assignsMeasuresRelationshipService) {
+        this.assignedMeasuresFetcher = new RelationshipFetcher<>(assignsMeasuresService) {
             @Override
             public Connection<XtdRelAssignsMeasures> get(DataFetchingEnvironment environment) {
                 final XtdProperty source = environment.getSource();

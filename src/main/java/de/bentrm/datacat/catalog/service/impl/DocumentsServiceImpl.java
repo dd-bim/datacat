@@ -3,8 +3,8 @@ package de.bentrm.datacat.catalog.service.impl;
 import de.bentrm.datacat.catalog.domain.XtdExternalDocument;
 import de.bentrm.datacat.catalog.domain.XtdRelDocuments;
 import de.bentrm.datacat.catalog.domain.XtdRoot;
+import de.bentrm.datacat.catalog.repository.DocumentsRepository;
 import de.bentrm.datacat.catalog.repository.ExternalDocumentRepository;
-import de.bentrm.datacat.catalog.repository.RelDocumentsRepository;
 import de.bentrm.datacat.catalog.repository.RootRepository;
 import de.bentrm.datacat.catalog.service.DocumentsService;
 import de.bentrm.datacat.catalog.service.EntityMapper;
@@ -28,7 +28,7 @@ public class DocumentsServiceImpl extends AbstractServiceImpl<XtdRelDocuments> i
     private final RootRepository rootRepository;
 
     public DocumentsServiceImpl(SessionFactory sessionFactory,
-                                RelDocumentsRepository repository,
+                                DocumentsRepository repository,
                                 ExternalDocumentRepository externalDocumentRepository,
                                 RootRepository rootRepository) {
         super(XtdRelDocuments.class, sessionFactory, repository);

@@ -4,7 +4,7 @@ import de.bentrm.datacat.catalog.domain.XtdCollection;
 import de.bentrm.datacat.catalog.domain.XtdRelCollects;
 import de.bentrm.datacat.catalog.domain.XtdRoot;
 import de.bentrm.datacat.catalog.repository.CollectionRepository;
-import de.bentrm.datacat.catalog.repository.RelCollectsRepository;
+import de.bentrm.datacat.catalog.repository.CollectsRepository;
 import de.bentrm.datacat.catalog.repository.RootRepository;
 import de.bentrm.datacat.catalog.service.CollectsService;
 import de.bentrm.datacat.catalog.service.EntityMapper;
@@ -28,7 +28,7 @@ public class CollectsServiceImpl extends AbstractServiceImpl<XtdRelCollects> imp
     private final RootRepository rootRepository;
 
     public CollectsServiceImpl(SessionFactory sessionFactory,
-                               RelCollectsRepository repository,
+                               CollectsRepository repository,
                                CollectionRepository collectionRepository,
                                RootRepository rootRepository) {
         super(XtdRelCollects.class, sessionFactory, repository);

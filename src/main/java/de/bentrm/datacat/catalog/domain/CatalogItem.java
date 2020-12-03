@@ -44,6 +44,11 @@ public abstract class CatalogItem extends Entity {
     @Relationship(type = "TAGGED")
     protected final Set<Tag> tags = new HashSet<>();
 
+    /**
+     * Sets the given version id defaulting to null for blank input.
+     *
+     * @param versionId The new version id of the catalog entry.
+     */
     public void setVersionId(String versionId) {
         if (versionId != null && versionId.isBlank()) {
             this.versionId = null;
@@ -52,6 +57,11 @@ public abstract class CatalogItem extends Entity {
         }
     }
 
+    /**
+     * Sets the given version date string defaulting to null for blank input.
+     *
+     * @param versionDate The new version date string of the catalog entry.
+     */
     public void setVersionDate(String versionDate) {
         if (versionDate != null && versionDate.isBlank()) {
             this.versionDate = null;
@@ -60,11 +70,25 @@ public abstract class CatalogItem extends Entity {
         }
     }
 
+    /**
+     * Returns an optional name that satisfies the given language range priority list.
+     *
+     * @param priorityList The priority list that will be used to select a translation.
+     * @return An optional translation of the catalog entries name.
+     */
     public Optional<Translation> getName(@NotNull List<Locale.LanguageRange> priorityList) {
         final Translation translation = LocalizationUtils.getTranslation(priorityList, this.names);
         return Optional.ofNullable(translation);
     }
 
+    /**
+     * Adds a new name translation for the catalog entry.
+     *
+     * @param translationId A predetermined id for the translation value. May be null. Must be universally unique.
+     * @param locale The locale of the new name translation. The codified language tag of the locale must be unique to
+     *               this catalog entry.
+     * @param value The translation value.
+     */
     public void addName(String translationId, Locale locale, String value) {
         final Translation translation = new Translation(translationId, locale, value);
 
@@ -86,7 +110,7 @@ public abstract class CatalogItem extends Entity {
         translation.setValue(value.trim());
     }
 
-    public void deleteName(String translationId) {
+    public Translation removeName(String translationId) {
         Assert.hasText(translationId, "A valid id must be given.");
         Assert.isTrue(this.names.size() > 1, "The only translation of an entry may not be deleted.");
 
@@ -96,6 +120,7 @@ public abstract class CatalogItem extends Entity {
                 .orElseThrow();
 
         this.names.remove(translation);
+        return translation;
     }
 
     public Optional<Translation> getDescription(@NotNull List<Locale.LanguageRange> priorityList) {

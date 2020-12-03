@@ -28,7 +28,7 @@ public class RootFetchersDelegate implements FetchingDelegate {
     public RootFetchersDelegate(AssociatesService associatesService,
                                 CollectsService collectsService,
                                 ComposesService composesService,
-                                ClassifiesRelationshipService classifiesService,
+                                ClassifiesService classifiesService,
                                 DocumentsService documentsService) {
         this.associatesFetcher = new RelationshipFetcher<>(associatesService) {
             @Override

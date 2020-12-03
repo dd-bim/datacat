@@ -5,7 +5,7 @@ import de.bentrm.datacat.catalog.domain.XtdClassification;
 import de.bentrm.datacat.catalog.domain.XtdRelClassifies;
 import de.bentrm.datacat.catalog.service.CatalogService;
 import de.bentrm.datacat.catalog.service.ClassificationService;
-import de.bentrm.datacat.catalog.service.ClassifiesRelationshipService;
+import de.bentrm.datacat.catalog.service.ClassifiesService;
 import graphql.schema.DataFetcher;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +20,7 @@ public class ClassifiesFetchers extends AbstractFetchers<XtdRelClassifies> {
     private final DataFetcher<XtdClassification> relatingClassification;
     private final DataFetcher<List<CatalogItem>> relatedThings;
 
-    public ClassifiesFetchers(ClassifiesRelationshipService queryService,
+    public ClassifiesFetchers(ClassifiesService queryService,
                               ClassificationService classificationService,
                               CatalogService catalogService) {
         super(queryService);

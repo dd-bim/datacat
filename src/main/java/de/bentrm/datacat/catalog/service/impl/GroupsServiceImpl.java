@@ -2,7 +2,7 @@ package de.bentrm.datacat.catalog.service.impl;
 
 import de.bentrm.datacat.catalog.domain.XtdRelGroups;
 import de.bentrm.datacat.catalog.domain.XtdRoot;
-import de.bentrm.datacat.catalog.repository.RelGroupsRepository;
+import de.bentrm.datacat.catalog.repository.GroupsRepository;
 import de.bentrm.datacat.catalog.repository.RootRepository;
 import de.bentrm.datacat.catalog.service.EntityMapper;
 import de.bentrm.datacat.catalog.service.GroupsService;
@@ -25,7 +25,7 @@ public class GroupsServiceImpl extends AbstractServiceImpl<XtdRelGroups> impleme
     private final RootRepository rootRepository;
 
     public GroupsServiceImpl(SessionFactory sessionFactory,
-                             RelGroupsRepository repository,
+                             GroupsRepository repository,
                              RootRepository rootRepository) {
         super(XtdRelGroups.class, sessionFactory, repository);
         this.rootRepository = rootRepository;

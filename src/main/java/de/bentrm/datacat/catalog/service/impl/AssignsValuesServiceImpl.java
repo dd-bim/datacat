@@ -3,10 +3,10 @@ package de.bentrm.datacat.catalog.service.impl;
 import de.bentrm.datacat.catalog.domain.XtdMeasureWithUnit;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsValues;
 import de.bentrm.datacat.catalog.domain.XtdValue;
-import de.bentrm.datacat.catalog.repository.AssignsValuesRelationshipRepository;
+import de.bentrm.datacat.catalog.repository.AssignsValuesRepository;
 import de.bentrm.datacat.catalog.repository.MeasureRepository;
 import de.bentrm.datacat.catalog.repository.ValueRepository;
-import de.bentrm.datacat.catalog.service.AssignsValuesRelationshipService;
+import de.bentrm.datacat.catalog.service.AssignsValuesService;
 import de.bentrm.datacat.catalog.service.EntityMapper;
 import de.bentrm.datacat.catalog.service.value.OneToManyRelationshipValue;
 import org.neo4j.ogm.session.SessionFactory;
@@ -21,16 +21,16 @@ import java.util.List;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class AssignsValuesRelationshipServiceImpl extends AbstractServiceImpl<XtdRelAssignsValues> implements AssignsValuesRelationshipService {
+public class AssignsValuesServiceImpl extends AbstractServiceImpl<XtdRelAssignsValues> implements AssignsValuesService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final MeasureRepository measureWithUnitRepository;
     private final ValueRepository valueRepository;
 
-    public AssignsValuesRelationshipServiceImpl(SessionFactory sessionFactory,
-                                                AssignsValuesRelationshipRepository repository,
-                                                MeasureRepository measureWithUnitRepository,
-                                                ValueRepository valueRepository) {
+    public AssignsValuesServiceImpl(SessionFactory sessionFactory,
+                                    AssignsValuesRepository repository,
+                                    MeasureRepository measureWithUnitRepository,
+                                    ValueRepository valueRepository) {
         super(XtdRelAssignsValues.class, sessionFactory, repository);
         this.measureWithUnitRepository = measureWithUnitRepository;
         this.valueRepository = valueRepository;

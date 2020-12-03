@@ -2,7 +2,7 @@ package de.bentrm.datacat.catalog.service.impl;
 
 import de.bentrm.datacat.catalog.domain.XtdRelComposes;
 import de.bentrm.datacat.catalog.domain.XtdRoot;
-import de.bentrm.datacat.catalog.repository.RelComposesRepository;
+import de.bentrm.datacat.catalog.repository.ComposesRepository;
 import de.bentrm.datacat.catalog.repository.RootRepository;
 import de.bentrm.datacat.catalog.service.ComposesService;
 import de.bentrm.datacat.catalog.service.EntityMapper;
@@ -25,7 +25,7 @@ public class ComposesServiceImpl extends AbstractServiceImpl<XtdRelComposes> imp
     private final RootRepository rootRepository;
 
     public ComposesServiceImpl(SessionFactory sessionFactory,
-                               RelComposesRepository repository,
+                               ComposesRepository repository,
                                RootRepository rootRepository) {
         super(XtdRelComposes.class, sessionFactory, repository);
         this.rootRepository = rootRepository;

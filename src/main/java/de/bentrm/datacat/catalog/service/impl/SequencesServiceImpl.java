@@ -3,7 +3,7 @@ package de.bentrm.datacat.catalog.service.impl;
 import de.bentrm.datacat.catalog.domain.XtdActivity;
 import de.bentrm.datacat.catalog.domain.XtdRelSequences;
 import de.bentrm.datacat.catalog.repository.ActivityRepository;
-import de.bentrm.datacat.catalog.repository.RelSequencesRepository;
+import de.bentrm.datacat.catalog.repository.SequencesRepository;
 import de.bentrm.datacat.catalog.service.EntityMapper;
 import de.bentrm.datacat.catalog.service.SequencesService;
 import de.bentrm.datacat.catalog.service.value.OneToOneRelationshipValue;
@@ -23,7 +23,7 @@ public class SequencesServiceImpl extends AbstractServiceImpl<XtdRelSequences> i
     private final ActivityRepository activityRepository;
 
     public SequencesServiceImpl(SessionFactory sessionFactory,
-                                RelSequencesRepository repository,
+                                SequencesRepository repository,
                                 ActivityRepository activityRepository) {
         super(XtdRelSequences.class, sessionFactory, repository);
         this.activityRepository = activityRepository;

@@ -4,9 +4,9 @@ import de.bentrm.datacat.catalog.domain.XtdClassification;
 import de.bentrm.datacat.catalog.domain.XtdRelClassifies;
 import de.bentrm.datacat.catalog.domain.XtdRoot;
 import de.bentrm.datacat.catalog.repository.ClassificationRepository;
-import de.bentrm.datacat.catalog.repository.ClassifiesRelationshipRepository;
+import de.bentrm.datacat.catalog.repository.ClassifiesRepository;
 import de.bentrm.datacat.catalog.repository.RootRepository;
-import de.bentrm.datacat.catalog.service.ClassifiesRelationshipService;
+import de.bentrm.datacat.catalog.service.ClassifiesService;
 import de.bentrm.datacat.catalog.service.EntityMapper;
 import de.bentrm.datacat.catalog.service.value.OneToManyRelationshipValue;
 import org.neo4j.ogm.session.SessionFactory;
@@ -21,16 +21,16 @@ import java.util.List;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class ClassifiesRelationshipServiceImpl extends AbstractServiceImpl<XtdRelClassifies> implements ClassifiesRelationshipService {
+public class ClassifiesServiceImpl extends AbstractServiceImpl<XtdRelClassifies> implements ClassifiesService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final ClassificationRepository classificationRepository;
     private final RootRepository rootRepository;
 
-    public ClassifiesRelationshipServiceImpl(SessionFactory sessionFactory,
-                                             ClassifiesRelationshipRepository repository,
-                                             ClassificationRepository classificationRepository,
-                                             RootRepository rootRepository) {
+    public ClassifiesServiceImpl(SessionFactory sessionFactory,
+                                 ClassifiesRepository repository,
+                                 ClassificationRepository classificationRepository,
+                                 RootRepository rootRepository) {
         super(XtdRelClassifies.class, sessionFactory, repository);
         this.classificationRepository = classificationRepository;
         this.rootRepository = rootRepository;

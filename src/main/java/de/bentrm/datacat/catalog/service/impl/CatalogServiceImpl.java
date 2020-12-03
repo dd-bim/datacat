@@ -175,8 +175,9 @@ public class CatalogServiceImpl implements CatalogService {
     @Override
     public CatalogItem deleteName(String id, String nameId) {
         final CatalogItem item = catalogItemRepository.findById(id).orElseThrow();
-        item.deleteName(nameId);
-        return catalogItemRepository.save(item);
+        final Translation translation = item.removeName(nameId);
+        translationRespository.delete(translation);
+        return item;
     }
 
     @Transactional

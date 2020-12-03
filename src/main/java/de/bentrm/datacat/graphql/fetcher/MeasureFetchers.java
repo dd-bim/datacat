@@ -4,9 +4,9 @@ import de.bentrm.datacat.catalog.domain.XtdMeasureWithUnit;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsMeasures;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsUnits;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsValues;
-import de.bentrm.datacat.catalog.service.AssignsMeasuresRelationshipService;
-import de.bentrm.datacat.catalog.service.AssignsUnitsRelationshipService;
-import de.bentrm.datacat.catalog.service.AssignsValuesRelationshipService;
+import de.bentrm.datacat.catalog.service.AssignsMeasuresService;
+import de.bentrm.datacat.catalog.service.AssignsUnitsService;
+import de.bentrm.datacat.catalog.service.AssignsValuesService;
 import de.bentrm.datacat.catalog.service.MeasureService;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.fetcher.delegate.ObjectFetchersDelegate;
@@ -34,14 +34,14 @@ public class MeasureFetchers extends AbstractFetchers<XtdMeasureWithUnit> {
     public MeasureFetchers(MeasureService queryService,
                            RootFetchersDelegate rootFetchersDelegate,
                            ObjectFetchersDelegate objectFetchersDelegate,
-                           AssignsUnitsRelationshipService assignsUnitsRelationshipService,
-                           AssignsValuesRelationshipService assignsValuesRelationshipService,
-                           AssignsMeasuresRelationshipService assignsMeasuresRelationshipService) {
+                           AssignsUnitsService assignsUnitsService,
+                           AssignsValuesService assignsValuesService,
+                           AssignsMeasuresService assignsMeasuresService) {
         super(queryService);
         this.rootFetchersDelegate = rootFetchersDelegate;
         this.objectFetchersDelegate = objectFetchersDelegate;
 
-        this.assignedUnitsFetcher = new RelationshipFetcher<>(assignsUnitsRelationshipService) {
+        this.assignedUnitsFetcher = new RelationshipFetcher<>(assignsUnitsService) {
             @Override
             public Connection<XtdRelAssignsUnits> get(DataFetchingEnvironment environment) {
                 final XtdMeasureWithUnit source = environment.getSource();
@@ -50,7 +50,7 @@ public class MeasureFetchers extends AbstractFetchers<XtdMeasureWithUnit> {
             }
         };
 
-        this.assignedValuesFetcher = new RelationshipFetcher<>(assignsValuesRelationshipService) {
+        this.assignedValuesFetcher = new RelationshipFetcher<>(assignsValuesService) {
             @Override
             public Connection<XtdRelAssignsValues> get(DataFetchingEnvironment environment) throws Exception {
                 final XtdMeasureWithUnit source = environment.getSource();
@@ -59,7 +59,7 @@ public class MeasureFetchers extends AbstractFetchers<XtdMeasureWithUnit> {
             }
         };
 
-        this.assignedToFetcher = new RelationshipFetcher<>(assignsMeasuresRelationshipService) {
+        this.assignedToFetcher = new RelationshipFetcher<>(assignsMeasuresService) {
             @Override
             public Connection<XtdRelAssignsMeasures> get(DataFetchingEnvironment environment) throws Exception {
                 final XtdMeasureWithUnit source = environment.getSource();

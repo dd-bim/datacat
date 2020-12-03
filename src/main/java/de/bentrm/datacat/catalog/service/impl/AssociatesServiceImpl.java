@@ -2,7 +2,7 @@ package de.bentrm.datacat.catalog.service.impl;
 
 import de.bentrm.datacat.catalog.domain.XtdRelAssociates;
 import de.bentrm.datacat.catalog.domain.XtdRoot;
-import de.bentrm.datacat.catalog.repository.RelAssociatesRepository;
+import de.bentrm.datacat.catalog.repository.AssociatesRepository;
 import de.bentrm.datacat.catalog.repository.RootRepository;
 import de.bentrm.datacat.catalog.service.AssociatesService;
 import de.bentrm.datacat.catalog.service.EntityMapper;
@@ -22,11 +22,11 @@ import java.util.List;
 public class AssociatesServiceImpl extends AbstractServiceImpl<XtdRelAssociates> implements AssociatesService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
-    private final RelAssociatesRepository associatesRepository;
+    private final AssociatesRepository associatesRepository;
     private final RootRepository rootRepository;
 
     public AssociatesServiceImpl(SessionFactory sessionFactory,
-                                 RelAssociatesRepository repository,
+                                 AssociatesRepository repository,
                                  RootRepository rootRepository) {
         super(XtdRelAssociates.class, sessionFactory, repository);
         this.associatesRepository = repository;

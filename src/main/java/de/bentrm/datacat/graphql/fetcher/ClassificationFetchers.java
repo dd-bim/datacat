@@ -3,7 +3,7 @@ package de.bentrm.datacat.graphql.fetcher;
 import de.bentrm.datacat.catalog.domain.XtdClassification;
 import de.bentrm.datacat.catalog.domain.XtdRelClassifies;
 import de.bentrm.datacat.catalog.service.ClassificationService;
-import de.bentrm.datacat.catalog.service.ClassifiesRelationshipService;
+import de.bentrm.datacat.catalog.service.ClassifiesService;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.fetcher.delegate.ObjectFetchersDelegate;
 import de.bentrm.datacat.graphql.fetcher.delegate.RootFetchersDelegate;
@@ -28,7 +28,7 @@ public class ClassificationFetchers extends AbstractFetchers<XtdClassification> 
     public ClassificationFetchers(ClassificationService queryService,
                                   RootFetchersDelegate rootFetchersDelegate,
                                   ObjectFetchersDelegate objectFetchersDelegate,
-                                  ClassifiesRelationshipService classifiesService) {
+                                  ClassifiesService classifiesService) {
         super(queryService);
         this.rootFetchersDelegate = rootFetchersDelegate;
         this.objectFetchersDelegate = objectFetchersDelegate;

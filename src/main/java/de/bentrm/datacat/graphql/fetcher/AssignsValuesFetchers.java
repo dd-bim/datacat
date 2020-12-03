@@ -4,7 +4,7 @@ import de.bentrm.datacat.catalog.domain.CatalogItem;
 import de.bentrm.datacat.catalog.domain.XtdMeasureWithUnit;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsValues;
 import de.bentrm.datacat.catalog.domain.XtdValue;
-import de.bentrm.datacat.catalog.service.AssignsValuesRelationshipService;
+import de.bentrm.datacat.catalog.service.AssignsValuesService;
 import de.bentrm.datacat.catalog.service.MeasureService;
 import de.bentrm.datacat.catalog.service.ValueService;
 import graphql.schema.DataFetcher;
@@ -22,7 +22,7 @@ public class AssignsValuesFetchers extends AbstractFetchers<XtdRelAssignsValues>
     private final DataFetcher<XtdMeasureWithUnit> relatingMeasure;
     private final DataFetcher<List<XtdValue>> relatedValues;
 
-    public AssignsValuesFetchers(AssignsValuesRelationshipService entityService,
+    public AssignsValuesFetchers(AssignsValuesService entityService,
                                  MeasureService measureService,
                                  ValueService valueService) {
         super(entityService);

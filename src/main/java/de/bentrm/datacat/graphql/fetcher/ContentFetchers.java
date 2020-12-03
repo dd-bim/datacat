@@ -45,13 +45,13 @@ public class ContentFetchers implements MutationFetchers {
     @Autowired
     private AssignsCollectionsService assignsCollectionsService;
     @Autowired
-    private AssignsMeasuresRelationshipService assignsMeasuresRelationshipService;
+    private AssignsMeasuresService assignsMeasuresService;
     @Autowired
     private AssignsPropertiesService assignsPropertiesService;
     @Autowired
-    private AssignsValuesRelationshipService assignsValuesRelationshipService;
+    private AssignsValuesService assignsValuesService;
     @Autowired
-    private AssignsUnitsRelationshipService assignsUnitsRelationshipService;
+    private AssignsUnitsService assignsUnitsService;
     @Autowired
     private AssociatesService associatesService;
     @Autowired
@@ -158,10 +158,10 @@ public class ContentFetchers implements MutationFetchers {
             var item = switch (input.getRelationshipType()) {
                 case ActsUpon -> actsUponService.create(value);
                 case AssignsCollections -> assignsCollectionsService.create(value);
-                case AssignsMeasures -> assignsMeasuresRelationshipService.create(value);
+                case AssignsMeasures -> assignsMeasuresService.create(value);
                 case AssignsProperties -> assignsPropertiesService.create(value);
-                case AssignsValues -> assignsValuesRelationshipService.create(value);
-                case AssignsUnits -> assignsUnitsRelationshipService.create(value);
+                case AssignsValues -> assignsValuesService.create(value);
+                case AssignsUnits -> assignsUnitsService.create(value);
                 case Associates -> associatesService.create(value);
                 case Collects -> collectsService.create(value);
                 case Composes -> composesService.create(value);

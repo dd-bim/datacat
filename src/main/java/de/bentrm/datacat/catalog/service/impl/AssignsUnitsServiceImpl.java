@@ -3,10 +3,10 @@ package de.bentrm.datacat.catalog.service.impl;
 import de.bentrm.datacat.catalog.domain.XtdMeasureWithUnit;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsUnits;
 import de.bentrm.datacat.catalog.domain.XtdUnit;
-import de.bentrm.datacat.catalog.repository.AssignsUnitsRelationshipRepository;
+import de.bentrm.datacat.catalog.repository.AssignsUnitsRepository;
 import de.bentrm.datacat.catalog.repository.MeasureRepository;
 import de.bentrm.datacat.catalog.repository.UnitRepository;
-import de.bentrm.datacat.catalog.service.AssignsUnitsRelationshipService;
+import de.bentrm.datacat.catalog.service.AssignsUnitsService;
 import de.bentrm.datacat.catalog.service.EntityMapper;
 import de.bentrm.datacat.catalog.service.value.OneToManyRelationshipValue;
 import org.neo4j.ogm.session.SessionFactory;
@@ -21,16 +21,16 @@ import java.util.List;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class AssignsUnitsRelationshipServiceImpl extends AbstractServiceImpl<XtdRelAssignsUnits> implements AssignsUnitsRelationshipService {
+public class AssignsUnitsServiceImpl extends AbstractServiceImpl<XtdRelAssignsUnits> implements AssignsUnitsService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final MeasureRepository measureWithUnitRepository;
     private final UnitRepository unitRepository;
 
-    public AssignsUnitsRelationshipServiceImpl(SessionFactory sessionFactory,
-                                               AssignsUnitsRelationshipRepository repository,
-                                               MeasureRepository measureWithUnitRepository,
-                                               UnitRepository unitRepository) {
+    public AssignsUnitsServiceImpl(SessionFactory sessionFactory,
+                                   AssignsUnitsRepository repository,
+                                   MeasureRepository measureWithUnitRepository,
+                                   UnitRepository unitRepository) {
         super(XtdRelAssignsUnits.class, sessionFactory, repository);
         this.measureWithUnitRepository = measureWithUnitRepository;
         this.unitRepository = unitRepository;

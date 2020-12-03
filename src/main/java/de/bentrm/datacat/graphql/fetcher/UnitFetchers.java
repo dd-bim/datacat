@@ -2,7 +2,7 @@ package de.bentrm.datacat.graphql.fetcher;
 
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsUnits;
 import de.bentrm.datacat.catalog.domain.XtdUnit;
-import de.bentrm.datacat.catalog.service.AssignsUnitsRelationshipService;
+import de.bentrm.datacat.catalog.service.AssignsUnitsService;
 import de.bentrm.datacat.catalog.service.UnitService;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.fetcher.delegate.ObjectFetchersDelegate;
@@ -25,7 +25,7 @@ public class UnitFetchers extends AbstractFetchers<XtdUnit> {
     public UnitFetchers(UnitService entityService,
                         RootFetchersDelegate rootFetchersDelegate,
                         ObjectFetchersDelegate objectFetchersDelegate,
-                        AssignsUnitsRelationshipService assignsUnitsService) {
+                        AssignsUnitsService assignsUnitsService) {
         super(entityService);
         this.rootFetchersDelegate = rootFetchersDelegate;
         this.objectFetchersDelegate = objectFetchersDelegate;

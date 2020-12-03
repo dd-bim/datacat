@@ -1,9 +1,9 @@
 package de.bentrm.datacat.catalog.service.impl;
 
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsPropertyWithValues;
+import de.bentrm.datacat.catalog.repository.AssignsPropertyWithValuesRepository;
 import de.bentrm.datacat.catalog.repository.ObjectRepository;
 import de.bentrm.datacat.catalog.repository.PropertyRepository;
-import de.bentrm.datacat.catalog.repository.RelAssignsPropertyWithValuesRepository;
 import de.bentrm.datacat.catalog.service.AssignsPropertyWithValuesService;
 import de.bentrm.datacat.catalog.service.EntityMapper;
 import de.bentrm.datacat.catalog.service.value.QualifiedOneToManyRelationshipValue;
@@ -25,7 +25,7 @@ public class AssignsPropertyWithValuesServiceImpl extends AbstractServiceImpl<Xt
     private final PropertyRepository propertyRepository;
 
     public AssignsPropertyWithValuesServiceImpl(SessionFactory sessionFactory,
-                                                RelAssignsPropertyWithValuesRepository repository,
+                                                AssignsPropertyWithValuesRepository repository,
                                                 ObjectRepository objectRepository,
                                                 PropertyRepository propertyRepository) {
         super(XtdRelAssignsPropertyWithValues.class, sessionFactory, repository);

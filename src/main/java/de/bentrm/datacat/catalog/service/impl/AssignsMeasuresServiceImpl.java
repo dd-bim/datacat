@@ -4,10 +4,10 @@ import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.XtdMeasureWithUnit;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsMeasures;
-import de.bentrm.datacat.catalog.repository.AssignsMeasuresRelationshipRepository;
+import de.bentrm.datacat.catalog.repository.AssignsMeasuresRepository;
 import de.bentrm.datacat.catalog.repository.MeasureRepository;
 import de.bentrm.datacat.catalog.repository.PropertyRepository;
-import de.bentrm.datacat.catalog.service.AssignsMeasuresRelationshipService;
+import de.bentrm.datacat.catalog.service.AssignsMeasuresService;
 import de.bentrm.datacat.catalog.service.EntityMapper;
 import de.bentrm.datacat.catalog.service.value.OneToManyRelationshipValue;
 import lombok.extern.slf4j.Slf4j;
@@ -25,17 +25,17 @@ import java.util.List;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class AssignsMeasuresRelationshipServiceImpl extends AbstractServiceImpl<XtdRelAssignsMeasures>
-        implements AssignsMeasuresRelationshipService {
+public class AssignsMeasuresServiceImpl extends AbstractServiceImpl<XtdRelAssignsMeasures>
+        implements AssignsMeasuresService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final EntityRepository<XtdProperty> propertyRepository;
     private final EntityRepository<XtdMeasureWithUnit> measureWithUnitRepository;
 
-    public AssignsMeasuresRelationshipServiceImpl(SessionFactory sessionFactory,
-                                                  AssignsMeasuresRelationshipRepository repository,
-                                                  PropertyRepository propertyRepository,
-                                                  MeasureRepository measureRepository) {
+    public AssignsMeasuresServiceImpl(SessionFactory sessionFactory,
+                                      AssignsMeasuresRepository repository,
+                                      PropertyRepository propertyRepository,
+                                      MeasureRepository measureRepository) {
         super(XtdRelAssignsMeasures.class, sessionFactory, repository);
         this.propertyRepository = propertyRepository;
         this.measureWithUnitRepository = measureRepository;

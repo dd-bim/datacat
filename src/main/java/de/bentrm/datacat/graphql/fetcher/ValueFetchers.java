@@ -2,7 +2,7 @@ package de.bentrm.datacat.graphql.fetcher;
 
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsValues;
 import de.bentrm.datacat.catalog.domain.XtdValue;
-import de.bentrm.datacat.catalog.service.AssignsValuesRelationshipService;
+import de.bentrm.datacat.catalog.service.AssignsValuesService;
 import de.bentrm.datacat.catalog.service.ValueService;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.fetcher.delegate.ObjectFetchersDelegate;
@@ -25,12 +25,12 @@ public class ValueFetchers extends AbstractFetchers<XtdValue> {
     public ValueFetchers(ValueService queryService,
                          RootFetchersDelegate rootFetchersDelegate,
                          ObjectFetchersDelegate objectFetchersDelegate,
-                         AssignsValuesRelationshipService assignsValuesRelationshipService) {
+                         AssignsValuesService assignsValuesService) {
         super(queryService);
         this.rootFetchersDelegate = rootFetchersDelegate;
         this.objectFetchersDelegate = objectFetchersDelegate;
 
-        this.assignsValuesFetcher = new RelationshipFetcher<>(assignsValuesRelationshipService) {
+        this.assignsValuesFetcher = new RelationshipFetcher<>(assignsValuesService) {
             @Override
             public Connection<XtdRelAssignsValues> get(DataFetchingEnvironment environment) {
                 final XtdValue source = environment.getSource();
