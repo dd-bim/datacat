@@ -132,6 +132,23 @@ type CreateQualifiedOneToOneRelationshipPayload {
     relationship: QualifiedOneToOneRelationship
 }
 
+enum RelationshipType {
+    ActsUpon
+    AssignsCollections
+    AssignsMeasures
+    AssignsProperties
+    AssignsPropertiesWithValues
+    AssignsUnits
+    AssignsValues
+    Associates
+    Collects
+    Composes
+    Documents
+    Groups
+    Sequences
+    Specializes
+}
+
 union Relationship =
     | XtdRelActsUpon
     | XtdRelAssignsCollections
@@ -148,8 +165,28 @@ union Relationship =
     | XtdRelSequences
     | XtdRelSpecializes
 
+input CreateRelationshipInput {
+    relationshipType: RelationshipType!
+    properties: PropertiesInput
+    fromId: ID!
+    toIds: [ID!]!
+}
+
+type CreateRelationshipPayload {
+    relationship: Relationship
+}
+
+input SetRelatedEntriesInput {
+    relationshipId: ID!
+    toIds: [ID!]!
+}
+
+type SetRelatedEntriesPayload {
+    relationship: Relationship
+}
+
 input DeleteRelationshipInput {
-    id: ID!
+    relationshipId: ID!
 }
 
 type DeleteRelationshipPayload {
@@ -350,14 +387,20 @@ type Mutation {
     deleteCatalogEntry(input: DeleteCatalogEntryInput!): DeleteCatalogEntryPayload
 
     # Creates a relationship between two related catalog entries.
-    createOneToOneRelationship(input: CreateOneToOneRelationshipInput!): CreateOneToOneRelationshipPayload
+    createOneToOneRelationship(input: CreateOneToOneRelationshipInput!): CreateOneToOneRelationshipPayload @deprecated
 
     # Creates a relationship between a catalog entry and one or many related entries.
-    createOneToManyRelationship(input: CreateOneToManyRelationshipInput!): CreateOneToManyRelationshipPayload
+    createOneToManyRelationship(input: CreateOneToManyRelationshipInput!): CreateOneToManyRelationshipPayload @deprecated
 
     # Creates a relationship between two related catalog entries that is further described by the
     # relation with one or many qualifing catalog entries.
-    createQualifiedOneToManyRelationship(input: CreateQualifiedOneToOneRelationshipInput!): CreateQualifiedOneToOneRelationshipPayload
+    createQualifiedOneToManyRelationship(input: CreateQualifiedOneToOneRelationshipInput!): CreateQualifiedOneToOneRelationshipPayload @deprecated
+
+    # Creates a relationship originating from the given catalog entry.
+    # The related entries must be added with subsequent requests.
+    createRelationship(input: CreateRelationshipInput!): CreateRelationshipPayload
+
+    setRelatedEntries(input: SetRelatedEntriesInput!): SetRelatedEntriesPayload
 
     # Deletes a relationship between catalog entries.
     deleteRelationship(input: DeleteRelationshipInput!): DeleteRelationshipPayload

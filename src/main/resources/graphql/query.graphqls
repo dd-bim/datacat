@@ -405,7 +405,7 @@ type Query {
 
     node(id: ID!): Entity
 
-    search(input: SearchInput): SearchResultConnection!
+    search(input: SearchInput, pageSize: Int, pageNumber: Int): SearchResultConnection!
 
     hierarchy(input: HierarchyFilterInput!): HierarchyPayload!
 
