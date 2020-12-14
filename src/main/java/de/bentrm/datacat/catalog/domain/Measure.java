@@ -12,8 +12,8 @@ import java.util.Set;
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
-@NodeEntity(label = XtdMeasureWithUnit.LABEL)
-public class XtdMeasureWithUnit extends XtdObject {
+@NodeEntity(label = Measure.LABEL)
+public class Measure extends XtdObject {
 
     public static final String LABEL = "XtdMeasureWithUnit";
 
