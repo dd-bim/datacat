@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+@Deprecated
 public interface OneToManyRelationshipService<T extends XtdRelationship> {
 
     @PreAuthorize("hasRole('USER')")

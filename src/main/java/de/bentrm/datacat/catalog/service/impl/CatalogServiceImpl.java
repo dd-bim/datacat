@@ -3,7 +3,6 @@ package de.bentrm.datacat.catalog.service.impl;
 import de.bentrm.datacat.catalog.domain.*;
 import de.bentrm.datacat.catalog.repository.*;
 import de.bentrm.datacat.catalog.service.CatalogService;
-import de.bentrm.datacat.catalog.service.value.CatalogEntryProperties;
 import de.bentrm.datacat.catalog.service.value.HierarchyValue;
 import de.bentrm.datacat.catalog.specification.CatalogItemSpecification;
 import de.bentrm.datacat.catalog.specification.RootSpecification;
@@ -25,11 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Slf4j
 @Validated
@@ -39,12 +37,6 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Autowired
     private SessionFactory sessionFactory;
-
-    @Autowired
-    private HierarchyDao hierarchyDao;
-
-    @Autowired
-    private CatalogEntryFactory catalogEntryFactory;
 
     @Autowired
     private TranslationRespository translationRespository;
@@ -77,66 +69,6 @@ public class CatalogServiceImpl implements CatalogService {
             }
         });
         return statistics;
-    }
-
-    @Transactional
-    @Override
-    public @NotNull CatalogItem createCatalogEntry(CatalogEntryType type, CatalogEntryProperties properties) {
-        final CatalogItem catalogEntry = catalogEntryFactory.create(type, properties);
-        final CatalogItem persistentCatalogEntry = catalogItemRepository.save(catalogEntry);
-        log.trace("Persisted new catalog entry: {}", persistentCatalogEntry);
-        return catalogEntry;
-    }
-
-    @Transactional
-    @Override
-    public @NotNull CatalogItem deleteEntry(String id) {
-        log.trace("Deleting catalog entry with id {}...", id);
-        final CatalogItem entry = catalogItemRepository.findById(id).orElseThrow();
-
-        if (entry instanceof XtdRelationship) {
-            throw new NoSuchElementException("Retrieved catalog entry is a catalog relationship.");
-        }
-
-        final Consumer<Translation> deleteTranslation = translation -> {
-            translationRespository.delete(translation);
-            log.trace("Deleted translation of catalog entry {}: {}", id, translation);
-        };
-
-        log.trace("Purging name entities...");
-        entry.getNames().forEach(deleteTranslation);
-
-        log.trace("Purging description entities...");
-        entry.getDescriptions().forEach(deleteTranslation);
-
-        log.trace("Cascading into catalog relationships owned by catalog entry {}...", id);
-        final List<XtdRelationship> ownedRelationships = entry.getOwnedRelationships();
-        ownedRelationships.forEach(relationship -> {
-            relationshipRepository.delete(relationship);
-            log.trace("Owned Relationship of catalog entry {} deleted: {}", id, relationship);
-        });
-
-        catalogItemRepository.delete(entry);
-        log.trace("Catalog item deleted: {}", entry);
-
-        return entry;
-    }
-
-    @Transactional
-    @Override
-    public @NotNull XtdRelationship deleteRelationship(@NotBlank String id) {
-        final XtdRelationship relationship = relationshipRepository.findById(id).orElseThrow();
-
-        final Consumer<Translation> deleteTranslation = translation -> {
-            translationRespository.delete(translation);
-            log.debug("Translation deleted: {}", translation);
-        };
-        relationship.getNames().forEach(deleteTranslation);
-        relationship.getDescriptions().forEach(deleteTranslation);
-
-        relationshipRepository.delete(relationship);
-        log.debug("Relationship deleted: {}", relationship);
-        return relationship;
     }
 
     @Transactional
@@ -357,14 +289,14 @@ public class CatalogServiceImpl implements CatalogService {
         final Page<CatalogItem> rootNodes = findAllCatalogItems(rootNodeSpecification);
         final List<String> rootNodeIds = rootNodes.map(CatalogItem::getId).stream().collect(Collectors.toList());
 
-        final List<List<String>> paths = hierarchyDao.getHierarchyPaths(rootNodeIds, depth);
-
+        final List<List<String>> paths = rootRepository.findRelationshipPaths(rootNodeIds);
         final Set<String> nodeIds = new HashSet<>();
         paths.forEach(nodeIds::addAll);
 
-        final Iterable<CatalogItem> nodes = catalogItemRepository.findAllById(nodeIds);
-        List<CatalogItem> leaves = new ArrayList<>();
-        nodes.forEach(leaves::add);
+        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
+        final List<XtdRoot> leaves = StreamSupport
+                .stream(nodes.spliterator(), false)
+                .collect(Collectors.toList());
 
         return new HierarchyValue(leaves, paths);
     }

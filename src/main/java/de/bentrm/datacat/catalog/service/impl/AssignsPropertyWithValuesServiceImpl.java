@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class AssignsPropertyWithValuesServiceImpl extends AbstractServiceImpl<XtdRelAssignsPropertyWithValues> implements AssignsPropertyWithValuesService {
+public class AssignsPropertyWithValuesServiceImpl extends AbstractQueryServiceImpl<XtdRelAssignsPropertyWithValues> implements AssignsPropertyWithValuesService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final ObjectRepository objectRepository;

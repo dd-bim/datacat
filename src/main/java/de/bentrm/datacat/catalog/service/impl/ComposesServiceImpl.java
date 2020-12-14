@@ -19,7 +19,7 @@ import java.util.List;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class ComposesServiceImpl extends AbstractServiceImpl<XtdRelComposes> implements ComposesService {
+public class ComposesServiceImpl extends AbstractQueryServiceImpl<XtdRelComposes> implements ComposesService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final RootRepository rootRepository;

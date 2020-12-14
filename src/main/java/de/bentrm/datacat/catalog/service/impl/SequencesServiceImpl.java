@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class SequencesServiceImpl extends AbstractServiceImpl<XtdRelSequences> implements SequencesService {
+public class SequencesServiceImpl extends AbstractQueryServiceImpl<XtdRelSequences> implements SequencesService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final ActivityRepository activityRepository;

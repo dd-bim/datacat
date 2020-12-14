@@ -19,7 +19,7 @@ import java.util.List;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class AssociatesServiceImpl extends AbstractServiceImpl<XtdRelAssociates> implements AssociatesService {
+public class AssociatesServiceImpl extends AbstractQueryServiceImpl<XtdRelAssociates> implements AssociatesService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final AssociatesRepository associatesRepository;

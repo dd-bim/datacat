@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class UserServiceImpl extends AbstractServiceImpl<User> implements UserService {
+public class UserServiceImpl extends AbstractQueryServiceImpl<User> implements UserService {
 
     private final UserRepository repository;
 

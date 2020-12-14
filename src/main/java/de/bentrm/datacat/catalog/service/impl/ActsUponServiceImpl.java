@@ -19,12 +19,13 @@ import java.util.List;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class ActsUponServiceImpl extends AbstractServiceImpl<XtdRelActsUpon> implements ActsUponService {
+public class ActsUponServiceImpl extends AbstractQueryServiceImpl<XtdRelActsUpon> implements ActsUponService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final EntityRepository<XtdRoot> rootRepository;
 
-    public ActsUponServiceImpl(SessionFactory sessionFactory, ActsUponRepository repository,
+    public ActsUponServiceImpl(SessionFactory sessionFactory,
+                               ActsUponRepository repository,
                                EntityRepository<XtdRoot> rootRepository) {
         super(XtdRelActsUpon.class, sessionFactory, repository);
         this.rootRepository = rootRepository;

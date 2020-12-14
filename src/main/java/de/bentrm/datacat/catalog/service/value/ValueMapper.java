@@ -8,6 +8,7 @@ import de.bentrm.datacat.auth.service.dto.AccountUpdateDto;
 import de.bentrm.datacat.auth.service.dto.ProfileDto;
 import de.bentrm.datacat.auth.service.dto.ProfileUpdateDto;
 import de.bentrm.datacat.catalog.domain.CatalogItem;
+import de.bentrm.datacat.catalog.domain.XtdRelationship;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -31,6 +32,11 @@ public interface ValueMapper {
     @Mapping(target = "versionId", source = "version.versionId")
     @Mapping(target = "versionDate", source = "version.versionDate")
     void setProperties(CatalogEntryProperties properties, @MappingTarget CatalogItem catalogEntry);
+
+    @Mapping(target = "version", ignore = true)
+    @Mapping(target = "versionId", source = "version.versionId")
+    @Mapping(target = "versionDate", source = "version.versionDate")
+    void setProperties(RelationshipProperties properties, @MappingTarget XtdRelationship relationship);
 
     @Mapping(target = "username", source = "username")
     @Mapping(target = "profile", source = ".")
