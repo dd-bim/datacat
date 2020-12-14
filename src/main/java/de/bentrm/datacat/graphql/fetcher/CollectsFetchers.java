@@ -5,7 +5,7 @@ import de.bentrm.datacat.catalog.domain.XtdCollection;
 import de.bentrm.datacat.catalog.domain.XtdRelCollects;
 import de.bentrm.datacat.catalog.domain.XtdRoot;
 import de.bentrm.datacat.catalog.service.CatalogService;
-import de.bentrm.datacat.catalog.service.CollectsService;
+import de.bentrm.datacat.catalog.service.CollectsRecordService;
 import graphql.schema.DataFetcher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -22,7 +22,7 @@ public class CollectsFetchers extends AbstractFetchers<XtdRelCollects> {
     private final DataFetcher<XtdCollection> relatingCollection;
     private final DataFetcher<List<XtdRoot>> relatedThings;
 
-    public CollectsFetchers(CollectsService entityService,
+    public CollectsFetchers(CollectsRecordService entityService,
                             CatalogService catalogService) {
         super(entityService);
 

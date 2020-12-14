@@ -4,7 +4,7 @@ import de.bentrm.datacat.catalog.domain.CatalogItem;
 import de.bentrm.datacat.catalog.domain.XtdCollection;
 import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsCollections;
-import de.bentrm.datacat.catalog.service.AssignsCollectionsService;
+import de.bentrm.datacat.catalog.service.AssignsCollectionsRecordService;
 import de.bentrm.datacat.catalog.service.CatalogService;
 import graphql.schema.DataFetcher;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ public class AssignsCollectionsFetchers extends AbstractFetchers<XtdRelAssignsCo
     private final DataFetcher<XtdObject> relatingObject;
     private final DataFetcher<List<XtdCollection>> relatedCollections;
 
-    public AssignsCollectionsFetchers(AssignsCollectionsService entityService,
+    public AssignsCollectionsFetchers(AssignsCollectionsRecordService entityService,
                                       CatalogService catalogService) {
         super(entityService);
 

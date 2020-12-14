@@ -3,9 +3,9 @@ package de.bentrm.datacat.graphql.fetcher;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsMeasures;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsProperties;
-import de.bentrm.datacat.catalog.service.AssignsMeasuresService;
-import de.bentrm.datacat.catalog.service.AssignsPropertiesService;
-import de.bentrm.datacat.catalog.service.PropertyService;
+import de.bentrm.datacat.catalog.service.AssignsMeasuresRecordService;
+import de.bentrm.datacat.catalog.service.AssignsPropertiesRecordService;
+import de.bentrm.datacat.catalog.service.PropertyRecordService;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.fetcher.delegate.ObjectFetchersDelegate;
 import de.bentrm.datacat.graphql.fetcher.delegate.RootFetchersDelegate;
@@ -26,11 +26,11 @@ public class PropertyFetchers extends AbstractFetchers<XtdProperty> {
     private final RelationshipFetcher<XtdRelAssignsMeasures> assignedMeasuresFetcher;
     private final RelationshipFetcher<XtdRelAssignsProperties> assignedToFetcher;
 
-    public PropertyFetchers(PropertyService queryService,
+    public PropertyFetchers(PropertyRecordService queryService,
                             RootFetchersDelegate rootFetchersDelegate,
                             ObjectFetchersDelegate objectFetchersDelegate,
-                            AssignsPropertiesService assignsPropertiesService,
-                            AssignsMeasuresService assignsMeasuresService) {
+                            AssignsPropertiesRecordService assignsPropertiesService,
+                            AssignsMeasuresRecordService assignsMeasuresService) {
         super(queryService);
 
         this.rootFetchersDelegate = rootFetchersDelegate;

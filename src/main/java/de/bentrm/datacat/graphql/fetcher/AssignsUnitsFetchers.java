@@ -1,12 +1,12 @@
 package de.bentrm.datacat.graphql.fetcher;
 
 import de.bentrm.datacat.catalog.domain.CatalogItem;
-import de.bentrm.datacat.catalog.domain.XtdMeasureWithUnit;
+import de.bentrm.datacat.catalog.domain.Measure;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsUnits;
 import de.bentrm.datacat.catalog.domain.XtdUnit;
-import de.bentrm.datacat.catalog.service.AssignsUnitsService;
-import de.bentrm.datacat.catalog.service.MeasureService;
-import de.bentrm.datacat.catalog.service.UnitService;
+import de.bentrm.datacat.catalog.service.AssignsUnitsRecordService;
+import de.bentrm.datacat.catalog.service.MeasureRecordService;
+import de.bentrm.datacat.catalog.service.UnitRecordService;
 import graphql.schema.DataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,12 +19,12 @@ import java.util.stream.Collectors;
 @Component
 public class AssignsUnitsFetchers extends AbstractFetchers<XtdRelAssignsUnits> {
 
-    private final DataFetcher<XtdMeasureWithUnit> relatingMeasure;
+    private final DataFetcher<Measure> relatingMeasure;
     private final DataFetcher<List<XtdUnit>> relatedUnits;
 
-    public AssignsUnitsFetchers(AssignsUnitsService entityService,
-                                MeasureService measureService,
-                                UnitService unitService) {
+    public AssignsUnitsFetchers(AssignsUnitsRecordService entityService,
+                                MeasureRecordService measureService,
+                                UnitRecordService unitService) {
         super(entityService);
 
         this.relatingMeasure = environment -> {

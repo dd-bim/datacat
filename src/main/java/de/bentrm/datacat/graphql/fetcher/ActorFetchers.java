@@ -1,7 +1,7 @@
 package de.bentrm.datacat.graphql.fetcher;
 
 import de.bentrm.datacat.catalog.domain.XtdActor;
-import de.bentrm.datacat.catalog.service.ActorService;
+import de.bentrm.datacat.catalog.service.ActorRecordService;
 import de.bentrm.datacat.graphql.fetcher.delegate.ObjectFetchersDelegate;
 import de.bentrm.datacat.graphql.fetcher.delegate.RootFetchersDelegate;
 import graphql.schema.DataFetcher;
@@ -16,7 +16,7 @@ public class ActorFetchers extends AbstractFetchers<XtdActor> {
     private final RootFetchersDelegate rootFetchersDelegate;
     private final ObjectFetchersDelegate objectFetchersDelegate;
 
-    public ActorFetchers(ActorService queryService,
+    public ActorFetchers(ActorRecordService queryService,
                          RootFetchersDelegate rootFetchersDelegate,
                          ObjectFetchersDelegate objectFetchersDelegate) {
         super(queryService);

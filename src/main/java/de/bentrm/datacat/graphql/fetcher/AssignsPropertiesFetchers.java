@@ -4,9 +4,9 @@ import de.bentrm.datacat.catalog.domain.CatalogItem;
 import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsProperties;
-import de.bentrm.datacat.catalog.service.AssignsPropertiesService;
+import de.bentrm.datacat.catalog.service.AssignsPropertiesRecordService;
 import de.bentrm.datacat.catalog.service.CatalogService;
-import de.bentrm.datacat.catalog.service.PropertyService;
+import de.bentrm.datacat.catalog.service.PropertyRecordService;
 import graphql.schema.DataFetcher;
 import org.springframework.stereotype.Component;
 
@@ -21,9 +21,9 @@ public class AssignsPropertiesFetchers extends AbstractFetchers<XtdRelAssignsPro
     private final DataFetcher<XtdObject> relatingObject;
     private final DataFetcher<List<XtdProperty>> relatedProperties;
 
-    public AssignsPropertiesFetchers(AssignsPropertiesService queryService,
+    public AssignsPropertiesFetchers(AssignsPropertiesRecordService queryService,
                                      CatalogService catalogService,
-                                     PropertyService propertyService) {
+                                     PropertyRecordService propertyService) {
         super(queryService);
 
         this.relatingObject = environment -> {

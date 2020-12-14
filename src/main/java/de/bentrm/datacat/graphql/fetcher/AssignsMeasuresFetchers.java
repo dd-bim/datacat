@@ -1,12 +1,12 @@
 package de.bentrm.datacat.graphql.fetcher;
 
 import de.bentrm.datacat.catalog.domain.CatalogItem;
-import de.bentrm.datacat.catalog.domain.XtdMeasureWithUnit;
+import de.bentrm.datacat.catalog.domain.Measure;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsMeasures;
-import de.bentrm.datacat.catalog.service.AssignsMeasuresService;
-import de.bentrm.datacat.catalog.service.MeasureService;
-import de.bentrm.datacat.catalog.service.PropertyService;
+import de.bentrm.datacat.catalog.service.AssignsMeasuresRecordService;
+import de.bentrm.datacat.catalog.service.MeasureRecordService;
+import de.bentrm.datacat.catalog.service.PropertyRecordService;
 import graphql.schema.DataFetcher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -21,11 +21,11 @@ import java.util.stream.Collectors;
 public class AssignsMeasuresFetchers extends AbstractFetchers<XtdRelAssignsMeasures> {
 
     private final DataFetcher<XtdProperty> relatingProperty;
-    private final DataFetcher<List<XtdMeasureWithUnit>> relatedMeasures;
+    private final DataFetcher<List<Measure>> relatedMeasures;
 
-    public AssignsMeasuresFetchers(AssignsMeasuresService queryService,
-                                   PropertyService propertyService,
-                                   MeasureService measureService) {
+    public AssignsMeasuresFetchers(AssignsMeasuresRecordService queryService,
+                                   PropertyRecordService propertyService,
+                                   MeasureRecordService measureService) {
         super(queryService);
 
         this.relatingProperty = environment -> {

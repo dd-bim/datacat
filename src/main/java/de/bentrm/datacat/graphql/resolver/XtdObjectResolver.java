@@ -29,8 +29,8 @@ public class XtdObjectResolver implements CustomResolver {
         if (obj instanceof XtdClassification) {
             return schema.getObjectType(XtdClassification.LABEL);
         }
-        if (obj instanceof XtdMeasureWithUnit) {
-            return schema.getObjectType(XtdMeasureWithUnit.LABEL);
+        if (obj instanceof Measure) {
+            return schema.getObjectType(Measure.LABEL);
         }
         if (obj instanceof XtdProperty) {
             return schema.getObjectType(XtdProperty.LABEL);

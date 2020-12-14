@@ -3,8 +3,8 @@ package de.bentrm.datacat.graphql.fetcher.delegate;
 import de.bentrm.datacat.catalog.domain.XtdCollection;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsCollections;
 import de.bentrm.datacat.catalog.domain.XtdRelCollects;
-import de.bentrm.datacat.catalog.service.AssignsCollectionsService;
-import de.bentrm.datacat.catalog.service.CollectsService;
+import de.bentrm.datacat.catalog.service.AssignsCollectionsRecordService;
+import de.bentrm.datacat.catalog.service.CollectsRecordService;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.fetcher.RelationshipFetcher;
 import graphql.schema.DataFetcher;
@@ -23,8 +23,8 @@ public class CollectionFetchersDelegate implements FetchingDelegate {
     private final RelationshipFetcher<XtdRelCollects> collectsDataFetcher;
     private final RelationshipFetcher<XtdRelAssignsCollections> assignedToFetcher;
 
-    public CollectionFetchersDelegate(CollectsService collectsService,
-                                      AssignsCollectionsService assignsCollectionsService) {
+    public CollectionFetchersDelegate(CollectsRecordService collectsService,
+                                      AssignsCollectionsRecordService assignsCollectionsService) {
         this.collectsDataFetcher = new RelationshipFetcher<>(collectsService) {
             @Override
             public Connection<XtdRelCollects> get(DataFetchingEnvironment environment) throws Exception {

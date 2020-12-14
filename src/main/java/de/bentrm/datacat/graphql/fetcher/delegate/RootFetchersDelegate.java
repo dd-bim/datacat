@@ -26,10 +26,10 @@ public class RootFetchersDelegate implements FetchingDelegate {
     private final RelationshipFetcher<XtdRelClassifies> classifiedByFetcher;
 
     public RootFetchersDelegate(AssociatesService associatesService,
-                                CollectsService collectsService,
+                                CollectsRecordService collectsService,
                                 ComposesService composesService,
                                 ClassifiesService classifiesService,
-                                DocumentsService documentsService) {
+                                DocumentsRecordService documentsService) {
         this.associatesFetcher = new RelationshipFetcher<>(associatesService) {
             @Override
             public Connection<XtdRelAssociates> get(DataFetchingEnvironment environment) {

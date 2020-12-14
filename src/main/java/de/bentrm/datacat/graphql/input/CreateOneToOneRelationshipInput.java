@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 @Data
 public class CreateOneToOneRelationshipInput {
     @NotNull OneToOneRelationship relationshipType;
-    @Valid EntryPropertiesInput properties;
+    @Valid CatalogEntryPropertiesInput properties;
     @NotBlank String from;
     @NotBlank String to;
 }

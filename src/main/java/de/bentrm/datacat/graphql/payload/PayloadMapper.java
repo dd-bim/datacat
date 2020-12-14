@@ -4,15 +4,24 @@ import de.bentrm.datacat.catalog.domain.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValueCheckStrategy;
+import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring", nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
 public interface PayloadMapper {
+
+    PayloadMapper INSTANCE = Mappers.getMapper(PayloadMapper.class);
 
     @Mapping(source = "item", target = "catalogEntry")
     CreateEntryPayload toCreateEntryPayload(CatalogItem item);
 
     @Mapping(source = "item", target = "catalogEntry")
     DeleteCatalogEntryPayload toDeleteEntryPayload(CatalogItem item);
+
+    @Mapping(source = "relationship", target = "relationship")
+    CreateRelationshipPayload toCreateRelationshipPayload(XtdRelationship relationship);
+
+    @Mapping(source = "relationship", target = "relationship")
+    SetRelatedEntriesPayload toSetRelatedEntriesPayload(XtdRelationship relationship);
 
     @Mapping(source = "relationship", target = "relationship")
     CreateOneToOneRelationshipPayload toCreateOneToOneRelationshipPayload(XtdRelSequences relationship);

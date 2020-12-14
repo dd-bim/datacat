@@ -2,8 +2,8 @@ package de.bentrm.datacat.graphql.fetcher;
 
 import de.bentrm.datacat.catalog.domain.XtdExternalDocument;
 import de.bentrm.datacat.catalog.domain.XtdRelDocuments;
-import de.bentrm.datacat.catalog.service.DocumentsService;
-import de.bentrm.datacat.catalog.service.ExternalDocumentService;
+import de.bentrm.datacat.catalog.service.DocumentsRecordService;
+import de.bentrm.datacat.catalog.service.ExternalDocumentRecordService;
 import de.bentrm.datacat.graphql.Connection;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
@@ -18,8 +18,8 @@ public class ExternalDocumentFetchers extends AbstractFetchers<XtdExternalDocume
 
     private final RelationshipFetcher<XtdRelDocuments> documents;
 
-    public ExternalDocumentFetchers(ExternalDocumentService entityService,
-                                    DocumentsService documentsService) {
+    public ExternalDocumentFetchers(ExternalDocumentRecordService entityService,
+                                    DocumentsRecordService documentsService) {
         super(entityService);
 
         this.documents = new RelationshipFetcher<>(documentsService) {

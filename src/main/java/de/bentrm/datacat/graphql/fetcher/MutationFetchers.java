@@ -6,5 +6,7 @@ import java.util.Map;
 
 public interface MutationFetchers {
 
+    String INPUT_ARGUMENT = "input";
+
     Map<String, DataFetcher> getMutationFetchers();
 }

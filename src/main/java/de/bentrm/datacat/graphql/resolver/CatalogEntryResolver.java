@@ -35,8 +35,8 @@ public class CatalogEntryResolver implements CustomResolver {
         if (obj instanceof XtdExternalDocument) {
             return schema.getObjectType(XtdExternalDocument.LABEL);
         }
-        if (obj instanceof XtdMeasureWithUnit) {
-            return schema.getObjectType(XtdMeasureWithUnit.LABEL);
+        if (obj instanceof Measure) {
+            return schema.getObjectType(Measure.LABEL);
         }
         if (obj instanceof XtdNest) {
             return schema.getObjectType(XtdNest.LABEL);

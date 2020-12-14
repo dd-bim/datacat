@@ -4,8 +4,8 @@ import de.bentrm.datacat.catalog.domain.XtdExternalDocument;
 import de.bentrm.datacat.catalog.domain.XtdRelDocuments;
 import de.bentrm.datacat.catalog.domain.XtdRoot;
 import de.bentrm.datacat.catalog.service.CatalogService;
-import de.bentrm.datacat.catalog.service.DocumentsService;
-import de.bentrm.datacat.catalog.service.ExternalDocumentService;
+import de.bentrm.datacat.catalog.service.DocumentsRecordService;
+import de.bentrm.datacat.catalog.service.ExternalDocumentRecordService;
 import graphql.schema.DataFetcher;
 import org.springframework.stereotype.Component;
 
@@ -20,8 +20,8 @@ public class DocumentsFetchers extends AbstractFetchers<XtdRelDocuments> {
     private final DataFetcher<XtdExternalDocument> relatingDocument;
     private final DataFetcher<List<XtdRoot>> relatedThings;
 
-    public DocumentsFetchers(DocumentsService entityService,
-                             ExternalDocumentService externalDocumentService,
+    public DocumentsFetchers(DocumentsRecordService entityService,
+                             ExternalDocumentRecordService externalDocumentService,
                              CatalogService catalogService) {
         super(entityService);
 

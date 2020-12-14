@@ -5,12 +5,14 @@ import lombok.Data;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
-public class CreateEntryInput {
-    @NotNull CatalogRecordType catalogEntryType;
-    @NotNull @Valid CatalogEntryPropertiesInput properties;
-    List<@NotBlank String> tags;
+public class CreateRelationshipInput {
+    @NotNull CatalogRecordType relationshipType;
+    @Valid RelationshipPropertiesInput properties;
+    @NotBlank String fromId;
+    @NotEmpty List<String> toIds;
 }

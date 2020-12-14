@@ -1,7 +1,7 @@
 package de.bentrm.datacat.graphql.fetcher;
 
 import de.bentrm.datacat.catalog.domain.XtdBag;
-import de.bentrm.datacat.catalog.service.BagService;
+import de.bentrm.datacat.catalog.service.BagRecordService;
 import de.bentrm.datacat.graphql.fetcher.delegate.CollectionFetchersDelegate;
 import de.bentrm.datacat.graphql.fetcher.delegate.RootFetchersDelegate;
 import graphql.schema.DataFetcher;
@@ -16,7 +16,7 @@ public class BagFetchers extends AbstractFetchers<XtdBag> {
     private final RootFetchersDelegate rootFetchersDelegate;
     private final CollectionFetchersDelegate collectionFetchersDelegate;
 
-    public BagFetchers(BagService queryService,
+    public BagFetchers(BagRecordService queryService,
                        RootFetchersDelegate rootFetchersDelegate,
                        CollectionFetchersDelegate collectionFetchersDelegate) {
         super(queryService);

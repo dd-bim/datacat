@@ -1,13 +1,13 @@
 package de.bentrm.datacat.graphql.fetcher;
 
-import de.bentrm.datacat.catalog.domain.XtdMeasureWithUnit;
+import de.bentrm.datacat.catalog.domain.Measure;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsMeasures;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsUnits;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsValues;
-import de.bentrm.datacat.catalog.service.AssignsMeasuresService;
-import de.bentrm.datacat.catalog.service.AssignsUnitsService;
-import de.bentrm.datacat.catalog.service.AssignsValuesService;
-import de.bentrm.datacat.catalog.service.MeasureService;
+import de.bentrm.datacat.catalog.service.AssignsMeasuresRecordService;
+import de.bentrm.datacat.catalog.service.AssignsUnitsRecordService;
+import de.bentrm.datacat.catalog.service.AssignsValuesRecordService;
+import de.bentrm.datacat.catalog.service.MeasureRecordService;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.fetcher.delegate.ObjectFetchersDelegate;
 import de.bentrm.datacat.graphql.fetcher.delegate.RootFetchersDelegate;
@@ -22,7 +22,7 @@ import java.util.Set;
 
 @Slf4j
 @Component
-public class MeasureFetchers extends AbstractFetchers<XtdMeasureWithUnit> {
+public class MeasureFetchers extends AbstractFetchers<Measure> {
 
     private final RootFetchersDelegate rootFetchersDelegate;
     private final ObjectFetchersDelegate objectFetchersDelegate;
@@ -31,12 +31,12 @@ public class MeasureFetchers extends AbstractFetchers<XtdMeasureWithUnit> {
     private final RelationshipFetcher<XtdRelAssignsValues> assignedValuesFetcher;
     private final RelationshipFetcher<XtdRelAssignsMeasures> assignedToFetcher;
 
-    public MeasureFetchers(MeasureService queryService,
+    public MeasureFetchers(MeasureRecordService queryService,
                            RootFetchersDelegate rootFetchersDelegate,
                            ObjectFetchersDelegate objectFetchersDelegate,
-                           AssignsUnitsService assignsUnitsService,
-                           AssignsValuesService assignsValuesService,
-                           AssignsMeasuresService assignsMeasuresService) {
+                           AssignsUnitsRecordService assignsUnitsService,
+                           AssignsValuesRecordService assignsValuesService,
+                           AssignsMeasuresRecordService assignsMeasuresService) {
         super(queryService);
         this.rootFetchersDelegate = rootFetchersDelegate;
         this.objectFetchersDelegate = objectFetchersDelegate;
@@ -44,7 +44,7 @@ public class MeasureFetchers extends AbstractFetchers<XtdMeasureWithUnit> {
         this.assignedUnitsFetcher = new RelationshipFetcher<>(assignsUnitsService) {
             @Override
             public Connection<XtdRelAssignsUnits> get(DataFetchingEnvironment environment) {
-                final XtdMeasureWithUnit source = environment.getSource();
+                final Measure source = environment.getSource();
                 final Set<XtdRelAssignsUnits> fieldValues = source.getAssignedUnits();
                 return get(fieldValues, environment);
             }
@@ -53,7 +53,7 @@ public class MeasureFetchers extends AbstractFetchers<XtdMeasureWithUnit> {
         this.assignedValuesFetcher = new RelationshipFetcher<>(assignsValuesService) {
             @Override
             public Connection<XtdRelAssignsValues> get(DataFetchingEnvironment environment) throws Exception {
-                final XtdMeasureWithUnit source = environment.getSource();
+                final Measure source = environment.getSource();
                 final Set<XtdRelAssignsValues> fieldValues = source.getAssignedValues();
                 return get(fieldValues, environment);
             }
@@ -62,7 +62,7 @@ public class MeasureFetchers extends AbstractFetchers<XtdMeasureWithUnit> {
         this.assignedToFetcher = new RelationshipFetcher<>(assignsMeasuresService) {
             @Override
             public Connection<XtdRelAssignsMeasures> get(DataFetchingEnvironment environment) throws Exception {
-                final XtdMeasureWithUnit source = environment.getSource();
+                final Measure source = environment.getSource();
                 log.trace("Current XtdMeasureWithUnit: {}", source);
                 final Set<XtdRelAssignsMeasures> fieldValues = source.getAssignedTo();
                 log.trace("Fetching measure assignment: {}", fieldValues);

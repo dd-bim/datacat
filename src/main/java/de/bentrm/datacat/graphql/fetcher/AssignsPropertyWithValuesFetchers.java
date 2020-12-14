@@ -3,8 +3,8 @@ package de.bentrm.datacat.graphql.fetcher;
 import de.bentrm.datacat.catalog.domain.*;
 import de.bentrm.datacat.catalog.service.AssignsPropertyWithValuesService;
 import de.bentrm.datacat.catalog.service.CatalogService;
-import de.bentrm.datacat.catalog.service.PropertyService;
-import de.bentrm.datacat.catalog.service.ValueService;
+import de.bentrm.datacat.catalog.service.PropertyRecordService;
+import de.bentrm.datacat.catalog.service.ValueRecordService;
 import graphql.schema.DataFetcher;
 import org.springframework.stereotype.Component;
 
@@ -22,8 +22,8 @@ public class AssignsPropertyWithValuesFetchers extends AbstractFetchers<XtdRelAs
 
     public AssignsPropertyWithValuesFetchers(AssignsPropertyWithValuesService entityService,
                                              CatalogService catalogService,
-                                             PropertyService propertyService,
-                                             ValueService valueService) {
+                                             PropertyRecordService propertyService,
+                                             ValueRecordService valueService) {
         super(entityService);
 
         this.relatingObject = environment -> {

@@ -45,7 +45,14 @@ public class SearchFetchers implements QueryFetchers {
         return environment -> {
             Map<String, Object> argument = environment.getArgument("input");
             SearchInput searchInput = inputMapper.toSearchInput(argument);
+
             if (searchInput == null) searchInput = new SearchInput();
+
+            Integer pageSize = environment.getArgument("pageSize");
+            if (pageSize != null) searchInput.setPageSize(pageSize);
+
+            Integer pageNumber = environment.getArgument("pageNumber");
+            if (pageNumber != null) searchInput.setPageNumber(pageNumber);
 
             CatalogItemSpecification spec = specificationMapper.toCatalogItemSpecification(searchInput);
 

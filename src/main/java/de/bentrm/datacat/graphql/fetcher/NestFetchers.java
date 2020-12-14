@@ -1,7 +1,7 @@
 package de.bentrm.datacat.graphql.fetcher;
 
 import de.bentrm.datacat.catalog.domain.XtdNest;
-import de.bentrm.datacat.catalog.service.NestService;
+import de.bentrm.datacat.catalog.service.NestRecordService;
 import de.bentrm.datacat.graphql.fetcher.delegate.CollectionFetchersDelegate;
 import de.bentrm.datacat.graphql.fetcher.delegate.RootFetchersDelegate;
 import graphql.schema.DataFetcher;
@@ -16,7 +16,7 @@ public class NestFetchers extends AbstractFetchers<XtdNest> {
     private final RootFetchersDelegate rootFetchersDelegate;
     private final CollectionFetchersDelegate collectionFetchersDelegate;
 
-    public NestFetchers(NestService queryService,
+    public NestFetchers(NestRecordService queryService,
                         RootFetchersDelegate rootFetchersDelegate,
                         CollectionFetchersDelegate collectionFetchersDelegate) {
         super(queryService);

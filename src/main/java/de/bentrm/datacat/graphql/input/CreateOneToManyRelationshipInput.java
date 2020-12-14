@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 public class CreateOneToManyRelationshipInput {
     @NotNull OneToManyRelationshipType relationshipType;
-    @Valid EntryPropertiesInput properties;
+    @Valid CatalogEntryPropertiesInput properties;
     @NotBlank String from;
     @NotEmpty List<@NotBlank String> to;
 }

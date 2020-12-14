@@ -1,7 +1,7 @@
 package de.bentrm.datacat.graphql.fetcher;
 
 import de.bentrm.datacat.catalog.domain.XtdActivity;
-import de.bentrm.datacat.catalog.service.ActivityService;
+import de.bentrm.datacat.catalog.service.ActivityRecordService;
 import de.bentrm.datacat.graphql.fetcher.delegate.ObjectFetchersDelegate;
 import de.bentrm.datacat.graphql.fetcher.delegate.RootFetchersDelegate;
 import graphql.schema.DataFetcher;
@@ -16,7 +16,7 @@ public class ActivityFetchers extends AbstractFetchers<XtdActivity> {
     private final RootFetchersDelegate rootFetchersDelegate;
     private final ObjectFetchersDelegate objectFetchersDelegate;
 
-    public ActivityFetchers(ActivityService queryService,
+    public ActivityFetchers(ActivityRecordService queryService,
                             RootFetchersDelegate rootFetchersDelegate,
                             ObjectFetchersDelegate objectFetchersDelegate) {
         super(queryService);
