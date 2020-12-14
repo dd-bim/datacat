@@ -26,5 +26,5 @@ public class XtdRelAssignsMeasures extends XtdRelationship {
     private XtdProperty relatingProperty;
 
     @Relationship(type = RELATIONSHIP_TYPE)
-    private final Set<XtdMeasureWithUnit> relatedMeasures = new HashSet<>();
+    private final Set<Measure> relatedMeasures = new HashSet<>();
 }

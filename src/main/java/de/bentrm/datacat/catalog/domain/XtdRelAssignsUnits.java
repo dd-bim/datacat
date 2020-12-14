@@ -19,7 +19,7 @@ public class XtdRelAssignsUnits extends XtdRelationship {
     public static final String RELATIONSHIP_TYPE = "ASSIGNS_UNIT";
 
     @Relationship(type = RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
-    private XtdMeasureWithUnit relatingMeasure;
+    private Measure relatingMeasure;
 
     @Relationship(type = RELATIONSHIP_TYPE)
     private final Set<XtdUnit> relatedUnits = new HashSet<>();
