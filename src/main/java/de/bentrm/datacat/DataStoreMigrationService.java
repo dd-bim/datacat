@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @Transactional
-public class MigrationService implements ApplicationRunner, ResourceLoaderAware {
+public class DataStoreMigrationService implements ApplicationRunner, ResourceLoaderAware {
 
     private final String MIGRATIONS_RESOURCE_PATTERN = "classpath:migrations/*.cql";
 
