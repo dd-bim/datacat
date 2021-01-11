@@ -449,7 +449,7 @@ type Query {
     findAssignsCollections(input: FilterInput): XtdRelAssignsCollectionsConnection!
 
     getAssignsPropertyWithValues(id: ID!): XtdRelAssignsPropertyWithValues
-    findAassignsPropertyWithValues(input: FilterInput): XtdRelAssignsPropertyWithValuesConnection!
+    findAssignsPropertyWithValues(input: FilterInput): XtdRelAssignsPropertyWithValuesConnection!
 
     getDocuments(id: ID!): XtdRelDocuments
     findDocuments(input: FilterInput): XtdRelDocumentsConnection!
