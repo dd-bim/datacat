@@ -477,4 +477,7 @@ type Query {
 
     getAssignsUnits(id: ID!): XtdRelAssignsUnits
     findAssignsUnits(input: FilterInput): XtdRelAssignsUnitsConnection
+
+    getAssignsValues(id: ID!): XtdRelAssignsValues
+    findAssignsValues(input: FilterInput): XtdRelAssignsValuesConnection
 }
