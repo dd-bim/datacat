@@ -137,7 +137,7 @@ enum RelationshipType {
     AssignsCollections
     AssignsMeasures
     AssignsProperties
-    AssignsPropertiesWithValues
+    AssignsPropertyWithValues
     AssignsUnits
     AssignsValues
     Associates
