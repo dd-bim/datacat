@@ -7,7 +7,6 @@ import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.StringSubstitutor;
 import org.hibernate.validator.constraints.URL;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -34,11 +33,14 @@ public class EmailServiceImpl implements EmailService {
             Kind regards
             """;
 
-    @Autowired(required = false)
-    private JavaMailSender javaMailSender;
+    private final JavaMailSender javaMailSender;
 
-    @Autowired
-    private AppProperties properties;
+    private final AppProperties properties;
+
+    public EmailServiceImpl(JavaMailSender javaMailSender, AppProperties properties) {
+        this.javaMailSender = javaMailSender;
+        this.properties = properties;
+    }
 
     @Timed("datacat.service.email.send")
     @Override
