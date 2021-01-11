@@ -11,7 +11,6 @@ import de.bentrm.datacat.auth.service.dto.AccountUpdateDto;
 import de.bentrm.datacat.auth.specification.UserSpecification;
 import de.bentrm.datacat.base.repository.EmailConfirmationRepository;
 import de.bentrm.datacat.base.repository.UserRepository;
-import de.bentrm.datacat.catalog.service.UserService;
 import de.bentrm.datacat.catalog.service.value.ValueMapper;
 import org.neo4j.ogm.cypher.query.Pagination;
 import org.neo4j.ogm.cypher.query.SortOrder;
@@ -45,9 +44,6 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private EmailConfirmationRepository emailConfirmationRepository;
