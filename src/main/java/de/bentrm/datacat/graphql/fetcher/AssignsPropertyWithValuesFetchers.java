@@ -1,7 +1,7 @@
 package de.bentrm.datacat.graphql.fetcher;
 
 import de.bentrm.datacat.catalog.domain.*;
-import de.bentrm.datacat.catalog.service.AssignsPropertyWithValuesService;
+import de.bentrm.datacat.catalog.service.AssignsPropertyWithValuesRecordService;
 import de.bentrm.datacat.catalog.service.CatalogService;
 import de.bentrm.datacat.catalog.service.PropertyRecordService;
 import de.bentrm.datacat.catalog.service.ValueRecordService;
@@ -20,7 +20,7 @@ public class AssignsPropertyWithValuesFetchers extends AbstractFetchers<XtdRelAs
     private final DataFetcher<XtdProperty> relatedProperty;
     private final DataFetcher<List<XtdValue>> relatedValues;
 
-    public AssignsPropertyWithValuesFetchers(AssignsPropertyWithValuesService entityService,
+    public AssignsPropertyWithValuesFetchers(AssignsPropertyWithValuesRecordService entityService,
                                              CatalogService catalogService,
                                              PropertyRecordService propertyService,
                                              ValueRecordService valueService) {

@@ -11,11 +11,11 @@ import java.util.List;
 public interface RootRepository extends EntityRepository<XtdRoot> {
 
     @Query("""
-        MATCH (start:XtdBag)
+        MATCH (start:XtdRoot)
         WHERE start.id IN $startIds
         CALL apoc.path.expandConfig(start, {
-            beginSequenceAtStart:false,
-            sequence:'>, XtdRelationship, >, >XtdRoot'
+            beginSequenceAtStart: false,
+            sequence: '>, XtdRelationship, >, >XtdRoot'
         }) YIELD path
         WITH [x IN nodes(path) WHERE NOT x:XtdRelationship | x.id] AS paths
         RETURN paths

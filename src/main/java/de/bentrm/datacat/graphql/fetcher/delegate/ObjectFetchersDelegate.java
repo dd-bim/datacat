@@ -6,7 +6,7 @@ import de.bentrm.datacat.catalog.domain.XtdRelAssignsProperties;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsPropertyWithValues;
 import de.bentrm.datacat.catalog.service.AssignsCollectionsRecordService;
 import de.bentrm.datacat.catalog.service.AssignsPropertiesRecordService;
-import de.bentrm.datacat.catalog.service.AssignsPropertyWithValuesService;
+import de.bentrm.datacat.catalog.service.AssignsPropertyWithValuesRecordService;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.fetcher.RelationshipFetcher;
 import graphql.schema.DataFetcher;
@@ -28,7 +28,7 @@ public class ObjectFetchersDelegate implements FetchingDelegate {
 
     public ObjectFetchersDelegate(AssignsCollectionsRecordService assignsCollectionsService,
                                   AssignsPropertiesRecordService assignsPropertiesService,
-                                  AssignsPropertyWithValuesService assignsPropertyWithValuesService) {
+                                  AssignsPropertyWithValuesRecordService assignsPropertyWithValuesService) {
         this.assignedCollectionsFetcher = new RelationshipFetcher<>(assignsCollectionsService) {
             @Override
             public Connection<XtdRelAssignsCollections> get(DataFetchingEnvironment environment) {

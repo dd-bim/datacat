@@ -56,9 +56,9 @@ public class AssignsUnitsRecordServiceImpl
 
     @Override
     protected void setRelatedRecords(@NotNull XtdRelAssignsUnits relationshipRecord, @NotEmpty List<@NotBlank String> relatedRecordIds) {
-        final Iterable<XtdUnit> things = unitRepository.findAllById(relatedRecordIds, 0);
+        final Iterable<XtdUnit> units = unitRepository.findAllById(relatedRecordIds, 0);
         final List<XtdUnit> related = StreamSupport
-                .stream(things.spliterator(), false)
+                .stream(units.spliterator(), false)
                 .collect(Collectors.toList());
 
         relationshipRecord.getRelatedUnits().clear();

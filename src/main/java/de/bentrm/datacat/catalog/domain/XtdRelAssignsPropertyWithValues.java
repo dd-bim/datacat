@@ -6,6 +6,7 @@ import lombok.ToString;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -24,5 +25,5 @@ public class XtdRelAssignsPropertyWithValues extends XtdRelationship {
     private XtdProperty relatedProperty;
 
     @Relationship(type = RELATIONSHIP_TYPE)
-    private List<XtdValue> relatedValues;
+    private List<XtdValue> relatedValues = new ArrayList<>();
 }
