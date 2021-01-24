@@ -27,7 +27,7 @@ public abstract class XtdObject extends XtdRoot {
     @Relationship(type = XtdRelAssignsProperties.RELATIONSHIP_TYPE)
     private final Set<XtdRelAssignsProperties> assignedProperties = new HashSet<>();
 
-    @Relationship(type = "ASSIGNS_PROPERTY_WITH_VALUES")
+    @Relationship(type = XtdRelAssignsPropertyWithValues.RELATIONSHIP_TYPE)
     private final Set<XtdRelAssignsPropertyWithValues> assignedPropertiesWithValues = new HashSet<>();
 
     @Override

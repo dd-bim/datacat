@@ -24,7 +24,7 @@ public class XtdProperty extends XtdObject {
     @Relationship(type = XtdRelAssignsMeasures.RELATIONSHIP_TYPE)
     private final Set<XtdRelAssignsMeasures> assignedMeasures = new HashSet<>();
 
-    @Relationship(type = "RELATED_PROPERTY", direction = Relationship.INCOMING)
+    @Relationship(type = XtdRelAssignsPropertyWithValues.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
     private final Set<XtdRelAssignsPropertyWithValues> assignedWithValues = new HashSet<>();
 
     @Override
