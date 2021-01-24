@@ -8,6 +8,8 @@ import de.bentrm.datacat.auth.service.dto.AccountUpdateDto;
 import de.bentrm.datacat.auth.service.dto.ProfileDto;
 import de.bentrm.datacat.auth.service.dto.ProfileUpdateDto;
 import de.bentrm.datacat.catalog.domain.CatalogItem;
+import de.bentrm.datacat.catalog.domain.Tag;
+import de.bentrm.datacat.catalog.domain.Translation;
 import de.bentrm.datacat.catalog.domain.XtdRelationship;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
@@ -48,4 +50,8 @@ public interface ValueMapper {
     ProfileDto toProfileDto(User user);
 
     void setProperties(ProfileUpdateDto dto, @MappingTarget User user);
+
+    TagValue toValue(Tag tag);
+
+    TranslationValue toValue(Translation translation);
 }

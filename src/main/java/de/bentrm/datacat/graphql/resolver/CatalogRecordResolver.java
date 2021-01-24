@@ -8,17 +8,21 @@ import graphql.TypeResolutionEnvironment;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLSchema;
 import org.apache.commons.lang3.NotImplementedException;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ConceptResolver implements CustomResolver {
+public class CatalogRecordResolver implements CustomResolver {
 
-    @Autowired
-    private XtdRootResolver rootTypeResolver;
+    private final XtdRootResolver rootTypeResolver;
 
-    @Autowired
-    private XtdRelationshipResolver relationshipTypeResolver;
+    private final XtdRelationshipResolver relationshipTypeResolver;
+
+    public CatalogRecordResolver(@Qualifier("xtdRootResolver") XtdRootResolver rootTypeResolver,
+                                 @Qualifier("xtdRelationshipResolver") XtdRelationshipResolver relationshipTypeResolver) {
+        this.rootTypeResolver = rootTypeResolver;
+        this.relationshipTypeResolver = relationshipTypeResolver;
+    }
 
     @Override
     public String getTypeName() {

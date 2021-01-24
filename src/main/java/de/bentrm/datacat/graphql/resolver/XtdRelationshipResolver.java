@@ -7,7 +7,7 @@ import graphql.schema.GraphQLSchema;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("xtdRelationshipResolver")
 public class XtdRelationshipResolver implements CustomResolver {
 
     @Override

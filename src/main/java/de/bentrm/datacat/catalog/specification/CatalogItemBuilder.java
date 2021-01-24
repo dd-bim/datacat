@@ -2,6 +2,7 @@ package de.bentrm.datacat.catalog.specification;
 
 import de.bentrm.datacat.base.specification.GenericBuilder;
 import de.bentrm.datacat.base.specification.HasLabelComparison;
+import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import de.bentrm.datacat.catalog.domain.Tag;
 import de.bentrm.datacat.catalog.domain.Translation;
 import lombok.ToString;
@@ -12,6 +13,7 @@ import org.neo4j.ogm.cypher.Filter;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @ToString(callSuper = true)
@@ -29,14 +31,20 @@ public abstract class CatalogItemBuilder<B extends CatalogItemBuilder<B>> extend
         return self();
     }
 
-    public B entityTypeIn(final List<String> labels) {
+    public B entityTypeIn(final List<CatalogRecordType> recordTypes) {
+        final List<String> labels = recordTypes.stream()
+                .map(CatalogRecordType::getLabel)
+                .collect(Collectors.toList());
         final Filter filter = new Filter(new HasLabelComparison(labels));
         filter.setBooleanOperator(BooleanOperator.AND);
         filters.add(filter);
         return self();
     }
 
-    public B entityTypeNotIn(final List<String> labels) {
+    public B entityTypeNotIn(final List<CatalogRecordType> recordTypes) {
+        final List<String> labels = recordTypes.stream()
+                .map(CatalogRecordType::getLabel)
+                .collect(Collectors.toList());
         final Filter filter = new Filter(new HasLabelComparison(labels));
         filter.setBooleanOperator(BooleanOperator.AND);
         filter.setNegated(true);

@@ -264,12 +264,6 @@ public class CatalogServiceImpl implements CatalogService {
         }
 
         return PageableExecutionUtils.getPage(List.copyOf(catalogItems), pageable, () -> count);
-//        // TODO: Quickfix
-//        final List<String> ids = all.getContent().stream().map(CatalogItem::getId).collect(Collectors.toList());
-//        final List<CatalogItem> pageContent = new ArrayList<>();
-//        final Iterable<CatalogItem> reloaded = catalogItemRepository.findAllById(ids);
-//        reloaded.forEach(pageContent::add);
-//        return PageableExecutionUtils.getPage(pageContent, all.getPageable(), all::getTotalElements);
     }
 
     @Override

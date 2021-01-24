@@ -1,18 +1,63 @@
-enum CatalogEntryType {
-    Actor
+enum SimpleRecordType {
     Activity
+    Actor
     Bag
     Classification
     ExternalDocument
     Measure
     Nest
-    Subject
     Property
+    Subject
     Unit
     Value
 }
 
-union CatalogEntry =
+enum RelationshipRecordType {
+    ActsUpon
+    AssignsCollections
+    AssignsMeasures
+    AssignsProperties
+    AssignsPropertyWithValues
+    AssignsUnits
+    AssignsValues
+    Associates
+    Collects
+    Composes
+    Documents
+    Groups
+    Sequences
+    Specializes
+}
+
+enum CatalogRecordType {
+    Activity
+    Actor
+    Bag
+    Classification
+    ExternalDocument
+    Measure
+    Nest
+    Property
+    Subject
+    Unit
+    Value
+    ActsUpon
+    AssignsCollections
+    AssignsMeasures
+    AssignsProperties
+    AssignsPropertyWithValues
+    AssignsUnits
+    AssignsValues
+    Associates
+    Collects
+    Composes
+    Documents
+    Groups
+    Sequences
+    Specializes
+}
+
+union SimpleRecord =
     | XtdActor
     | XtdActivity
     | XtdBag
@@ -24,6 +69,22 @@ union CatalogEntry =
     | XtdProperty
     | XtdUnit
     | XtdValue
+
+union RelationshipRecord =
+    | XtdRelActsUpon
+    | XtdRelAssignsCollections
+    | XtdRelAssignsMeasures
+    | XtdRelAssignsProperties
+    | XtdRelAssignsPropertyWithValues
+    | XtdRelAssignsUnits
+    | XtdRelAssignsValues
+    | XtdRelAssociates
+    | XtdRelCollects
+    | XtdRelComposes
+    | XtdRelDocuments
+    | XtdRelGroups
+    | XtdRelSequences
+    | XtdRelSpecializes
 
 input VersionInput {
     versionId: String
@@ -38,7 +99,7 @@ input PropertiesInput {
 }
 
 input CreateCatalogEntryInput {
-    catalogEntryType: CatalogEntryType!
+    catalogEntryType: SimpleRecordType!
     properties: PropertiesInput!
     tags: [ID!]
 }
@@ -48,132 +109,22 @@ input DeleteCatalogEntryInput {
 }
 
 type CreateCatalogEntryPayload {
-    catalogEntry: CatalogEntry
+    catalogEntry: SimpleRecord
 }
 
 type DeleteCatalogEntryPayload {
-    catalogEntry: CatalogEntry
+    catalogEntry: SimpleRecord
 }
-
-enum OneToOneRelationshipType {
-    Sequences
-}
-
-union OneToOneRelationship =
-    | XtdRelSequences
-
-input CreateOneToOneRelationshipInput {
-    relationshipType: OneToOneRelationshipType!
-    properties: PropertiesInput
-    from: ID!
-    to: ID!
-}
-
-type CreateOneToOneRelationshipPayload {
-    relationship: OneToOneRelationship
-}
-
-enum OneToManyRelationshipType {
-    ActsUpon
-    AssignsCollections
-    AssignsMeasures
-    AssignsProperties
-    AssignsUnits
-    AssignsValues
-    Associates
-    Collects
-    Composes
-    Documents
-    Groups
-    Specializes
-}
-
-union OneToManyRelationship =
-    | XtdRelActsUpon
-    | XtdRelAssignsCollections
-    | XtdRelAssignsMeasures
-    | XtdRelAssignsProperties
-    | XtdRelAssignsUnits
-    | XtdRelAssignsValues
-    | XtdRelAssociates
-    | XtdRelCollects
-    | XtdRelComposes
-    | XtdRelDocuments
-    | XtdRelGroups
-    | XtdRelSpecializes
-
-input CreateOneToManyRelationshipInput {
-    relationshipType: OneToManyRelationshipType!
-    properties: PropertiesInput
-    from: ID!
-    to: [ID!]!
-}
-
-type CreateOneToManyRelationshipPayload {
-    relationship: OneToManyRelationship
-}
-
-enum QualifiedOneToOneRelationshipType {
-    AssignsPropertyWithValues
-}
-
-union QualifiedOneToOneRelationship =
-    | XtdRelAssignsPropertyWithValues
-
-input CreateQualifiedOneToOneRelationshipInput {
-    relationshipType: QualifiedOneToOneRelationshipType!
-    properties: PropertiesInput
-    from: ID!
-    to: ID!
-    with: [ID!]!
-}
-
-type CreateQualifiedOneToOneRelationshipPayload {
-    relationship: QualifiedOneToOneRelationship
-}
-
-enum RelationshipType {
-    ActsUpon
-    AssignsCollections
-    AssignsMeasures
-    AssignsProperties
-    AssignsPropertyWithValues
-    AssignsUnits
-    AssignsValues
-    Associates
-    Collects
-    Composes
-    Documents
-    Groups
-    Sequences
-    Specializes
-}
-
-union Relationship =
-    | XtdRelActsUpon
-    | XtdRelAssignsCollections
-    | XtdRelAssignsMeasures
-    | XtdRelAssignsProperties
-    | XtdRelAssignsPropertyWithValues
-    | XtdRelAssignsUnits
-    | XtdRelAssignsValues
-    | XtdRelAssociates
-    | XtdRelCollects
-    | XtdRelComposes
-    | XtdRelDocuments
-    | XtdRelGroups
-    | XtdRelSequences
-    | XtdRelSpecializes
 
 input CreateRelationshipInput {
-    relationshipType: RelationshipType!
+    relationshipType: RelationshipRecordType!
     properties: PropertiesInput
     fromId: ID!
     toIds: [ID!]!
 }
 
 type CreateRelationshipPayload {
-    relationship: Relationship
+    relationship: RelationshipRecord
 }
 
 input SetRelatedEntriesInput {
@@ -182,7 +133,7 @@ input SetRelatedEntriesInput {
 }
 
 type SetRelatedEntriesPayload {
-    relationship: Relationship
+    relationship: RelationshipRecord
 }
 
 input DeleteRelationshipInput {
@@ -190,7 +141,7 @@ input DeleteRelationshipInput {
 }
 
 type DeleteRelationshipPayload {
-    relationship: Relationship
+    relationship: RelationshipRecord
 }
 
 input SetVersionInput {
@@ -199,7 +150,7 @@ input SetVersionInput {
 }
 
 type SetVersionPayload {
-    catalogEntry: CatalogEntry
+    catalogEntry: SimpleRecord
 }
 
 input TranslationInput {
@@ -229,15 +180,15 @@ input DeleteNameInput {
 }
 
 type AddNamePayload {
-    catalogEntry: CatalogEntry
+    catalogEntry: SimpleRecord
 }
 
 type UpdateNamePayload {
-    catalogEntry: CatalogEntry
+    catalogEntry: SimpleRecord
 }
 
 type DeleteNamePayload {
-    catalogEntry: CatalogEntry
+    catalogEntry: SimpleRecord
 }
 
 input AddDescriptionInput {
@@ -256,15 +207,15 @@ input DeleteDescriptionInput {
 }
 
 type AddDescriptionPayload {
-    catalogEntry: CatalogEntry
+    catalogEntry: SimpleRecord
 }
 
 type UpdateDescriptionPayload {
-    catalogEntry: CatalogEntry
+    catalogEntry: SimpleRecord
 }
 
 type DeleteDescriptionPayload {
-    catalogEntry: CatalogEntry
+    catalogEntry: SimpleRecord
 }
 
 enum ToleranceType {
@@ -364,7 +315,7 @@ input AddTagInput {
 }
 
 type AddTagPayload {
-    catalogEntry: CatalogEntry
+    catalogEntry: SimpleRecord
     tag: Tag
 }
 
@@ -374,7 +325,7 @@ input RemoveTagInput {
 }
 
 type RemoveTagPayload {
-    catalogEntry: CatalogEntry
+    catalogEntry: SimpleRecord
     tag: Tag
 }
 
@@ -385,16 +336,6 @@ type Mutation {
 
     # Deletes the entry from the catalog.
     deleteCatalogEntry(input: DeleteCatalogEntryInput!): DeleteCatalogEntryPayload
-
-    # Creates a relationship between two related catalog entries.
-    createOneToOneRelationship(input: CreateOneToOneRelationshipInput!): CreateOneToOneRelationshipPayload @deprecated
-
-    # Creates a relationship between a catalog entry and one or many related entries.
-    createOneToManyRelationship(input: CreateOneToManyRelationshipInput!): CreateOneToManyRelationshipPayload @deprecated
-
-    # Creates a relationship between two related catalog entries that is further described by the
-    # relation with one or many qualifing catalog entries.
-    createQualifiedOneToManyRelationship(input: CreateQualifiedOneToOneRelationshipInput!): CreateQualifiedOneToOneRelationshipPayload @deprecated
 
     # Creates a relationship originating from the given catalog entry.
     # The related entries must be added with subsequent requests.

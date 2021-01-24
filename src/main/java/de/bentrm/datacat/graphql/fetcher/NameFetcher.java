@@ -18,6 +18,4 @@ public class NameFetcher extends LocalizedAttributeFetcher implements DataFetche
                 .getName(priorityList)
                 .map(Translation::getValue);
     }
-
-
 }

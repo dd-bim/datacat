@@ -1,18 +1,17 @@
 package de.bentrm.datacat.graphql.resolver;
 
-import de.bentrm.datacat.catalog.domain.XtdRelSequences;
+import de.bentrm.datacat.catalog.domain.XtdExternalDocument;
 import graphql.TypeResolutionEnvironment;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLSchema;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OneToOneRelationshipResolver implements CustomResolver {
+public class SimpleRecordResolver extends XtdRootResolver {
 
     @Override
     public String getTypeName() {
-        return "OneToOneRelationship";
+        return "SimpleRecord";
     }
 
     @Override
@@ -20,9 +19,9 @@ public class OneToOneRelationshipResolver implements CustomResolver {
         Object obj = env.getObject();
         GraphQLSchema schema = env.getSchema();
 
-        if (obj instanceof XtdRelSequences) {
-            return schema.getObjectType(XtdRelSequences.LABEL);
+        if (obj instanceof XtdExternalDocument) {
+            return schema.getObjectType(XtdExternalDocument.LABEL);
         }
-        throw new NotImplementedException("Unsupported type: " + obj);
+        return super.getType(env);
     }
 }

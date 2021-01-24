@@ -1,6 +1,7 @@
 package de.bentrm.datacat.graphql.fetcher;
 
 import de.bentrm.datacat.catalog.domain.CatalogItem;
+import de.bentrm.datacat.catalog.service.CatalogSearchService;
 import de.bentrm.datacat.catalog.service.CatalogService;
 import de.bentrm.datacat.catalog.service.value.HierarchyValue;
 import de.bentrm.datacat.catalog.specification.CatalogItemSpecification;
@@ -33,6 +34,9 @@ public class SearchFetchers implements QueryFetchers {
     @Autowired
     private CatalogService catalogService;
 
+    @Autowired
+    private CatalogSearchService catalogSearchService;
+
     @Override
     public Map<String, DataFetcher> getQueryFetchers() {
         return Map.ofEntries(
@@ -57,10 +61,10 @@ public class SearchFetchers implements QueryFetchers {
             CatalogItemSpecification spec = specificationMapper.toCatalogItemSpecification(searchInput);
 
             if (environment.getSelectionSet().containsAnyOf("nodes/*", "pageInfo/*")) {
-                Page<CatalogItem> page = catalogService.findAllCatalogItems(spec);
+                Page<CatalogItem> page = catalogSearchService.search(spec);
                 return Connection.of(page);
             } else {
-                long totalElements = catalogService.countCatalogItems(spec);
+                long totalElements = catalogSearchService.count(spec);
                 return Connection.empty(totalElements);
             }
 
@@ -75,5 +79,7 @@ public class SearchFetchers implements QueryFetchers {
             final CatalogItemSpecification rootNodeSpecification = specificationMapper.toCatalogItemSpecification(rootNodeFilter);
             return catalogService.getHierarchy(rootNodeSpecification, DEFAULT_HIERARCHY_DEPTH);
         };
-    };
+    }
+
+    ;
 }

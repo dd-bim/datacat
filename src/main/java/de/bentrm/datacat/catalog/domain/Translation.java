@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang3.LocaleUtils;
-import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 import org.springframework.data.annotation.PersistenceConstructor;
@@ -30,7 +29,6 @@ public class Translation extends Entity {
 
     @EqualsAndHashCode.Include
     @ToString.Include
-    @Index
     @NotBlank
     @Property("label")
     private String value;

@@ -1,6 +1,6 @@
 package de.bentrm.datacat.graphql.input;
 
-import de.bentrm.datacat.catalog.domain.EntityType;
+import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import lombok.Data;
 
 import javax.validation.Valid;
@@ -11,8 +11,8 @@ import java.util.List;
 public class SearchInput {
     private String query;
     private List<@NotNull @Valid EntryFilterInput> filters;
-    private List<@NotNull EntityType> entityTypeIn;
-    private List<@NotNull EntityType> entityTypeNotIn;
+    private List<@NotNull CatalogRecordType> entityTypeIn;
+    private List<@NotNull CatalogRecordType> entityTypeNotIn;
     private List<@NotNull String> idIn;
     private List<@NotNull String> idNotIn;
     private List<@NotNull String> tagged;

@@ -9,7 +9,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("xtdRootResolver")
 public class XtdRootResolver implements CustomResolver {
 
     @Autowired
