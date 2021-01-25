@@ -21,20 +21,22 @@ public class XtdProperty extends XtdObject {
 
     public static final String LABEL = "XtdProperty";
 
-    @Relationship(type = XtdRelAssignsMeasures.RELATIONSHIP_TYPE)
-    private final Set<XtdRelAssignsMeasures> assignedMeasures = new HashSet<>();
+    @Relationship(type = XtdRelAssignsProperties.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
+    private final Set<XtdRelAssignsProperties> assignedTo = new HashSet<>();
 
     @Relationship(type = XtdRelAssignsPropertyWithValues.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
     private final Set<XtdRelAssignsPropertyWithValues> assignedWithValues = new HashSet<>();
 
+    @Relationship(type = XtdRelAssignsMeasures.RELATIONSHIP_TYPE)
+    private final Set<XtdRelAssignsMeasures> assignedMeasures = new HashSet<>();
+
     @Override
     public List<XtdRelationship> getOwnedRelationships() {
-        return Stream
-                .of(
-                        super.getOwnedRelationships(),
-                        assignedMeasures,
-                        assignedWithValues
-                )
+        return Stream.of(
+                super.getOwnedRelationships(),
+                assignedWithValues,
+                assignedMeasures
+        )
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
 

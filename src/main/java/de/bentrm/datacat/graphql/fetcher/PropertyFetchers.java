@@ -50,7 +50,7 @@ public class PropertyFetchers extends AbstractFetchers<XtdProperty> {
             @Override
             public Connection<XtdRelAssignsProperties> get(DataFetchingEnvironment environment) {
                 final XtdProperty source = environment.getSource();
-                final Set<XtdRelAssignsProperties> fieldValues = source.getAssignedProperties();
+                final Set<XtdRelAssignsProperties> fieldValues = source.getAssignedTo();
                 return get(fieldValues, environment);
             }
         };
