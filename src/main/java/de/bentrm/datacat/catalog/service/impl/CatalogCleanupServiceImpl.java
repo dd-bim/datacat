@@ -44,5 +44,8 @@ public class CatalogCleanupServiceImpl implements CatalogCleanupService {
         relationshipRepository
                 .findAllRelationshipsByRelatingId(recordId)
                 .forEach(relationshipRepository::deleteById);
+        relationshipRepository
+                .findAllSingularRelationshipsByRelatedId(recordId)
+                .forEach(relationshipRepository::deleteById);
     }
 }
