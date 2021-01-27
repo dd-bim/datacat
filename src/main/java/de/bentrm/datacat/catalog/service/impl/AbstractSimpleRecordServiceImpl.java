@@ -8,6 +8,7 @@ import de.bentrm.datacat.catalog.service.value.CatalogEntryProperties;
 import de.bentrm.datacat.catalog.service.value.ValueMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.neo4j.ogm.session.SessionFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -29,6 +30,7 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogItem>
         this.cleanupService = cleanupService;
     }
 
+    @Transactional
     @Override
     public @NotNull CatalogItem addRecord(@Valid CatalogEntryProperties properties) {
         try {
@@ -44,6 +46,7 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogItem>
 
     }
 
+    @Transactional
     @Override
     public @NotNull T removeRecord(@NotBlank String id) {
         log.trace("Deleting simple catalog record with id {}...", id);
