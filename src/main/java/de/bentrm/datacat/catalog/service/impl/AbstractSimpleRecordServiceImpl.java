@@ -33,17 +33,26 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogItem>
     @Transactional
     @Override
     public @NotNull CatalogItem addRecord(@Valid CatalogEntryProperties properties) {
+        T newRecord;
         try {
-            T newRecord = this.getDomainClass().getDeclaredConstructor().newInstance();
-            VALUE_MAPPER.setProperties(properties, newRecord);
-            newRecord = this.getRepository().save(newRecord);
-            log.trace("Persisted new catalog entry: {}", newRecord);
-            return newRecord;
+            newRecord = this.getDomainClass().getDeclaredConstructor().newInstance();
         } catch (ReflectiveOperationException e) {
             log.warn("Can not instantiate catalog records of type: {}", this.getDomainClass());
             throw new IllegalArgumentException("unsupported record type");
         }
 
+        if (properties.getId() != null) {
+            final boolean idIsTaken = this.getRepository().existsById(properties.getId().trim());
+            if (idIsTaken) {
+                throw new IllegalArgumentException("Id is already in use.");
+            }
+
+        }
+
+        VALUE_MAPPER.setProperties(properties, newRecord);
+        newRecord = this.getRepository().save(newRecord);
+        log.trace("Persisted new catalog entry: {}", newRecord);
+        return newRecord;
     }
 
     @Transactional
