@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Getter
 @Slf4j
@@ -26,13 +27,13 @@ public abstract class AbstractFetchers<T extends Entity>
     private final NameFetcher nameFetcher = new NameFetcher();
     private final DescriptionFetcher descriptionFetcher = new DescriptionFetcher();
 
-    private final DataFetcher<T> fetchOne;
+    private final DataFetcher<Optional<T>> fetchOne;
     private final DataFetcher<Connection<T>> fetchAll;
 
     public AbstractFetchers(QueryService<T> queryService) {
         this.fetchOne = environment -> {
             String id = environment.getArgument("id");
-            return queryService.findById(id).orElseThrow();
+            return queryService.findById(id);
         };
 
         this.fetchAll = environment -> {
