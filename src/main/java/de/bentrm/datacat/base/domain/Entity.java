@@ -6,7 +6,6 @@ import lombok.ToString;
 import org.neo4j.ogm.annotation.GeneratedValue;
 import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Version;
 import org.neo4j.ogm.id.UuidStrategy;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -38,11 +37,6 @@ public abstract class Entity {
     @EqualsAndHashCode.Include
     @ToString.Include
     private String id;
-
-    @NotNull
-    @Version
-    @ToString.Include
-    private Long version;
 
     @NotNull
     @CreatedDate
