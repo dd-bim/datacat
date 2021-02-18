@@ -1,0 +1,31 @@
+version: "3.7"
+
+# Simple compose configuration to provide required services to
+# test the api during development.
+
+services:
+  db:
+    container_name: "db"
+    image: neo4j:4.1
+    ports:
+      - "7687:7687"
+      - "7474:7474"
+    environment:
+      - NEO4J_AUTH=neo4j/s3cret
+      - NEO4JLABS_PLUGINS=["apoc"]
+    volumes:
+      - "dbdata:/data"
+      - "dblogs:/logs"
+
+  mail:
+    container_name: "mail"
+    image: bentrm/mailslurper:1.14.1
+    ports:
+      - "2500:2500"
+    volumes:
+      - "mail:/data"
+
+volumes:
+  dbdata:
+  dblogs:
+  mail:

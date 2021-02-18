@@ -21,7 +21,7 @@ import java.util.Map;
 public class AppProperties {
 
     @NotNull
-    private ExplorerProperties explorer;
+    private AppProperties.ClientProperties client;
 
     @NotNull
     private AuthProperties auth;
@@ -32,13 +32,22 @@ public class AppProperties {
     @NotNull
     private EmailProperties mail;
 
+    /**
+     * Properties that describe the client application that interacts with the API.
+     */
     @Validated
     @Data
-    public static class ExplorerProperties {
+    public static class ClientProperties {
+        /**
+         * URL that the user is redirected to after successful validation of her email address.
+         */
         @URL
         private String url;
     }
 
+    /**
+     * Authorization properties that are used to generate session / JWT tokens.
+     */
     @Validated
     @Data
     public static class AuthProperties {
@@ -56,32 +65,59 @@ public class AppProperties {
         private String issuer;
     }
 
+    /**
+     * Initial user settings that are applied at first boot.
+     */
     @Validated
     @Data
     public static class UserProperties {
 
+        /**
+         * First name of the user.
+         */
         @NotBlank
         private String firstName;
 
+        /**
+         * Last name of the user.
+         */
         @NotBlank
         private String lastName;
 
+        /**
+         * Email address of the user.
+         */
         @NotBlank
         private String email;
 
+        /**
+         * Organization that the user is registering for.
+         */
         @NotNull
         private String organization = "";
 
+        /**
+         * User password.
+         */
         private String password;
 
+        /**
+         * Roles of the user.
+         */
         @NotEmpty
         private List<@NotNull Role> roles = new ArrayList<>();
     }
 
+    /**
+     * Notification settings. Mail server settings are are set via @{@link org.springframework.boot.autoconfigure.mail.MailSenderPropertiesConfiguration}.
+     */
     @Validated
     @Data
     public static class EmailProperties {
 
+        /**
+         * Sender email for notification messages.
+         */
         @Email
         private String from;
 

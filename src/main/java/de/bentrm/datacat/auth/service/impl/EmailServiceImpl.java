@@ -46,7 +46,7 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendEmailConfirmation(@NotNull EmailConfirmationRequest emailConfirmationRequest) {
         final var emailProperties = properties.getMail();
-        @URL final String url = properties.getExplorer().getUrl();
+        @URL final String url = properties.getClient().getUrl();
         StringSubstitutor substitutor = new StringSubstitutor(Map.ofEntries(
                 Map.entry("name", emailConfirmationRequest.getUser().getName()),
                 Map.entry("url", url),

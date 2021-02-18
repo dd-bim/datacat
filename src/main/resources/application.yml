@@ -1,6 +1,5 @@
 datacat:
-  explorer:
-    url: http://localhost:3000
+  client.url: http://localhost:3000
   auth:
     secret: change-this-in-production
     issuer: datacat.local
@@ -14,8 +13,7 @@ datacat:
         - ADMIN
         - USER
         - READONLY
-  mail:
-    from: postmaster@localhost
+  mail.from: postmaster@localhost
 
 management:
   endpoints:
