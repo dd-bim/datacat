@@ -4,7 +4,7 @@ import de.bentrm.datacat.catalog.domain.*;
 import de.bentrm.datacat.catalog.repository.*;
 import de.bentrm.datacat.catalog.service.CatalogService;
 import de.bentrm.datacat.catalog.service.value.HierarchyValue;
-import de.bentrm.datacat.catalog.specification.CatalogItemSpecification;
+import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
 import de.bentrm.datacat.catalog.specification.RootSpecification;
 import de.bentrm.datacat.graphql.dto.CatalogItemStatistics;
 import de.bentrm.datacat.graphql.dto.CatalogStatistics;
@@ -238,7 +238,7 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
-    public Page<CatalogItem> findAllCatalogItems(CatalogItemSpecification specification) {
+    public Page<CatalogItem> findAllCatalogItems(CatalogRecordSpecification specification) {
         Collection<CatalogItem> catalogItems;
         Pageable pageable;
         final long count = countCatalogItems(specification);
@@ -267,7 +267,7 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
-    public long countCatalogItems(CatalogItemSpecification specification) {
+    public long countCatalogItems(CatalogRecordSpecification specification) {
         final Session session = sessionFactory.openSession();
         return session.count(CatalogItem.class, specification.getFilters());
     }
@@ -279,7 +279,7 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
-    public HierarchyValue getHierarchy(CatalogItemSpecification rootNodeSpecification, int depth) {
+    public HierarchyValue getHierarchy(CatalogRecordSpecification rootNodeSpecification, int depth) {
         final Page<CatalogItem> rootNodes = findAllCatalogItems(rootNodeSpecification);
         final List<String> rootNodeIds = rootNodes.map(CatalogItem::getId).stream().collect(Collectors.toList());
 

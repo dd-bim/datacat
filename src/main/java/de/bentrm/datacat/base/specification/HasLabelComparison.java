@@ -10,6 +10,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 
+/**
+ * Custom Neo4j ORM filter function to find database entities denoted by
+ * a label.
+ */
 @Data
 public class HasLabelComparison implements FilterFunction<Object> {
 

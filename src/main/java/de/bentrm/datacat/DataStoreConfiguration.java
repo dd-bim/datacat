@@ -9,6 +9,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.Optional;
 
+/**
+ * Basic data store configuration.
+ * Picks up all repository implementations of sub-packages and activates
+ * transaction management.
+ */
 @Configuration
 @EnableNeo4jRepositories(
         basePackages = {
@@ -20,6 +25,9 @@ import java.util.Optional;
 @EnableTransactionManagement
 public class DataStoreConfiguration {
 
+    /**
+     * @return The current user id for auditing and logging by the datastore.
+     */
     @Bean
     public AuditorAware<String> auditorAware() {
         return () -> Optional.ofNullable(SecurityContextHolder.getContext()

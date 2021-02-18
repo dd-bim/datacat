@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @ToString(callSuper = true)
-public abstract class CatalogItemBuilder<B extends CatalogItemBuilder<B>> extends GenericBuilder<B> {
+public abstract class CatalogRecordBuilder<B extends CatalogRecordBuilder<B>> extends GenericBuilder<B> {
 
     @Override
     public B query(String query) {

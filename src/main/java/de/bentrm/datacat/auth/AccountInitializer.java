@@ -5,7 +5,6 @@ import de.bentrm.datacat.base.repository.UserRepository;
 import de.bentrm.datacat.properties.AppProperties;
 import de.bentrm.datacat.properties.PropertyMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,21 +12,26 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+/**
+ * Custom account initialization service that creates @{@link User}s on first application
+ * boot. This is a helper mechanism to initialize the first admin user and the like.
+ * In most cases, a user should be registered via the on-boarding routine of the API.
+ */
 @Slf4j
 @Service
 public class AccountInitializer implements ApplicationRunner {
 
-    @Autowired
-    private PropertyMapper propertyMapper;
+    private final PropertyMapper propertyMapper;
+    private final AppProperties properties;
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private AppProperties properties;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private UserRepository userRepository;
+    public AccountInitializer(PropertyMapper propertyMapper, AppProperties properties, PasswordEncoder passwordEncoder, UserRepository userRepository) {
+        this.propertyMapper = propertyMapper;
+        this.properties = properties;
+        this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
+    }
 
     @Override
     public void run(ApplicationArguments args) {

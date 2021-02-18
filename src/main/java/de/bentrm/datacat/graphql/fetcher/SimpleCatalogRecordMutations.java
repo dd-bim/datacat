@@ -5,7 +5,7 @@ import de.bentrm.datacat.catalog.domain.CatalogItem;
 import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import de.bentrm.datacat.catalog.service.CatalogService;
 import de.bentrm.datacat.catalog.service.SimpleRecordService;
-import de.bentrm.datacat.catalog.service.value.CatalogEntryProperties;
+import de.bentrm.datacat.catalog.service.value.CatalogRecordProperties;
 import de.bentrm.datacat.graphql.input.ApiInputMapper;
 import de.bentrm.datacat.graphql.input.CatalogEntryPropertiesInput;
 import de.bentrm.datacat.graphql.input.CreateEntryInput;
@@ -54,7 +54,7 @@ public class SimpleCatalogRecordMutations implements MutationFetchers {
             final CreateEntryInput input = OBJECT_MAPPER.convertValue(argument, CreateEntryInput.class);
             final CatalogEntryPropertiesInput propertiesInput = input.getProperties();
 
-            final CatalogEntryProperties properties = ApiInputMapper.INSTANCE.toProperties(propertiesInput);
+            final CatalogRecordProperties properties = ApiInputMapper.INSTANCE.toProperties(propertiesInput);
 
             final SimpleRecordService<?> catalogRecordService = this.getCatalogRecordService(input.getCatalogEntryType());
             final CatalogItem newRecord = catalogRecordService.addRecord(properties);

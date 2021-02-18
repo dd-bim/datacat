@@ -6,6 +6,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Simple password generator only used during account initialization by configuration.
+ */
 public final class PasswordGenerator {
 
     public static String generate() {

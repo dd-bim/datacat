@@ -1,7 +1,7 @@
 package de.bentrm.datacat.graphql.input;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.bentrm.datacat.catalog.service.value.CatalogEntryProperties;
+import de.bentrm.datacat.catalog.service.value.CatalogRecordProperties;
 import de.bentrm.datacat.catalog.service.value.RelationshipProperties;
 import de.bentrm.datacat.catalog.service.value.TranslationValue;
 import org.apache.commons.lang3.LocaleUtils;
@@ -25,7 +25,7 @@ public interface ApiInputMapper {
 
     ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    CatalogEntryProperties toProperties(CatalogEntryPropertiesInput input);
+    CatalogRecordProperties toProperties(CatalogEntryPropertiesInput input);
 
     RelationshipProperties toProperties(RelationshipPropertiesInput input);
 

@@ -9,7 +9,7 @@ public interface HierarchyDao {
      * and tagged with the given tag.
      * The structure can be mapped to a tree.
      *
-     * @param label The label of the root nodes.
+     * @param rootNodeIds The ids of the root nodes of the hierarchy.
      * @param depth The maximum depth of the tree. Should be an even number.
      * @return A list of node id paths.
      */

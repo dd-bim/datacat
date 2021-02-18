@@ -9,7 +9,6 @@ import org.neo4j.ogm.model.QueryStatistics;
 import org.neo4j.ogm.model.Result;
 import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ResourceLoaderAware;
@@ -32,6 +31,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Custom migration service that checks for CQL-migrations on the classpath.
+ * Migrations are run ordered by file name. After successful application of a migration to
+ * the current database, the ID is logged as a @{@link Migration} entity.
+ */
 @Slf4j
 @Service
 @Transactional
@@ -39,18 +43,17 @@ public class DataStoreMigrationService implements ApplicationRunner, ResourceLoa
 
     private final String MIGRATIONS_RESOURCE_PATTERN = "classpath:migrations/*.cql";
 
-    @Autowired
-    private MigrationRepository migrationRepository;
-
-    @Autowired
-    private SessionFactory sessionFactory;
-
-    @Autowired
-    private UtilMapper utilMapper;
-
+    private final MigrationRepository migrationRepository;
+    private final SessionFactory sessionFactory;
+    private final UtilMapper utilMapper;
     private ResourceLoader resourceLoader;
-
     private Session session;
+
+    public DataStoreMigrationService(MigrationRepository migrationRepository, SessionFactory sessionFactory, UtilMapper utilMapper) {
+        this.migrationRepository = migrationRepository;
+        this.sessionFactory = sessionFactory;
+        this.utilMapper = utilMapper;
+    }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -59,6 +62,9 @@ public class DataStoreMigrationService implements ApplicationRunner, ResourceLoa
         runMigrations();
     }
 
+    /**
+     * Finds and executes all migrations on the classpath.
+     */
     private void importMigrationFixtures() throws IOException {
         final Resource[] resources = ResourcePatternUtils
                 .getResourcePatternResolver(resourceLoader)

@@ -12,6 +12,9 @@ import org.springframework.util.Assert;
 import javax.validation.constraints.NotNull;
 import java.util.*;
 
+/**
+ * TODO: Rename to CatalogRecord
+ */
 @Slf4j
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)

@@ -8,12 +8,19 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 
+/**
+ * Event listener bound to the data store.
+ */
 @Component
 public class PreSaveEventListener extends EventListenerAdapter {
 
     @Autowired
     private AuditorAware<String> auditorAware;
 
+    /**
+     * Called before save of any database entity.
+     * @param event The current persistence event.
+     */
     @Override
     public void onPreSave(Event event) {
         final String currentAuditor = auditorAware.getCurrentAuditor().orElse("SYSTEM");

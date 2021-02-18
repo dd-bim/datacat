@@ -2,7 +2,7 @@ package de.bentrm.datacat.catalog.service;
 
 import de.bentrm.datacat.catalog.domain.*;
 import de.bentrm.datacat.catalog.service.value.HierarchyValue;
-import de.bentrm.datacat.catalog.specification.CatalogItemSpecification;
+import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
 import de.bentrm.datacat.catalog.specification.RootSpecification;
 import de.bentrm.datacat.graphql.dto.CatalogStatistics;
 import org.springframework.data.domain.Page;
@@ -82,15 +82,15 @@ public interface CatalogService {
     @NotNull Optional<XtdRelationship> getRelationship(@NotNull String id);
 
     @PreAuthorize("hasRole('READONLY')")
-    @NotNull Page<CatalogItem> findAllCatalogItems(@NotNull CatalogItemSpecification specification);
+    @NotNull Page<CatalogItem> findAllCatalogItems(@NotNull CatalogRecordSpecification specification);
 
     @PreAuthorize("hasRole('READONLY')")
-    long countCatalogItems(@NotNull CatalogItemSpecification specification);
+    long countCatalogItems(@NotNull CatalogRecordSpecification specification);
 
     @PreAuthorize("hasRole('READONLY')")
     long countRootItems(@NotNull RootSpecification specification);
 
     @PreAuthorize("hasRole('READONLY')")
-    HierarchyValue getHierarchy(@NotNull CatalogItemSpecification rootNodeSpecification, int depth);
+    HierarchyValue getHierarchy(@NotNull CatalogRecordSpecification rootNodeSpecification, int depth);
 
 }

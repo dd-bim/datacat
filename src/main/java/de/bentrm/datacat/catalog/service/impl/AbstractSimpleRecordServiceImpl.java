@@ -4,7 +4,7 @@ import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.CatalogItem;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.SimpleRecordService;
-import de.bentrm.datacat.catalog.service.value.CatalogEntryProperties;
+import de.bentrm.datacat.catalog.service.value.CatalogRecordProperties;
 import de.bentrm.datacat.catalog.service.value.ValueMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.neo4j.ogm.session.SessionFactory;
@@ -32,7 +32,7 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogItem>
 
     @Transactional
     @Override
-    public @NotNull CatalogItem addRecord(@Valid CatalogEntryProperties properties) {
+    public @NotNull CatalogItem addRecord(@Valid CatalogRecordProperties properties) {
         T newRecord;
         try {
             newRecord = this.getDomainClass().getDeclaredConstructor().newInstance();

@@ -5,7 +5,7 @@ import de.bentrm.datacat.base.domain.Entity;
 import de.bentrm.datacat.catalog.domain.CatalogItem;
 import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import de.bentrm.datacat.catalog.service.QueryService;
-import de.bentrm.datacat.catalog.specification.CatalogItemSpecification;
+import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.dto.FilterInput;
 import de.bentrm.datacat.graphql.dto.SpecificationMapper;
@@ -41,7 +41,7 @@ public abstract class AbstractFetchers<T extends Entity>
             FilterInput filterInput = objectMapper.convertValue(input, FilterInput.class);
             if (filterInput == null) filterInput = new FilterInput();
 
-            CatalogItemSpecification specification = SpecificationMapper.INSTANCE.toCatalogItemSpecification(filterInput);
+            CatalogRecordSpecification specification = SpecificationMapper.INSTANCE.toCatalogItemSpecification(filterInput);
             if (environment.getSelectionSet().containsAnyOf("nodes/*", "pageInfo/*")) {
                 Page<T> page = queryService.findAll(specification);
                 return Connection.of(page);

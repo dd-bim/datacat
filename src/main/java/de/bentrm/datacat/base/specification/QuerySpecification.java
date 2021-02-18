@@ -11,6 +11,10 @@ import org.springframework.data.domain.Sort;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * An abstract query implementation that can be used to construct filter configurations
+ * that can be used to query the Neo4j backend.
+ */
 @Slf4j
 @Getter
 @ToString

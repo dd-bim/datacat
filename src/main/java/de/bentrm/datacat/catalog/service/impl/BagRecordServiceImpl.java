@@ -6,7 +6,7 @@ import de.bentrm.datacat.catalog.repository.BagRepository;
 import de.bentrm.datacat.catalog.service.BagRecordService;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.EntityMapper;
-import de.bentrm.datacat.catalog.service.value.CatalogEntryProperties;
+import de.bentrm.datacat.catalog.service.value.CatalogRecordProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class BagRecordServiceImpl extends AbstractSimpleRecordServiceImpl<XtdBag
 
     @Transactional
     @Override
-    public @NotNull XtdBag addRecord(CatalogEntryProperties properties) {
+    public @NotNull XtdBag addRecord(CatalogRecordProperties properties) {
         final XtdBag newEntity = new XtdBag();
         EntityMapper.INSTANCE.setProperties(properties, newEntity);
         final XtdBag persistentEntity = getRepository().save(newEntity);

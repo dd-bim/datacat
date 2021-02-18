@@ -15,6 +15,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * A generic builder class that bind method invocations to the creation of
+ * filter configurations. The builder is used to build @{@link QuerySpecification}s
+ * and subclasses thereof.
+ * @param <B> The concrete builder class.
+ */
 @Slf4j
 @ToString
 public abstract class GenericBuilder<B extends GenericBuilder<B>> {

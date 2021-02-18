@@ -30,7 +30,7 @@ public interface ValueMapper {
 
     @Mapping(target = "versionId", source = "version.versionId")
     @Mapping(target = "versionDate", source = "version.versionDate")
-    void setProperties(CatalogEntryProperties properties, @MappingTarget CatalogItem catalogEntry);
+    void setProperties(CatalogRecordProperties properties, @MappingTarget CatalogItem catalogEntry);
 
     @Mapping(target = "versionId", source = "version.versionId")
     @Mapping(target = "versionDate", source = "version.versionDate")

@@ -1,7 +1,7 @@
 package de.bentrm.datacat.catalog.service;
 
 import de.bentrm.datacat.catalog.domain.CatalogItem;
-import de.bentrm.datacat.catalog.service.value.CatalogEntryProperties;
+import de.bentrm.datacat.catalog.service.value.CatalogRecordProperties;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.validation.Valid;
@@ -23,6 +23,6 @@ public interface SimpleRecordService<T extends CatalogItem>
      * @return A new persistent catalog entry.
      */
     @PreAuthorize("hasRole('USER')")
-    @NotNull CatalogItem addRecord(@Valid CatalogEntryProperties properties);
+    @NotNull CatalogItem addRecord(@Valid CatalogRecordProperties properties);
 
 }

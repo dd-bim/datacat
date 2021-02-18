@@ -7,6 +7,9 @@ import de.bentrm.datacat.properties.AppProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Initializes all beans used to generate JWT-authentication tokens.
+ */
 @Configuration
 public class JwtConfiguration {
 

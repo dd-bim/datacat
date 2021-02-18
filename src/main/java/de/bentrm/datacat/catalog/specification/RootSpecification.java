@@ -26,7 +26,7 @@ public final class RootSpecification extends QuerySpecification {
 
     @Slf4j
     @ToString(callSuper = true)
-    public static final class Builder extends CatalogItemBuilder<RootSpecification.Builder> {
+    public static final class Builder extends CatalogRecordBuilder<Builder> {
 
         @Override
         protected Builder self() {

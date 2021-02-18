@@ -19,7 +19,7 @@ public interface EntityMapper {
 
     EntityMapper INSTANCE = Mappers.getMapper(EntityMapper.class);
 
-    default void setProperties(CatalogEntryProperties dto, @MappingTarget CatalogItem item) {
+    default void setProperties(CatalogRecordProperties dto, @MappingTarget CatalogItem item) {
         setProperties(item, dto.getId(), dto.getVersion(), dto.getNames(), dto.getDescriptions());
     }
 

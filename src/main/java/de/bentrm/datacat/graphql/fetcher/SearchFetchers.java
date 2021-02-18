@@ -4,7 +4,7 @@ import de.bentrm.datacat.catalog.domain.CatalogItem;
 import de.bentrm.datacat.catalog.service.CatalogSearchService;
 import de.bentrm.datacat.catalog.service.CatalogService;
 import de.bentrm.datacat.catalog.service.value.HierarchyValue;
-import de.bentrm.datacat.catalog.specification.CatalogItemSpecification;
+import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.dto.SpecificationMapper;
 import de.bentrm.datacat.graphql.input.ApiInputMapper;
@@ -58,7 +58,7 @@ public class SearchFetchers implements QueryFetchers {
             Integer pageNumber = environment.getArgument("pageNumber");
             if (pageNumber != null) searchInput.setPageNumber(pageNumber);
 
-            CatalogItemSpecification spec = specificationMapper.toCatalogItemSpecification(searchInput);
+            CatalogRecordSpecification spec = specificationMapper.toCatalogItemSpecification(searchInput);
 
             if (environment.getSelectionSet().containsAnyOf("nodes/*", "pageInfo/*")) {
                 Page<CatalogItem> page = catalogSearchService.search(spec);
@@ -76,7 +76,7 @@ public class SearchFetchers implements QueryFetchers {
             Map<String, Object> argument = environment.getArgument("input");
             final HierarchyFilterInput input = inputMapper.toHierarchyFilterInput(argument);
             final HierarchyRootNodeFilterInput rootNodeFilter = input.getRootNodeFilter();
-            final CatalogItemSpecification rootNodeSpecification = specificationMapper.toCatalogItemSpecification(rootNodeFilter);
+            final CatalogRecordSpecification rootNodeSpecification = specificationMapper.toCatalogItemSpecification(rootNodeFilter);
             return catalogService.getHierarchy(rootNodeSpecification, DEFAULT_HIERARCHY_DEPTH);
         };
     }

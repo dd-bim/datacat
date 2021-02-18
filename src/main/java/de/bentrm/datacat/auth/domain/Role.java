@@ -2,6 +2,9 @@ package de.bentrm.datacat.auth.domain;
 
 import org.springframework.security.core.GrantedAuthority;
 
+/**
+ * Available user roles.
+ */
 public enum Role implements GrantedAuthority {
 
     SUPERADMIN,

@@ -3,7 +3,7 @@ package de.bentrm.datacat.catalog.service.impl;
 import de.bentrm.datacat.catalog.domain.CatalogItem;
 import de.bentrm.datacat.catalog.service.CatalogSearchService;
 import de.bentrm.datacat.catalog.service.value.ValueMapper;
-import de.bentrm.datacat.catalog.specification.CatalogItemSpecification;
+import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
 import org.neo4j.ogm.cypher.query.Pagination;
 import org.neo4j.ogm.cypher.query.SortOrder;
 import org.neo4j.ogm.session.Session;
@@ -34,7 +34,7 @@ public class CatalogSearchImpl implements CatalogSearchService {
     }
 
     @Override
-    public Page<CatalogItem> search(CatalogItemSpecification specification) {
+    public Page<CatalogItem> search(CatalogRecordSpecification specification) {
         Iterable<CatalogItem> catalogItems;
         Pageable pageable;
         final Session session = sessionFactory.openSession();
@@ -66,7 +66,7 @@ public class CatalogSearchImpl implements CatalogSearchService {
     }
 
     @Override
-    public long count(CatalogItemSpecification specification) {
+    public long count(CatalogRecordSpecification specification) {
         final Session session = sessionFactory.openSession();
         return session.count(CatalogItem.class, specification.getFilters());
     }

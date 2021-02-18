@@ -2,6 +2,9 @@ package de.bentrm.datacat.catalog.domain;
 
 import org.springframework.util.Assert;
 
+/**
+ * Enumeration of all supported catalog record types.
+ */
 public enum CatalogRecordType {
     Activity(XtdActivity.LABEL),
     Actor(XtdActor.LABEL),

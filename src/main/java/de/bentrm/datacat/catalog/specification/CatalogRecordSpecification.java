@@ -12,19 +12,19 @@ import static de.bentrm.datacat.catalog.domain.CatalogItem.DEFAULT_LANGUAGE_TAG;
 
 @Slf4j
 @ToString(callSuper = true)
-public final class CatalogItemSpecification extends QuerySpecification {
+public final class CatalogRecordSpecification extends QuerySpecification {
 
     public static Builder builder() {
         return new Builder();
     }
 
-    private CatalogItemSpecification(Filters filters, Integer pageNumber, Integer pageSize) {
+    private CatalogRecordSpecification(Filters filters, Integer pageNumber, Integer pageSize) {
         super(filters, Sort.Direction.ASC, List.of("labels." + DEFAULT_LANGUAGE_TAG), pageNumber, pageSize);
     }
 
     @Slf4j
     @ToString(callSuper = true)
-    public static final class Builder extends CatalogItemBuilder<Builder> {
+    public static final class Builder extends CatalogRecordBuilder<Builder> {
 
         private Builder() {
         }
@@ -34,8 +34,8 @@ public final class CatalogItemSpecification extends QuerySpecification {
             return this;
         }
 
-        public CatalogItemSpecification build() {
-            return new CatalogItemSpecification(this.filters, this.pageNumber, this.pageSize);
+        public CatalogRecordSpecification build() {
+            return new CatalogRecordSpecification(this.filters, this.pageNumber, this.pageSize);
         }
 
     }
