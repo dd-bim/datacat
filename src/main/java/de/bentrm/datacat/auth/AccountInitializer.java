@@ -38,10 +38,6 @@ public class AccountInitializer implements ApplicationRunner {
         log.info("Running account initialization...");
         final var users = properties.getUsers();
 
-        for (User value : userRepository.findAll()) {
-            log.debug("User present: {}", value);
-        }
-
         for (var entry : users.entrySet()) {
             final String username = entry.getKey();
             final var userProperties = entry.getValue();
