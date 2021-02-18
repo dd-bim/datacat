@@ -17,13 +17,13 @@
 
     <properties>
         <commons-text.version>1.9</commons-text.version>
-        <graphql-java.version>15.0</graphql-java.version>
-        <graphql-spring-boot-starter.version>8.0.0</graphql-spring-boot-starter.version>
-        <java-jwt.version>3.11.0</java-jwt.version>
+        <graphql-java.version>16.2</graphql-java.version>
+        <graphql-spring-boot-starter.version>11.0.0</graphql-spring-boot-starter.version>
+        <java-jwt.version>3.13.0</java-jwt.version>
         <java.version>15</java.version>
         <lombok.version>1.18.12</lombok.version>
-        <mapstruct.version>1.4.1.Final</mapstruct.version>
-        <spring-boot.version>2.3.4.RELEASE</spring-boot.version>
+        <mapstruct.version>1.4.2.Final</mapstruct.version>
+        <spring-boot.version>2.4.2</spring-boot.version>
     </properties>
 
     <repositories>
@@ -79,7 +79,6 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -160,6 +159,11 @@
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
                             <version>${lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok-mapstruct-binding</artifactId>
+                            <version>0.2.0</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
