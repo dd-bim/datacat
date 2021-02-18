@@ -5,9 +5,7 @@ COPY pom.xml .
 RUN mvn dependency:go-offline -B
 
 COPY src/ ./src
-RUN ls -lisah
 RUN mvn package && cp target/*.jar application.jar
-RUN ls -lisah
 RUN java -Djarmode=layertools -jar application.jar extract
 
 FROM adoptopenjdk:15-jre-hotspot-bionic
