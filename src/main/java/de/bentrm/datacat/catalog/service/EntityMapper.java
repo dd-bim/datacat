@@ -2,16 +2,13 @@ package de.bentrm.datacat.catalog.service;
 
 import de.bentrm.datacat.catalog.domain.CatalogItem;
 import de.bentrm.datacat.catalog.service.value.*;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValueCheckStrategy;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-@Mapper(
-        componentModel = "spring",
+@Mapper(componentModel = "spring",
+        unmappedTargetPolicy = ReportingPolicy.WARN,
         nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
 )

@@ -1,12 +1,17 @@
 package de.bentrm.datacat.graphql.payload;
 
-import de.bentrm.datacat.catalog.domain.*;
+import de.bentrm.datacat.catalog.domain.CatalogItem;
+import de.bentrm.datacat.catalog.domain.XtdRelationship;
+import de.bentrm.datacat.catalog.domain.XtdValue;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValueCheckStrategy;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring", nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
+@Mapper(componentModel = "spring",
+        unmappedTargetPolicy = ReportingPolicy.WARN,
+        nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
 public interface PayloadMapper {
 
     PayloadMapper INSTANCE = Mappers.getMapper(PayloadMapper.class);
@@ -22,15 +27,6 @@ public interface PayloadMapper {
 
     @Mapping(source = "relationship", target = "relationship")
     SetRelatedEntriesPayload toSetRelatedEntriesPayload(XtdRelationship relationship);
-
-    @Mapping(source = "relationship", target = "relationship")
-    CreateOneToOneRelationshipPayload toCreateOneToOneRelationshipPayload(XtdRelSequences relationship);
-
-    @Mapping(source = "relationship", target = "relationship")
-    CreateOneToManyRelationshipPayload toCreateOneToManyRelationshipPayload(XtdRelationship relationship);
-
-    @Mapping(source = "relationship", target = "relationship")
-    CreateQualifiedOneToOneRelationshipPayload toCreateQualifiedOneToOneRelationshipPayload(XtdRelAssignsPropertyWithValues relationship);
 
     @Mapping(source = "relationship", target = "relationship")
     DeleteRelationshipPayload toDeleteRelationshipPayload(XtdRelationship relationship);

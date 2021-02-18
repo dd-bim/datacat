@@ -9,11 +9,14 @@ import de.bentrm.datacat.graphql.input.HierarchyRootNodeFilterInput;
 import de.bentrm.datacat.graphql.input.SearchInput;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValueCheckStrategy;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
 import javax.validation.constraints.NotNull;
 
-@Mapper(componentModel = "spring", nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
+@Mapper(componentModel = "spring",
+        unmappedTargetPolicy = ReportingPolicy.WARN,
+        nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
 public interface SpecificationMapper {
     SpecificationMapper INSTANCE = Mappers.getMapper(SpecificationMapper.class);
 

@@ -14,8 +14,8 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.Collection;
 
-@Mapper(
-        componentModel = "spring",
+@Mapper(componentModel = "spring",
+        unmappedTargetPolicy = ReportingPolicy.WARN,
         nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
 )
