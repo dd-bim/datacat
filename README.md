@@ -88,6 +88,9 @@ following command:
 $ docker build . -t bentrm/datacat:${version} -t bentrm/datacat:latest
 ````
 
+A Github action is configured to build new images with every push to the master branch as well as for
+every release that follows the v*.*.* naming convention.
+
 The image should be hosted with a centralized package registry. Current images are available
 at [Docker Hub](https://hub.docker.com/repository/docker/bentrm/datacat).
 The version tag should equal the current git tag.
