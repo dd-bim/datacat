@@ -36,6 +36,8 @@ services:
     volumes:
       - "dbdata:/data"
       - "dblogs:/logs"
+    healthcheck:
+      test: perl -MIO::Socket::INET -e 'exit(! defined( IO::Socket::INET->new("localhost:7687")))'
 
   mail:
     container_name: "mail"
