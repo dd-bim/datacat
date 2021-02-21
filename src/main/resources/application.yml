@@ -15,12 +15,6 @@ datacat:
         - READONLY
   mail.from: postmaster@localhost
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: auditevents,health,info,prometheus
-
 graphql:
   servlet:
     enabled: true
