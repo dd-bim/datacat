@@ -4,6 +4,26 @@ version: "3.7"
 # test the api during development.
 
 services:
+  api:
+    container_name: "api"
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - MANAGEMENT_ENDPOINT_HEALTH_SHOWDETAILS=ALWAYS
+      - SPRING_MAIL_PORT=2500
+      - SPRING_MAIL_HOST=mail
+      - SPRING_DATA_NEO4J_USERNAME=neo4j
+      - SPRING_DATA_NEO4J_PASSWORD=s3cret
+      - SPRING_DATA_NEO4J_URI=bolt://db:7687
+    depends_on:
+      - db
+      - mail
+    command: [
+        "wait-for-it", "db:7687", "--timeout=300", "--",
+        "wait-for-it", "mail:2500", "--timeout=30", "--",
+        "java", "--enable-preview", "org.springframework.boot.loader.JarLauncher" ]
+
   db:
     container_name: "db"
     image: neo4j:4.1

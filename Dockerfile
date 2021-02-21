@@ -8,7 +8,14 @@ COPY src/ ./src
 RUN mvn package && cp target/*.jar application.jar
 RUN java -Djarmode=layertools -jar application.jar extract
 
-FROM adoptopenjdk:15-jre-hotspot-bionic
+FROM adoptopenjdk:15-jre-hotspot
+
+RUN apt-get update && \
+    apt-get -y --no-install-recommends install wait-for-it && \
+    apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 WORKDIR application
 COPY LICENSE .
 COPY --from=builder application/dependencies/ ./
