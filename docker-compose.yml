@@ -44,7 +44,10 @@ services:
     image: bentrm/mailslurper:1.14.1
     ports:
       - "2500:2500"
+      - "9080:9080"
+      - "9085:9085"
     volumes:
+      - "./mailslurper-config.json:/config.json:ro"
       - "mail:/data"
 
 volumes:
