@@ -17,4 +17,7 @@ COPY --from=builder application/snapshot-dependencies/ ./
 COPY --from=builder application/application/ ./
 
 EXPOSE 8080
+
+HEALTHCHECK --start-period=30s --interval=30s --timeout=3s --retries=3 \
+    CMD curl --fail --silent localhost:8080/actuator/health | grep -L DOWN && exit 1
 CMD ["java", "--enable-preview", "org.springframework.boot.loader.JarLauncher"]
