@@ -70,6 +70,7 @@ public class AdminServiceImpl implements AdminService {
                 .orElseThrow(() -> new IllegalArgumentException("No account found."));
     }
 
+    @Transactional
     @Override
     public void updateName(@NotNull String username, @NotNull String firstname, @NotNull String lastname) {
         final User user = findByUsername(username);
@@ -78,6 +79,7 @@ public class AdminServiceImpl implements AdminService {
         userRepository.save(user);
     }
 
+    @Transactional
     @Override
     public void updateEmail(@NotNull String username, @NotNull String newEmail) {
         final User user = findByUsername(username);
@@ -85,6 +87,7 @@ public class AdminServiceImpl implements AdminService {
         userRepository.save(user);
     }
 
+    @Transactional
     @Override
     public AccountDto updateAccountStatus(String username, AccountStatus newStatus) {
         User user = findByUsername(username);
@@ -100,11 +103,13 @@ public class AdminServiceImpl implements AdminService {
         return valueMapper.toAccountDto(user);
     }
 
+    @Transactional
     @Override
     public Optional<AccountDto> lockAccount(String username) {
         return setAccountLock(username, true);
     }
 
+    @Transactional
     @Override
     public Optional<AccountDto> unlockAccount(String username) {
         return setAccountLock(username, false);
@@ -118,6 +123,7 @@ public class AdminServiceImpl implements AdminService {
         return Optional.of(accountDto);
     }
 
+    @Transactional
     @Override
     public Optional<AccountDto> requestEmailConfirmation(@NotBlank String username) {
         final User user = findByUsername(username);
