@@ -10,12 +10,15 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - MANAGEMENT_ENDPOINT_HEALTH_SHOWDETAILS=ALWAYS
-      - SPRING_MAIL_PORT=2500
-      - SPRING_MAIL_HOST=mail
-      - SPRING_DATA_NEO4J_USERNAME=neo4j
-      - SPRING_DATA_NEO4J_PASSWORD=s3cret
-      - SPRING_DATA_NEO4J_URI=bolt://db:7687
+      - datacat.explorer.url=http://localhost:3000
+      - datacat.auth.secret=changeme
+      - datacat.auth.issuer=http://localhost:8080
+      - datacat.users.admin.password=s3cret
+      - spring.mail.port=2500
+      - spring.mail.host=mail
+      - spring.data.neo4j.username=neo4j
+      - spring.data.neo4j.password=s3cret
+      - spring.data.neo4j.uri=bolt://db:7687
     depends_on:
       - db
       - mail

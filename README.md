@@ -78,6 +78,16 @@ Follow the
 [Spring Boot documentation](https://docs.spring.io/spring-boot/docs/2.4.2/reference/html/spring-boot-features.html#boot-features-external-config)
 on how to set the parameters either by environmental variable, 
 startup parameter or by overriding the default configuration.
+See the datacat-stack project on how to set these values using a docker-compose configuration.
+
+The following settings are used by the application itself and **must** be adapted for production use:
+
+* `datacat.explorer.url` - URL to a client interface that can handle / initiate token validation
+* `datacat.auth.secret` - **confidential** secret used to generate authentication tokens  
+* `datacat.auth.issuer` - URL of the issuer of generated authentication tokens
+* `datacat.users.admin.password` - **confidential** initial password of admin user
+
+See `src/main/resources/application.yml` for **development only** default values
 
 # Create new Docker image
 
