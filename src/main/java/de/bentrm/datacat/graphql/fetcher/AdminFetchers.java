@@ -45,7 +45,6 @@ public class AdminFetchers implements QueryFetchers, MutationFetchers {
             UserSpecification specification = SpecificationMapper.INSTANCE.toSpecification(filter);
             if (environment.getSelectionSet().containsAnyOf("nodes/*", "pageInfo/*")) {
                 Page<AccountDto> page = adminService.findAccounts(specification);
-                log.debug("{}", page.getContent());
                 return Connection.of(page);
             } else {
                 long count = adminService.countAccounts(specification);
