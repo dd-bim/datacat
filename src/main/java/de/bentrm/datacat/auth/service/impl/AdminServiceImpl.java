@@ -135,6 +135,15 @@ public class AdminServiceImpl extends AbstractQueryServiceImpl<User, UserReposit
         return Optional.of(accountDto);
     }
 
+    @Transactional
+    @Override
+    public Optional<AccountDto> deleteAccount(@NotBlank String username) {
+        final User user = findByUsername(username);
+        getRepository().delete(user);
+        final AccountDto accountDto = valueMapper.toAccountDto(user);
+        return Optional.of(accountDto);
+    }
+
     @Override
     public Optional<AccountDto> findAccount(String username) {
         return getRepository()

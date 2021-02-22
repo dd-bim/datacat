@@ -69,7 +69,8 @@ public class AdminFetchers implements QueryFetchers, MutationFetchers {
                 "updateAccountStatus", updateAccountStatus(),
                 "lockAccount", lockAccount(),
                 "unlockAccount", unlockAccount(),
-                "requestEmailConfirmation", requestEmailConfirmation()
+                "requestEmailConfirmation", requestEmailConfirmation(),
+                "deleteAccount", deleteAccount()
         );
     }
 
@@ -113,6 +114,13 @@ public class AdminFetchers implements QueryFetchers, MutationFetchers {
         return env -> {
             String username = env.getArgument(USERNAME);
             return adminService.requestEmailConfirmation(username);
+        };
+    }
+
+    private DataFetcher<Optional<AccountDto>> deleteAccount() {
+        return env -> {
+            String username = env.getArgument(USERNAME);
+            return adminService.deleteAccount(username);
         };
     }
 

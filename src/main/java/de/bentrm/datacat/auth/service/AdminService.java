@@ -39,6 +39,9 @@ public interface AdminService {
     Optional<AccountDto> requestEmailConfirmation(@NotBlank String username);
 
     @PreAuthorize("hasRole('ADMIN')")
+    Optional<AccountDto> deleteAccount(@NotBlank String username);
+
+    @PreAuthorize("hasRole('ADMIN')")
     Optional<AccountDto> findAccount(@NotBlank String username);
 
     @PreAuthorize("hasRole('ADMIN')")
