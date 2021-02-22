@@ -58,7 +58,7 @@ public class AdminFetchers implements QueryFetchers, MutationFetchers {
     public Map<String, DataFetcher> getQueryFetchers() {
         return Map.of(
                 "account", fetchAccount(),
-                "accounts", fetchAllAccounts
+                "findAccounts", fetchAllAccounts
         );
     }
 

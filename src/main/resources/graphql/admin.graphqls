@@ -34,7 +34,7 @@ input AccountFilterInput {
 
 extend type Query {
     account(username: ID!): Account
-    accounts(input: AccountFilterInput): AccountConnection!
+    findAccounts(input: AccountFilterInput): AccountConnection!
 }
 
 input AccountUpdateInput {
