@@ -19,7 +19,9 @@ import javax.validation.constraints.NotNull;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class BagRecordServiceImpl extends AbstractSimpleRecordServiceImpl<XtdBag> implements BagRecordService {
+public class BagRecordServiceImpl
+        extends AbstractSimpleRecordServiceImpl<XtdBag, BagRepository>
+        implements BagRecordService {
 
     public BagRecordServiceImpl(SessionFactory sessionFactory,
                                 BagRepository repository,

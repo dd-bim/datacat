@@ -19,7 +19,9 @@ import java.util.List;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class GroupsServiceImpl extends AbstractQueryServiceImpl<XtdRelGroups> implements GroupsService {
+public class GroupsServiceImpl
+        extends AbstractQueryServiceImpl<XtdRelGroups, GroupsRepository>
+        implements GroupsService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final RootRepository rootRepository;

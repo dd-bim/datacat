@@ -19,7 +19,7 @@ import java.util.List;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class ActsUponServiceImpl extends AbstractQueryServiceImpl<XtdRelActsUpon> implements ActsUponService {
+public class ActsUponServiceImpl extends AbstractQueryServiceImpl<XtdRelActsUpon, ActsUponRepository> implements ActsUponService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final EntityRepository<XtdRoot> rootRepository;

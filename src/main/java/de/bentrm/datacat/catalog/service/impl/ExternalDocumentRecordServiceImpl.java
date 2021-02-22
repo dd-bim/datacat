@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 @Validated
 @Transactional(readOnly = true)
 public class ExternalDocumentRecordServiceImpl
-        extends AbstractSimpleRecordServiceImpl<XtdExternalDocument>
+        extends AbstractSimpleRecordServiceImpl<XtdExternalDocument, ExternalDocumentRepository>
         implements ExternalDocumentRecordService {
 
     public ExternalDocumentRecordServiceImpl(SessionFactory sessionFactory,

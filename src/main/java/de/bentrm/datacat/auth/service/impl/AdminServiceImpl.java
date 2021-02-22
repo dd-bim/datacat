@@ -11,12 +11,12 @@ import de.bentrm.datacat.auth.service.dto.AccountUpdateDto;
 import de.bentrm.datacat.auth.specification.UserSpecification;
 import de.bentrm.datacat.base.repository.EmailConfirmationRepository;
 import de.bentrm.datacat.base.repository.UserRepository;
+import de.bentrm.datacat.catalog.service.impl.AbstractQueryServiceImpl;
 import de.bentrm.datacat.catalog.service.value.ValueMapper;
 import org.neo4j.ogm.cypher.query.Pagination;
 import org.neo4j.ogm.cypher.query.SortOrder;
 import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -37,22 +37,23 @@ import java.util.stream.Collectors;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class AdminServiceImpl implements AdminService {
+public class AdminServiceImpl extends AbstractQueryServiceImpl<User, UserRepository> implements AdminService {
 
-    @Autowired
-    private SessionFactory sessionFactory;
+    private final EmailConfirmationRepository emailConfirmationRepository;
+    private final EmailService emailService;
+    private final ValueMapper valueMapper;
 
-    @Autowired
-    private UserRepository userRepository;
+    public AdminServiceImpl(SessionFactory sessionFactory,
+                            UserRepository repository,
+                            EmailConfirmationRepository emailConfirmationRepository,
+                            EmailService emailService,
+                            ValueMapper valueMapper) {
+        super(User.class, sessionFactory, repository);
+        this.emailConfirmationRepository = emailConfirmationRepository;
+        this.emailService = emailService;
+        this.valueMapper = valueMapper;
+    }
 
-    @Autowired
-    private EmailConfirmationRepository emailConfirmationRepository;
-
-    @Autowired
-    private EmailService emailService;
-
-    @Autowired
-    private ValueMapper valueMapper;
 
     @Transactional
     @Override
@@ -65,7 +66,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public User findByUsername(@NotNull String username) {
-        return userRepository
+        return getRepository()
                 .findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("No account found."));
     }
@@ -76,7 +77,7 @@ public class AdminServiceImpl implements AdminService {
         final User user = findByUsername(username);
         user.setFirstName(firstname);
         user.setLastName(lastname);
-        userRepository.save(user);
+        getRepository().save(user);
     }
 
     @Transactional
@@ -84,7 +85,7 @@ public class AdminServiceImpl implements AdminService {
     public void updateEmail(@NotNull String username, @NotNull String newEmail) {
         final User user = findByUsername(username);
         user.setEmail(newEmail);
-        userRepository.save(user);
+        getRepository().save(user);
     }
 
     @Transactional
@@ -98,7 +99,7 @@ public class AdminServiceImpl implements AdminService {
             case Unverified -> Set.of(Role.READONLY);
         };
         user.setRoles(newRoles);
-        user = userRepository.save(user);
+        user = getRepository().save(user);
 
         return valueMapper.toAccountDto(user);
     }
@@ -118,7 +119,7 @@ public class AdminServiceImpl implements AdminService {
     private Optional<AccountDto> setAccountLock(String username, boolean locked) {
         User user = findByUsername(username);
         user.setLocked(locked);
-        user = userRepository.save(user);
+        user = getRepository().save(user);
         final AccountDto accountDto = valueMapper.toAccountDto(user);
         return Optional.of(accountDto);
     }
@@ -136,14 +137,14 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Optional<AccountDto> findAccount(String username) {
-        return userRepository
+        return getRepository()
                 .findByUsername(username)
-                .map(user -> valueMapper.toAccountDto(user));
+                .map(valueMapper::toAccountDto);
     }
 
     @Override
     public long countAccounts(UserSpecification specification) {
-        final Session session = sessionFactory.openSession();
+        final Session session = getSessionFactory().openSession();
         return session.count(User.class, specification.getFilters());
     }
 
@@ -152,7 +153,7 @@ public class AdminServiceImpl implements AdminService {
         Collection<User> users;
         Pageable pageable;
         final long count = countAccounts(specification);
-        final Session session = sessionFactory.openSession();
+        final Session session = getSessionFactory().openSession();
 
         final Optional<Pageable> paged = specification.getPageable();
         if (paged.isPresent()) {
@@ -174,7 +175,7 @@ public class AdminServiceImpl implements AdminService {
         }
 
         final List<AccountDto> newContent = users.stream()
-                .map(user -> valueMapper.toAccountDto(user))
+                .map(valueMapper::toAccountDto)
                 .collect(Collectors.toList());
         return PageableExecutionUtils.getPage(newContent, pageable, () -> count);
     }

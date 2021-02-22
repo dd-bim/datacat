@@ -21,7 +21,9 @@ import java.util.List;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class ClassifiesServiceImpl extends AbstractQueryServiceImpl<XtdRelClassifies> implements ClassifiesService {
+public class ClassifiesServiceImpl
+        extends AbstractQueryServiceImpl<XtdRelClassifies, ClassifiesRepository>
+        implements ClassifiesService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final ClassificationRepository classificationRepository;

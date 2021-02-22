@@ -1,8 +1,8 @@
 package de.bentrm.datacat.catalog.service.impl;
 
-import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import de.bentrm.datacat.catalog.domain.XtdActivity;
+import de.bentrm.datacat.catalog.repository.ActivityRepository;
 import de.bentrm.datacat.catalog.service.ActivityRecordService;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import org.neo4j.ogm.session.SessionFactory;
@@ -15,10 +15,11 @@ import javax.validation.constraints.NotNull;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class ActivityRecordServiceImpl extends AbstractSimpleRecordServiceImpl<XtdActivity> implements ActivityRecordService {
+public class ActivityRecordServiceImpl extends AbstractSimpleRecordServiceImpl<XtdActivity, ActivityRepository>
+        implements ActivityRecordService {
 
     public ActivityRecordServiceImpl(SessionFactory sessionFactory,
-                                     EntityRepository<XtdActivity> repository,
+                                     ActivityRepository repository,
                                      CatalogCleanupService cleanupService) {
         super(XtdActivity.class, sessionFactory, repository, cleanupService);
     }

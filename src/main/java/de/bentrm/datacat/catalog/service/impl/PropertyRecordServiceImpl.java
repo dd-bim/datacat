@@ -15,7 +15,9 @@ import javax.validation.constraints.NotNull;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class PropertyRecordServiceImpl extends AbstractSimpleRecordServiceImpl<XtdProperty> implements PropertyRecordService {
+public class PropertyRecordServiceImpl
+        extends AbstractSimpleRecordServiceImpl<XtdProperty, PropertyRepository>
+        implements PropertyRecordService {
 
     public PropertyRecordServiceImpl(SessionFactory sessionFactory,
                                      PropertyRepository repository,

@@ -26,7 +26,7 @@ import java.util.stream.StreamSupport;
 @Validated
 @Transactional(readOnly = true)
 public class SubjectRecordServiceImpl
-        extends AbstractSimpleRecordServiceImpl<XtdSubject>
+        extends AbstractSimpleRecordServiceImpl<XtdSubject, SubjectRepository>
         implements SubjectRecordService {
 
     private final NestRepository nestRepository;

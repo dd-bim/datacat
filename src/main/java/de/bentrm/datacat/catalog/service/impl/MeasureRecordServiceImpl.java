@@ -15,7 +15,9 @@ import javax.validation.constraints.NotNull;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class MeasureRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Measure> implements MeasureRecordService {
+public class MeasureRecordServiceImpl
+        extends AbstractSimpleRecordServiceImpl<Measure, MeasureRepository>
+        implements MeasureRecordService {
 
     public MeasureRecordServiceImpl(SessionFactory sessionFactory,
                                     MeasureRepository repository,

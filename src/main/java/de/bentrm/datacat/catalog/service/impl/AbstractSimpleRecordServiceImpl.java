@@ -15,8 +15,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Slf4j
-public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogItem>
-        extends AbstractQueryServiceImpl<T>
+public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogItem, R extends EntityRepository<T>>
+        extends AbstractQueryServiceImpl<T, R>
         implements SimpleRecordService<T> {
 
     protected final ValueMapper VALUE_MAPPER = ValueMapper.INSTANCE;
@@ -24,7 +24,7 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogItem>
 
     public AbstractSimpleRecordServiceImpl(Class<T> domainClass,
                                            SessionFactory sessionFactory,
-                                           EntityRepository<T> repository,
+                                           R repository,
                                            CatalogCleanupService cleanupService) {
         super(domainClass, sessionFactory, repository);
         this.cleanupService = cleanupService;

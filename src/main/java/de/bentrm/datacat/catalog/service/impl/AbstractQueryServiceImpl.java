@@ -26,15 +26,16 @@ import java.util.stream.StreamSupport;
 
 @Slf4j
 @Getter(AccessLevel.PROTECTED)
-public abstract class AbstractQueryServiceImpl<T extends Entity> implements QueryService<T> {
+public abstract class AbstractQueryServiceImpl<T extends Entity, R extends EntityRepository<T>>
+        implements QueryService<T> {
 
     private final Class<T> domainClass;
     private final SessionFactory sessionFactory;
-    private final EntityRepository<T> repository;
+    private final R repository;
 
     public AbstractQueryServiceImpl(Class<T> domainClass,
                                     SessionFactory sessionFactory,
-                                    EntityRepository<T> repository) {
+                                    R repository) {
         this.domainClass = domainClass;
         this.sessionFactory = sessionFactory;
         this.repository = repository;

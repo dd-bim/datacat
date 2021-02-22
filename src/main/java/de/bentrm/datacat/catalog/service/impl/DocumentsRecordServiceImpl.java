@@ -24,7 +24,9 @@ import java.util.stream.StreamSupport;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class DocumentsRecordServiceImpl extends AbstractRelationshipRecordServiceImpl<XtdRelDocuments> implements DocumentsRecordService {
+public class DocumentsRecordServiceImpl
+        extends AbstractRelationshipRecordServiceImpl<XtdRelDocuments, DocumentsRepository>
+        implements DocumentsRecordService {
 
     private final ExternalDocumentRepository externalDocumentRepository;
     private final RootRepository rootRepository;

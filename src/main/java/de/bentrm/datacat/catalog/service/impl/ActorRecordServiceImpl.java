@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class ActorRecordServiceImpl extends AbstractSimpleRecordServiceImpl<XtdActor> implements ActorRecordService {
+public class ActorRecordServiceImpl extends AbstractSimpleRecordServiceImpl<XtdActor, ActorRepository> implements ActorRecordService {
 
     public ActorRecordServiceImpl(SessionFactory sessionFactory,
                                   ActorRepository repository,

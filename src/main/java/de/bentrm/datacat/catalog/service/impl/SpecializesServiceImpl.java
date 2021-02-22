@@ -19,7 +19,9 @@ import java.util.List;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class SpecializesServiceImpl extends AbstractQueryServiceImpl<XtdRelSpecializes> implements SpecializesService {
+public class SpecializesServiceImpl
+        extends AbstractQueryServiceImpl<XtdRelSpecializes, SpecializesRepository>
+        implements SpecializesService {
 
     private final EntityMapper entityMapper = EntityMapper.INSTANCE;
     private final RootRepository rootRepository;

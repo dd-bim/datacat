@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 @Slf4j
 @Service
 @Validated
-public class TagServiceImpl extends AbstractQueryServiceImpl<Tag> implements TagService {
+public class TagServiceImpl extends AbstractQueryServiceImpl<Tag, TagRepository> implements TagService {
 
     public TagServiceImpl(SessionFactory sessionFactory, TagRepository repository) {
         super(Tag.class, sessionFactory, repository);

@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 @Validated
 @Transactional(readOnly = true)
 public class ClassificationRecordServiceImpl
-        extends AbstractSimpleRecordServiceImpl<XtdClassification>
+        extends AbstractSimpleRecordServiceImpl<XtdClassification, ClassificationRepository>
         implements ClassificationRecordService {
 
     public ClassificationRecordServiceImpl(SessionFactory sessionFactory,

@@ -26,7 +26,7 @@ import java.util.stream.StreamSupport;
 @Validated
 @Transactional(readOnly = true)
 public class AssignsCollectionsRecordServiceImpl
-        extends AbstractRelationshipRecordServiceImpl<XtdRelAssignsCollections>
+        extends AbstractRelationshipRecordServiceImpl<XtdRelAssignsCollections, AssignsCollectionsRepository>
         implements AssignsCollectionsRecordService {
 
     private final ObjectRepository objectRepository;

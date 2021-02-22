@@ -23,7 +23,7 @@ import java.util.stream.StreamSupport;
 @Validated
 @Transactional(readOnly = true)
 public class AssignsPropertyWithValuesRecordServiceImpl
-        extends AbstractRelationshipRecordServiceImpl<XtdRelAssignsPropertyWithValues>
+        extends AbstractRelationshipRecordServiceImpl<XtdRelAssignsPropertyWithValues, AssignsPropertyWithValuesRepository>
         implements AssignsPropertyWithValuesRecordService {
 
     private final ObjectRepository objectRepository;

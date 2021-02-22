@@ -15,7 +15,9 @@ import javax.validation.constraints.NotNull;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class NestRecordServiceImpl extends AbstractSimpleRecordServiceImpl<XtdNest> implements NestRecordService {
+public class NestRecordServiceImpl
+        extends AbstractSimpleRecordServiceImpl<XtdNest, NestRepository>
+        implements NestRecordService {
 
     public NestRecordServiceImpl(SessionFactory sessionFactory,
                                  NestRepository repository,
