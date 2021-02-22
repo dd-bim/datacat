@@ -11,36 +11,54 @@ import de.bentrm.datacat.graphql.dto.AccountStatusUpdateInput;
 import de.bentrm.datacat.graphql.dto.AccountUpdateInput;
 import de.bentrm.datacat.graphql.dto.SpecificationMapper;
 import graphql.schema.DataFetcher;
-import graphql.schema.DataFetchingFieldSelectionSet;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 @Slf4j
 @Component
 public class AdminFetchers implements QueryFetchers, MutationFetchers {
 
-    public static final String IDENTIFIER = "username";
+    public static final String USERNAME = "username";
     public static final String INPUT = "input";
 
-    @Autowired
-    private SpecificationMapper specificationMapper;
+    private final SpecificationMapper specificationMapper;
+    private final AdminService adminService;
 
-    @Autowired
-    private AdminService adminService;
+//    private final DataFetcher<Optional<AccountDto>> fetchOne;
+    private final DataFetcher<Connection<AccountDto>> fetchAllAccounts;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    public AdminFetchers(SpecificationMapper specificationMapper, AdminService adminService) {
+        this.specificationMapper = specificationMapper;
+        this.adminService = adminService;
+
+        this.fetchAllAccounts = environment -> {
+            Map<String, Object> input = environment.getArgument("input");
+            AccountFilterInput filter = objectMapper.convertValue(input, AccountFilterInput.class);
+            if (filter == null) filter = new AccountFilterInput();
+
+            UserSpecification specification = SpecificationMapper.INSTANCE.toSpecification(filter);
+            if (environment.getSelectionSet().containsAnyOf("nodes/*", "pageInfo/*")) {
+                Page<AccountDto> page = adminService.findAccounts(specification);
+                log.debug("{}", page.getContent());
+                return Connection.of(page);
+            } else {
+                long count = adminService.countAccounts(specification);
+                return Connection.empty(count);
+            }
+        };
+    }
 
     @Override
     public Map<String, DataFetcher> getQueryFetchers() {
         return Map.of(
                 "account", fetchAccount(),
-                "accounts", fetchAccounts()
+                "accounts", fetchAllAccounts
         );
     }
 
@@ -57,24 +75,8 @@ public class AdminFetchers implements QueryFetchers, MutationFetchers {
 
     private DataFetcher<Optional<AccountDto>> fetchAccount() {
         return env -> {
-            String username = env.getArgument(IDENTIFIER);
+            String username = env.getArgument(USERNAME);
             return adminService.findAccount(username);
-        };
-    }
-
-    private DataFetcher<Connection<AccountDto>> fetchAccounts() {
-        return env -> {
-            final DataFetchingFieldSelectionSet selectionSet = env.getSelectionSet();
-            AccountFilterInput filter = toValue(env.getArgument(INPUT), AccountFilterInput.class, AccountFilterInput::new);
-            UserSpecification specification = specificationMapper.toSpecification(filter);
-
-            if (selectionSet.containsAnyOf("nodes/*", "pageInfo/*")) {
-                final Page<AccountDto> page = adminService.findAccounts(specification);
-                return Connection.of(page);
-            } else {
-                log.info("Retrieving empty connection only querying count.");
-                return Connection.empty(adminService.countAccounts(specification));
-            }
         };
     }
 
@@ -95,28 +97,23 @@ public class AdminFetchers implements QueryFetchers, MutationFetchers {
 
     private DataFetcher<Optional<AccountDto>> lockAccount() {
         return env -> {
-            String username = env.getArgument(IDENTIFIER);
+            String username = env.getArgument(USERNAME);
             return adminService.lockAccount(username);
         };
     }
 
     private DataFetcher<Optional<AccountDto>> unlockAccount() {
         return env -> {
-            String username = env.getArgument(IDENTIFIER);
+            String username = env.getArgument(USERNAME);
             return adminService.unlockAccount(username);
         };
     }
 
     private DataFetcher<Optional<AccountDto>> requestEmailConfirmation() {
         return env -> {
-            String username = env.getArgument(IDENTIFIER);
+            String username = env.getArgument(USERNAME);
             return adminService.requestEmailConfirmation(username);
         };
-    }
-
-    private <T, R> R toValue(T input, Class<R> targetType, Supplier<R> supplier) {
-        final R value = toValue(input, targetType);
-        return value != null ? value : supplier.get();
     }
 
     private <T, R> R toValue(T input, Class<R> targetType) {
