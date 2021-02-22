@@ -41,7 +41,7 @@ public class UserSpecification extends QuerySpecification {
         public Builder query(String query) {
             final Optional<String> regex = sanitizeQueryString(query);
             if (regex.isPresent()) {
-                final Filter filter = new Filter("username", ComparisonOperator.LIKE, regex);
+                final Filter filter = new Filter("username", ComparisonOperator.LIKE, regex.get());
                 filter.setBooleanOperator(BooleanOperator.AND);
                 this.filters.add(filter);
             }
