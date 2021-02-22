@@ -97,6 +97,8 @@ The version tag should equal the current git tag.
 
 An example configuration for production use is available on [Github](https://github.com/dd-bim/datacat-stack).
 
+# List users
+
 # Assign user roles
 
 Currently, users can register themselves via clients. After validating their email address
