@@ -10,8 +10,9 @@ library.
 For development, a local Docker installation is needed. Also, docker-compose should be
 used to orchestrate all runtime dependencies. 
 
-Please check the datacat editor project for an example of a client
-application that interacts with this API.
+Please check the [datacat editor](https://github.com/dd-bim/datacat-editor) project for 
+an example of a client application that interacts with this API. It also includes a 
+GraphQL web interface to interact with the API directly.
 
 # Dependencies
 
@@ -35,16 +36,16 @@ used to start up all required components to work on the API locally.
 Run the following command to build and run the application as a Docker image and 
 execute it locally with a newly initialized Neo4j database.
 
-You can access the [MailSlurper](https://mailslurper.com) UI via http://localhost:9080 
-to check for emails send by the API. Be aware, that this tool is for local testing only,
-emails are not persisted or relayed.
-
 ````bash
 $ docker-compose up -d
 ````
 
-If you're working on the API locally, you may only start the required database and SMTP
-backend for testing:
+You can access the [MailSlurper](https://mailslurper.com) UI via http://localhost:9080
+to check for emails send by the API. Be aware, that this tool is for local testing only,
+emails are not persisted or relayed.
+
+*If you're working on the API locally, you may only start the required database and SMTP
+backend for testing:*
 
 ````bash
 $ docker-compose db mail -d
@@ -61,8 +62,8 @@ $ ./mvnw spring-boot:run
 ````
 
 If you use the docker-compose configuration described above, you'll need to provide
-the appropriate connection parameters. You can add additional configuration settings
-as described in the Spring Boot documentation.
+the appropriate connection parameters to the database. You can add additional configuration 
+settings as described in the Spring Boot documentation.
 
 ````bash
 $ ./mvnw spring-boot:run -Dspring-boot.run.arguments="\
@@ -97,9 +98,42 @@ The version tag should equal the current git tag.
 
 An example configuration for production use is available on [Github](https://github.com/dd-bim/datacat-stack).
 
-# List users
+# Authentication
 
-# Assign user roles
+The API publishes the GraphQL-endpoint `/graphql`. This endpoint is publicly accessible by all clients.
+While processing incoming requests, the authentication and authorization is checked by the auth layer
+looking for a [JWT](https://jwt.io)-token in the HTTP-headers. If no token is found, or it is invalid or
+expired an authorization exception is thrown and returned to the client.
+
+The only GraphQL-methods that can be executed by anonymous users are the following:
+
+* `signup` to create a new account (the provided email needs to be verified before a login is possible)
+* `confirm` to confirm an account email
+* `login` to retrieve an authorization token that can be used by subsequent requests
+
+
+
+# Administration
+
+The application does not offer a dedicated UI, therefore all administrative tasks need to be
+fulfilled by using the API itself. It's easiest to use a GraphQL-client to send requests. For example,
+the datacat editor application includes the GraphiQL web browser client. Among other tasks, 
+the following common tasks are available:
+
+## List users
+
+````graphql
+{
+    findAccounts(input: {query: "username"}) {
+        nodes {
+            username
+            status
+        }
+    }
+}
+````
+
+## Assign user roles
 
 Currently, users can register themselves via clients. After validating their email address
 they will be assigned the role of a read-only users. Only admin users are allowed to verify
@@ -120,8 +154,37 @@ mutation {
 
 This mutation will assign the "USER" role to the user.
 
+## Lock & unlock users
 
-# Backup & Restore
+````graphql
+mutation {
+  lockAccount(username: "username") {
+    username
+    locked
+  }
+    
+  unlockAccount(username: "username") {
+    username
+    locked
+  }
+}
+````
+
+Locked users are not able to log in to access the catalog.
+
+## Delete account
+
+This operation is irreversible!
+
+````graphql
+mutation {
+  deleteAccount(username: "username") {
+    username
+  }
+}
+````
+
+## Backup & Restore
 
 To back up user and application data you can mount the database volume in an auxiliary 
 container and tar the data directory. The following command 
