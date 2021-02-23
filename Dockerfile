@@ -11,7 +11,7 @@ RUN java -Djarmode=layertools -jar application.jar extract
 FROM adoptopenjdk:15-jre-hotspot
 
 RUN apt-get update && \
-    apt-get -y --no-install-recommends install wait-for-it && \
+    apt-get -y --no-install-recommends install wait-for-it jq && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -26,5 +26,5 @@ COPY --from=builder application/application/ ./
 EXPOSE 8080
 
 HEALTHCHECK --start-period=30s --interval=30s --timeout=3s --retries=3 \
-    CMD curl --fail --silent localhost:8080/actuator/health | grep -L DOWN && exit 1
+    CMD curl -m 5 --silent --fail localhost:8080/actuator/health | jq --exit-status -n 'inputs | if has("status") then .status=="UP" else false end' > /dev/null || exit 1
 CMD ["java", "--enable-preview", "org.springframework.boot.loader.JarLauncher"]
