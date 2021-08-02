@@ -10,7 +10,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - datacat.explorer.url=http://localhost:3000
+      - datacat.client.url=http://localhost:3000
       - datacat.auth.secret=changeme
       - datacat.auth.issuer=http://localhost:8080
       - datacat.users.admin.password=s3cret

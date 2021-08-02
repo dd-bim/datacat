@@ -82,7 +82,7 @@ See the datacat-stack project on how to set these values using a docker-compose 
 
 The following settings are used by the application itself and **must** be adapted for production use:
 
-* `datacat.explorer.url` - URL to a client interface that can handle / initiate token validation
+* `datacat.client.url` - URL to a client interface that can handle / initiate token validation
 * `datacat.auth.secret` - **confidential** secret used to generate authentication tokens  
 * `datacat.auth.issuer` - URL of the issuer of generated authentication tokens
 * `datacat.users.admin.password` - **confidential** initial password of admin user
