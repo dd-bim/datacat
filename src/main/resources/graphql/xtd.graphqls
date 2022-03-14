@@ -61,6 +61,76 @@ type HierarchyPayload {
     paths: [[ID!]!]!
 }
 
+type findPropGroupWithoutPropPayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
+type findPropWithoutSubjectOrPropGroupPayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
+type findModelWithoutGroupPayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
+type findGroupWithoutSubjectPayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
+type findSubjectWithoutPropPayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
+type findMeasureWithoutPropPayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
+type findUnitWithoutMeasurePayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
+type findValueWithoutMeasurePayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
+type findMissingTagsPayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
+type findMissingEnglishNamePayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
+type findMultipleIDsPayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
+type findMissingDescriptionPayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
+type findMissingEnglishDescriptionPayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
+type findMultipleNamesPayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
 # Xtd misc
 
 extend type Translation {
@@ -108,6 +178,37 @@ input HierarchyRootNodeFilterInput {
 input HierarchyFilterInput {
     rootNodeFilter: HierarchyRootNodeFilterInput!
 }
+
+
+input findMissingTagsNodeTypeFilterInput {catalogEntryTypeIn: [CatalogRecordType!]}
+
+input findMissingTagsFilterInput {nodeTypeFilter: findMissingTagsNodeTypeFilterInput!}
+
+
+input findMultipleIDsNodeTypeFilterInput {catalogEntryTypeIn: [CatalogRecordType!]}
+
+input findMultipleIDsFilterInput {nodeTypeFilter: findMultipleIDsNodeTypeFilterInput!}
+
+
+input findMissingDescriptionNodeTypeFilterInput {catalogEntryTypeIn: [CatalogRecordType!]}
+
+input findMissingDescriptionFilterInput {nodeTypeFilter: findMissingDescriptionNodeTypeFilterInput!}
+
+
+input findMissingEnglishNameNodeTypeFilterInput {catalogEntryTypeIn: [CatalogRecordType!]}
+
+input findMissingEnglishNameFilterInput {nodeTypeFilter: findMissingEnglishNameNodeTypeFilterInput!}
+
+
+input findMissingEnglishDescriptionNodeTypeFilterInput {catalogEntryTypeIn: [CatalogRecordType!]}
+
+input findMissingEnglishDescriptionFilterInput {nodeTypeFilter: findMissingEnglishDescriptionNodeTypeFilterInput!}
+
+
+input findMultipleNamesNodeTypeFilterInput {catalogEntryTypeIn: [CatalogRecordType!]}
+
+input findMultipleNamesFilterInput {nodeTypeFilter: findMultipleNamesNodeTypeFilterInput!}
+
 
 input FilterInput {
     query: String
@@ -1057,6 +1158,34 @@ type Query {
     search(input: SearchInput, pageSize: Int, pageNumber: Int): SearchResultConnection!
 
     hierarchy(input: HierarchyFilterInput!): HierarchyPayload!
+
+    findPropGroupWithoutProp: findPropGroupWithoutPropPayload!
+
+    findPropWithoutSubjectOrPropGroup: findPropWithoutSubjectOrPropGroupPayload!
+
+    findModelWithoutGroup: findModelWithoutGroupPayload!
+
+    findGroupWithoutSubject: findGroupWithoutSubjectPayload!
+
+    findSubjectWithoutProp: findSubjectWithoutPropPayload!
+
+    findMeasureWithoutProp: findMeasureWithoutPropPayload!
+
+    findUnitWithoutMeasure: findUnitWithoutMeasurePayload!
+
+    findValueWithoutMeasure: findValueWithoutMeasurePayload!
+
+    findMissingTags(input: findMissingTagsFilterInput!): findMissingTagsPayload!
+
+    findMissingEnglishName(input: findMissingEnglishNameFilterInput!): findMissingEnglishNamePayload!
+
+    findMultipleIDs(input: findMultipleIDsFilterInput!): findMultipleIDsPayload!
+
+    findMissingDescription(input: findMissingDescriptionFilterInput!): findMissingDescriptionPayload!
+
+    findMissingEnglishDescription(input: findMissingEnglishDescriptionFilterInput!): findMissingEnglishDescriptionPayload!
+
+    findMultipleNames(input: findMultipleNamesFilterInput!): findMultipleNamesPayload!
 
     getTag(id: ID!): Tag!
     findTags(input: FilterInput): TagConnection!

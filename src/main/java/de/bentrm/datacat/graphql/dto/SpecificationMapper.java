@@ -3,9 +3,11 @@ package de.bentrm.datacat.graphql.dto;
 import de.bentrm.datacat.auth.service.dto.AccountUpdateDto;
 import de.bentrm.datacat.auth.service.dto.ProfileUpdateDto;
 import de.bentrm.datacat.auth.specification.UserSpecification;
+import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
 import de.bentrm.datacat.catalog.specification.TagSpecification;
 import de.bentrm.datacat.graphql.input.HierarchyRootNodeFilterInput;
+import de.bentrm.datacat.graphql.input.verification.*;
 import de.bentrm.datacat.graphql.input.SearchInput;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValueCheckStrategy;
@@ -27,6 +29,18 @@ public interface SpecificationMapper {
     CatalogRecordSpecification toCatalogItemSpecification(@NotNull FilterInput input);
 
     CatalogRecordSpecification toCatalogItemSpecification(@NotNull HierarchyRootNodeFilterInput input);
+
+    CatalogRecordSpecification toCatalogItemSpecification(@NotNull findMissingTagsNodeTypeFilterInput input);
+
+    CatalogRecordSpecification toCatalogItemSpecification(@NotNull findMissingEnglishNameNodeTypeFilterInput input);
+
+    CatalogRecordSpecification toCatalogItemSpecification(@NotNull findMultipleIDsNodeTypeFilterInput input);
+
+    CatalogRecordSpecification toCatalogItemSpecification(@NotNull findMissingDescriptionNodeTypeFilterInput input);
+
+    CatalogRecordSpecification toCatalogItemSpecification(@NotNull findMissingEnglishDescriptionNodeTypeFilterInput input);
+
+    CatalogRecordSpecification toCatalogItemSpecification(@NotNull findMultipleNamesNodeTypeFilterInput input);
 
     UserSpecification toSpecification(@NotNull AccountFilterInput filter);
 
