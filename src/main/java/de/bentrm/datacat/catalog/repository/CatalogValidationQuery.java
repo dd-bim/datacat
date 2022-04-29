@@ -133,17 +133,26 @@ public interface CatalogValidationQuery extends EntityRepository<XtdRoot> {
 
     /* Finde Elemente ohne englische Namens-Übersetzung */ 
     /* bei großen Datensätzen führt Filterung nach allen Xtd zu Absturz, daher folgendes ergänzen: AND x:XtdSubject */
+    // @Query("""
+    // MATCH (t_de:Translation) 
+    // WHERE t_de.languageCode='de'
+    // MATCH (t_en:Translation) 
+    // WHERE t_en.languageCode='en'
+    // MATCH (x:XtdRoot)
+    // WHERE EXISTS(x.`labels.de`)
+    // AND (x)-[:NAMED]->(t_de)
+    // AND NOT EXISTS(x.`labels.en`)
+    // AND NOT (x)-[:NAMED]->(t_en)
+    // WITH x.id AS paths
+    // RETURN DISTINCT paths
+    // """)
+
+    // deutlich effizienter und schließt andere Deutsch-Labels de-DE, de-AT und de-CH mit ein
     @Query("""
-    MATCH (t_de:Translation) 
-    WHERE t_de.languageCode='de'
-    MATCH (t_en:Translation) 
-    WHERE t_en.languageCode='en'
-    MATCH (x:XtdRoot)
-    WHERE EXISTS(x.`labels.de`)
-    AND (x)-[:NAMED]->(t_de)
-    AND NOT EXISTS(x.`labels.en`)
-    AND NOT (x)-[:NAMED]->(t_en)
-    WITH x.id AS paths
+    MATCH (x:XtdRoot)-[:NAMED]->(t:Translation) 
+    WITH x.id AS paths, collect(t.languageCode) AS sum
+    WHERE ("de" IN(sum) OR "de-DE" IN(sum) OR "de-CH" IN(sum) OR "de-AT" IN(sum))
+    AND NOT "en" IN(sum)
     RETURN DISTINCT paths
     """)
     List<List<String>> findMissingEnglishName();
@@ -160,16 +169,25 @@ public interface CatalogValidationQuery extends EntityRepository<XtdRoot> {
 
     /* Finde Elemente ohne englische Beschreibung */
     /* bei großen Datensätzen führt Filterung nach allen Xtd zu Absturz, daher folgendes ergänzen: AND x:XtdSubject */    
+    // @Query("""
+    // MATCH (t_de:Translation) 
+    // WHERE t_de.languageCode='de'
+    // MATCH (t_en:Translation) 
+    // WHERE t_en.languageCode='en'
+    // MATCH (x:XtdRoot)
+    // WHERE (x)-[:DESCRIBED]->(t_de)
+    // AND NOT (x)-[:DESCRIBED]->(t_en)
+    // WITH x.id AS paths
+    // RETURN DISTINCT paths
+    // """)
+
+    // deutlich effizienter und Ergebnis richtiger
     @Query("""
-    MATCH (t_de:Translation) 
-    WHERE t_de.languageCode='de'
-    MATCH (t_en:Translation) 
-    WHERE t_en.languageCode='en'
-    MATCH (x:XtdRoot)
-    WHERE (x)-[:DESCRIBED]->(t_de)
-    AND NOT (x)-[:DESCRIBED]->(t_en)
-    WITH x.id AS paths
-    RETURN DISTINCT paths
+    MATCH (x:XtdRoot)-[:DESCRIBED]->(t:Translation) 
+    WITH x.id AS paths, collect(t.languageCode) AS sum
+    WHERE ("de" IN(sum) OR "de-DE" IN(sum) OR "de-CH" IN(sum) OR "de-AT" IN(sum))
+    AND NOT "en" IN(sum)
+    RETURN paths
     """)
     List<List<String>> findMissingEnglishDescription();
 }
