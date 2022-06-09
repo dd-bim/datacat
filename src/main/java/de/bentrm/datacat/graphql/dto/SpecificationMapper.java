@@ -42,6 +42,8 @@ public interface SpecificationMapper {
 
     CatalogRecordSpecification toCatalogItemSpecification(@NotNull findMultipleNamesNodeTypeFilterInput input);
 
+    CatalogRecordSpecification toCatalogItemSpecification(@NotNull findMultipleNamesAcrossClassesNodeTypeFilterInput input);
+
     UserSpecification toSpecification(@NotNull AccountFilterInput filter);
 
     AccountUpdateDto toDto(AccountUpdateInput input);

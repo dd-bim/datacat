@@ -124,10 +124,31 @@ public interface CatalogValidationQuery extends EntityRepository<XtdRoot> {
     WHERE v.label = z.label
     AND v.languageCode = z.languageCode
     AND (x)-[:TAGGED]->()<-[:TAGGED]-(y) 
-    WITH x.id AS paths
+    WITH x.id AS paths ORDER BY v.label ASC
     RETURN paths;
     """)
     List<List<String>> findMultipleNames();
+
+    /* Finde Elemente mit identischer Bezeichnung im gesamten Datenbestand */
+    // @Query("""
+    // MATCH (x:XtdRoot)-[:NAMED]->(v:Translation)
+    // MATCH (y:XtdRoot)-[:NAMED]->(z:Translation)
+    // WHERE v.label = z.label
+    // AND x.id <> y.id
+    // AND v.languageCode = z.languageCode
+    // WITH x.id AS paths
+    // RETURN paths
+    // """)
+    @Query("""
+        MATCH (x:XtdRoot)-[:NAMED]->(v:Translation)
+        MATCH (y:XtdRoot)-[:NAMED]->(z:Translation)
+        WHERE v.label = z.label
+        AND x.id <> y.id
+        AND v.languageCode= z.languageCode
+        WITH x.id AS paths ORDER BY v.label ASC
+        RETURN paths
+        """)
+    List<List<String>> findMultipleNamesAcrossClasses();
 
     /* ---- Prüfen auf Verständlichkeit ---- */
 

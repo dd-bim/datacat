@@ -15,6 +15,7 @@ public class QualifiedOneToManyRelationshipValue {
     VersionValue version;
     List<@NotNull @Valid TranslationValue> names;
     List<@NotNull @Valid TranslationValue> descriptions;
+    List<@NotNull @Valid TranslationValue> comments;
     @NotBlank String from;
     @NotBlank String to;
     @NotEmpty List<@NotBlank String> with;

@@ -44,6 +44,10 @@ public abstract class CatalogItem extends Entity {
     @Relationship(type = "DESCRIBED")
     protected final Set<Translation> descriptions = new HashSet<>();
 
+    @ToString.Include
+    @Relationship(type = "COMMENTED")
+    protected final Set<Translation> comments = new HashSet<>();
+
     @Relationship(type = "TAGGED")
     protected final Set<Tag> tags = new HashSet<>();
 
@@ -161,6 +165,43 @@ public abstract class CatalogItem extends Entity {
                 .orElseThrow();
 
         this.descriptions.remove(translation);
+    }
+
+    public Optional<Translation> getComment(@NotNull List<Locale.LanguageRange> priorityList) {
+        final Translation translation = LocalizationUtils.getTranslation(priorityList, this.comments);
+        return Optional.ofNullable(translation);
+    }
+
+    public void addComment(String translationId, Locale locale, String value) {
+        final Translation translation = new Translation(translationId, locale, value);
+
+        Assert.isTrue(translationId == null || this.comments.stream().filter(x -> x.getId().equals(translationId)).findFirst().isEmpty(), "The id is already taken.");
+        Assert.isTrue(this.comments.stream().filter(x -> x.getLocale().equals(locale)).findFirst().isEmpty(), "The given locale is already present in the set of translations.");
+
+        this.comments.add(translation);
+    }
+
+    public void updateComment(String translationId, String value) {
+        Assert.hasText(translationId, "A valid id must be given.");
+        Assert.hasText(value, "The value may not be null or blank.");
+
+        final Translation translation = this.comments.stream()
+                .filter(x -> x.getId().equals(translationId.trim()))
+                .findFirst()
+                .orElseThrow();
+
+        translation.setValue(value.trim());
+    }
+
+    public void deleteComment(String translationId) {
+        Assert.hasText(translationId, "A valid id must be given.");
+
+        final Translation translation = this.comments.stream()
+                .filter(x -> x.getId().equals(translationId.trim()))
+                .findFirst()
+                .orElseThrow();
+
+        this.comments.remove(translation);
     }
 
     /**

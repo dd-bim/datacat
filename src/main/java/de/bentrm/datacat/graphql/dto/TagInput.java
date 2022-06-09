@@ -11,5 +11,6 @@ public class TagInput {
     private String scope;
     private List<LocalizedTextInput> names = new ArrayList<>();
     private List<LocalizedTextInput> descriptions = new ArrayList<>();
+    private List<LocalizedTextInput> comments = new ArrayList<>();
 
 }

@@ -39,6 +39,15 @@ public interface CatalogService {
     @PreAuthorize("hasRole('USER')")
     @NotNull CatalogItem deleteDescription(@NotBlank String id, @NotBlank String descriptionId);
 
+    @PreAuthorize("hasRole('USER')")
+    @NotNull CatalogItem addComment(@NotBlank String id, String commentId, @NotNull Locale locale, @NotBlank String value);
+
+    @PreAuthorize("hasRole('USER')")
+    @NotNull CatalogItem updateComment(@NotBlank String id, @NotBlank String commentId, @NotBlank String value);
+
+    @PreAuthorize("hasRole('USER')")
+    @NotNull CatalogItem deleteComment(@NotBlank String id, @NotBlank String commentId);
+
     @PreAuthorize("hasRole('ADMIN')")
     @NotNull Tag createTag(String id, @NotBlank String name);
 

@@ -54,6 +54,10 @@ public class ContentFetchers implements MutationFetchers {
         fetchers.put("updateDescription", updateDescription());
         fetchers.put("deleteDescription", deleteDescription());
 
+        fetchers.put("addComment", addComment());
+        fetchers.put("updateComment", updateComment());
+        fetchers.put("deleteComment", deleteComment());
+
         fetchers.put("setTolerance", setTolerance());
         fetchers.put("unsetTolerance", unsetTolerance());
         fetchers.put("setNominalValue", setNominalValue());
@@ -134,6 +138,35 @@ public class ContentFetchers implements MutationFetchers {
             final DeleteDescriptionInput input = OBJECT_MAPPER.convertValue(argument, DeleteDescriptionInput.class);
             final CatalogItem item = catalogService.deleteDescription(input.getCatalogEntryId(), input.getDescriptionId());
             return payloadMapper.toDeleteDescriptionPayload(item);
+        };
+    }
+
+    protected DataFetcher<AddCommentPayload> addComment() {
+        return environment -> {
+            final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
+            final AddCommentInput input = OBJECT_MAPPER.convertValue(argument, AddCommentInput.class);
+            final TranslationInput name = input.getComment();
+            final CatalogItem item = catalogService.addComment(input.getCatalogEntryId(), name.getId(), name.getLocale(), name.getValue());
+            return payloadMapper.toAddCommentPayload(item);
+        };
+    }
+
+    protected DataFetcher<UpdateCommentPayload> updateComment() {
+        return environment -> {
+            final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
+            final UpdateCommentInput input = OBJECT_MAPPER.convertValue(argument, UpdateCommentInput.class);
+            final TranslationUpdateInput name = input.getComment();
+            final CatalogItem item = catalogService.updateComment(input.getCatalogEntryId(), name.getTranslationId(), name.getValue());
+            return payloadMapper.toUpdateCommentPayload(item);
+        };
+    }
+
+    protected DataFetcher<DeleteCommentPayload> deleteComment() {
+        return environment -> {
+            final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
+            final DeleteCommentInput input = OBJECT_MAPPER.convertValue(argument, DeleteCommentInput.class);
+            final CatalogItem item = catalogService.deleteComment(input.getCatalogEntryId(), input.getCommentId());
+            return payloadMapper.toDeleteCommentPayload(item);
         };
     }
 

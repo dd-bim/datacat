@@ -14,6 +14,7 @@ public class OneToOneRelationshipValue {
     VersionValue version;
     List<@NotNull @Valid TranslationValue> names;
     List<@NotNull @Valid TranslationValue> descriptions;
+    List<@NotNull @Valid TranslationValue> comments;
     @NotBlank String from;
     @NotBlank String to;
 

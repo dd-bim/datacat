@@ -275,4 +275,20 @@ public class CatalogVerificationServiceImpl implements CatalogVerificationServic
 
         return new findMultipleNamesValue(leaves, paths);
     }
+
+    @Override
+    public findMultipleNamesAcrossClassesValue getfindMultipleNamesAcrossClasses(CatalogRecordSpecification rootNodeSpecification) {
+
+        List<List<String>> paths = catalogValidationQuery.findMultipleNamesAcrossClasses();
+
+        final Set<String> nodeIds = new HashSet<>();
+        paths.forEach(nodeIds::addAll);
+
+        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
+        final List<XtdRoot> leaves = StreamSupport
+                .stream(nodes.spliterator(), false)
+                .collect(Collectors.toList());
+
+        return new findMultipleNamesAcrossClassesValue(leaves, paths);
+    }
 }

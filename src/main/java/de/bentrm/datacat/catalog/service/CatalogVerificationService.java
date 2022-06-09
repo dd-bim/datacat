@@ -57,4 +57,7 @@ public interface CatalogVerificationService {
 
     @PreAuthorize("hasRole('READONLY')")
     findMultipleNamesValue getfindMultipleNames(@NotNull CatalogRecordSpecification rootNodeSpecification);
+
+    @PreAuthorize("hasRole('READONLY')")
+    findMultipleNamesAcrossClassesValue getfindMultipleNamesAcrossClasses(@NotNull CatalogRecordSpecification rootNodeSpecification);
 }

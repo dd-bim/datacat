@@ -58,6 +58,14 @@ public interface ApiInputMapper {
         return OBJECT_MAPPER.convertValue(argument, DeleteDescriptionInput.class);
     }
 
+    default UpdateCommentInput toUpdateCommentInput(Map<String, Object> argument) {
+        return OBJECT_MAPPER.convertValue(argument, UpdateCommentInput.class);
+    }
+
+    default DeleteCommentInput toDeleteCommentInput(Map<String, Object> argument) {
+        return OBJECT_MAPPER.convertValue(argument, DeleteCommentInput.class);
+    }
+
     default SetNominalValueInput toSetNominalValueInput(Map<String, Object> argument) {
         return OBJECT_MAPPER.convertValue(argument, SetNominalValueInput.class);
     }
@@ -92,6 +100,10 @@ public interface ApiInputMapper {
 
     default findMultipleNamesFilterInput tofindMultipleNamesFilterInput(Map<String, Object> arguments) {
         return OBJECT_MAPPER.convertValue(arguments, findMultipleNamesFilterInput.class);
+    }
+
+    default findMultipleNamesAcrossClassesFilterInput tofindMultipleNamesAcrossClassesFilterInput(Map<String, Object> arguments) {
+        return OBJECT_MAPPER.convertValue(arguments, findMultipleNamesAcrossClassesFilterInput.class);
     }
 
     default List<TranslationValue> toTranslationValue(List<TranslationInput> inputs) {

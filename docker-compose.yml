@@ -6,9 +6,11 @@ version: "3.7"
 services:
   api:
     container_name: "api"
+    # image: "schi11er/datacat:test"
     build: .
     ports:
       - "8080:8080"
+    restart: unless-stopped
     environment:
       - datacat.client.url=http://localhost:3000
       - datacat.auth.secret=changeme
@@ -33,6 +35,7 @@ services:
     ports:
       - "7687:7687"
       - "7474:7474"
+    restart: unless-stopped
     environment:
       - NEO4J_AUTH=neo4j/neo4jneo4j
       - NEO4JLABS_PLUGINS=["apoc"]
@@ -50,6 +53,7 @@ services:
       - "2500:2500"
       - "9080:9080"
       - "9085:9085"
+    restart: unless-stopped
     volumes:
       - "./mailslurper-config.json:/config.json:ro"
       - "mail:/data"
