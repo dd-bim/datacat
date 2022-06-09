@@ -56,46 +56,23 @@ public class CatalogExportServiceImpl implements CatalogExportService {
     @Override
     public findExportCatalogItemsValue getfindExportCatalogItems() {
 
-        System.out.println("Test 1");
         List<ExportItemResult> leaves = catalogExportQuery.findExportCatalogItems();
-        // System.out.println(paths.toString());
-        // final List<XtdRoot> leaves = new ArrayList<XtdRoot>();
         List<List<String>> paths = new ArrayList<List<String>>();
         leaves.forEach(p -> {
-            System.out.println(p.name);
             ArrayList<String> list = new ArrayList<String>();
             list.add(p.id);
             paths.add(list);
         });
 
-        // final Set<String> nodeIds = new HashSet<>();
-        // paths.forEach(nodeIds::addAll);
-
-        // final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        // final List<XtdRoot> leaves = StreamSupport
-        //         .stream(nodes.spliterator(), false)
-        //         .collect(Collectors.toList());
-
         return new findExportCatalogItemsValue(leaves, paths);
-        // return new findExportCatalogItemsValue(leaves);
     }
 
     @Override
     public findExportCatalogItemsRelationshipsValue getfindExportCatalogItemsRelationships() {
 
         List<ExportRelationshipResult> leaves = catalogExportQuery.findExportCatalogItemsRelationships();
-
-        // final Set<String> nodeIds = new HashSet<>();
-        // paths.forEach(nodeIds::addAll);
-
-        // final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        // final List<XtdRoot> leaves = StreamSupport
-        //         .stream(nodes.spliterator(), false)
-        //         .collect(Collectors.toList());
-
         List<List<String>> paths = new ArrayList<List<String>>();
         leaves.forEach(p -> {
-            System.out.println(p.RelationshipType);
             ArrayList<String> list = new ArrayList<String>();
             list.add(p.Entity1);
             paths.add(list);

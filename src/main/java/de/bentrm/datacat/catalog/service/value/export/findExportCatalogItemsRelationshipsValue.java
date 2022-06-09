@@ -9,8 +9,6 @@ import java.util.List;
 
 @Value
 public class findExportCatalogItemsRelationshipsValue {
-    // @NotNull List<XtdRoot> nodes;
-    // @NotNull List<List<String>> paths;
     @NotNull List<ExportRelationshipResult> nodes;
     @NotNull List<List<String>> paths;
 }

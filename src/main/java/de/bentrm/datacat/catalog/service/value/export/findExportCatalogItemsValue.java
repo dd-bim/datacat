@@ -11,7 +11,6 @@ import java.util.*;
 
 @Value
 public class findExportCatalogItemsValue {
-    // @NotNull List<XtdRoot> nodes;
     @NotNull List<ExportItemResult> nodes;
     @NotNull List<List<String>> paths;
 }
