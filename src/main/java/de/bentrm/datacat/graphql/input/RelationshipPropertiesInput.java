@@ -12,4 +12,5 @@ public class RelationshipPropertiesInput {
     @Valid VersionInput version;
     List<@NotNull @Valid TranslationInput> names;
     List<@NotNull @Valid TranslationInput> descriptions;
+    List<@NotNull @Valid TranslationInput> comments;
 }

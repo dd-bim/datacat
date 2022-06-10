@@ -16,5 +16,6 @@ public class SearchResult {
     String name;
     List<TranslationValue> names;
     List<TranslationValue> descriptions;
+    List<TranslationValue> comments;
 
 }

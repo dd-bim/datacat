@@ -15,6 +15,7 @@ public class OneToManyRelationshipValue {
     VersionValue version;
     List<@NotNull @Valid TranslationValue> names;
     List<@NotNull @Valid TranslationValue> descriptions;
+    List<@NotNull @Valid TranslationValue> comments;
     @NotBlank String from;
     @NotEmpty List<@NotBlank String> to;
 

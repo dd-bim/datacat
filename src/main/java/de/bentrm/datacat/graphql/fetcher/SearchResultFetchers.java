@@ -23,7 +23,8 @@ public class SearchResultFetchers implements AttributeFetchers {
                     return CatalogRecordType.getByDomainClass(source);
                 },
                 "name", new NameFetcher(),
-                "description", new DescriptionFetcher()
+                "description", new DescriptionFetcher(),
+                "comment", new CommentFetcher()
         );
     }
 }

@@ -13,6 +13,7 @@ public class RelationshipProperties {
     VersionValue version;
     List<@NotNull @Valid TranslationValue> names;
     List<@NotNull @Valid TranslationValue> descriptions;
+    List<@NotNull @Valid TranslationValue> comments;
 
     public String getId() {
         return StringUtils.isNoneBlank(this.id) ? this.id : null;

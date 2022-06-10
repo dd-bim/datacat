@@ -41,3 +41,5 @@ pom.xml.bak
 release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
+
+volumes/

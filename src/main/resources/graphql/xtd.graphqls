@@ -17,6 +17,8 @@ type SearchResult {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
 }
 
 type SearchResultConnection {
@@ -59,6 +61,115 @@ type TagConnection {
 type HierarchyPayload {
     nodes: [Concept!]!
     paths: [[ID!]!]!
+}
+
+type findPropGroupWithoutPropPayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
+type findPropWithoutSubjectOrPropGroupPayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
+type findModelWithoutGroupPayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
+type findGroupWithoutSubjectPayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
+type findSubjectWithoutPropPayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
+type findMeasureWithoutPropPayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
+type findUnitWithoutMeasurePayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
+type findValueWithoutMeasurePayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
+type findMissingTagsPayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
+type findMissingEnglishNamePayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
+type findMultipleIDsPayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
+type findMissingDescriptionPayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
+type findMissingEnglishDescriptionPayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
+type findMultipleNamesPayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
+type findMultipleNamesAcrossClassesPayload {
+    nodes: [Concept!]!
+    paths: [[ID!]!]!
+}
+
+type findExportCatalogItemsPayload {
+    nodes: [ExportResult!]
+    paths: [[ID!]!]!
+}
+
+type findExportCatalogItemsRelationshipsPayload {
+    nodes: [ExportRelationshipResult!]
+    paths: [[ID!]!]!
+}
+
+type ExportResult {
+    id: ID!
+    typ: String
+    schlagworte: String
+    name: String
+    name_en: String
+    description: String
+    versionId: String
+    created: String
+    createdBy: String
+    lastModified: String
+    lastModifiedBy: String
+
+}
+
+type ExportRelationshipResult {
+    Entity1: ID!
+    Entity1Type: String!
+    RelationId: ID!
+    RelationshipType: String!
+    Entity2: ID!
+    Entity2Type: String!
 }
 
 # Xtd misc
@@ -109,6 +220,41 @@ input HierarchyFilterInput {
     rootNodeFilter: HierarchyRootNodeFilterInput!
 }
 
+
+input findMissingTagsNodeTypeFilterInput {catalogEntryTypeIn: [CatalogRecordType!]}
+
+input findMissingTagsFilterInput {nodeTypeFilter: findMissingTagsNodeTypeFilterInput!}
+
+
+input findMultipleIDsNodeTypeFilterInput {catalogEntryTypeIn: [CatalogRecordType!]}
+
+input findMultipleIDsFilterInput {nodeTypeFilter: findMultipleIDsNodeTypeFilterInput!}
+
+
+input findMissingDescriptionNodeTypeFilterInput {catalogEntryTypeIn: [CatalogRecordType!]}
+
+input findMissingDescriptionFilterInput {nodeTypeFilter: findMissingDescriptionNodeTypeFilterInput!}
+
+
+input findMissingEnglishNameNodeTypeFilterInput {catalogEntryTypeIn: [CatalogRecordType!]}
+
+input findMissingEnglishNameFilterInput {nodeTypeFilter: findMissingEnglishNameNodeTypeFilterInput!}
+
+
+input findMissingEnglishDescriptionNodeTypeFilterInput {catalogEntryTypeIn: [CatalogRecordType!]}
+
+input findMissingEnglishDescriptionFilterInput {nodeTypeFilter: findMissingEnglishDescriptionNodeTypeFilterInput!}
+
+
+input findMultipleNamesNodeTypeFilterInput {catalogEntryTypeIn: [CatalogRecordType!]}
+
+input findMultipleNamesFilterInput {nodeTypeFilter: findMultipleNamesNodeTypeFilterInput!}
+
+input findMultipleNamesAcrossClassesNodeTypeFilterInput {catalogEntryTypeIn: [CatalogRecordType!]}
+
+input findMultipleNamesAcrossClassesFilterInput {nodeTypeFilter: findMultipleNamesAcrossClassesNodeTypeFilterInput!}
+
+
 input FilterInput {
     query: String
     idIn: [ID!]
@@ -154,6 +300,8 @@ interface Concept {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
 }
 
@@ -170,6 +318,8 @@ type XtdExternalDocument implements Concept {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
     documents: XtdRelDocumentsConnection!
 }
@@ -187,6 +337,8 @@ interface XtdRoot implements Concept {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
     actedUponBy: XtdRelActsUponConnection!
     actsUpon: XtdRelActsUponConnection!
@@ -215,6 +367,8 @@ interface XtdObject implements Concept, XtdRoot {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
     actedUponBy: XtdRelActsUponConnection!
     actsUpon: XtdRelActsUponConnection!
@@ -246,6 +400,8 @@ interface XtdCollection implements Concept, XtdRoot {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
     actedUponBy: XtdRelActsUponConnection!
     actsUpon: XtdRelActsUponConnection!
@@ -276,6 +432,8 @@ interface XtdRelationship implements Concept {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
 }
 
@@ -292,6 +450,8 @@ type XtdActivity implements Concept, XtdRoot, XtdObject {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
     actedUponBy: XtdRelActsUponConnection!
     actsUpon: XtdRelActsUponConnection!
@@ -323,6 +483,8 @@ type XtdActor implements Concept, XtdRoot, XtdObject {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
     actedUponBy: XtdRelActsUponConnection!
     actsUpon: XtdRelActsUponConnection!
@@ -354,6 +516,8 @@ type XtdSubject implements Concept, XtdRoot, XtdObject {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
     groupOfProperties: [XtdNest!]!
     properties: [XtdProperty!]!
@@ -388,6 +552,8 @@ type XtdClassification implements Concept, XtdRoot, XtdObject {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
     actedUponBy: XtdRelActsUponConnection!
     actsUpon: XtdRelActsUponConnection!
@@ -419,6 +585,8 @@ type XtdMeasureWithUnit implements Concept, XtdRoot, XtdObject {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
 #    methodOfInterpretation: [Translation!]!
     assignedTo: XtdRelAssignsMeasuresConnection!
@@ -454,6 +622,8 @@ type XtdProperty implements Concept, XtdRoot, XtdObject {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
     assignedMeasures: XtdRelAssignsMeasuresConnection!
     actedUponBy: XtdRelActsUponConnection!
@@ -488,6 +658,8 @@ type XtdUnit implements Concept, XtdRoot, XtdObject {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
     assignedTo: XtdRelAssignsUnitsConnection!
     actedUponBy: XtdRelActsUponConnection!
@@ -520,6 +692,8 @@ type XtdValue implements Concept, XtdRoot, XtdObject {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
     toleranceType: ToleranceType
     lowerTolerance: String
@@ -558,6 +732,8 @@ type XtdBag implements Concept, XtdRoot, XtdCollection {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
     actedUponBy: XtdRelActsUponConnection!
     actsUpon: XtdRelActsUponConnection!
@@ -588,6 +764,8 @@ type XtdNest implements Concept, XtdRoot, XtdCollection {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
     actedUponBy: XtdRelActsUponConnection!
     actsUpon: XtdRelActsUponConnection!
@@ -618,6 +796,8 @@ type XtdRelAssignsCollections implements Concept, XtdRelationship {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
     relatingObject: XtdObject!
     relatedCollections: [XtdCollection!]!
@@ -636,6 +816,8 @@ type XtdRelAssignsMeasures implements Concept, XtdRelationship {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
     relatingProperty: XtdProperty!
     relatedMeasures: [XtdMeasureWithUnit!]!
@@ -654,6 +836,8 @@ type XtdRelAssignsProperties implements Concept, XtdRelationship {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
     relatingObject: XtdObject!
     relatedProperties: [XtdProperty!]!
@@ -672,6 +856,8 @@ type XtdRelAssignsPropertyWithValues implements Concept, XtdRelationship {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
     relatingObject: XtdObject!
     relatedProperty: XtdProperty!
@@ -691,6 +877,8 @@ type XtdRelAssignsUnits implements Concept, XtdRelationship {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
     relatingMeasure: XtdMeasureWithUnit!
     relatedUnits: [XtdUnit!]!
@@ -709,6 +897,8 @@ type XtdRelAssignsValues implements Concept, XtdRelationship {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
     relatingMeasure: XtdMeasureWithUnit!
     relatedValues: [XtdValue!]!
@@ -727,6 +917,8 @@ type XtdRelCollects implements Concept, XtdRelationship {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
     relatingCollection: XtdCollection!
     relatedThings: [XtdRoot!]!
@@ -745,6 +937,8 @@ type XtdRelDocuments implements Concept, XtdRelationship {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
     relatingDocument: XtdExternalDocument!
     relatedThings: [XtdRoot!]!
@@ -763,6 +957,8 @@ type XtdRelAssociates implements Concept, XtdRelationship {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
     relatingThing: XtdObject!
     relatedThings: XtdObjectConnection!
@@ -781,6 +977,8 @@ type XtdRelGroups implements Concept, XtdRelationship {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
     relatingThing: XtdRoot!
     relatedThings: XtdRootConnection!
@@ -799,6 +997,8 @@ type XtdRelSequences implements Concept, XtdRelationship {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
     relatingActivity: XtdActivity!
     relatedActivity: XtdActivity!
@@ -817,6 +1017,8 @@ type XtdRelSpecializes implements Concept, XtdRelationship {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
     relatingThing: XtdRoot!
     relatedThings: XtdRootConnection!
@@ -835,6 +1037,8 @@ type XtdRelComposes implements Concept, XtdRelationship {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
     relatingThing: XtdRoot!
     relatedThings: XtdRootConnection!
@@ -853,6 +1057,8 @@ type XtdRelActsUpon implements Concept, XtdRelationship {
     names: [Translation!]!
     description(input: LocalizationInput): String
     descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
     tags: [Tag!]!
     relatingThing: XtdRoot!
     relatedThings: XtdRootConnection!
@@ -1057,6 +1263,41 @@ type Query {
     search(input: SearchInput, pageSize: Int, pageNumber: Int): SearchResultConnection!
 
     hierarchy(input: HierarchyFilterInput!): HierarchyPayload!
+
+    findPropGroupWithoutProp: findPropGroupWithoutPropPayload!
+
+    findPropWithoutSubjectOrPropGroup: findPropWithoutSubjectOrPropGroupPayload!
+
+    findModelWithoutGroup: findModelWithoutGroupPayload!
+
+    findGroupWithoutSubject: findGroupWithoutSubjectPayload!
+
+    findSubjectWithoutProp: findSubjectWithoutPropPayload!
+
+    findMeasureWithoutProp: findMeasureWithoutPropPayload!
+
+    findUnitWithoutMeasure: findUnitWithoutMeasurePayload!
+
+    findValueWithoutMeasure: findValueWithoutMeasurePayload!
+
+    findMissingTags(input: findMissingTagsFilterInput!): findMissingTagsPayload!
+
+    findMissingEnglishName(input: findMissingEnglishNameFilterInput!): findMissingEnglishNamePayload!
+
+    findMultipleIDs(input: findMultipleIDsFilterInput!): findMultipleIDsPayload!
+
+    findMissingDescription(input: findMissingDescriptionFilterInput!): findMissingDescriptionPayload!
+
+    findMissingEnglishDescription(input: findMissingEnglishDescriptionFilterInput!): findMissingEnglishDescriptionPayload!
+
+    findMultipleNames(input: findMultipleNamesFilterInput!): findMultipleNamesPayload!
+
+    findMultipleNamesAcrossClasses(input: findMultipleNamesAcrossClassesFilterInput!): findMultipleNamesAcrossClassesPayload!
+
+    findExportCatalogItems: findExportCatalogItemsPayload!
+
+    findExportCatalogItemsRelationships: findExportCatalogItemsRelationshipsPayload!
+
 
     getTag(id: ID!): Tag!
     findTags(input: FilterInput): TagConnection!

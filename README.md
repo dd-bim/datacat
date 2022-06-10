@@ -7,7 +7,7 @@ and uses [Maven](http://maven.apache.org) as a package and dependency
 management framework. The API layer is based on the [graphql-java](https://www.graphql-java.com) 
 library.
 
-For development, a local Docker installation is needed. Also, docker-compose should be
+For development, a local Docker installation is needed. Also, Docker Compose should be
 used to orchestrate all runtime dependencies. 
 
 Please check the [datacat editor](https://github.com/dd-bim/datacat-editor) project for 
@@ -37,7 +37,7 @@ Run the following command to build and run the application as a Docker image and
 execute it locally with a newly initialized Neo4j database.
 
 ````bash
-$ docker-compose up -d
+$ docker compose up -d
 ````
 
 You can access the [MailSlurper](https://mailslurper.com) UI via http://localhost:9080
@@ -48,10 +48,10 @@ emails are not persisted or relayed.
 backend for testing:*
 
 ````bash
-$ docker-compose db mail -d
+$ docker compose db mail -d
 `````
 
-Check health and availability via `docker-compose ps`.
+Check health and availability via `docker compose ps`.
 
 Most IDEs make it easy to start a Spring Boot application. Check the documentation of
 your working environment. Alternatively, you can start the application using the included
@@ -61,7 +61,7 @@ maven wrapper scripts:
 $ ./mvnw spring-boot:run
 ````
 
-If you use the docker-compose configuration described above, you'll need to provide
+If you use the `docker compose` configuration described above, you'll need to provide
 the appropriate connection parameters to the database. You can add additional configuration 
 settings as described in the Spring Boot documentation.
 
@@ -78,7 +78,7 @@ Follow the
 [Spring Boot documentation](https://docs.spring.io/spring-boot/docs/2.4.2/reference/html/spring-boot-features.html#boot-features-external-config)
 on how to set the parameters either by environmental variable, 
 startup parameter or by overriding the default configuration.
-See the datacat-stack project on how to set these values using a docker-compose configuration.
+See the datacat-stack project on how to set these values using a `docker compose` configuration.
 
 The following settings are used by the application itself and **must** be adapted for production use:
 
@@ -96,14 +96,14 @@ as isolated docker images. To create an image from the current source code, run 
 following command:
 
 ````bash
-$ docker build . -t bentrm/datacat:${version} -t bentrm/datacat:latest
+$ docker build . -t schi11er/datacat:${version} -t schi11er/datacat:latest
 ````
 
 A Github action is configured to build new images with every push to the master branch as well as for
 every release that follows the v*.*.* naming convention.
 
 The image should be hosted with a centralized package registry. Current images are available
-at [Docker Hub](https://hub.docker.com/repository/docker/bentrm/datacat).
+at [Docker Hub](https://hub.docker.com/repository/docker/schi11er/datacat).
 The version tag should equal the current git tag.
 
 An example configuration for production use is available on [Github](https://github.com/dd-bim/datacat-stack).
