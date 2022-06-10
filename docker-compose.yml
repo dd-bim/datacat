@@ -18,7 +18,7 @@ services:
       - spring.mail.port=2500
       - spring.mail.host=mail
       - spring.data.neo4j.username=neo4j
-      - spring.data.neo4j.password=neo4jneo4j
+      - spring.data.neo4j.password=s3cret
       - spring.data.neo4j.uri=bolt://db:7687
     depends_on:
       - db
@@ -36,7 +36,7 @@ services:
       - "7474:7474"
     restart: unless-stopped
     environment:
-      - NEO4J_AUTH=neo4j/neo4jneo4j
+      - NEO4J_AUTH=neo4j/s3cret
       - NEO4JLABS_PLUGINS=["apoc"]
     volumes:
       - "dbdata:/data"
