@@ -6,7 +6,6 @@ version: "3.7"
 services:
   api:
     container_name: "api"
-    # image: "schi11er/datacat:test"
     build: .
     ports:
       - "8080:8080"
@@ -40,8 +39,7 @@ services:
       - NEO4J_AUTH=neo4j/neo4jneo4j
       - NEO4JLABS_PLUGINS=["apoc"]
     volumes:
-      # - "dbdata:/data"
-      - ./volumes:/data
+      - "dbdata:/data"
       - "dblogs:/logs"
     healthcheck:
       test: perl -MIO::Socket::INET -e 'exit(! defined( IO::Socket::INET->new("localhost:7687")))'
