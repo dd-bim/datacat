@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.bentrm.datacat.catalog.service.value.CatalogRecordProperties;
 import de.bentrm.datacat.catalog.service.value.RelationshipProperties;
 import de.bentrm.datacat.catalog.service.value.TranslationValue;
+import de.bentrm.datacat.graphql.input.verification.*;
 import org.apache.commons.lang3.LocaleUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValueCheckStrategy;
@@ -57,6 +58,14 @@ public interface ApiInputMapper {
         return OBJECT_MAPPER.convertValue(argument, DeleteDescriptionInput.class);
     }
 
+    default UpdateCommentInput toUpdateCommentInput(Map<String, Object> argument) {
+        return OBJECT_MAPPER.convertValue(argument, UpdateCommentInput.class);
+    }
+
+    default DeleteCommentInput toDeleteCommentInput(Map<String, Object> argument) {
+        return OBJECT_MAPPER.convertValue(argument, DeleteCommentInput.class);
+    }
+
     default SetNominalValueInput toSetNominalValueInput(Map<String, Object> argument) {
         return OBJECT_MAPPER.convertValue(argument, SetNominalValueInput.class);
     }
@@ -67,6 +76,34 @@ public interface ApiInputMapper {
 
     default HierarchyFilterInput toHierarchyFilterInput(Map<String, Object> arguments) {
         return OBJECT_MAPPER.convertValue(arguments, HierarchyFilterInput.class);
+    }
+
+    default findMissingTagsFilterInput tofindMissingTagsFilterInput(Map<String, Object> arguments) {
+        return OBJECT_MAPPER.convertValue(arguments, findMissingTagsFilterInput.class);
+    }
+
+    default findMissingEnglishNameFilterInput tofindMissingEnglishNameFilterInput(Map<String, Object> arguments) {
+        return OBJECT_MAPPER.convertValue(arguments, findMissingEnglishNameFilterInput.class);
+    }
+
+    default findMultipleIDsFilterInput tofindMultipleIDsFilterInput(Map<String, Object> arguments) {
+        return OBJECT_MAPPER.convertValue(arguments, findMultipleIDsFilterInput.class);
+    }
+
+    default findMissingDescriptionFilterInput tofindMissingDescriptionFilterInput(Map<String, Object> arguments) {
+        return OBJECT_MAPPER.convertValue(arguments, findMissingDescriptionFilterInput.class);
+    }
+
+    default findMissingEnglishDescriptionFilterInput tofindMissingEnglishDescriptionFilterInput(Map<String, Object> arguments) {
+        return OBJECT_MAPPER.convertValue(arguments, findMissingEnglishDescriptionFilterInput.class);
+    }
+
+    default findMultipleNamesFilterInput tofindMultipleNamesFilterInput(Map<String, Object> arguments) {
+        return OBJECT_MAPPER.convertValue(arguments, findMultipleNamesFilterInput.class);
+    }
+
+    default findMultipleNamesAcrossClassesFilterInput tofindMultipleNamesAcrossClassesFilterInput(Map<String, Object> arguments) {
+        return OBJECT_MAPPER.convertValue(arguments, findMultipleNamesAcrossClassesFilterInput.class);
     }
 
     default List<TranslationValue> toTranslationValue(List<TranslationInput> inputs) {

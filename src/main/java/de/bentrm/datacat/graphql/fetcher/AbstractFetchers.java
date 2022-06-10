@@ -26,6 +26,7 @@ public abstract class AbstractFetchers<T extends Entity>
 
     private final NameFetcher nameFetcher = new NameFetcher();
     private final DescriptionFetcher descriptionFetcher = new DescriptionFetcher();
+    private final CommentFetcher commentFetcher = new CommentFetcher();
 
     private final DataFetcher<Optional<T>> fetchOne;
     private final DataFetcher<Connection<T>> fetchAll;
@@ -72,7 +73,8 @@ public abstract class AbstractFetchers<T extends Entity>
                     return CatalogRecordType.getByDomainClass(source);
                 },
                 "name", nameFetcher,
-                "description", descriptionFetcher
+                "description", descriptionFetcher,
+                "comment", commentFetcher
         );
     }
 }

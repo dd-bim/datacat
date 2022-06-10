@@ -13,4 +13,5 @@ public class CatalogEntryPropertiesInput {
     @Valid VersionInput version;
     @NotEmpty List<@NotNull @Valid TranslationInput> names;
     List<@NotNull @Valid TranslationInput> descriptions;
+    List<@NotNull @Valid TranslationInput> comments;
 }

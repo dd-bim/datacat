@@ -52,6 +52,15 @@ public interface PayloadMapper {
     @Mapping(source = "item", target = "catalogEntry")
     DeleteDescriptionPayload toDeleteDescriptionPayload(CatalogItem item);
 
+    @Mapping(source = "item", target = "catalogEntry")
+    AddCommentPayload toAddCommentPayload(CatalogItem item);
+
+    @Mapping(source = "item", target = "catalogEntry")
+    UpdateCommentPayload toUpdateCommentPayload(CatalogItem item);
+
+    @Mapping(source = "item", target = "catalogEntry")
+    DeleteCommentPayload toDeleteCommentPayload(CatalogItem item);
+
     @Mapping(source = "value", target = "catalogEntry")
     SetTolerancePayload toSetTolerancePayload(XtdValue value);
 

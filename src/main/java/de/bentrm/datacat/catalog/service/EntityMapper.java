@@ -17,18 +17,18 @@ public interface EntityMapper {
     EntityMapper INSTANCE = Mappers.getMapper(EntityMapper.class);
 
     default void setProperties(CatalogRecordProperties dto, @MappingTarget CatalogItem item) {
-        setProperties(item, dto.getId(), dto.getVersion(), dto.getNames(), dto.getDescriptions());
+        setProperties(item, dto.getId(), dto.getVersion(), dto.getNames(), dto.getDescriptions(), dto.getComments());
     }
 
     default void setProperties(OneToOneRelationshipValue dto, CatalogItem item) {
-        setProperties(item, dto.getId(), dto.getVersion(), dto.getNames(), dto.getDescriptions());
+        setProperties(item, dto.getId(), dto.getVersion(), dto.getNames(), dto.getDescriptions(), dto.getComments());
     }
 
     default void setProperties(OneToManyRelationshipValue dto, CatalogItem item) {
-        setProperties(item, dto.getId(), dto.getVersion(), dto.getNames(), dto.getDescriptions());
+        setProperties(item, dto.getId(), dto.getVersion(), dto.getNames(), dto.getDescriptions(), dto.getComments());
     }
 
-    default void setProperties(CatalogItem item, String id, VersionValue version, List<TranslationValue> names, List<TranslationValue> descriptions) {
+    default void setProperties(CatalogItem item, String id, VersionValue version, List<TranslationValue> names, List<TranslationValue> descriptions, List<TranslationValue> comments) {
         if (id != null) {
             item.setId(id);
         }
@@ -40,6 +40,9 @@ public interface EntityMapper {
         }
         if (descriptions != null) {
             descriptions.forEach(x -> item.addDescription(x.getId(), x.getLocale(), x.getValue()));
+        }
+        if (comments != null) {
+            comments.forEach(x -> item.addComment(x.getId(), x.getLocale(), x.getValue()));
         }
     }
 

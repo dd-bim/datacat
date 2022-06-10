@@ -96,6 +96,7 @@ input PropertiesInput {
     version: VersionInput
     names: [TranslationInput!]!
     descriptions: [TranslationInput!]
+    comments: [TranslationInput!]
 }
 
 input CreateCatalogEntryInput {
@@ -215,6 +216,33 @@ type UpdateDescriptionPayload {
 }
 
 type DeleteDescriptionPayload {
+    catalogEntry: SimpleRecord
+}
+
+input AddCommentInput {
+    catalogEntryId: ID!
+    comment: TranslationInput!
+}
+
+input UpdateCommentInput {
+    catalogEntryId: ID!
+    comment: TranslationUpdateInput!
+}
+
+input DeleteCommentInput {
+    catalogEntryId: ID!
+    commentId: ID!
+}
+
+type AddCommentPayload {
+    catalogEntry: SimpleRecord
+}
+
+type UpdateCommentPayload {
+    catalogEntry: SimpleRecord
+}
+
+type DeleteCommentPayload {
     catalogEntry: SimpleRecord
 }
 
@@ -370,6 +398,15 @@ type Mutation {
 
     # Deletes a localized description from the catalog entry.
     deleteDescription(input: DeleteDescriptionInput!): DeleteDescriptionPayload
+
+    # Adds a localized comment to the given catalog entry.
+    addComment(input: AddCommentInput!): AddCommentPayload
+
+    # Updates a localized comment of the given catalog entry.
+    updateComment(input: UpdateCommentInput!): UpdateCommentPayload
+
+    # Deletes a localized comment from the catalog entry.
+    deleteComment(input: DeleteCommentInput!): DeleteCommentPayload
 
     # Sets the tolerance component of a value entry.
     setTolerance(input: SetToleranceInput!): SetTolerancePayload

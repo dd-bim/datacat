@@ -138,6 +138,30 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Transactional
     @Override
+    public CatalogItem addComment(String id, String commentId, Locale locale, String value) {
+        final CatalogItem item = catalogItemRepository.findById(id).orElseThrow();
+        item.addComment(commentId, locale, value);
+        return catalogItemRepository.save(item);
+    }
+
+    @Transactional
+    @Override
+    public CatalogItem updateComment(String id, String commentId, String value) {
+        final CatalogItem item = catalogItemRepository.findById(id).orElseThrow();
+        item.updateComment(commentId, value);
+        return catalogItemRepository.save(item);
+    }
+
+    @Transactional
+    @Override
+    public CatalogItem deleteComment(String id, String commentId) {
+        final CatalogItem item = catalogItemRepository.findById(id).orElseThrow();
+        item.deleteComment(commentId);
+        return catalogItemRepository.save(item);
+    }
+
+    @Transactional
+    @Override
     public @NotNull Tag createTag(String id, String name) {
         final Tag tag = new Tag();
         if (id != null) tag.setId(id);
