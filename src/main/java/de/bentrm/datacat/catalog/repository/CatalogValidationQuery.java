@@ -116,8 +116,7 @@ public interface CatalogValidationQuery extends EntityRepository<XtdRoot> {
     """)
     List<List<String>> findMultipleIDs();
 
-    /* Finde Elemente mit identischer Bezeichnung */
-    // AND (x)-[:TAGGED]->()<-[:TAGGED]-(y) bei Fachmodell Gruppe Klasse Merkmalsgruppe Datenvorlage
+    /* Finde Elemente mit identischer Bezeichnung innerhalb eines Types*/
     @Query("""
     MATCH (x)-[:NAMED]->(v)
     MATCH (y)-[:NAMED]->(z)
