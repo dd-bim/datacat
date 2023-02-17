@@ -151,7 +151,7 @@ type findExportCatalogItemsRelationshipsPayload {
 type ExportResult {
     id: ID!
     typ: String
-    schlagworte: String
+    tags: [String]
     name: String
     name_en: String
     description: String
@@ -164,12 +164,12 @@ type ExportResult {
 }
 
 type ExportRelationshipResult {
-    Entity1: ID!
-    Entity1Type: String!
-    RelationId: ID!
-    RelationshipType: String!
-    Entity2: ID!
-    Entity2Type: String!
+    entity1: ID!
+    entity1Type: String!
+    relationId: ID!
+    relationshipType: String!
+    entity2: ID!
+    entity2Type: String!
 }
 
 # Xtd misc

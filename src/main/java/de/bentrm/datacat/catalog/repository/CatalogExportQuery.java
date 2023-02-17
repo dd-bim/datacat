@@ -21,8 +21,9 @@ public interface CatalogExportQuery extends EntityRepository<XtdRoot> {
     
     /* gibt alle Katalogeinträge mit ihren Eigenschaften aus */
     @Query("""
-    MATCH(x:XtdRoot)-[:NAMED]->(t:Translation) 
-    WHERE t.languageCode="de" 
+    MATCH(x)-[:NAMED]->(t:Translation) 
+    WHERE (x:XtdRoot OR x:XtdExternalDocument) 
+    AND t.languageCode="de" 
     OPTIONAL MATCH(x)-[:NAMED]->(ten:Translation)
     WHERE ten.languageCode="en" 
     OPTIONAL MATCH(x)-[:TAGGED]->(tag)
@@ -41,7 +42,7 @@ public interface CatalogExportQuery extends EntityRepository<XtdRoot> {
     RETURN DISTINCT 
     x.id AS id,  
     value.type AS typ, 
-    tag.name AS schlagworte , 
+    collect(tag.name) AS tags , 
     t.label AS name,
     ten.label AS name_en,
     d.label AS description,
@@ -89,12 +90,12 @@ public interface CatalogExportQuery extends EntityRepository<XtdRoot> {
     "XtdExternalDocument" IN(LABELS(z)), 'RETURN "XtdExternalDocument" AS type'
     ], 'RETURN null AS type') YIELD value AS entity2Type
     RETURN DISTINCT
-    x.id AS Entity1,
-    entity1Type.type AS Entity1Type, 
-    y.id AS RelationId,
-    value.type AS RelationshipType, 
-    z.id AS Entity2,
-    entity2Type.type AS Entity2Type
+    x.id AS entity1,
+    entity1Type.type AS entity1Type, 
+    y.id AS relationId,
+    value.type AS relationshipType, 
+    z.id AS entity2,
+    entity2Type.type AS entity2Type
     """)
     List<ExportRelationshipResult> findExportCatalogItemsRelationships();
 }

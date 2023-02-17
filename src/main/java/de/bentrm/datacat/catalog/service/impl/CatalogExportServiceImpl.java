@@ -74,7 +74,7 @@ public class CatalogExportServiceImpl implements CatalogExportService {
         List<List<String>> paths = new ArrayList<List<String>>();
         leaves.forEach(p -> {
             ArrayList<String> list = new ArrayList<String>();
-            list.add(p.Entity1);
+            list.add(p.entity1);
             paths.add(list);
         });
 

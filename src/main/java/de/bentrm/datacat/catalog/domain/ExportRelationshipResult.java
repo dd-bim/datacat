@@ -8,10 +8,10 @@ import lombok.Data;
 @QueryResult
 public class ExportRelationshipResult {
     
-    public String Entity1;
-    public String Entity1Type;
-    public String RelationId;
-    public String RelationshipType; 
-    public String Entity2;
-    public String Entity2Type;
+    public String entity1;
+    public String entity1Type;
+    public String relationId;
+    public String relationshipType; 
+    public String entity2;
+    public String entity2Type;
 }

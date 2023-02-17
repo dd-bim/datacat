@@ -2,6 +2,7 @@ package de.bentrm.datacat.catalog.domain;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.neo4j.annotation.QueryResult;
+import java.util.List;
 
 import lombok.Data;
 
@@ -12,7 +13,7 @@ public class ExportItemResult {
     @Id
     public String id;
     public String typ;
-    public String schlagworte;
+    public List<String> tags;
     public String name;
     public String name_en;
     public String description;
