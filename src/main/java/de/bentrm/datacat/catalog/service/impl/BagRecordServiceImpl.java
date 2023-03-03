@@ -38,6 +38,14 @@ public class BagRecordServiceImpl
     @Override
     public @NotNull XtdBag addRecord(CatalogRecordProperties properties) {
         final XtdBag newEntity = new XtdBag();
+
+        if (properties.getId() != null) {
+            final boolean idIsTaken = this.getRepository().existsById(properties.getId().trim());
+            if (idIsTaken) {
+                throw new IllegalArgumentException("Id is already in use.");
+            }
+        }
+
         EntityMapper.INSTANCE.setProperties(properties, newEntity);
         final XtdBag persistentEntity = getRepository().save(newEntity);
         log.trace("Persisted new catalog entry: {}", persistentEntity);
