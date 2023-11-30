@@ -340,18 +340,8 @@ interface XtdRoot implements Concept {
     comment(input: LocalizationInput): String
     comments: [Translation!]!
     tags: [Tag!]!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
     collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
     documentedBy: XtdRelDocumentsConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
 }
 
 interface XtdObject implements Concept, XtdRoot {
@@ -370,21 +360,10 @@ interface XtdObject implements Concept, XtdRoot {
     comment(input: LocalizationInput): String
     comments: [Translation!]!
     tags: [Tag!]!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
     collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
     documentedBy: XtdRelDocumentsConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
     assignedCollections: XtdRelAssignsCollectionsConnection!
     assignedProperties: XtdRelAssignsPropertiesConnection!
-    assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
 }
 
 interface XtdCollection implements Concept, XtdRoot {
@@ -403,19 +382,9 @@ interface XtdCollection implements Concept, XtdRoot {
     comment(input: LocalizationInput): String
     comments: [Translation!]!
     tags: [Tag!]!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
     collectedBy: XtdRelCollectsConnection!
     collects: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
     documentedBy: XtdRelDocumentsConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
     assignedTo: XtdRelAssignsCollectionsConnection!
 }
 
@@ -437,72 +406,6 @@ interface XtdRelationship implements Concept {
     tags: [Tag!]!
 }
 
-type XtdActivity implements Concept, XtdRoot, XtdObject {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
-    collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
-    documentedBy: XtdRelDocumentsConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
-    assignedCollections: XtdRelAssignsCollectionsConnection!
-    assignedProperties: XtdRelAssignsPropertiesConnection!
-    assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
-}
-
-type XtdActor implements Concept, XtdRoot, XtdObject {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
-    collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
-    documentedBy: XtdRelDocumentsConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
-    assignedCollections: XtdRelAssignsCollectionsConnection!
-    assignedProperties: XtdRelAssignsPropertiesConnection!
-    assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
-}
-
 type XtdSubject implements Concept, XtdRoot, XtdObject {
     id: ID!
     recordType: CatalogRecordType!
@@ -521,21 +424,10 @@ type XtdSubject implements Concept, XtdRoot, XtdObject {
     tags: [Tag!]!
     groupOfProperties: [XtdNest!]!
     properties: [XtdProperty!]!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
     collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
     documentedBy: XtdRelDocumentsConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
     assignedCollections: XtdRelAssignsCollectionsConnection!
     assignedProperties: XtdRelAssignsPropertiesConnection!
-    assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
 }
 
 
@@ -555,21 +447,10 @@ type XtdClassification implements Concept, XtdRoot, XtdObject {
     comment(input: LocalizationInput): String
     comments: [Translation!]!
     tags: [Tag!]!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
     collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
     documentedBy: XtdRelDocumentsConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
     assignedCollections: XtdRelAssignsCollectionsConnection!
     assignedProperties: XtdRelAssignsPropertiesConnection!
-    assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
 }
 
 type XtdMeasureWithUnit implements Concept, XtdRoot, XtdObject {
@@ -590,21 +471,10 @@ type XtdMeasureWithUnit implements Concept, XtdRoot, XtdObject {
     tags: [Tag!]!
 #    methodOfInterpretation: [Translation!]!
     assignedTo: XtdRelAssignsMeasuresConnection!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
     collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
     documentedBy: XtdRelDocumentsConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
     assignedCollections: XtdRelAssignsCollectionsConnection!
     assignedProperties: XtdRelAssignsPropertiesConnection!
-    assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
     assignedUnits: XtdRelAssignsUnitsConnection!
     assignedValues: XtdRelAssignsValuesConnection!
 }
@@ -626,22 +496,11 @@ type XtdProperty implements Concept, XtdRoot, XtdObject {
     comments: [Translation!]!
     tags: [Tag!]!
     assignedMeasures: XtdRelAssignsMeasuresConnection!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
     collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
     documentedBy: XtdRelDocumentsConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
     assignedCollections: XtdRelAssignsCollectionsConnection!
     assignedProperties: XtdRelAssignsPropertiesConnection!
     assignedTo: XtdRelAssignsPropertiesConnection!
-    assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
 }
 
 
@@ -662,21 +521,10 @@ type XtdUnit implements Concept, XtdRoot, XtdObject {
     comments: [Translation!]!
     tags: [Tag!]!
     assignedTo: XtdRelAssignsUnitsConnection!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
     collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
     documentedBy: XtdRelDocumentsConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
     assignedCollections: XtdRelAssignsCollectionsConnection!
     assignedProperties: XtdRelAssignsPropertiesConnection!
-    assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
 }
 
 type XtdValue implements Concept, XtdRoot, XtdObject {
@@ -701,21 +549,10 @@ type XtdValue implements Concept, XtdRoot, XtdObject {
     valueRole: ValueRole
     valueType: ValueType
     nominalValue: String
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
     collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
     documentedBy: XtdRelDocumentsConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
     assignedCollections: XtdRelAssignsCollectionsConnection!
     assignedProperties: XtdRelAssignsPropertiesConnection!
-    assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
     assignedTo: XtdRelAssignsValuesConnection!
 }
 
@@ -735,19 +572,9 @@ type XtdBag implements Concept, XtdRoot, XtdCollection {
     comment(input: LocalizationInput): String
     comments: [Translation!]!
     tags: [Tag!]!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
     collectedBy: XtdRelCollectsConnection!
     collects: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
     documentedBy: XtdRelDocumentsConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
     assignedTo: XtdRelAssignsCollectionsConnection!
 }
 
@@ -767,19 +594,9 @@ type XtdNest implements Concept, XtdRoot, XtdCollection {
     comment(input: LocalizationInput): String
     comments: [Translation!]!
     tags: [Tag!]!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
     collectedBy: XtdRelCollectsConnection!
     collects: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
     documentedBy: XtdRelDocumentsConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
     assignedTo: XtdRelAssignsCollectionsConnection!
 }
 
@@ -841,27 +658,6 @@ type XtdRelAssignsProperties implements Concept, XtdRelationship {
     tags: [Tag!]!
     relatingObject: XtdObject!
     relatedProperties: [XtdProperty!]!
-}
-
-type XtdRelAssignsPropertyWithValues implements Concept, XtdRelationship {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    relatingObject: XtdObject!
-    relatedProperty: XtdProperty!
-    relatedValues: [XtdValue!]!
 }
 
 type XtdRelAssignsUnits implements Concept, XtdRelationship {
@@ -944,126 +740,6 @@ type XtdRelDocuments implements Concept, XtdRelationship {
     relatedThings: [XtdRoot!]!
 }
 
-type XtdRelAssociates implements Concept, XtdRelationship {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    relatingThing: XtdObject!
-    relatedThings: XtdObjectConnection!
-}
-
-type XtdRelGroups implements Concept, XtdRelationship {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    relatingThing: XtdRoot!
-    relatedThings: XtdRootConnection!
-}
-
-type XtdRelSequences implements Concept, XtdRelationship {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    relatingActivity: XtdActivity!
-    relatedActivity: XtdActivity!
-}
-
-type XtdRelSpecializes implements Concept, XtdRelationship {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    relatingThing: XtdRoot!
-    relatedThings: XtdRootConnection!
-}
-
-type XtdRelComposes implements Concept, XtdRelationship {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    relatingThing: XtdRoot!
-    relatedThings: XtdRootConnection!
-}
-
-type XtdRelActsUpon implements Concept, XtdRelationship {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    relatingThing: XtdRoot!
-    relatedThings: XtdRootConnection!
-}
-
 # Connections
 
 type PageInfo {
@@ -1091,18 +767,6 @@ type XtdRootConnection {
 
 type XtdObjectConnection {
     nodes: [XtdObject!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
-}
-
-type XtdActivityConnection {
-    nodes: [XtdActivity!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
-}
-
-type XtdActorConnection {
-    nodes: [XtdActor!]!
     pageInfo: PageInfo!
     totalElements: Int!
 }
@@ -1185,12 +849,6 @@ type XtdRelAssignsMeasuresConnection {
     totalElements: Int!
 }
 
-type XtdRelAssignsPropertyWithValuesConnection {
-    nodes: [XtdRelAssignsPropertyWithValues!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
-}
-
 type XtdRelAssignsUnitsConnection {
     nodes: [XtdRelAssignsUnits!]!
     pageInfo: PageInfo!
@@ -1211,44 +869,6 @@ type XtdRelCollectsConnection {
 
 type XtdRelDocumentsConnection {
     nodes: [XtdRelDocuments!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
-}
-
-
-type XtdRelAssociatesConnection {
-    nodes: [XtdRelAssociates!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
-}
-
-type XtdRelGroupsConnection {
-    nodes: [XtdRelGroups!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
-}
-
-type XtdRelSequencesConnection {
-    nodes: [XtdRelSequences!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
-}
-
-type XtdRelSpecializesConnection {
-    nodes: [XtdRelSpecializes!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
-}
-
-type XtdRelComposesConnection {
-    nodes: [XtdRelComposes!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
-}
-
-
-type XtdRelActsUponConnection {
-    nodes: [XtdRelActsUpon!]!
     pageInfo: PageInfo!
     totalElements: Int!
 }
@@ -1305,12 +925,6 @@ type Query {
     getExternalDocument(id: ID!): XtdExternalDocument
     findExternalDocuments(input: FilterInput): XtdExternalDocumentConnection!
 
-    getActor(id: ID!): XtdActor
-    findActors(input: FilterInput): XtdActorConnection!
-
-    getActivity(id: ID!): XtdActivity
-    findActivities(input: FilterInput): XtdActivityConnection!
-
     getClassification(id: ID!): XtdClassification
     findClassifications(input: FilterInput): XtdClassificationConnection!
 
@@ -1338,29 +952,11 @@ type Query {
     getAssignsCollections(id: ID!): XtdRelAssignsCollections
     findAssignsCollections(input: FilterInput): XtdRelAssignsCollectionsConnection!
 
-    getAssignsPropertyWithValues(id: ID!): XtdRelAssignsPropertyWithValues
-    findAssignsPropertyWithValues(input: FilterInput): XtdRelAssignsPropertyWithValuesConnection!
-
     getDocuments(id: ID!): XtdRelDocuments
     findDocuments(input: FilterInput): XtdRelDocumentsConnection!
 
     getCollects(id: ID!): XtdRelCollects
     findCollects(input: FilterInput): XtdRelCollectsConnection!
-
-    getAssociates(id: ID!): XtdRelAssociates
-    findAssociates(input: FilterInput): XtdRelAssociatesConnection!
-
-    getGroups(id: ID!): XtdRelGroups
-    findGroups(input: FilterInput): XtdRelGroupsConnection!
-
-    getSpecialies(id: ID!): XtdRelSpecializes
-    findSpecializes(input: FilterInput): XtdRelSpecializesConnection!
-
-    getComposes(id: ID!): XtdRelComposes
-    findComposes(input: FilterInput): XtdRelComposesConnection!
-
-    getActsUpon(id: ID!): XtdRelActsUpon
-    findActsUpon(input: FilterInput): XtdRelActsUponConnection!
 
     getAssignsProperties(id: ID!): XtdRelAssignsProperties
     findAssignsProperties(input: FilterInput): XtdRelAssignsPropertiesConnection

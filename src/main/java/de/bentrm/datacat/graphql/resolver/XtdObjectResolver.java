@@ -20,12 +20,6 @@ public class XtdObjectResolver implements CustomResolver {
         Object obj = env.getObject();
         GraphQLSchema schema = env.getSchema();
 
-        if (obj instanceof XtdActivity) {
-            return schema.getObjectType(XtdActivity.LABEL);
-        }
-        if (obj instanceof XtdActor) {
-            return schema.getObjectType(XtdActor.LABEL);
-        }
         if (obj instanceof XtdClassification) {
             return schema.getObjectType(XtdClassification.LABEL);
         }

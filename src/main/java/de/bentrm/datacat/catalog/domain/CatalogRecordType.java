@@ -6,28 +6,19 @@ import org.springframework.util.Assert;
  * Enumeration of all supported catalog record types.
  */
 public enum CatalogRecordType {
-    Activity(XtdActivity.LABEL),
-    Actor(XtdActor.LABEL),
-    ActsUpon(XtdRelActsUpon.LABEL),
     AssignsCollections(XtdRelAssignsCollections.LABEL),
     AssignsMeasures(XtdRelAssignsMeasures.LABEL),
     AssignsProperties(XtdRelAssignsProperties.LABEL),
-    AssignsPropertyWithValues(XtdRelAssignsPropertyWithValues.LABEL),
     AssignsUnits(XtdRelAssignsUnits.LABEL),
     AssignsValues(XtdRelAssignsValues.LABEL),
-    Associates(XtdRelAssociates.LABEL),
     Bag(XtdBag.LABEL),
     Classification(XtdClassification.LABEL),
     Collects(XtdRelCollects.LABEL),
-    Composes(XtdRelComposes.LABEL),
     Documents(XtdRelDocuments.LABEL),
     ExternalDocument(XtdExternalDocument.LABEL),
-    Groups(XtdRelGroups.LABEL),
     Measure(de.bentrm.datacat.catalog.domain.Measure.LABEL),
     Nest(XtdNest.LABEL),
     Property(XtdProperty.LABEL),
-    Sequences(XtdRelSequences.LABEL),
-    Specializes(XtdRelSpecializes.LABEL),
     Subject(XtdSubject.LABEL),
     Unit(XtdUnit.LABEL),
     Value(XtdValue.LABEL);

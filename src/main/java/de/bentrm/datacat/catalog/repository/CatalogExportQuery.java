@@ -65,7 +65,6 @@ public interface CatalogExportQuery extends EntityRepository<XtdRoot> {
     "XtdRelAssignsProperties" IN(LABELS(y)), 'RETURN "XtdRelAssignsProperties" AS type',
     "XtdRelAssignsValues" IN(LABELS(y)), 'RETURN "XtdRelAssignsValues" AS type',
     "XtdRelAssignsUnits" IN(LABELS(y)), 'RETURN "XtdRelAssignsUnits" AS type',
-    "XtdRelAssignsPropertyWithValues" IN(LABELS(y)), 'RETURN "XtdRelAssignsPropertyWithValues" AS type',
     "XtdRelCollects" IN(LABELS(y)), 'RETURN "XtdRelCollects" AS type',
     "XtdRelDocuments" IN(LABELS(y)), 'RETURN "XtdRelDocuments" AS type'
     ], 'RETURN null AS type') YIELD value

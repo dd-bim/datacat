@@ -33,32 +33,12 @@ public final class RootSpecification extends QuerySpecification {
             return this;
         }
 
-        public Builder actedUponBy(String id) {
-            return related("id", id, new Filter.NestedPathSegment("actedUponBy", XtdRelActsUpon.class));
-        }
-
-        public Builder associatedBy(String id) {
-            return related("id", id, new Filter.NestedPathSegment("associatedBy", XtdRelAssociates.class));
-        }
-
         public Builder collectedBy(String id) {
             return related("id", id, new Filter.NestedPathSegment("collectedBy", XtdRelCollects.class));
         }
 
-        public Builder composedBy(String id) {
-            return related("id", id, new Filter.NestedPathSegment("composedBy", XtdRelComposes.class));
-        }
-
         public Builder documentedBy(String id) {
             return related("id", id, new Filter.NestedPathSegment("documentedBy", XtdRelDocuments.class));
-        }
-
-        public Builder groupedBy(String id) {
-            return related("id", id, new Filter.NestedPathSegment("groupedBy", XtdRelGroups.class));
-        }
-
-        public Builder specializedBy(String id) {
-            return related("id", id, new Filter.NestedPathSegment("specializedBy", XtdRelSpecializes.class));
         }
 
         @Override

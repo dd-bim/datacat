@@ -1,6 +1,4 @@
 enum SimpleRecordType {
-    Activity
-    Actor
     Bag
     Classification
     ExternalDocument
@@ -13,25 +11,16 @@ enum SimpleRecordType {
 }
 
 enum RelationshipRecordType {
-    ActsUpon
     AssignsCollections
     AssignsMeasures
     AssignsProperties
-    AssignsPropertyWithValues
     AssignsUnits
     AssignsValues
-    Associates
     Collects
-    Composes
     Documents
-    Groups
-    Sequences
-    Specializes
 }
 
 enum CatalogRecordType {
-    Activity
-    Actor
     Bag
     Classification
     ExternalDocument
@@ -41,25 +30,16 @@ enum CatalogRecordType {
     Subject
     Unit
     Value
-    ActsUpon
     AssignsCollections
     AssignsMeasures
     AssignsProperties
-    AssignsPropertyWithValues
     AssignsUnits
     AssignsValues
-    Associates
     Collects
-    Composes
     Documents
-    Groups
-    Sequences
-    Specializes
 }
 
 union SimpleRecord =
-    | XtdActor
-    | XtdActivity
     | XtdBag
     | XtdClassification
     | XtdExternalDocument
@@ -71,20 +51,13 @@ union SimpleRecord =
     | XtdValue
 
 union RelationshipRecord =
-    | XtdRelActsUpon
     | XtdRelAssignsCollections
     | XtdRelAssignsMeasures
     | XtdRelAssignsProperties
-    | XtdRelAssignsPropertyWithValues
     | XtdRelAssignsUnits
     | XtdRelAssignsValues
-    | XtdRelAssociates
     | XtdRelCollects
-    | XtdRelComposes
     | XtdRelDocuments
-    | XtdRelGroups
-    | XtdRelSequences
-    | XtdRelSpecializes
 
 input VersionInput {
     versionId: String

@@ -20,10 +20,6 @@ public interface EntityMapper {
         setProperties(item, dto.getId(), dto.getVersion(), dto.getNames(), dto.getDescriptions(), dto.getComments());
     }
 
-    default void setProperties(OneToOneRelationshipValue dto, CatalogItem item) {
-        setProperties(item, dto.getId(), dto.getVersion(), dto.getNames(), dto.getDescriptions(), dto.getComments());
-    }
-
     default void setProperties(OneToManyRelationshipValue dto, CatalogItem item) {
         setProperties(item, dto.getId(), dto.getVersion(), dto.getNames(), dto.getDescriptions(), dto.getComments());
     }
