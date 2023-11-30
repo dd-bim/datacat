@@ -1,14 +1,16 @@
 package de.bentrm.datacat.catalog.service.value.export;
 
 import de.bentrm.datacat.catalog.domain.XtdRoot;
-import de.bentrm.datacat.catalog.domain.ExportRelationshipResult;
+import de.bentrm.datacat.catalog.domain.ExportItemResult;
 import lombok.Value;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
+
+import java.util.Collection;
+import java.util.*;
 
 @Value
-public class findExportCatalogItemsRelationshipsValue {
-    @NotNull List<ExportRelationshipResult> nodes;
+public class findExportCatalogRecordsValue {
+    @NotNull List<ExportItemResult> nodes;
     @NotNull List<List<String>> paths;
 }

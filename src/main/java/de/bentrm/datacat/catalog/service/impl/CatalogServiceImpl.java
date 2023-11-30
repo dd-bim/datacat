@@ -6,7 +6,7 @@ import de.bentrm.datacat.catalog.service.CatalogService;
 import de.bentrm.datacat.catalog.service.value.HierarchyValue;
 import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
 import de.bentrm.datacat.catalog.specification.RootSpecification;
-import de.bentrm.datacat.graphql.dto.CatalogItemStatistics;
+import de.bentrm.datacat.graphql.dto.CatalogRecordStatistics;
 import de.bentrm.datacat.graphql.dto.CatalogStatistics;
 import lombok.extern.slf4j.Slf4j;
 import org.neo4j.ogm.cypher.query.Pagination;
@@ -45,7 +45,7 @@ public class CatalogServiceImpl implements CatalogService {
     private TagRepository tagRepository;
 
     @Autowired
-    private CatalogItemRepository catalogItemRepository;
+    private CatalogRecordRepository catalogRecordRepository;
 
     @Autowired
     private RootRepository rootRepository;
@@ -61,11 +61,11 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public CatalogStatistics getStatistics() {
-        final Map<String, Long> labelsStats = catalogItemRepository.statistics();
+        final Map<String, Long> labelsStats = catalogRecordRepository.statistics();
         final CatalogStatistics statistics = new CatalogStatistics();
         labelsStats.forEach((label, count) -> {
             if (label.startsWith("Xtd")) {
-                statistics.getItems().add(new CatalogItemStatistics(label, count));
+                statistics.getItems().add(new CatalogRecordStatistics(label, count));
             }
         });
         return statistics;
@@ -73,10 +73,10 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Transactional
     @Override
-    public CatalogItem setVersion(String id, String versionId, String versionDate) {
+    public CatalogRecord setVersion(String id, String versionId, String versionDate) {
         Assert.isTrue(versionId != null || versionDate != null, "No valid version provided.");
 
-        final CatalogItem item = catalogItemRepository.findById(id).orElseThrow();
+        final CatalogRecord item = catalogRecordRepository.findById(id).orElseThrow();
         if (versionId != null) {
             item.setVersionId(versionId);
         }
@@ -84,29 +84,29 @@ public class CatalogServiceImpl implements CatalogService {
             item.setVersionDate(versionDate);
         }
 
-        return catalogItemRepository.save(item);
+        return catalogRecordRepository.save(item);
     }
 
     @Transactional
     @Override
-    public CatalogItem addName(String id, String nameId, Locale locale, String value) {
-        final CatalogItem item = catalogItemRepository.findById(id).orElseThrow();
+    public CatalogRecord addName(String id, String nameId, Locale locale, String value) {
+        final CatalogRecord item = catalogRecordRepository.findById(id).orElseThrow();
         item.addName(nameId, locale, value);
-        return catalogItemRepository.save(item);
+        return catalogRecordRepository.save(item);
     }
 
     @Transactional
     @Override
-    public CatalogItem updateName(String id, String nameId, String value) {
-        final CatalogItem item = catalogItemRepository.findById(id).orElseThrow();
+    public CatalogRecord updateName(String id, String nameId, String value) {
+        final CatalogRecord item = catalogRecordRepository.findById(id).orElseThrow();
         item.updateName(nameId, value);
-        return catalogItemRepository.save(item);
+        return catalogRecordRepository.save(item);
     }
 
     @Transactional
     @Override
-    public CatalogItem deleteName(String id, String nameId) {
-        final CatalogItem item = catalogItemRepository.findById(id).orElseThrow();
+    public CatalogRecord deleteName(String id, String nameId) {
+        final CatalogRecord item = catalogRecordRepository.findById(id).orElseThrow();
         final Translation translation = item.removeName(nameId);
         translationRespository.delete(translation);
         return item;
@@ -114,50 +114,50 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Transactional
     @Override
-    public CatalogItem addDescription(String id, String descriptionId, Locale locale, String value) {
-        final CatalogItem item = catalogItemRepository.findById(id).orElseThrow();
+    public CatalogRecord addDescription(String id, String descriptionId, Locale locale, String value) {
+        final CatalogRecord item = catalogRecordRepository.findById(id).orElseThrow();
         item.addDescription(descriptionId, locale, value);
-        return catalogItemRepository.save(item);
+        return catalogRecordRepository.save(item);
     }
 
     @Transactional
     @Override
-    public CatalogItem updateDescription(String id, String descriptionId, String value) {
-        final CatalogItem item = catalogItemRepository.findById(id).orElseThrow();
+    public CatalogRecord updateDescription(String id, String descriptionId, String value) {
+        final CatalogRecord item = catalogRecordRepository.findById(id).orElseThrow();
         item.updateDescription(descriptionId, value);
-        return catalogItemRepository.save(item);
+        return catalogRecordRepository.save(item);
     }
 
     @Transactional
     @Override
-    public CatalogItem deleteDescription(String id, String descriptionId) {
-        final CatalogItem item = catalogItemRepository.findById(id).orElseThrow();
+    public CatalogRecord deleteDescription(String id, String descriptionId) {
+        final CatalogRecord item = catalogRecordRepository.findById(id).orElseThrow();
         item.deleteDescription(descriptionId);
-        return catalogItemRepository.save(item);
+        return catalogRecordRepository.save(item);
     }
 
     @Transactional
     @Override
-    public CatalogItem addComment(String id, String commentId, Locale locale, String value) {
-        final CatalogItem item = catalogItemRepository.findById(id).orElseThrow();
+    public CatalogRecord addComment(String id, String commentId, Locale locale, String value) {
+        final CatalogRecord item = catalogRecordRepository.findById(id).orElseThrow();
         item.addComment(commentId, locale, value);
-        return catalogItemRepository.save(item);
+        return catalogRecordRepository.save(item);
     }
 
     @Transactional
     @Override
-    public CatalogItem updateComment(String id, String commentId, String value) {
-        final CatalogItem item = catalogItemRepository.findById(id).orElseThrow();
+    public CatalogRecord updateComment(String id, String commentId, String value) {
+        final CatalogRecord item = catalogRecordRepository.findById(id).orElseThrow();
         item.updateComment(commentId, value);
-        return catalogItemRepository.save(item);
+        return catalogRecordRepository.save(item);
     }
 
     @Transactional
     @Override
-    public CatalogItem deleteComment(String id, String commentId) {
-        final CatalogItem item = catalogItemRepository.findById(id).orElseThrow();
+    public CatalogRecord deleteComment(String id, String commentId) {
+        final CatalogRecord item = catalogRecordRepository.findById(id).orElseThrow();
         item.deleteComment(commentId);
-        return catalogItemRepository.save(item);
+        return catalogRecordRepository.save(item);
     }
 
     @Transactional
@@ -188,26 +188,26 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Transactional
     @Override
-    public CatalogItem addTag(String entryId, String tagId) {
-        CatalogItem item = catalogItemRepository.findById(entryId).orElseThrow();
+    public CatalogRecord addTag(String entryId, String tagId) {
+        CatalogRecord item = catalogRecordRepository.findById(entryId).orElseThrow();
         final Tag tag = tagRepository.findById(tagId).orElseThrow();
         item.addTag(tag);
-        return catalogItemRepository.save(item);
+        return catalogRecordRepository.save(item);
     }
 
     @Transactional
     @Override
-    public CatalogItem removeTag(String entryId, String tagId) {
-        final CatalogItem item = catalogItemRepository.findById(entryId).orElseThrow();
+    public CatalogRecord removeTag(String entryId, String tagId) {
+        final CatalogRecord item = catalogRecordRepository.findById(entryId).orElseThrow();
         final Tag tag = tagRepository.findById(tagId).orElseThrow();
         item.removeTag(tag);
-        return catalogItemRepository.save(item);
+        return catalogRecordRepository.save(item);
     }
 
     @Override
-    public @NotNull List<CatalogItem> getAllEntriesById(List<String> ids) {
-        final Iterable<CatalogItem> items = catalogItemRepository.findAllById(ids);
-        final List<CatalogItem> results = new ArrayList<>();
+    public @NotNull List<CatalogRecord> getAllEntriesById(List<String> ids) {
+        final Iterable<CatalogRecord> items = catalogRecordRepository.findAllById(ids);
+        final List<CatalogRecord> results = new ArrayList<>();
         items.forEach(results::add);
         return results;
     }
@@ -237,8 +237,8 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
-    public Optional<CatalogItem> getEntryById(String id) {
-        return catalogItemRepository.findById(id);
+    public Optional<CatalogRecord> getEntryById(String id) {
+        return catalogRecordRepository.findById(id);
     }
 
     @Override
@@ -262,10 +262,10 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
-    public Page<CatalogItem> findAllCatalogItems(CatalogRecordSpecification specification) {
-        Collection<CatalogItem> catalogItems;
+    public Page<CatalogRecord> findAllCatalogRecords(CatalogRecordSpecification specification) {
+        Collection<CatalogRecord> catalogRecords;
         Pageable pageable;
-        final long count = countCatalogItems(specification);
+        final long count = countCatalogRecords(specification);
         final Session session = sessionFactory.openSession();
 
         final Optional<Pageable> paged = specification.getPageable();
@@ -274,26 +274,26 @@ public class CatalogServiceImpl implements CatalogService {
             final Pagination pagination = new Pagination(pageable.getPageNumber(), pageable.getPageSize());
 
             if (pageable.getSort().isUnsorted()) {
-                catalogItems = session.loadAll(CatalogItem.class, specification.getFilters(), pagination);
+                catalogRecords = session.loadAll(CatalogRecord.class, specification.getFilters(), pagination);
             } else {
                 final Sort sort = pageable.getSort();
                 final Sort.Direction direction = sort.get().findFirst().map(Sort.Order::getDirection).get();
                 final String[] properties = sort.get().map(Sort.Order::getProperty).toArray(String[]::new);
                 final SortOrder sortOrder = new SortOrder(SortOrder.Direction.valueOf(direction.name()), properties);
-                catalogItems = session.loadAll(CatalogItem.class, specification.getFilters(), sortOrder, pagination);
+                catalogRecords = session.loadAll(CatalogRecord.class, specification.getFilters(), sortOrder, pagination);
             }
         } else {
             pageable = PageRequest.of(0, (int) Math.max(count, 10));
-            catalogItems = session.loadAll(CatalogItem.class, specification.getFilters());
+            catalogRecords = session.loadAll(CatalogRecord.class, specification.getFilters());
         }
 
-        return PageableExecutionUtils.getPage(List.copyOf(catalogItems), pageable, () -> count);
+        return PageableExecutionUtils.getPage(List.copyOf(catalogRecords), pageable, () -> count);
     }
 
     @Override
-    public long countCatalogItems(CatalogRecordSpecification specification) {
+    public long countCatalogRecords(CatalogRecordSpecification specification) {
         final Session session = sessionFactory.openSession();
-        return session.count(CatalogItem.class, specification.getFilters());
+        return session.count(CatalogRecord.class, specification.getFilters());
     }
 
     @Override
@@ -304,8 +304,8 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public HierarchyValue getHierarchy(CatalogRecordSpecification rootNodeSpecification, int depth) {
-        final Page<CatalogItem> rootNodes = findAllCatalogItems(rootNodeSpecification);
-        final List<String> rootNodeIds = rootNodes.map(CatalogItem::getId).stream().collect(Collectors.toList());
+        final Page<CatalogRecord> rootNodes = findAllCatalogRecords(rootNodeSpecification);
+        final List<String> rootNodeIds = rootNodes.map(CatalogRecord::getId).stream().collect(Collectors.toList());
 
         final List<List<String>> paths = rootRepository.findRelationshipPaths(rootNodeIds);
         final Set<String> nodeIds = new HashSet<>();

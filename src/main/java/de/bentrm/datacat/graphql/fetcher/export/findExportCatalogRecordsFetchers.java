@@ -1,9 +1,9 @@
 package de.bentrm.datacat.graphql.fetcher.export;
 
-import de.bentrm.datacat.catalog.domain.CatalogItem;
+import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.service.CatalogSearchService;
 import de.bentrm.datacat.catalog.service.CatalogExportService;
-import de.bentrm.datacat.catalog.service.value.export.findExportCatalogItemsRelationshipsValue;
+import de.bentrm.datacat.catalog.service.value.export.findExportCatalogRecordsValue;
 import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.dto.SpecificationMapper;
@@ -20,7 +20,7 @@ import java.util.Map;
 
 @Slf4j
 @Component
-public class findExportCatalogItemsRelationshipsFetchers implements QueryFetchers {
+public class findExportCatalogRecordsFetchers implements QueryFetchers {
 
     @Autowired
     private ApiInputMapper inputMapper;
@@ -38,11 +38,11 @@ public class findExportCatalogItemsRelationshipsFetchers implements QueryFetcher
     public Map<String, DataFetcher> getQueryFetchers() {
         return Map.ofEntries(
                 Map.entry("search", search()),
-                Map.entry("findExportCatalogItemsRelationships", findExportCatalogItemsRelationships())
+                Map.entry("findExportCatalogRecords", findExportCatalogRecords())
         );
     }
 
-    public DataFetcher<Connection<CatalogItem>> search() {
+    public DataFetcher<Connection<CatalogRecord>> search() {
         return environment -> {
             Map<String, Object> argument = environment.getArgument("input");
             SearchInput searchInput = inputMapper.toSearchInput(argument);
@@ -55,10 +55,10 @@ public class findExportCatalogItemsRelationshipsFetchers implements QueryFetcher
             Integer pageNumber = environment.getArgument("pageNumber");
             if (pageNumber != null) searchInput.setPageNumber(pageNumber);
 
-            CatalogRecordSpecification spec = specificationMapper.toCatalogItemSpecification(searchInput);
+            CatalogRecordSpecification spec = specificationMapper.toCatalogRecordSpecification(searchInput);
 
             if (environment.getSelectionSet().containsAnyOf("nodes/*", "pageInfo/*")) {
-                Page<CatalogItem> page = catalogSearchService.search(spec);
+                Page<CatalogRecord> page = catalogSearchService.search(spec);
                 return Connection.of(page);
             } else {
                 long totalElements = catalogSearchService.count(spec);
@@ -68,9 +68,9 @@ public class findExportCatalogItemsRelationshipsFetchers implements QueryFetcher
         };
     }
 
-    public DataFetcher<findExportCatalogItemsRelationshipsValue> findExportCatalogItemsRelationships() {
+    public DataFetcher<findExportCatalogRecordsValue> findExportCatalogRecords() {
         return environment -> {
-            return catalogExportService.getfindExportCatalogItemsRelationships();
+            return catalogExportService.getfindExportCatalogRecords();
         };
     };
 }

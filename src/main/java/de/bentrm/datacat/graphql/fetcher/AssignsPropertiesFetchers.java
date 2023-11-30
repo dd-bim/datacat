@@ -1,6 +1,6 @@
 package de.bentrm.datacat.graphql.fetcher;
 
-import de.bentrm.datacat.catalog.domain.CatalogItem;
+import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsProperties;
@@ -35,7 +35,7 @@ public class AssignsPropertiesFetchers extends AbstractFetchers<XtdRelAssignsPro
         this.relatedProperties = environment -> {
             final XtdRelAssignsProperties source = environment.getSource();
             final List<String> relatedPropertiesIds = source.getRelatedProperties().stream()
-                    .map(CatalogItem::getId)
+                    .map(CatalogRecord::getId)
                     .collect(Collectors.toList());
             return propertyService.findAllByIds(relatedPropertiesIds);
         };

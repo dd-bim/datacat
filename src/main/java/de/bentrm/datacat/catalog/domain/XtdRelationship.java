@@ -19,7 +19,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
 @NodeEntity(label = XtdRelationship.LABEL)
-public abstract class XtdRelationship extends CatalogItem {
+public abstract class XtdRelationship extends CatalogRecord {
 
     public static final String LABEL = "XtdRelationship";
 

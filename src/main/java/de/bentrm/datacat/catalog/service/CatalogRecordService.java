@@ -1,13 +1,13 @@
 package de.bentrm.datacat.catalog.service;
 
-import de.bentrm.datacat.catalog.domain.CatalogItem;
+import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-public interface CatalogRecordService<T extends CatalogItem> extends QueryService<T> {
+public interface CatalogRecordService<T extends CatalogRecord> extends QueryService<T> {
 
     @NotNull CatalogRecordType getSupportedCatalogRecordType();
 

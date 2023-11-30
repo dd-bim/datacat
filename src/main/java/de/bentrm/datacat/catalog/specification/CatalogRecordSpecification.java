@@ -8,7 +8,7 @@ import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
-import static de.bentrm.datacat.catalog.domain.CatalogItem.DEFAULT_LANGUAGE_TAG;
+import static de.bentrm.datacat.catalog.domain.CatalogRecord.DEFAULT_LANGUAGE_TAG;
 
 @Slf4j
 @ToString(callSuper = true)

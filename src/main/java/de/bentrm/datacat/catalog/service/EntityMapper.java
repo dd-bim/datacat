@@ -1,6 +1,6 @@
 package de.bentrm.datacat.catalog.service;
 
-import de.bentrm.datacat.catalog.domain.CatalogItem;
+import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.service.value.*;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
@@ -16,15 +16,15 @@ public interface EntityMapper {
 
     EntityMapper INSTANCE = Mappers.getMapper(EntityMapper.class);
 
-    default void setProperties(CatalogRecordProperties dto, @MappingTarget CatalogItem item) {
+    default void setProperties(CatalogRecordProperties dto, @MappingTarget CatalogRecord item) {
         setProperties(item, dto.getId(), dto.getVersion(), dto.getNames(), dto.getDescriptions(), dto.getComments());
     }
 
-    default void setProperties(OneToManyRelationshipValue dto, CatalogItem item) {
+    default void setProperties(OneToManyRelationshipValue dto, CatalogRecord item) {
         setProperties(item, dto.getId(), dto.getVersion(), dto.getNames(), dto.getDescriptions(), dto.getComments());
     }
 
-    default void setProperties(CatalogItem item, String id, VersionValue version, List<TranslationValue> names, List<TranslationValue> descriptions, List<TranslationValue> comments) {
+    default void setProperties(CatalogRecord item, String id, VersionValue version, List<TranslationValue> names, List<TranslationValue> descriptions, List<TranslationValue> comments) {
         if (id != null) {
             item.setId(id);
         }
@@ -42,5 +42,5 @@ public interface EntityMapper {
         }
     }
 
-    void setVersion(VersionValue version, @MappingTarget CatalogItem item);
+    void setVersion(VersionValue version, @MappingTarget CatalogRecord item);
 }

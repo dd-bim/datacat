@@ -7,7 +7,7 @@
                     └── [datacat]
                         ├── [catalog]
                             ├── [domain]
-                                ├── CatalogItem.java
+                                ├── CatalogRecord.java
                                 ├── CatalogRecordType.java
                                 ├── ExportItemResult.java
                                 ├── ExportRelationshipResult.java
@@ -46,7 +46,7 @@
                                 ├── AssignsValuesRepository.java
                                 ├── BagRepository.java
                                 ├── CatalogExportQuery.java
-                                ├── CatalogItemRepository.java
+                                ├── CatalogRecordRepository.java
                                 ├── CatalogValidationQuery.java
                                 ├── ClassificationRepository.java
                                 ├── ClassifiesRepository.java

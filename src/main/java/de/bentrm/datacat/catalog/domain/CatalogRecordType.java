@@ -41,7 +41,7 @@ public enum CatalogRecordType {
      * @return The enum value.
      * @throws IllegalArgumentException if the enum has no record type matching with the catalog instance.
      */
-    public static CatalogRecordType getByDomainClass(CatalogItem record) {
+    public static CatalogRecordType getByDomainClass(CatalogRecord record) {
         Assert.notNull(record, "record may not be null");
         String simpleName = record.getClass().getSimpleName();
         simpleName = simpleName

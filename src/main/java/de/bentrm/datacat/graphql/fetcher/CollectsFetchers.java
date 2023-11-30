@@ -1,6 +1,6 @@
 package de.bentrm.datacat.graphql.fetcher;
 
-import de.bentrm.datacat.catalog.domain.CatalogItem;
+import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.domain.XtdCollection;
 import de.bentrm.datacat.catalog.domain.XtdRelCollects;
 import de.bentrm.datacat.catalog.domain.XtdRoot;
@@ -29,14 +29,14 @@ public class CollectsFetchers extends AbstractFetchers<XtdRelCollects> {
         this.relatingCollection = environment -> {
             final XtdRelCollects source = environment.getSource();
             final String id = source.getRelatingCollection().getId();
-            final CatalogItem collection = catalogService.getEntryById(id).orElseThrow();
+            final CatalogRecord collection = catalogService.getEntryById(id).orElseThrow();
             return (XtdCollection) collection;
         };
 
         this.relatedThings = environment -> {
             final XtdRelCollects source = environment.getSource();
             final List<String> relatedThingsIds = source.getRelatedThings().stream()
-                    .map(CatalogItem::getId)
+                    .map(CatalogRecord::getId)
                     .collect(Collectors.toList());
             return catalogService.getAllRootItemsById(relatedThingsIds);
         };

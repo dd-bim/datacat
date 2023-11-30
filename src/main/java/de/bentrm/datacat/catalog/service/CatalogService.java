@@ -19,34 +19,34 @@ public interface CatalogService {
     CatalogStatistics getStatistics();
 
     @PreAuthorize("hasRole('USER')")
-    @NotNull CatalogItem setVersion(@NotBlank String id, String versionId, String versionDate);
+    @NotNull CatalogRecord setVersion(@NotBlank String id, String versionId, String versionDate);
 
     @PreAuthorize("hasRole('USER')")
-    @NotNull CatalogItem addName(@NotBlank String id, String nameId, @NotNull Locale locale, @NotBlank String value);
+    @NotNull CatalogRecord addName(@NotBlank String id, String nameId, @NotNull Locale locale, @NotBlank String value);
 
     @PreAuthorize("hasRole('USER')")
-    @NotNull CatalogItem updateName(@NotBlank String id, @NotBlank String nameId, @NotBlank String value);
+    @NotNull CatalogRecord updateName(@NotBlank String id, @NotBlank String nameId, @NotBlank String value);
 
     @PreAuthorize("hasRole('USER')")
-    @NotNull CatalogItem deleteName(@NotBlank String id, @NotBlank String nameId);
+    @NotNull CatalogRecord deleteName(@NotBlank String id, @NotBlank String nameId);
 
     @PreAuthorize("hasRole('USER')")
-    @NotNull CatalogItem addDescription(@NotBlank String id, String descriptionId, @NotNull Locale locale, @NotBlank String value);
+    @NotNull CatalogRecord addDescription(@NotBlank String id, String descriptionId, @NotNull Locale locale, @NotBlank String value);
 
     @PreAuthorize("hasRole('USER')")
-    @NotNull CatalogItem updateDescription(@NotBlank String id, @NotBlank String descriptionId, @NotBlank String value);
+    @NotNull CatalogRecord updateDescription(@NotBlank String id, @NotBlank String descriptionId, @NotBlank String value);
 
     @PreAuthorize("hasRole('USER')")
-    @NotNull CatalogItem deleteDescription(@NotBlank String id, @NotBlank String descriptionId);
+    @NotNull CatalogRecord deleteDescription(@NotBlank String id, @NotBlank String descriptionId);
 
     @PreAuthorize("hasRole('USER')")
-    @NotNull CatalogItem addComment(@NotBlank String id, String commentId, @NotNull Locale locale, @NotBlank String value);
+    @NotNull CatalogRecord addComment(@NotBlank String id, String commentId, @NotNull Locale locale, @NotBlank String value);
 
     @PreAuthorize("hasRole('USER')")
-    @NotNull CatalogItem updateComment(@NotBlank String id, @NotBlank String commentId, @NotBlank String value);
+    @NotNull CatalogRecord updateComment(@NotBlank String id, @NotBlank String commentId, @NotBlank String value);
 
     @PreAuthorize("hasRole('USER')")
-    @NotNull CatalogItem deleteComment(@NotBlank String id, @NotBlank String commentId);
+    @NotNull CatalogRecord deleteComment(@NotBlank String id, @NotBlank String commentId);
 
     @PreAuthorize("hasRole('ADMIN')")
     @NotNull Tag createTag(String id, @NotBlank String name);
@@ -58,13 +58,13 @@ public interface CatalogService {
     @NotNull Tag deleteTag(@NotBlank String id);
 
     @PreAuthorize("hasRole('USER')")
-    @NotNull CatalogItem addTag(@NotBlank String entryId, @NotBlank String tagId);
+    @NotNull CatalogRecord addTag(@NotBlank String entryId, @NotBlank String tagId);
 
     @PreAuthorize("hasRole('USER')")
-    @NotNull CatalogItem removeTag(@NotBlank String entryId, @NotBlank String tagId);
+    @NotNull CatalogRecord removeTag(@NotBlank String entryId, @NotBlank String tagId);
 
     @PreAuthorize("hasRole('READONLY')")
-    @NotNull List<CatalogItem> getAllEntriesById(List<String> ids);
+    @NotNull List<CatalogRecord> getAllEntriesById(List<String> ids);
 
     @PreAuthorize("hasRole('READONLY')")
     @NotNull List<XtdRoot> getAllRootItemsById(List<String> ids);
@@ -76,7 +76,7 @@ public interface CatalogService {
     @NotNull List<XtdCollection> getAllCollectionsById(List<String> ids);
 
     @PreAuthorize("hasRole('READONLY')")
-    @NotNull Optional<CatalogItem> getEntryById(@NotBlank String id);
+    @NotNull Optional<CatalogRecord> getEntryById(@NotBlank String id);
 
     @PreAuthorize("hasRole('READONLY')")
     @NotNull Optional<XtdRoot> getRootItem(@NotNull String id);
@@ -91,10 +91,10 @@ public interface CatalogService {
     @NotNull Optional<XtdRelationship> getRelationship(@NotNull String id);
 
     @PreAuthorize("hasRole('READONLY')")
-    @NotNull Page<CatalogItem> findAllCatalogItems(@NotNull CatalogRecordSpecification specification);
+    @NotNull Page<CatalogRecord> findAllCatalogRecords(@NotNull CatalogRecordSpecification specification);
 
     @PreAuthorize("hasRole('READONLY')")
-    long countCatalogItems(@NotNull CatalogRecordSpecification specification);
+    long countCatalogRecords(@NotNull CatalogRecordSpecification specification);
 
     @PreAuthorize("hasRole('READONLY')")
     long countRootItems(@NotNull RootSpecification specification);

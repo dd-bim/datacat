@@ -1,6 +1,6 @@
 package de.bentrm.datacat.graphql.fetcher;
 
-import de.bentrm.datacat.catalog.domain.CatalogItem;
+import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import graphql.schema.DataFetcher;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ public class SearchResultFetchers implements AttributeFetchers {
     public Map<String, DataFetcher> getAttributeFetchers() {
         return Map.of(
                 "recordType", environment -> {
-                    final CatalogItem source = environment.getSource();
+                    final CatalogRecord source = environment.getSource();
                     return CatalogRecordType.getByDomainClass(source);
                 },
                 "name", new NameFetcher(),

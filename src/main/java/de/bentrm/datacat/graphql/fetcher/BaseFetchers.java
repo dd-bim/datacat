@@ -1,6 +1,6 @@
 package de.bentrm.datacat.graphql.fetcher;
 
-import de.bentrm.datacat.catalog.domain.CatalogItem;
+import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.domain.XtdCollection;
 import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.domain.XtdRelationship;
@@ -37,7 +37,7 @@ public class BaseFetchers implements QueryFetchers {
         return environment -> catalogService.getStatistics();
     }
 
-    public DataFetcher<Optional<CatalogItem>> node() {
+    public DataFetcher<Optional<CatalogRecord>> node() {
         return environment -> {
             String id = environment.getArgument("id");
             return catalogService.getEntryById(id);

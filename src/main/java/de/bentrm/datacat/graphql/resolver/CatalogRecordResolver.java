@@ -1,6 +1,6 @@
 package de.bentrm.datacat.graphql.resolver;
 
-import de.bentrm.datacat.catalog.domain.CatalogItem;
+import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.domain.XtdExternalDocument;
 import de.bentrm.datacat.catalog.domain.XtdRelationship;
 import de.bentrm.datacat.catalog.domain.XtdRoot;
@@ -31,7 +31,7 @@ public class CatalogRecordResolver implements CustomResolver {
 
     @Override
     public GraphQLObjectType getType(TypeResolutionEnvironment env) {
-        CatalogItem obj = env.getObject();
+        CatalogRecord obj = env.getObject();
         GraphQLSchema schema = env.getSchema();
 
         if (obj instanceof XtdExternalDocument) {

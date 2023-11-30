@@ -24,25 +24,25 @@ public interface SpecificationMapper {
 
     TagSpecification toTagSpec(@NotNull FilterInput input);
 
-    CatalogRecordSpecification toCatalogItemSpecification(@NotNull SearchInput input);
+    CatalogRecordSpecification toCatalogRecordSpecification(@NotNull SearchInput input);
 
-    CatalogRecordSpecification toCatalogItemSpecification(@NotNull FilterInput input);
+    CatalogRecordSpecification toCatalogRecordSpecification(@NotNull FilterInput input);
 
-    CatalogRecordSpecification toCatalogItemSpecification(@NotNull HierarchyRootNodeFilterInput input);
+    CatalogRecordSpecification toCatalogRecordSpecification(@NotNull HierarchyRootNodeFilterInput input);
 
-    CatalogRecordSpecification toCatalogItemSpecification(@NotNull findMissingTagsNodeTypeFilterInput input);
+    CatalogRecordSpecification toCatalogRecordSpecification(@NotNull findMissingTagsNodeTypeFilterInput input);
 
-    CatalogRecordSpecification toCatalogItemSpecification(@NotNull findMissingEnglishNameNodeTypeFilterInput input);
+    CatalogRecordSpecification toCatalogRecordSpecification(@NotNull findMissingEnglishNameNodeTypeFilterInput input);
 
-    CatalogRecordSpecification toCatalogItemSpecification(@NotNull findMultipleIDsNodeTypeFilterInput input);
+    CatalogRecordSpecification toCatalogRecordSpecification(@NotNull findMultipleIDsNodeTypeFilterInput input);
 
-    CatalogRecordSpecification toCatalogItemSpecification(@NotNull findMissingDescriptionNodeTypeFilterInput input);
+    CatalogRecordSpecification toCatalogRecordSpecification(@NotNull findMissingDescriptionNodeTypeFilterInput input);
 
-    CatalogRecordSpecification toCatalogItemSpecification(@NotNull findMissingEnglishDescriptionNodeTypeFilterInput input);
+    CatalogRecordSpecification toCatalogRecordSpecification(@NotNull findMissingEnglishDescriptionNodeTypeFilterInput input);
 
-    CatalogRecordSpecification toCatalogItemSpecification(@NotNull findMultipleNamesNodeTypeFilterInput input);
+    CatalogRecordSpecification toCatalogRecordSpecification(@NotNull findMultipleNamesNodeTypeFilterInput input);
 
-    CatalogRecordSpecification toCatalogItemSpecification(@NotNull findMultipleNamesAcrossClassesNodeTypeFilterInput input);
+    CatalogRecordSpecification toCatalogRecordSpecification(@NotNull findMultipleNamesAcrossClassesNodeTypeFilterInput input);
 
     UserSpecification toSpecification(@NotNull AccountFilterInput filter);
 

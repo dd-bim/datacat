@@ -1,12 +1,12 @@
 package de.bentrm.datacat.graphql.payload.verification;
 
-import de.bentrm.datacat.catalog.domain.CatalogItem;
+import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
 public class findModelWithoutGroupPayload {
-    List<CatalogItem> nodes;
+    List<CatalogRecord> nodes;
     List<List<String>> paths;
 }

@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
 @NodeEntity(label = XtdExternalDocument.LABEL)
-public class XtdExternalDocument extends CatalogItem {
+public class XtdExternalDocument extends CatalogRecord {
 
     public static final String LABEL = "XtdExternalDocument";
 

@@ -1,6 +1,6 @@
 package de.bentrm.datacat.catalog.service.impl;
 
-import de.bentrm.datacat.catalog.domain.CatalogItem;
+import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.service.CatalogSearchService;
 import de.bentrm.datacat.catalog.service.value.ValueMapper;
 import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
@@ -34,12 +34,12 @@ public class CatalogSearchImpl implements CatalogSearchService {
     }
 
     @Override
-    public Page<CatalogItem> search(CatalogRecordSpecification specification) {
-        Iterable<CatalogItem> catalogItems;
+    public Page<CatalogRecord> search(CatalogRecordSpecification specification) {
+        Iterable<CatalogRecord> catalogRecords;
         Pageable pageable;
         final Session session = sessionFactory.openSession();
 
-        final long count = session.count(CatalogItem.class, specification.getFilters());
+        final long count = session.count(CatalogRecord.class, specification.getFilters());
 
         final Optional<Pageable> paged = specification.getPageable();
         if (paged.isPresent()) {
@@ -47,20 +47,20 @@ public class CatalogSearchImpl implements CatalogSearchService {
             final Pagination pagination = new Pagination(pageable.getPageNumber(), pageable.getPageSize());
 
             if (pageable.getSort().isUnsorted()) {
-                catalogItems = session.loadAll(CatalogItem.class, specification.getFilters(), pagination);
+                catalogRecords = session.loadAll(CatalogRecord.class, specification.getFilters(), pagination);
             } else {
                 final Sort sort = pageable.getSort();
                 final Sort.Direction direction = sort.get().findFirst().map(Sort.Order::getDirection).get();
                 final String[] properties = sort.get().map(Sort.Order::getProperty).toArray(String[]::new);
                 final SortOrder sortOrder = new SortOrder(SortOrder.Direction.valueOf(direction.name()), properties);
-                catalogItems = session.loadAll(CatalogItem.class, specification.getFilters(), sortOrder, pagination);
+                catalogRecords = session.loadAll(CatalogRecord.class, specification.getFilters(), sortOrder, pagination);
             }
         } else {
             pageable = PageRequest.of(0, (int) Math.max(count, 10));
-            catalogItems = session.loadAll(CatalogItem.class, specification.getFilters());
+            catalogRecords = session.loadAll(CatalogRecord.class, specification.getFilters());
         }
 
-        List<CatalogItem> content = StreamSupport.stream(catalogItems.spliterator(), false).collect(Collectors.toList());
+        List<CatalogRecord> content = StreamSupport.stream(catalogRecords.spliterator(), false).collect(Collectors.toList());
 
         return PageableExecutionUtils.getPage(content, pageable, () -> count);
     }
@@ -68,6 +68,6 @@ public class CatalogSearchImpl implements CatalogSearchService {
     @Override
     public long count(CatalogRecordSpecification specification) {
         final Session session = sessionFactory.openSession();
-        return session.count(CatalogItem.class, specification.getFilters());
+        return session.count(CatalogRecord.class, specification.getFilters());
     }
 }

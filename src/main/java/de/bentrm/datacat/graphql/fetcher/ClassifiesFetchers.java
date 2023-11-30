@@ -1,6 +1,6 @@
 package de.bentrm.datacat.graphql.fetcher;
 
-import de.bentrm.datacat.catalog.domain.CatalogItem;
+import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.domain.XtdClassification;
 import de.bentrm.datacat.catalog.domain.XtdRelClassifies;
 import de.bentrm.datacat.catalog.service.CatalogService;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class ClassifiesFetchers extends AbstractFetchers<XtdRelClassifies> {
 
     private final DataFetcher<XtdClassification> relatingClassification;
-    private final DataFetcher<List<CatalogItem>> relatedThings;
+    private final DataFetcher<List<CatalogRecord>> relatedThings;
 
     public ClassifiesFetchers(ClassifiesService queryService,
                               ClassificationRecordService classificationService,
@@ -34,7 +34,7 @@ public class ClassifiesFetchers extends AbstractFetchers<XtdRelClassifies> {
         this.relatedThings = environment -> {
             final XtdRelClassifies source = environment.getSource();
             final List<String> relatedValuesId = source.getRelatedThings().stream()
-                    .map(CatalogItem::getId)
+                    .map(CatalogRecord::getId)
                     .collect(Collectors.toList());
             return catalogService.getAllEntriesById(relatedValuesId);
         };

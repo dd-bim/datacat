@@ -39,7 +39,7 @@ public class CatalogVerificationServiceImpl implements CatalogVerificationServic
     private TagRepository tagRepository;
 
     @Autowired
-    private CatalogItemRepository catalogItemRepository;
+    private CatalogRecordRepository catalogRecordRepository;
 
     @Autowired
     private RootRepository rootRepository;

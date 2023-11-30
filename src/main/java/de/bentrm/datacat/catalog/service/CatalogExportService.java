@@ -17,9 +17,9 @@ import java.util.Optional;
 public interface CatalogExportService {
 
     @PreAuthorize("hasRole('READONLY')")
-    findExportCatalogItemsValue getfindExportCatalogItems();
+    findExportCatalogRecordsValue getfindExportCatalogRecords();
 
     @PreAuthorize("hasRole('READONLY')")
-    findExportCatalogItemsRelationshipsValue getfindExportCatalogItemsRelationships();
+    findExportCatalogRecordsRelationshipsValue getfindExportCatalogRecordsRelationships();
 
 }

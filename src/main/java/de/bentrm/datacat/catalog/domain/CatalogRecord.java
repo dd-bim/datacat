@@ -19,8 +19,8 @@ import java.util.*;
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
-@NodeEntity(label = "CatalogItem")
-public abstract class CatalogItem extends Entity {
+@NodeEntity(label = "CatalogRecord")
+public abstract class CatalogRecord extends Entity {
 
     public static final String DEFAULT_LANGUAGE_TAG = "de";
 

@@ -1,10 +1,10 @@
-type CatalogItemStatistics {
+type CatalogRecordStatistics {
     id: ID!
     count: Int!
 }
 
 type CatalogStatistics {
-    items: [CatalogItemStatistics!]!
+    items: [CatalogRecordStatistics!]!
 }
 
 type SearchResult {
@@ -138,12 +138,12 @@ type findMultipleNamesAcrossClassesPayload {
     paths: [[ID!]!]!
 }
 
-type findExportCatalogItemsPayload {
+type findExportCatalogRecordsPayload {
     nodes: [ExportResult!]
     paths: [[ID!]!]!
 }
 
-type findExportCatalogItemsRelationshipsPayload {
+type findExportCatalogRecordsRelationshipsPayload {
     nodes: [ExportRelationshipResult!]
     paths: [[ID!]!]!
 }
@@ -914,9 +914,9 @@ type Query {
 
     findMultipleNamesAcrossClasses(input: findMultipleNamesAcrossClassesFilterInput!): findMultipleNamesAcrossClassesPayload!
 
-    findExportCatalogItems: findExportCatalogItemsPayload!
+    findExportCatalogRecords: findExportCatalogRecordsPayload!
 
-    findExportCatalogItemsRelationships: findExportCatalogItemsRelationshipsPayload!
+    findExportCatalogRecordsRelationships: findExportCatalogRecordsRelationshipsPayload!
 
 
     getTag(id: ID!): Tag!

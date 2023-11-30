@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 class IndexingPreSaveEventListener extends EventListenerAdapter {
 
     /**
-     * The property {@link CatalogItem#getLabels()} represents a map all
+     * The property {@link CatalogRecord#getLabels()} represents a map all
      * translations
      * mapped to their language tag. The persisted structure is used to index full
      * text
@@ -28,13 +28,13 @@ class IndexingPreSaveEventListener extends EventListenerAdapter {
      */
     @Override
     public void onPreSave(Event event) {
-        if (event.getObject() instanceof CatalogItem catalogItem) {
-            final Map<String, String> labels = catalogItem.getNames().stream()
+        if (event.getObject() instanceof CatalogRecord catalogRecord) {
+            final Map<String, String> labels = catalogRecord.getNames().stream()
                     .collect(Collectors.toMap(Translation::getLanguageTag, Translation::getValue));
 
             if (labels.size() > 0) {
-                catalogItem.getLabels().clear();
-                catalogItem.getLabels().putAll(labels);
+                catalogRecord.getLabels().clear();
+                catalogRecord.getLabels().putAll(labels);
             }
         }
     }

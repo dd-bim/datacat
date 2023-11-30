@@ -1,6 +1,6 @@
 package de.bentrm.datacat.graphql.fetcher;
 
-import de.bentrm.datacat.catalog.domain.CatalogItem;
+import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.domain.Measure;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsValues;
 import de.bentrm.datacat.catalog.domain.XtdValue;
@@ -36,7 +36,7 @@ public class AssignsValuesFetchers extends AbstractFetchers<XtdRelAssignsValues>
         this.relatedValues = environment -> {
             final XtdRelAssignsValues source = environment.getSource();
             final List<String> relatedValuesId = source.getRelatedValues().stream()
-                    .map(CatalogItem::getId)
+                    .map(CatalogRecord::getId)
                     .collect(Collectors.toList());
             return valueService.findAllByIds(relatedValuesId);
         };

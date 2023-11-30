@@ -1,7 +1,7 @@
 package de.bentrm.datacat.graphql.fetcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.bentrm.datacat.catalog.domain.CatalogItem;
+import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import de.bentrm.datacat.catalog.service.CatalogService;
 import de.bentrm.datacat.catalog.service.SimpleRecordService;
@@ -57,7 +57,7 @@ public class SimpleCatalogRecordMutations implements MutationFetchers {
             final CatalogRecordProperties properties = ApiInputMapper.INSTANCE.toProperties(propertiesInput);
 
             final SimpleRecordService<?> catalogRecordService = this.getCatalogRecordService(input.getCatalogEntryType());
-            final CatalogItem newRecord = catalogRecordService.addRecord(properties);
+            final CatalogRecord newRecord = catalogRecordService.addRecord(properties);
 
             if (input.getTags() != null) {
                 input.getTags().forEach(tagId -> catalogService.addTag(newRecord.getId(), tagId));
@@ -75,7 +75,7 @@ public class SimpleCatalogRecordMutations implements MutationFetchers {
             final String recordId = input.getCatalogEntryId();
             final SimpleRecordService<?> relationshipCatalogRecordService = this.getCatalogRecordService(recordId);
 
-            final CatalogItem deletedRecord = relationshipCatalogRecordService.removeRecord(recordId);
+            final CatalogRecord deletedRecord = relationshipCatalogRecordService.removeRecord(recordId);
             return PAYLOAD_MAPPER.toDeleteEntryPayload(deletedRecord);
         };
     }
@@ -83,7 +83,7 @@ public class SimpleCatalogRecordMutations implements MutationFetchers {
     @NotNull
     private SimpleRecordService<?> getCatalogRecordService(String recordId) {
         // fetch relationship using base repository
-        final CatalogItem catalogRecord = catalogService
+        final CatalogRecord catalogRecord = catalogService
                 .getEntryById(recordId)
                 .orElseThrow();
 

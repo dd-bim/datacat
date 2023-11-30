@@ -1,6 +1,6 @@
 package de.bentrm.datacat.graphql.fetcher.verification;
 
-import de.bentrm.datacat.catalog.domain.CatalogItem;
+import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.service.CatalogSearchService;
 import de.bentrm.datacat.catalog.service.CatalogVerificationService;
 import de.bentrm.datacat.catalog.service.value.verification.findMultipleIDsValue;
@@ -46,7 +46,7 @@ public class findMultipleIDsFetchers implements QueryFetchers {
         );
     }
 
-    public DataFetcher<Connection<CatalogItem>> search() {
+    public DataFetcher<Connection<CatalogRecord>> search() {
         return environment -> {
             Map<String, Object> argument = environment.getArgument("input");
             SearchInput searchInput = inputMapper.toSearchInput(argument);
@@ -59,10 +59,10 @@ public class findMultipleIDsFetchers implements QueryFetchers {
             Integer pageNumber = environment.getArgument("pageNumber");
             if (pageNumber != null) searchInput.setPageNumber(pageNumber);
 
-            CatalogRecordSpecification spec = specificationMapper.toCatalogItemSpecification(searchInput);
+            CatalogRecordSpecification spec = specificationMapper.toCatalogRecordSpecification(searchInput);
 
             if (environment.getSelectionSet().containsAnyOf("nodes/*", "pageInfo/*")) {
-                Page<CatalogItem> page = catalogSearchService.search(spec);
+                Page<CatalogRecord> page = catalogSearchService.search(spec);
                 return Connection.of(page);
             } else {
                 long totalElements = catalogSearchService.count(spec);
@@ -77,7 +77,7 @@ public class findMultipleIDsFetchers implements QueryFetchers {
             Map<String, Object> argument = environment.getArgument("input");
             final findMultipleIDsFilterInput input = inputMapper.tofindMultipleIDsFilterInput(argument);
             final findMultipleIDsNodeTypeFilterInput nodeTypeFilter = input.getNodeTypeFilter();
-            final CatalogRecordSpecification catalogEntryType = specificationMapper.toCatalogItemSpecification(nodeTypeFilter);
+            final CatalogRecordSpecification catalogEntryType = specificationMapper.toCatalogRecordSpecification(nodeTypeFilter);
             return catalogVerificationService.getfindMultipleIDs(catalogEntryType);
         };
     };

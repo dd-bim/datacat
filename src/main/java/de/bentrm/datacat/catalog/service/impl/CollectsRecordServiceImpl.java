@@ -71,10 +71,10 @@ public class CollectsRecordServiceImpl
     @Override
     protected void setRelatingRecord(@NotNull XtdRelCollects relationshipRecord,
                                      @NotBlank String relatingRecordId) {
-        final XtdCollection relatingCatalogItem = collectionRepository
+        final XtdCollection relatingCatalogRecord = collectionRepository
                 .findById(relatingRecordId, 0)
                 .orElseThrow();
-        relationshipRecord.setRelatingCollection(relatingCatalogItem);
+        relationshipRecord.setRelatingCollection(relatingCatalogRecord);
     }
 
     @Override

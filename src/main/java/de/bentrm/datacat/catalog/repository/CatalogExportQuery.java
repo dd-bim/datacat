@@ -52,7 +52,7 @@ public interface CatalogExportQuery extends EntityRepository<XtdRoot> {
     x.lastModified AS lastModified,
     x.lastModifiedBy AS lastModifiedBy
     """)
-    List<ExportItemResult> findExportCatalogItems();
+    List<ExportItemResult> findExportCatalogRecords();
 
 
     /* gibt alle Relationen zwischen Katalogeinträgen aus */
@@ -96,5 +96,5 @@ public interface CatalogExportQuery extends EntityRepository<XtdRoot> {
     z.id AS entity2,
     entity2Type.type AS entity2Type
     """)
-    List<ExportRelationshipResult> findExportCatalogItemsRelationships();
+    List<ExportRelationshipResult> findExportCatalogRecordsRelationships();
 }

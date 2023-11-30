@@ -1,7 +1,7 @@
 package de.bentrm.datacat.catalog.service.impl;
 
 import de.bentrm.datacat.base.repository.EntityRepository;
-import de.bentrm.datacat.catalog.domain.CatalogItem;
+import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.SimpleRecordService;
 import de.bentrm.datacat.catalog.service.value.CatalogRecordProperties;
@@ -15,7 +15,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Slf4j
-public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogItem, R extends EntityRepository<T>>
+public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R extends EntityRepository<T>>
         extends AbstractQueryServiceImpl<T, R>
         implements SimpleRecordService<T> {
 
@@ -32,7 +32,7 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogItem, R e
 
     @Transactional
     @Override
-    public @NotNull CatalogItem addRecord(@Valid CatalogRecordProperties properties) {
+    public @NotNull CatalogRecord addRecord(@Valid CatalogRecordProperties properties) {
         T newRecord;
         try {
             newRecord = this.getDomainClass().getDeclaredConstructor().newInstance();

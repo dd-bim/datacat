@@ -1,6 +1,6 @@
 package de.bentrm.datacat.graphql.fetcher;
 
-import de.bentrm.datacat.catalog.domain.CatalogItem;
+import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.service.CatalogSearchService;
 import de.bentrm.datacat.catalog.service.CatalogService;
 import de.bentrm.datacat.catalog.service.value.HierarchyValue;
@@ -45,7 +45,7 @@ public class SearchFetchers implements QueryFetchers {
         );
     }
 
-    public DataFetcher<Connection<CatalogItem>> search() {
+    public DataFetcher<Connection<CatalogRecord>> search() {
         return environment -> {
             Map<String, Object> argument = environment.getArgument("input");
             SearchInput searchInput = inputMapper.toSearchInput(argument);
@@ -58,10 +58,10 @@ public class SearchFetchers implements QueryFetchers {
             Integer pageNumber = environment.getArgument("pageNumber");
             if (pageNumber != null) searchInput.setPageNumber(pageNumber);
 
-            CatalogRecordSpecification spec = specificationMapper.toCatalogItemSpecification(searchInput);
+            CatalogRecordSpecification spec = specificationMapper.toCatalogRecordSpecification(searchInput);
 
             if (environment.getSelectionSet().containsAnyOf("nodes/*", "pageInfo/*")) {
-                Page<CatalogItem> page = catalogSearchService.search(spec);
+                Page<CatalogRecord> page = catalogSearchService.search(spec);
                 return Connection.of(page);
             } else {
                 long totalElements = catalogSearchService.count(spec);
@@ -76,7 +76,7 @@ public class SearchFetchers implements QueryFetchers {
             Map<String, Object> argument = environment.getArgument("input");
             final HierarchyFilterInput input = inputMapper.toHierarchyFilterInput(argument);
             final HierarchyRootNodeFilterInput rootNodeFilter = input.getRootNodeFilter();
-            final CatalogRecordSpecification rootNodeSpecification = specificationMapper.toCatalogItemSpecification(rootNodeFilter);
+            final CatalogRecordSpecification rootNodeSpecification = specificationMapper.toCatalogRecordSpecification(rootNodeFilter);
             return catalogService.getHierarchy(rootNodeSpecification, DEFAULT_HIERARCHY_DEPTH);
         };
     }

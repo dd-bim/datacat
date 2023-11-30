@@ -5,13 +5,13 @@ import java.util.List;
 
 public class CatalogStatistics {
 
-    private List<CatalogItemStatistics> items = new ArrayList<>();
+    private List<CatalogRecordStatistics> items = new ArrayList<>();
 
-    public List<CatalogItemStatistics> getItems() {
+    public List<CatalogRecordStatistics> getItems() {
         return items;
     }
 
-    public void setItems(List<CatalogItemStatistics> items) {
+    public void setItems(List<CatalogRecordStatistics> items) {
         this.items = items;
     }
 }

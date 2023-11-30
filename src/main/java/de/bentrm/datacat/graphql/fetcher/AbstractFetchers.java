@@ -2,7 +2,7 @@ package de.bentrm.datacat.graphql.fetcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.bentrm.datacat.base.domain.Entity;
-import de.bentrm.datacat.catalog.domain.CatalogItem;
+import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import de.bentrm.datacat.catalog.service.QueryService;
 import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
@@ -42,7 +42,7 @@ public abstract class AbstractFetchers<T extends Entity>
             FilterInput filterInput = objectMapper.convertValue(input, FilterInput.class);
             if (filterInput == null) filterInput = new FilterInput();
 
-            CatalogRecordSpecification specification = SpecificationMapper.INSTANCE.toCatalogItemSpecification(filterInput);
+            CatalogRecordSpecification specification = SpecificationMapper.INSTANCE.toCatalogRecordSpecification(filterInput);
             if (environment.getSelectionSet().containsAnyOf("nodes/*", "pageInfo/*")) {
                 Page<T> page = queryService.findAll(specification);
                 return Connection.of(page);
@@ -69,7 +69,7 @@ public abstract class AbstractFetchers<T extends Entity>
     public Map<String, DataFetcher> getAttributeFetchers() {
         return Map.of(
                 "recordType", environment -> {
-                    final CatalogItem source = environment.getSource();
+                    final CatalogRecord source = environment.getSource();
                     return CatalogRecordType.getByDomainClass(source);
                 },
                 "name", nameFetcher,

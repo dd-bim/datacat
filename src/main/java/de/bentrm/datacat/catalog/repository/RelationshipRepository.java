@@ -17,7 +17,7 @@ public interface RelationshipRepository extends EntityRepository<XtdRelationship
      * @return Ids of all relationships that this record instantiates.
      */
     @Query("""
-        MATCH (n:CatalogItem)-->(r:XtdRelationship) 
+        MATCH (n:CatalogRecord)-->(r:XtdRelationship) 
         WHERE n.id = $id RETURN r.id
     """)
     List<String> findAllRelationshipsByRelatingId(String id);
@@ -30,10 +30,10 @@ public interface RelationshipRepository extends EntityRepository<XtdRelationship
      * @return Ids of all singular relationships that only relate to the given id.
      */
     @Query("""
-           MATCH (r:XtdRelationship)-->(n:CatalogItem)
+           MATCH (r:XtdRelationship)-->(n:CatalogRecord)
            WHERE n.id = $id
            WITH r
-           MATCH (r)-->(m:CatalogItem)
+           MATCH (r)-->(m:CatalogRecord)
            WITH r, count(m) as num
            WHERE num < 2
            RETURN r.id

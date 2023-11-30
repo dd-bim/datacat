@@ -1,9 +1,9 @@
 package de.bentrm.datacat.graphql.payload;
 
-import de.bentrm.datacat.catalog.domain.CatalogItem;
+import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import lombok.Data;
 
 @Data
 public class UpdateNamePayload {
-    CatalogItem catalogEntry;
+    CatalogRecord catalogEntry;
 }

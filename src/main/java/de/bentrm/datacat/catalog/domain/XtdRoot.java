@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
 @NodeEntity(label = XtdRoot.LABEL)
-public abstract class XtdRoot extends CatalogItem {
+public abstract class XtdRoot extends CatalogRecord {
 
     public static final String LABEL = "XtdRoot";
 

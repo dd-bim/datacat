@@ -39,7 +39,7 @@ public class CatalogExportServiceImpl implements CatalogExportService {
     private TagRepository tagRepository;
 
     @Autowired
-    private CatalogItemRepository catalogItemRepository;
+    private CatalogRecordRepository catalogRecordRepository;
 
     @Autowired
     private RootRepository rootRepository;
@@ -54,9 +54,9 @@ public class CatalogExportServiceImpl implements CatalogExportService {
     private RelationshipRepository relationshipRepository;
 
     @Override
-    public findExportCatalogItemsValue getfindExportCatalogItems() {
+    public findExportCatalogRecordsValue getfindExportCatalogRecords() {
 
-        List<ExportItemResult> leaves = catalogExportQuery.findExportCatalogItems();
+        List<ExportItemResult> leaves = catalogExportQuery.findExportCatalogRecords();
         List<List<String>> paths = new ArrayList<List<String>>();
         leaves.forEach(p -> {
             ArrayList<String> list = new ArrayList<String>();
@@ -64,13 +64,13 @@ public class CatalogExportServiceImpl implements CatalogExportService {
             paths.add(list);
         });
 
-        return new findExportCatalogItemsValue(leaves, paths);
+        return new findExportCatalogRecordsValue(leaves, paths);
     }
 
     @Override
-    public findExportCatalogItemsRelationshipsValue getfindExportCatalogItemsRelationships() {
+    public findExportCatalogRecordsRelationshipsValue getfindExportCatalogRecordsRelationships() {
 
-        List<ExportRelationshipResult> leaves = catalogExportQuery.findExportCatalogItemsRelationships();
+        List<ExportRelationshipResult> leaves = catalogExportQuery.findExportCatalogRecordsRelationships();
         List<List<String>> paths = new ArrayList<List<String>>();
         leaves.forEach(p -> {
             ArrayList<String> list = new ArrayList<String>();
@@ -78,6 +78,6 @@ public class CatalogExportServiceImpl implements CatalogExportService {
             paths.add(list);
         });
 
-        return new findExportCatalogItemsRelationshipsValue(leaves, paths);
+        return new findExportCatalogRecordsRelationshipsValue(leaves, paths);
     }
 }

@@ -1,7 +1,7 @@
 package de.bentrm.datacat.graphql.fetcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.bentrm.datacat.catalog.domain.CatalogItem;
+import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.domain.Tag;
 import de.bentrm.datacat.catalog.domain.XtdValue;
 import de.bentrm.datacat.catalog.service.CatalogService;
@@ -78,7 +78,7 @@ public class ContentFetchers implements MutationFetchers {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final SetVersionInput input = OBJECT_MAPPER.convertValue(argument, SetVersionInput.class);
             final VersionInput version = input.getVersion();
-            final CatalogItem item = catalogService.setVersion(input.getCatalogEntryId(), version.getVersionId(), version.getVersionDate());
+            final CatalogRecord item = catalogService.setVersion(input.getCatalogEntryId(), version.getVersionId(), version.getVersionDate());
             return payloadMapper.toSetVersionPayload(item);
         };
     }
@@ -88,7 +88,7 @@ public class ContentFetchers implements MutationFetchers {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final AddNameInput input = OBJECT_MAPPER.convertValue(argument, AddNameInput.class);
             final TranslationInput name = input.getName();
-            final CatalogItem item = catalogService.addName(input.getCatalogEntryId(), name.getId(), name.getLocale(), name.getValue());
+            final CatalogRecord item = catalogService.addName(input.getCatalogEntryId(), name.getId(), name.getLocale(), name.getValue());
             return payloadMapper.toAddNamePayload(item);
         };
     }
@@ -98,7 +98,7 @@ public class ContentFetchers implements MutationFetchers {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final UpdateNameInput input = OBJECT_MAPPER.convertValue(argument, UpdateNameInput.class);
             final TranslationUpdateInput name = input.getName();
-            final CatalogItem item = catalogService.updateName(input.getCatalogEntryId(), name.getTranslationId(), name.getValue());
+            final CatalogRecord item = catalogService.updateName(input.getCatalogEntryId(), name.getTranslationId(), name.getValue());
             return payloadMapper.toUpdateNamePayload(item);
         };
     }
@@ -107,7 +107,7 @@ public class ContentFetchers implements MutationFetchers {
         return environment -> {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final DeleteNameInput input = OBJECT_MAPPER.convertValue(argument, DeleteNameInput.class);
-            final CatalogItem item = catalogService.deleteName(input.getCatalogEntryId(), input.getNameId());
+            final CatalogRecord item = catalogService.deleteName(input.getCatalogEntryId(), input.getNameId());
             return payloadMapper.toDeleteNamePayload(item);
         };
     }
@@ -117,7 +117,7 @@ public class ContentFetchers implements MutationFetchers {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final AddDescriptionInput input = OBJECT_MAPPER.convertValue(argument, AddDescriptionInput.class);
             final TranslationInput name = input.getDescription();
-            final CatalogItem item = catalogService.addDescription(input.getCatalogEntryId(), name.getId(), name.getLocale(), name.getValue());
+            final CatalogRecord item = catalogService.addDescription(input.getCatalogEntryId(), name.getId(), name.getLocale(), name.getValue());
             return payloadMapper.toAddDescriptionPayload(item);
         };
     }
@@ -127,7 +127,7 @@ public class ContentFetchers implements MutationFetchers {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final UpdateDescriptionInput input = OBJECT_MAPPER.convertValue(argument, UpdateDescriptionInput.class);
             final TranslationUpdateInput name = input.getDescription();
-            final CatalogItem item = catalogService.updateDescription(input.getCatalogEntryId(), name.getTranslationId(), name.getValue());
+            final CatalogRecord item = catalogService.updateDescription(input.getCatalogEntryId(), name.getTranslationId(), name.getValue());
             return payloadMapper.toUpdateDescriptionPayload(item);
         };
     }
@@ -136,7 +136,7 @@ public class ContentFetchers implements MutationFetchers {
         return environment -> {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final DeleteDescriptionInput input = OBJECT_MAPPER.convertValue(argument, DeleteDescriptionInput.class);
-            final CatalogItem item = catalogService.deleteDescription(input.getCatalogEntryId(), input.getDescriptionId());
+            final CatalogRecord item = catalogService.deleteDescription(input.getCatalogEntryId(), input.getDescriptionId());
             return payloadMapper.toDeleteDescriptionPayload(item);
         };
     }
@@ -146,7 +146,7 @@ public class ContentFetchers implements MutationFetchers {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final AddCommentInput input = OBJECT_MAPPER.convertValue(argument, AddCommentInput.class);
             final TranslationInput name = input.getComment();
-            final CatalogItem item = catalogService.addComment(input.getCatalogEntryId(), name.getId(), name.getLocale(), name.getValue());
+            final CatalogRecord item = catalogService.addComment(input.getCatalogEntryId(), name.getId(), name.getLocale(), name.getValue());
             return payloadMapper.toAddCommentPayload(item);
         };
     }
@@ -156,7 +156,7 @@ public class ContentFetchers implements MutationFetchers {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final UpdateCommentInput input = OBJECT_MAPPER.convertValue(argument, UpdateCommentInput.class);
             final TranslationUpdateInput name = input.getComment();
-            final CatalogItem item = catalogService.updateComment(input.getCatalogEntryId(), name.getTranslationId(), name.getValue());
+            final CatalogRecord item = catalogService.updateComment(input.getCatalogEntryId(), name.getTranslationId(), name.getValue());
             return payloadMapper.toUpdateCommentPayload(item);
         };
     }
@@ -165,7 +165,7 @@ public class ContentFetchers implements MutationFetchers {
         return environment -> {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final DeleteCommentInput input = OBJECT_MAPPER.convertValue(argument, DeleteCommentInput.class);
-            final CatalogItem item = catalogService.deleteComment(input.getCatalogEntryId(), input.getCommentId());
+            final CatalogRecord item = catalogService.deleteComment(input.getCatalogEntryId(), input.getCommentId());
             return payloadMapper.toDeleteCommentPayload(item);
         };
     }
@@ -242,9 +242,9 @@ public class ContentFetchers implements MutationFetchers {
         return environment -> {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final AddTagInput input = OBJECT_MAPPER.convertValue(argument, AddTagInput.class);
-            final CatalogItem catalogItem = catalogService.addTag(input.getCatalogEntryId(), input.getTagId());
+            final CatalogRecord catalogRecord = catalogService.addTag(input.getCatalogEntryId(), input.getTagId());
             final Tag tag = tagService.findById(input.getTagId()).orElseThrow();
-            return new AddTagPayload(catalogItem, tag);
+            return new AddTagPayload(catalogRecord, tag);
         };
     }
 
@@ -252,9 +252,9 @@ public class ContentFetchers implements MutationFetchers {
         return environment -> {
             final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
             final RemoveTagInput input = OBJECT_MAPPER.convertValue(argument, RemoveTagInput.class);
-            final CatalogItem catalogItem = catalogService.removeTag(input.getCatalogEntryId(), input.getTagId());
+            final CatalogRecord catalogRecord = catalogService.removeTag(input.getCatalogEntryId(), input.getTagId());
             final Tag tag = tagService.findById(input.getTagId()).orElseThrow();
-            return new RemoveTagPayload(catalogItem, tag);
+            return new RemoveTagPayload(catalogRecord, tag);
         };
     }
 }

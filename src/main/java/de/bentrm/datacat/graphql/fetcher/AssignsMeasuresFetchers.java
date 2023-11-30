@@ -1,6 +1,6 @@
 package de.bentrm.datacat.graphql.fetcher;
 
-import de.bentrm.datacat.catalog.domain.CatalogItem;
+import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.domain.Measure;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsMeasures;
@@ -38,7 +38,7 @@ public class AssignsMeasuresFetchers extends AbstractFetchers<XtdRelAssignsMeasu
         this.relatedMeasures = environment -> {
             final XtdRelAssignsMeasures source = environment.getSource();
             final List<String> relatedMeasureIds = source.getRelatedMeasures().stream()
-                    .map(CatalogItem::getId)
+                    .map(CatalogRecord::getId)
                     .collect(Collectors.toList());
             log.trace("Retrieving related measures by ids: {}", relatedMeasureIds);
             return measureService.findAllByIds(relatedMeasureIds);
