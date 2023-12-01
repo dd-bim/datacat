@@ -63,6 +63,10 @@ public class SimpleCatalogRecordMutations implements MutationFetchers {
                 input.getTags().forEach(tagId -> catalogService.addTag(newRecord.getId(), tagId));
             }
 
+            catalogService.setMajorVersion(newRecord.getId(), 1);
+            catalogService.setMinorVersion(newRecord.getId(), 0);
+
+
             return PAYLOAD_MAPPER.toCreateEntryPayload(newRecord);
         };
     }

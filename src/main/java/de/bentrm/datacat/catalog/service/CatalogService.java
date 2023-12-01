@@ -61,6 +61,12 @@ public interface CatalogService {
     @NotNull CatalogRecord addTag(@NotBlank String entryId, @NotBlank String tagId);
 
     @PreAuthorize("hasRole('USER')")
+    @NotNull CatalogRecord setMajorVersion(@NotBlank String entryId, @NotNull int majorVersion);
+
+    @PreAuthorize("hasRole('USER')")
+    @NotNull CatalogRecord setMinorVersion(@NotBlank String entryId, @NotNull int minorVersion);
+
+    @PreAuthorize("hasRole('USER')")
     @NotNull CatalogRecord removeTag(@NotBlank String entryId, @NotBlank String tagId);
 
     @PreAuthorize("hasRole('READONLY')")

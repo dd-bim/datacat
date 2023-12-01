@@ -7,14 +7,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Properties;
 import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.data.annotation.Version;
 import org.springframework.util.Assert;
 
 import javax.validation.constraints.NotNull;
 import java.util.*;
 
-/**
- * TODO: Rename to CatalogRecord
- */
 @Slf4j
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
@@ -29,6 +27,16 @@ public abstract class CatalogRecord extends Entity {
 
     @ToString.Include
     protected String versionDate;
+
+    @NotNull
+    @Version
+    @ToString.Include
+    private int majorVersion;
+
+    @NotNull
+    @Version
+    @ToString.Include
+    private int minorVersion;
 
     // Primary use case for this property is search and lookup optimization
     // TODO: Add external full text search component to improve on this mechanic
@@ -75,6 +83,24 @@ public abstract class CatalogRecord extends Entity {
         } else {
             this.versionDate = versionDate;
         }
+    }
+    // public void setMinorVersion(Integer minorVersion) {
+    //     Assert.notNull(minorVersion, "minorVersion may not be null");
+    //     this.minorVersion = minorVersion;
+    // }
+
+    // public void setMajorVersion(Integer majorVersion) {
+    //     Assert.notNull(majorVersion, "majorVersion may not be null");
+    //     this.majorVersion = majorVersion;
+    // }
+    public void setMinorVersion(int minorVersion) {
+        Assert.notNull(minorVersion, "minorVersion may not be null");
+        this.minorVersion = minorVersion;
+    }
+
+    public void setMajorVersion(int majorVersion) {
+        Assert.notNull(majorVersion, "majorVersion may not be null");
+        this.majorVersion = majorVersion;
     }
 
     /**

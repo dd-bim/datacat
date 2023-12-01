@@ -89,6 +89,22 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Transactional
     @Override
+    public CatalogRecord setMajorVersion(String entryId, int majorVersion) {
+        CatalogRecord item = catalogRecordRepository.findById(entryId).orElseThrow();
+        item.setMajorVersion(majorVersion);
+        return catalogRecordRepository.save(item);
+    }
+
+    @Transactional
+    @Override
+    public CatalogRecord setMinorVersion(String entryId, int minorVersion) {
+        CatalogRecord item = catalogRecordRepository.findById(entryId).orElseThrow();
+        item.setMinorVersion(minorVersion);
+        return catalogRecordRepository.save(item);
+    }
+
+    @Transactional
+    @Override
     public CatalogRecord addName(String id, String nameId, Locale locale, String value) {
         final CatalogRecord item = catalogRecordRepository.findById(id).orElseThrow();
         item.addName(nameId, locale, value);

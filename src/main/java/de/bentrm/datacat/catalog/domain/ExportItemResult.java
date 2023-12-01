@@ -22,4 +22,6 @@ public class ExportItemResult {
     public String created;
     public String lastModified;
     public String lastModifiedBy;
+    public Integer majorVersion;
+    public Integer minorVersion;
 }

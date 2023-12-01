@@ -50,7 +50,9 @@ public interface CatalogExportQuery extends EntityRepository<XtdRoot> {
     x.createdBy AS createdBy,
     x.created AS created,
     x.lastModified AS lastModified,
-    x.lastModifiedBy AS lastModifiedBy
+    x.lastModifiedBy AS lastModifiedBy,
+    x.majorVersion AS majorVersion,
+    x.minorVersion AS minorVersion
     """)
     List<ExportItemResult> findExportCatalogRecords();
 

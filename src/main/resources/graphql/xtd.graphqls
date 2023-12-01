@@ -160,7 +160,6 @@ type ExportResult {
     createdBy: String
     lastModified: String
     lastModifiedBy: String
-
 }
 
 type ExportRelationshipResult {
@@ -314,6 +313,8 @@ type XtdExternalDocument implements Concept {
     lastModifiedBy: String!
     versionId: String
     versionDate: String
+    majorVersion: Int
+    minorVersion: Int
     name(input: LocalizationInput): String
     names: [Translation!]!
     description(input: LocalizationInput): String
@@ -353,6 +354,8 @@ interface XtdObject implements Concept, XtdRoot {
     lastModifiedBy: String!
     versionId: String
     versionDate: String
+    majorVersion: Int
+    minorVersion: Int
     name(input: LocalizationInput): String
     names: [Translation!]!
     description(input: LocalizationInput): String
@@ -415,6 +418,8 @@ type XtdSubject implements Concept, XtdRoot, XtdObject {
     lastModifiedBy: String!
     versionId: String
     versionDate: String
+    majorVersion: Int
+    minorVersion: Int
     name(input: LocalizationInput): String
     names: [Translation!]!
     description(input: LocalizationInput): String
@@ -440,6 +445,8 @@ type XtdClassification implements Concept, XtdRoot, XtdObject {
     lastModifiedBy: String!
     versionId: String
     versionDate: String
+    majorVersion: Int
+    minorVersion: Int
     name(input: LocalizationInput): String
     names: [Translation!]!
     description(input: LocalizationInput): String
@@ -462,6 +469,8 @@ type XtdMeasureWithUnit implements Concept, XtdRoot, XtdObject {
     lastModifiedBy: String!
     versionId: String
     versionDate: String
+    majorVersion: Int
+    minorVersion: Int
     name(input: LocalizationInput): String
     names: [Translation!]!
     description(input: LocalizationInput): String
@@ -488,6 +497,8 @@ type XtdProperty implements Concept, XtdRoot, XtdObject {
     lastModifiedBy: String!
     versionId: String
     versionDate: String
+    majorVersion: Int
+    minorVersion: Int
     name(input: LocalizationInput): String
     names: [Translation!]!
     description(input: LocalizationInput): String
@@ -513,6 +524,8 @@ type XtdUnit implements Concept, XtdRoot, XtdObject {
     lastModifiedBy: String!
     versionId: String
     versionDate: String
+    majorVersion: Int
+    minorVersion: Int
     name(input: LocalizationInput): String
     names: [Translation!]!
     description(input: LocalizationInput): String
@@ -536,6 +549,8 @@ type XtdValue implements Concept, XtdRoot, XtdObject {
     lastModifiedBy: String!
     versionId: String
     versionDate: String
+    majorVersion: Int
+    minorVersion: Int
     name(input: LocalizationInput): String
     names: [Translation!]!
     description(input: LocalizationInput): String
