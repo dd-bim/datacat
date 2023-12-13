@@ -8,11 +8,11 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Component;
 
 @Component
-public class XtdObjectResolver implements CustomResolver {
+public class XtdConceptResolver implements CustomResolver {
 
     @Override
     public String getTypeName() {
-        return "XtdObject";
+        return "XtdConcept";
     }
 
     @Override
@@ -34,12 +34,6 @@ public class XtdObjectResolver implements CustomResolver {
         }
         if (obj instanceof XtdUnit) {
             return schema.getObjectType(XtdUnit.LABEL);
-        }
-        if (obj instanceof XtdValue) {
-            return schema.getObjectType(XtdValue.LABEL);
-        }
-        if (obj instanceof XtdConcept) {
-            return schema.getObjectType(XtdConcept.LABEL);
         }
 
         throw new NotImplementedException("Unsupported type: " + obj);

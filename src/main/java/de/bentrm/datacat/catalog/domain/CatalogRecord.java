@@ -28,11 +28,16 @@ public abstract class CatalogRecord extends Entity {
     @ToString.Include
     protected String versionDate;
 
+    // Allows tracking of major changes. Experts decide if a new major version number shall be applied.
     @NotNull
     @Version
     @ToString.Include
     private int majorVersion;
 
+    // Allows tracking of minor changes, e.g. new translation, changes of typos: if
+    // the major version number changes, the minor version starts again at 1.
+    // Experts decide if a new minor version number can be applied or if a new major
+    // version is needed.
     @NotNull
     @Version
     @ToString.Include
@@ -85,13 +90,13 @@ public abstract class CatalogRecord extends Entity {
         }
     }
     // public void setMinorVersion(Integer minorVersion) {
-    //     Assert.notNull(minorVersion, "minorVersion may not be null");
-    //     this.minorVersion = minorVersion;
+    // Assert.notNull(minorVersion, "minorVersion may not be null");
+    // this.minorVersion = minorVersion;
     // }
 
     // public void setMajorVersion(Integer majorVersion) {
-    //     Assert.notNull(majorVersion, "majorVersion may not be null");
-    //     this.majorVersion = majorVersion;
+    // Assert.notNull(majorVersion, "majorVersion may not be null");
+    // this.majorVersion = majorVersion;
     // }
     public void setMinorVersion(int minorVersion) {
         Assert.notNull(minorVersion, "minorVersion may not be null");
@@ -104,9 +109,11 @@ public abstract class CatalogRecord extends Entity {
     }
 
     /**
-     * Returns an optional name that satisfies the given language range priority list.
+     * Returns an optional name that satisfies the given language range priority
+     * list.
      *
-     * @param priorityList The priority list that will be used to select a translation.
+     * @param priorityList The priority list that will be used to select a
+     *                     translation.
      * @return An optional translation of the catalog entries name.
      */
     public Optional<Translation> getName(@NotNull List<Locale.LanguageRange> priorityList) {
@@ -117,16 +124,22 @@ public abstract class CatalogRecord extends Entity {
     /**
      * Adds a new name translation for the catalog entry.
      *
-     * @param translationId A predetermined id for the translation value. May be null. Must be universally unique.
-     * @param locale The locale of the new name translation. The codified language tag of the locale must be unique to
-     *               this catalog entry.
-     * @param value The translation value.
+     * @param translationId A predetermined id for the translation value. May be
+     *                      null. Must be universally unique.
+     * @param locale        The locale of the new name translation. The codified
+     *                      language tag of the locale must be unique to
+     *                      this catalog entry.
+     * @param value         The translation value.
      */
     public void addName(String translationId, Locale locale, String value) {
         final Translation translation = new Translation(translationId, locale, value);
 
-        Assert.isTrue(translationId == null || this.names.stream().filter(x -> x.getId().equals(translationId)).findFirst().isEmpty(), "The id is already taken.");
-        Assert.isTrue(this.names.stream().filter(x -> x.getLocale().equals(locale)).findFirst().isEmpty(), "The given locale is already present in the set of translations.");
+        Assert.isTrue(
+                translationId == null
+                        || this.names.stream().filter(x -> x.getId().equals(translationId)).findFirst().isEmpty(),
+                "The id is already taken.");
+        Assert.isTrue(this.names.stream().filter(x -> x.getLocale().equals(locale)).findFirst().isEmpty(),
+                "The given locale is already present in the set of translations.");
 
         this.names.add(translation);
     }
@@ -164,8 +177,11 @@ public abstract class CatalogRecord extends Entity {
     public void addDescription(String translationId, Locale locale, String value) {
         final Translation translation = new Translation(translationId, locale, value);
 
-        Assert.isTrue(translationId == null || this.descriptions.stream().filter(x -> x.getId().equals(translationId)).findFirst().isEmpty(), "The id is already taken.");
-        Assert.isTrue(this.descriptions.stream().filter(x -> x.getLocale().equals(locale)).findFirst().isEmpty(), "The given locale is already present in the set of translations.");
+        Assert.isTrue(translationId == null
+                || this.descriptions.stream().filter(x -> x.getId().equals(translationId)).findFirst().isEmpty(),
+                "The id is already taken.");
+        Assert.isTrue(this.descriptions.stream().filter(x -> x.getLocale().equals(locale)).findFirst().isEmpty(),
+                "The given locale is already present in the set of translations.");
 
         this.descriptions.add(translation);
     }
@@ -201,8 +217,12 @@ public abstract class CatalogRecord extends Entity {
     public void addComment(String translationId, Locale locale, String value) {
         final Translation translation = new Translation(translationId, locale, value);
 
-        Assert.isTrue(translationId == null || this.comments.stream().filter(x -> x.getId().equals(translationId)).findFirst().isEmpty(), "The id is already taken.");
-        Assert.isTrue(this.comments.stream().filter(x -> x.getLocale().equals(locale)).findFirst().isEmpty(), "The given locale is already present in the set of translations.");
+        Assert.isTrue(
+                translationId == null
+                        || this.comments.stream().filter(x -> x.getId().equals(translationId)).findFirst().isEmpty(),
+                "The id is already taken.");
+        Assert.isTrue(this.comments.stream().filter(x -> x.getLocale().equals(locale)).findFirst().isEmpty(),
+                "The given locale is already present in the set of translations.");
 
         this.comments.add(translation);
     }
@@ -259,6 +279,7 @@ public abstract class CatalogRecord extends Entity {
 
     /**
      * Returns a list of all relationships this item is on the owning side on.
+     * 
      * @return A list of relationships.
      */
     public abstract List<XtdRelationship> getOwnedRelationships();

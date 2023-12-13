@@ -21,7 +21,7 @@
         <graphql-spring-boot-starter.version>11.0.0</graphql-spring-boot-starter.version>
         <java-jwt.version>3.13.0</java-jwt.version>
         <java.version>15</java.version>
-        <lombok.version>1.18.12</lombok.version>
+        <lombok.version>1.18.12</lombok.version> 
         <mapstruct.version>1.4.2.Final</mapstruct.version>
         <spring-boot.version>2.4.2</spring-boot.version>
     </properties>

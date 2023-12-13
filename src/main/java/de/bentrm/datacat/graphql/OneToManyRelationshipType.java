@@ -6,6 +6,6 @@ public enum OneToManyRelationshipType {
     AssignsProperties,
     AssignsUnits,
     AssignsValues,
-    Collects,
-    Documents
+    Collects
+    // ,Documents
 }

@@ -37,9 +37,9 @@ public final class RootSpecification extends QuerySpecification {
             return related("id", id, new Filter.NestedPathSegment("collectedBy", XtdRelCollects.class));
         }
 
-        public Builder documentedBy(String id) {
-            return related("id", id, new Filter.NestedPathSegment("documentedBy", XtdRelDocuments.class));
-        }
+        // public Builder documentedBy(String id) {
+        //     return related("id", id, new Filter.NestedPathSegment("documentedBy", XtdRelDocuments.class));
+        // }
 
         @Override
         public RootSpecification build() {

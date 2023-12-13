@@ -17,6 +17,7 @@ public class XtdValue extends XtdObject {
 
     public static final String LABEL = "XtdValue";
 
+    // später entfernen
     private ToleranceType toleranceType;
 
     private String lowerTolerance;
@@ -26,6 +27,7 @@ public class XtdValue extends XtdObject {
     private ValueRole valueRole;
 
     private ValueType valueType;
+    // bis hier
 
     private String nominalValue;
 

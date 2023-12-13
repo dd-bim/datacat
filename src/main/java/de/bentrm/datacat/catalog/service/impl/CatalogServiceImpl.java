@@ -54,6 +54,9 @@ public class CatalogServiceImpl implements CatalogService {
     private ObjectRepository objectRepository;
 
     @Autowired
+    private ConceptRepository conceptRepository;
+
+    @Autowired
     private CollectionRepository collectionRepository;
 
     @Autowired
@@ -245,6 +248,14 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
+    public @NotNull List<XtdConcept> getAllConceptsById(List<String> ids) {
+        final Iterable<XtdConcept> items = conceptRepository.findAllById(ids);
+        final List<XtdConcept> results = new ArrayList<>();
+        items.forEach(results::add);
+        return results;
+    }
+
+    @Override
     public @NotNull List<XtdCollection> getAllCollectionsById(List<String> ids) {
         final Iterable<XtdCollection> items = collectionRepository.findAllById(ids);
         final List<XtdCollection> results = new ArrayList<>();
@@ -265,6 +276,11 @@ public class CatalogServiceImpl implements CatalogService {
     @Override
     public Optional<XtdObject> getObject(String id) {
         return objectRepository.findById(id);
+    }
+
+    @Override
+    public Optional<XtdConcept> getConcept(String id) {
+        return conceptRepository.findById(id);
     }
 
     @Override

@@ -79,6 +79,9 @@ public interface CatalogService {
     @NotNull List<XtdObject> getAllObjectsById(List<String> ids);
 
     @PreAuthorize("hasRole('READONLY')")
+    @NotNull List<XtdConcept> getAllConceptsById(List<String> ids);
+
+    @PreAuthorize("hasRole('READONLY')")
     @NotNull List<XtdCollection> getAllCollectionsById(List<String> ids);
 
     @PreAuthorize("hasRole('READONLY')")
@@ -89,6 +92,9 @@ public interface CatalogService {
 
     @PreAuthorize("hasRole('READONLY')")
     @NotNull Optional<XtdObject> getObject(@NotNull String id);
+
+    @PreAuthorize("hasRole('READONLY')")
+    @NotNull Optional<XtdConcept> getConcept(@NotNull String id);
 
     @PreAuthorize("hasRole('READONLY')")
     @NotNull Optional<XtdCollection> getCollection(@NotNull String id);

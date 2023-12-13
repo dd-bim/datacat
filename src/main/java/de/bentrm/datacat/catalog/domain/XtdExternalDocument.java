@@ -17,18 +17,30 @@ import java.util.stream.Stream;
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
 @NodeEntity(label = XtdExternalDocument.LABEL)
-public class XtdExternalDocument extends CatalogRecord {
+public class XtdExternalDocument extends XtdConcept {
 
     public static final String LABEL = "XtdExternalDocument";
 
-    @Relationship(type = XtdRelDocuments.RELATIONSHIP_TYPE)
-    private Set<XtdRelDocuments> documents = new HashSet<>();
+    private String uri;
 
-    @Override
-    public List<XtdRelationship> getOwnedRelationships() {
-        return Stream
-                .of(documents)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
-    }
+    private String author;
+
+    private String isbn;
+
+    private String publisher;
+
+    private String dateOfPublication;
+
+    // private Set<XtdLanguages> languages = new HashSet<>(); // XtdLanguages anlegen
+
+    // @Relationship(type = XtdRelDocuments.RELATIONSHIP_TYPE)
+    // private Set<XtdRelDocuments> documents = new HashSet<>();
+
+    // @Override
+    // public List<XtdRelationship> getOwnedRelationships() {
+    //     return Stream
+    //             .of(documents)
+    //             .flatMap(Collection::stream)
+    //             .collect(Collectors.toList());
+    // }
 }

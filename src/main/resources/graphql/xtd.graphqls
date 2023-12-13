@@ -313,8 +313,13 @@ type XtdExternalDocument implements Concept {
     lastModifiedBy: String!
     versionId: String
     versionDate: String
-    majorVersion: Int
-    minorVersion: Int
+    majorVersion: Int!
+    minorVersion: Int!
+    uri: String!
+    author: String!
+    isbn: String!
+    publisher: String!
+    dateOfPublication: String!
     name(input: LocalizationInput): String
     names: [Translation!]!
     description(input: LocalizationInput): String
@@ -322,7 +327,7 @@ type XtdExternalDocument implements Concept {
     comment(input: LocalizationInput): String
     comments: [Translation!]!
     tags: [Tag!]!
-    documents: XtdRelDocumentsConnection!
+    # documents: XtdRelDocumentsConnection!
 }
 
 interface XtdRoot implements Concept {
@@ -342,7 +347,7 @@ interface XtdRoot implements Concept {
     comments: [Translation!]!
     tags: [Tag!]!
     collectedBy: XtdRelCollectsConnection!
-    documentedBy: XtdRelDocumentsConnection!
+    # documentedBy: XtdRelDocumentsConnection!
 }
 
 interface XtdObject implements Concept, XtdRoot {
@@ -354,8 +359,8 @@ interface XtdObject implements Concept, XtdRoot {
     lastModifiedBy: String!
     versionId: String
     versionDate: String
-    majorVersion: Int
-    minorVersion: Int
+    majorVersion: Int!
+    minorVersion: Int!
     name(input: LocalizationInput): String
     names: [Translation!]!
     description(input: LocalizationInput): String
@@ -364,7 +369,33 @@ interface XtdObject implements Concept, XtdRoot {
     comments: [Translation!]!
     tags: [Tag!]!
     collectedBy: XtdRelCollectsConnection!
-    documentedBy: XtdRelDocumentsConnection!
+    # documentedBy: XtdRelDocumentsConnection!
+    assignedCollections: XtdRelAssignsCollectionsConnection!
+    assignedProperties: XtdRelAssignsPropertiesConnection!
+}
+
+interface XtdConcept implements Concept, XtdRoot, XtdObject {
+    id: ID!
+    recordType: CatalogRecordType!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+    versionId: String
+    versionDate: String
+    majorVersion: Int!
+    minorVersion: Int!
+    name(input: LocalizationInput): String
+    names: [Translation!]!
+    description(input: LocalizationInput): String
+    descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
+    tags: [Tag!]!
+    collectedBy: XtdRelCollectsConnection!
+    # documentedBy: XtdRelDocumentsConnection!
+    referenceDocument(input: LocalizationInput): String
+    referenceDocuments: [XtdExternalDocument!]!
     assignedCollections: XtdRelAssignsCollectionsConnection!
     assignedProperties: XtdRelAssignsPropertiesConnection!
 }
@@ -387,7 +418,7 @@ interface XtdCollection implements Concept, XtdRoot {
     tags: [Tag!]!
     collectedBy: XtdRelCollectsConnection!
     collects: XtdRelCollectsConnection!
-    documentedBy: XtdRelDocumentsConnection!
+    # documentedBy: XtdRelDocumentsConnection!
     assignedTo: XtdRelAssignsCollectionsConnection!
 }
 
@@ -409,7 +440,7 @@ interface XtdRelationship implements Concept {
     tags: [Tag!]!
 }
 
-type XtdSubject implements Concept, XtdRoot, XtdObject {
+type XtdSubject implements Concept, XtdRoot, XtdConcept, XtdObject {
     id: ID!
     recordType: CatalogRecordType!
     created: String!
@@ -418,8 +449,8 @@ type XtdSubject implements Concept, XtdRoot, XtdObject {
     lastModifiedBy: String!
     versionId: String
     versionDate: String
-    majorVersion: Int
-    minorVersion: Int
+    majorVersion: Int!
+    minorVersion: Int!
     name(input: LocalizationInput): String
     names: [Translation!]!
     description(input: LocalizationInput): String
@@ -430,13 +461,15 @@ type XtdSubject implements Concept, XtdRoot, XtdObject {
     groupOfProperties: [XtdNest!]!
     properties: [XtdProperty!]!
     collectedBy: XtdRelCollectsConnection!
-    documentedBy: XtdRelDocumentsConnection!
+    # documentedBy: XtdRelDocumentsConnection!
+    referenceDocument(input: LocalizationInput): String
+    referenceDocuments: [XtdExternalDocument!]!
     assignedCollections: XtdRelAssignsCollectionsConnection!
     assignedProperties: XtdRelAssignsPropertiesConnection!
 }
 
 
-type XtdClassification implements Concept, XtdRoot, XtdObject {
+type XtdClassification implements Concept, XtdRoot, XtdConcept, XtdObject {
     id: ID!
     recordType: CatalogRecordType!
     created: String!
@@ -445,8 +478,8 @@ type XtdClassification implements Concept, XtdRoot, XtdObject {
     lastModifiedBy: String!
     versionId: String
     versionDate: String
-    majorVersion: Int
-    minorVersion: Int
+    majorVersion: Int!
+    minorVersion: Int!
     name(input: LocalizationInput): String
     names: [Translation!]!
     description(input: LocalizationInput): String
@@ -455,12 +488,14 @@ type XtdClassification implements Concept, XtdRoot, XtdObject {
     comments: [Translation!]!
     tags: [Tag!]!
     collectedBy: XtdRelCollectsConnection!
-    documentedBy: XtdRelDocumentsConnection!
+    # documentedBy: XtdRelDocumentsConnection!
+    referenceDocument(input: LocalizationInput): String
+    referenceDocuments: [XtdExternalDocument!]!
     assignedCollections: XtdRelAssignsCollectionsConnection!
     assignedProperties: XtdRelAssignsPropertiesConnection!
 }
 
-type XtdMeasureWithUnit implements Concept, XtdRoot, XtdObject {
+type XtdMeasureWithUnit implements Concept, XtdRoot, XtdConcept, XtdObject {
     id: ID!
     recordType: CatalogRecordType!
     created: String!
@@ -469,8 +504,8 @@ type XtdMeasureWithUnit implements Concept, XtdRoot, XtdObject {
     lastModifiedBy: String!
     versionId: String
     versionDate: String
-    majorVersion: Int
-    minorVersion: Int
+    majorVersion: Int!
+    minorVersion: Int!
     name(input: LocalizationInput): String
     names: [Translation!]!
     description(input: LocalizationInput): String
@@ -481,14 +516,16 @@ type XtdMeasureWithUnit implements Concept, XtdRoot, XtdObject {
 #    methodOfInterpretation: [Translation!]!
     assignedTo: XtdRelAssignsMeasuresConnection!
     collectedBy: XtdRelCollectsConnection!
-    documentedBy: XtdRelDocumentsConnection!
+    # documentedBy: XtdRelDocumentsConnection!
+    referenceDocument(input: LocalizationInput): String
+    referenceDocuments: [XtdExternalDocument!]!
     assignedCollections: XtdRelAssignsCollectionsConnection!
     assignedProperties: XtdRelAssignsPropertiesConnection!
     assignedUnits: XtdRelAssignsUnitsConnection!
     assignedValues: XtdRelAssignsValuesConnection!
 }
 
-type XtdProperty implements Concept, XtdRoot, XtdObject {
+type XtdProperty implements Concept, XtdRoot, XtdConcept, XtdObject {
     id: ID!
     recordType: CatalogRecordType!
     created: String!
@@ -497,8 +534,8 @@ type XtdProperty implements Concept, XtdRoot, XtdObject {
     lastModifiedBy: String!
     versionId: String
     versionDate: String
-    majorVersion: Int
-    minorVersion: Int
+    majorVersion: Int!
+    minorVersion: Int!
     name(input: LocalizationInput): String
     names: [Translation!]!
     description(input: LocalizationInput): String
@@ -508,14 +545,16 @@ type XtdProperty implements Concept, XtdRoot, XtdObject {
     tags: [Tag!]!
     assignedMeasures: XtdRelAssignsMeasuresConnection!
     collectedBy: XtdRelCollectsConnection!
-    documentedBy: XtdRelDocumentsConnection!
+    # documentedBy: XtdRelDocumentsConnection!
+    referenceDocument(input: LocalizationInput): String
+    referenceDocuments: [XtdExternalDocument!]!
     assignedCollections: XtdRelAssignsCollectionsConnection!
     assignedProperties: XtdRelAssignsPropertiesConnection!
     assignedTo: XtdRelAssignsPropertiesConnection!
 }
 
 
-type XtdUnit implements Concept, XtdRoot, XtdObject {
+type XtdUnit implements Concept, XtdRoot, XtdConcept, XtdObject {
     id: ID!
     recordType: CatalogRecordType!
     created: String!
@@ -524,8 +563,8 @@ type XtdUnit implements Concept, XtdRoot, XtdObject {
     lastModifiedBy: String!
     versionId: String
     versionDate: String
-    majorVersion: Int
-    minorVersion: Int
+    majorVersion: Int!
+    minorVersion: Int!
     name(input: LocalizationInput): String
     names: [Translation!]!
     description(input: LocalizationInput): String
@@ -535,7 +574,9 @@ type XtdUnit implements Concept, XtdRoot, XtdObject {
     tags: [Tag!]!
     assignedTo: XtdRelAssignsUnitsConnection!
     collectedBy: XtdRelCollectsConnection!
-    documentedBy: XtdRelDocumentsConnection!
+    # documentedBy: XtdRelDocumentsConnection!
+    referenceDocument(input: LocalizationInput): String
+    referenceDocuments: [XtdExternalDocument!]!
     assignedCollections: XtdRelAssignsCollectionsConnection!
     assignedProperties: XtdRelAssignsPropertiesConnection!
 }
@@ -549,8 +590,8 @@ type XtdValue implements Concept, XtdRoot, XtdObject {
     lastModifiedBy: String!
     versionId: String
     versionDate: String
-    majorVersion: Int
-    minorVersion: Int
+    majorVersion: Int!
+    minorVersion: Int!
     name(input: LocalizationInput): String
     names: [Translation!]!
     description(input: LocalizationInput): String
@@ -565,7 +606,7 @@ type XtdValue implements Concept, XtdRoot, XtdObject {
     valueType: ValueType
     nominalValue: String
     collectedBy: XtdRelCollectsConnection!
-    documentedBy: XtdRelDocumentsConnection!
+    # documentedBy: XtdRelDocumentsConnection!
     assignedCollections: XtdRelAssignsCollectionsConnection!
     assignedProperties: XtdRelAssignsPropertiesConnection!
     assignedTo: XtdRelAssignsValuesConnection!
@@ -589,7 +630,7 @@ type XtdBag implements Concept, XtdRoot, XtdCollection {
     tags: [Tag!]!
     collectedBy: XtdRelCollectsConnection!
     collects: XtdRelCollectsConnection!
-    documentedBy: XtdRelDocumentsConnection!
+    # documentedBy: XtdRelDocumentsConnection!
     assignedTo: XtdRelAssignsCollectionsConnection!
 }
 
@@ -611,7 +652,7 @@ type XtdNest implements Concept, XtdRoot, XtdCollection {
     tags: [Tag!]!
     collectedBy: XtdRelCollectsConnection!
     collects: XtdRelCollectsConnection!
-    documentedBy: XtdRelDocumentsConnection!
+    # documentedBy: XtdRelDocumentsConnection!
     assignedTo: XtdRelAssignsCollectionsConnection!
 }
 
@@ -735,25 +776,25 @@ type XtdRelCollects implements Concept, XtdRelationship {
     relatedThings: [XtdRoot!]!
 }
 
-type XtdRelDocuments implements Concept, XtdRelationship {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    relatingDocument: XtdExternalDocument!
-    relatedThings: [XtdRoot!]!
-}
+# type XtdRelDocuments implements Concept, XtdRelationship {
+#     id: ID!
+#     recordType: CatalogRecordType!
+#     created: String!
+#     createdBy: String!
+#     lastModified: String!
+#     lastModifiedBy: String!
+#     versionId: String
+#     versionDate: String
+#     name(input: LocalizationInput): String
+#     names: [Translation!]!
+#     description(input: LocalizationInput): String
+#     descriptions: [Translation!]!
+#     comment(input: LocalizationInput): String
+#     comments: [Translation!]!
+#     tags: [Tag!]!
+#     relatingDocument: XtdExternalDocument!
+#     relatedThings: [XtdRoot!]!
+# }
 
 # Connections
 
@@ -776,6 +817,12 @@ type XtdExternalDocumentConnection {
 
 type XtdRootConnection {
     nodes: [XtdRoot!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+type XtdConceptConnection {
+    nodes: [XtdConcept!]!
     pageInfo: PageInfo!
     totalElements: Int!
 }
@@ -882,11 +929,11 @@ type XtdRelCollectsConnection {
     totalElements: Int!
 }
 
-type XtdRelDocumentsConnection {
-    nodes: [XtdRelDocuments!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
-}
+# type XtdRelDocumentsConnection {
+#     nodes: [XtdRelDocuments!]!
+#     pageInfo: PageInfo!
+#     totalElements: Int!
+# }
 
 type Query {
     languages(input: LanguageFilterInput): LanguageConnection
@@ -967,8 +1014,8 @@ type Query {
     getAssignsCollections(id: ID!): XtdRelAssignsCollections
     findAssignsCollections(input: FilterInput): XtdRelAssignsCollectionsConnection!
 
-    getDocuments(id: ID!): XtdRelDocuments
-    findDocuments(input: FilterInput): XtdRelDocumentsConnection!
+    # getDocuments(id: ID!): XtdRelDocuments
+    # findDocuments(input: FilterInput): XtdRelDocumentsConnection!
 
     getCollects(id: ID!): XtdRelCollects
     findCollects(input: FilterInput): XtdRelCollectsConnection!

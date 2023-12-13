@@ -17,7 +17,7 @@ enum RelationshipRecordType {
     AssignsUnits
     AssignsValues
     Collects
-    Documents
+    # Documents
 }
 
 enum CatalogRecordType {
@@ -36,7 +36,7 @@ enum CatalogRecordType {
     AssignsUnits
     AssignsValues
     Collects
-    Documents
+    # Documents
 }
 
 union SimpleRecord =
@@ -57,7 +57,7 @@ union RelationshipRecord =
     | XtdRelAssignsUnits
     | XtdRelAssignsValues
     | XtdRelCollects
-    | XtdRelDocuments
+    # | XtdRelDocuments
 
 input VersionInput {
     versionId: String
@@ -329,6 +329,39 @@ input RemoveTagInput {
 type RemoveTagPayload {
     catalogEntry: SimpleRecord
     tag: Tag
+}
+
+enum XtdDataTypeEnum {
+    XTD_BOOLEAN
+    XTD_INTEGER
+    XTD_RATIONAL
+    XTD_REAL
+    XTD_COMPLEX
+    XTD_STRING
+    XTD_DATETIME
+}
+
+enum XtdPropertyRelationshipTypeEnum {
+    XTD_DEPENDS
+    XTD_SPECIALIZES
+}
+
+enum XtdRelationshipKindEnum {
+    XTD_INSTANCE_LEVEL
+    XTD_SCHEMA_LEVEL
+}
+
+enum XtdUnitBaseEnum {
+    XTD_ONE
+    XTD_TWO
+    XTD_E
+    XTD_PI
+    XTD_TEN
+}
+
+enum XtdUnitScaleEnum {
+    XTD_LINEAR 
+    XTD_LOGARITHMIC
 }
 
 type Mutation {

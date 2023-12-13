@@ -14,7 +14,7 @@ public enum CatalogRecordType {
     Bag(XtdBag.LABEL),
     Classification(XtdClassification.LABEL),
     Collects(XtdRelCollects.LABEL),
-    Documents(XtdRelDocuments.LABEL),
+    // Documents(XtdRelDocuments.LABEL),
     ExternalDocument(XtdExternalDocument.LABEL),
     Measure(de.bentrm.datacat.catalog.domain.Measure.LABEL),
     Nest(XtdNest.LABEL),
