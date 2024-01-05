@@ -13,11 +13,10 @@ enum SimpleRecordType {
 enum RelationshipRecordType {
     AssignsCollections
     AssignsMeasures
-    AssignsProperties
+    # AssignsProperties
     AssignsUnits
     AssignsValues
     Collects
-    # Documents
 }
 
 enum CatalogRecordType {
@@ -32,11 +31,10 @@ enum CatalogRecordType {
     Value
     AssignsCollections
     AssignsMeasures
-    AssignsProperties
+    # AssignsProperties
     AssignsUnits
     AssignsValues
     Collects
-    # Documents
 }
 
 union SimpleRecord =
@@ -53,11 +51,10 @@ union SimpleRecord =
 union RelationshipRecord =
     | XtdRelAssignsCollections
     | XtdRelAssignsMeasures
-    | XtdRelAssignsProperties
+    # | XtdRelAssignsProperties
     | XtdRelAssignsUnits
     | XtdRelAssignsValues
     | XtdRelCollects
-    # | XtdRelDocuments
 
 input VersionInput {
     versionId: String

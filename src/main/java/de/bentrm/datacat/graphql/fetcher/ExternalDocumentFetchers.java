@@ -1,8 +1,6 @@
 package de.bentrm.datacat.graphql.fetcher;
 
 import de.bentrm.datacat.catalog.domain.XtdExternalDocument;
-// import de.bentrm.datacat.catalog.domain.XtdRelDocuments;
-// import de.bentrm.datacat.catalog.service.DocumentsRecordService;
 import de.bentrm.datacat.catalog.service.ExternalDocumentRecordService;
 import de.bentrm.datacat.graphql.Connection;
 import graphql.schema.DataFetcher;

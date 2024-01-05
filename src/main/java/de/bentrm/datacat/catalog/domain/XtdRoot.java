@@ -27,9 +27,6 @@ public abstract class XtdRoot extends CatalogRecord {
     @Relationship(type = XtdRelClassifies.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
     private final Set<XtdRelClassifies> classifiedBy = new HashSet<>();
 
-    // @Relationship(type = XtdRelDocuments.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
-    // private final Set<XtdRelDocuments> documentedBy = new HashSet<>();
-
     @Override
     public List<XtdRelationship> getOwnedRelationships()
     {

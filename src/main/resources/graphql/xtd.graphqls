@@ -59,82 +59,82 @@ type TagConnection {
 }
 
 type HierarchyPayload {
-    nodes: [Concept!]!
+    nodes: [XtdRoot!]!
     paths: [[ID!]!]!
 }
 
 type findPropGroupWithoutPropPayload {
-    nodes: [Concept!]!
+    nodes: [XtdRoot!]!
     paths: [[ID!]!]!
 }
 
 type findPropWithoutSubjectOrPropGroupPayload {
-    nodes: [Concept!]!
+    nodes: [XtdRoot!]!
     paths: [[ID!]!]!
 }
 
 type findModelWithoutGroupPayload {
-    nodes: [Concept!]!
+    nodes: [XtdRoot!]!
     paths: [[ID!]!]!
 }
 
 type findGroupWithoutSubjectPayload {
-    nodes: [Concept!]!
+    nodes: [XtdRoot!]!
     paths: [[ID!]!]!
 }
 
 type findSubjectWithoutPropPayload {
-    nodes: [Concept!]!
+    nodes: [XtdRoot!]!
     paths: [[ID!]!]!
 }
 
 type findMeasureWithoutPropPayload {
-    nodes: [Concept!]!
+    nodes: [XtdRoot!]!
     paths: [[ID!]!]!
 }
 
 type findUnitWithoutMeasurePayload {
-    nodes: [Concept!]!
+    nodes: [XtdRoot!]!
     paths: [[ID!]!]!
 }
 
 type findValueWithoutMeasurePayload {
-    nodes: [Concept!]!
+    nodes: [XtdRoot!]!
     paths: [[ID!]!]!
 }
 
 type findMissingTagsPayload {
-    nodes: [Concept!]!
+    nodes: [XtdRoot!]!
     paths: [[ID!]!]!
 }
 
 type findMissingEnglishNamePayload {
-    nodes: [Concept!]!
+    nodes: [XtdRoot!]!
     paths: [[ID!]!]!
 }
 
 type findMultipleIDsPayload {
-    nodes: [Concept!]!
+    nodes: [XtdRoot!]!
     paths: [[ID!]!]!
 }
 
 type findMissingDescriptionPayload {
-    nodes: [Concept!]!
+    nodes: [XtdRoot!]!
     paths: [[ID!]!]!
 }
 
 type findMissingEnglishDescriptionPayload {
-    nodes: [Concept!]!
+    nodes: [XtdRoot!]!
     paths: [[ID!]!]!
 }
 
 type findMultipleNamesPayload {
-    nodes: [Concept!]!
+    nodes: [XtdRoot!]!
     paths: [[ID!]!]!
 }
 
 type findMultipleNamesAcrossClassesPayload {
-    nodes: [Concept!]!
+    nodes: [XtdRoot!]!
     paths: [[ID!]!]!
 }
 
@@ -286,25 +286,25 @@ input LocalizationInput {
     languageTags: [String!]
 }
 
-interface Concept {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-}
+# interface Concept {
+#     id: ID!
+#     recordType: CatalogRecordType!
+#     created: String!
+#     createdBy: String!
+#     lastModified: String!
+#     lastModifiedBy: String!
+#     versionId: String
+#     versionDate: String
+#     name(input: LocalizationInput): String
+#     names: [Translation!]!
+#     description(input: LocalizationInput): String
+#     descriptions: [Translation!]!
+#     comment(input: LocalizationInput): String
+#     comments: [Translation!]!
+#     tags: [Tag!]!
+# }
 
-type XtdExternalDocument implements Concept {
+type XtdExternalDocument implements XtdRoot {
     id: ID!
     recordType: CatalogRecordType!
     created: String!
@@ -327,10 +327,11 @@ type XtdExternalDocument implements Concept {
     comment(input: LocalizationInput): String
     comments: [Translation!]!
     tags: [Tag!]!
-    # documents: XtdRelDocumentsConnection!
+    documents: [XtdRoot!]
+    collectedBy: XtdRelCollectsConnection! # nur vorübergehend hinzugefügt
 }
 
-interface XtdRoot implements Concept {
+interface XtdRoot {
     id: ID!
     recordType: CatalogRecordType!
     created: String!
@@ -346,35 +347,10 @@ interface XtdRoot implements Concept {
     comment(input: LocalizationInput): String
     comments: [Translation!]!
     tags: [Tag!]!
-    collectedBy: XtdRelCollectsConnection!
-    # documentedBy: XtdRelDocumentsConnection!
+    # collectedBy: XtdRelCollectsConnection!  !!! Auskommentiert für Übernahme von Concept
 }
 
-interface XtdObject implements Concept, XtdRoot {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    majorVersion: Int!
-    minorVersion: Int!
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    collectedBy: XtdRelCollectsConnection!
-    # documentedBy: XtdRelDocumentsConnection!
-    assignedCollections: XtdRelAssignsCollectionsConnection!
-    assignedProperties: XtdRelAssignsPropertiesConnection!
-}
-
-interface XtdConcept implements Concept, XtdRoot, XtdObject {
+interface XtdObject implements XtdRoot {
     id: ID!
     recordType: CatalogRecordType!
     created: String!
@@ -393,14 +369,35 @@ interface XtdConcept implements Concept, XtdRoot, XtdObject {
     comments: [Translation!]!
     tags: [Tag!]!
     collectedBy: XtdRelCollectsConnection!
-    # documentedBy: XtdRelDocumentsConnection!
-    referenceDocument(input: LocalizationInput): String
-    referenceDocuments: [XtdExternalDocument!]!
     assignedCollections: XtdRelAssignsCollectionsConnection!
-    assignedProperties: XtdRelAssignsPropertiesConnection!
+    # assignedProperties: XtdRelAssignsPropertiesConnection!
 }
 
-interface XtdCollection implements Concept, XtdRoot {
+interface XtdConcept implements XtdRoot, XtdObject {
+    id: ID!
+    recordType: CatalogRecordType!
+    created: String!
+    createdBy: String!
+    lastModified: String!
+    lastModifiedBy: String!
+    versionId: String
+    versionDate: String
+    majorVersion: Int!
+    minorVersion: Int!
+    name(input: LocalizationInput): String
+    names: [Translation!]!
+    description(input: LocalizationInput): String
+    descriptions: [Translation!]!
+    comment(input: LocalizationInput): String
+    comments: [Translation!]!
+    tags: [Tag!]!
+    collectedBy: XtdRelCollectsConnection!
+    documentedBy: [XtdExternalDocument!]
+    assignedCollections: XtdRelAssignsCollectionsConnection!
+    # assignedProperties: XtdRelAssignsPropertiesConnection!
+}
+
+interface XtdCollection implements XtdRoot {
     id: ID!
     recordType: CatalogRecordType!
     created: String!
@@ -418,11 +415,11 @@ interface XtdCollection implements Concept, XtdRoot {
     tags: [Tag!]!
     collectedBy: XtdRelCollectsConnection!
     collects: XtdRelCollectsConnection!
-    # documentedBy: XtdRelDocumentsConnection!
+    documentedBy: [XtdExternalDocument!]
     assignedTo: XtdRelAssignsCollectionsConnection!
 }
 
-interface XtdRelationship implements Concept {
+interface XtdRelationship {
     id: ID!
     recordType: CatalogRecordType!
     created: String!
@@ -440,7 +437,7 @@ interface XtdRelationship implements Concept {
     tags: [Tag!]!
 }
 
-type XtdSubject implements Concept, XtdRoot, XtdConcept, XtdObject {
+type XtdSubject implements XtdRoot, XtdConcept, XtdObject {
     id: ID!
     recordType: CatalogRecordType!
     created: String!
@@ -459,17 +456,15 @@ type XtdSubject implements Concept, XtdRoot, XtdConcept, XtdObject {
     comments: [Translation!]!
     tags: [Tag!]!
     groupOfProperties: [XtdNest!]!
-    properties: [XtdProperty!]!
+    properties: [XtdProperty!]
     collectedBy: XtdRelCollectsConnection!
-    # documentedBy: XtdRelDocumentsConnection!
-    referenceDocument(input: LocalizationInput): String
-    referenceDocuments: [XtdExternalDocument!]!
+    documentedBy: [XtdExternalDocument!]
     assignedCollections: XtdRelAssignsCollectionsConnection!
-    assignedProperties: XtdRelAssignsPropertiesConnection!
+    # assignedProperties: XtdRelAssignsPropertiesConnection!
 }
 
 
-type XtdClassification implements Concept, XtdRoot, XtdConcept, XtdObject {
+type XtdClassification implements XtdRoot, XtdConcept, XtdObject {
     id: ID!
     recordType: CatalogRecordType!
     created: String!
@@ -488,14 +483,12 @@ type XtdClassification implements Concept, XtdRoot, XtdConcept, XtdObject {
     comments: [Translation!]!
     tags: [Tag!]!
     collectedBy: XtdRelCollectsConnection!
-    # documentedBy: XtdRelDocumentsConnection!
-    referenceDocument(input: LocalizationInput): String
-    referenceDocuments: [XtdExternalDocument!]!
+    documentedBy: [XtdExternalDocument!]
     assignedCollections: XtdRelAssignsCollectionsConnection!
-    assignedProperties: XtdRelAssignsPropertiesConnection!
+    # assignedProperties: XtdRelAssignsPropertiesConnection!
 }
 
-type XtdMeasureWithUnit implements Concept, XtdRoot, XtdConcept, XtdObject {
+type XtdMeasureWithUnit implements XtdRoot, XtdConcept, XtdObject {
     id: ID!
     recordType: CatalogRecordType!
     created: String!
@@ -516,16 +509,14 @@ type XtdMeasureWithUnit implements Concept, XtdRoot, XtdConcept, XtdObject {
 #    methodOfInterpretation: [Translation!]!
     assignedTo: XtdRelAssignsMeasuresConnection!
     collectedBy: XtdRelCollectsConnection!
-    # documentedBy: XtdRelDocumentsConnection!
-    referenceDocument(input: LocalizationInput): String
-    referenceDocuments: [XtdExternalDocument!]!
+    documentedBy: [XtdExternalDocument!]
     assignedCollections: XtdRelAssignsCollectionsConnection!
-    assignedProperties: XtdRelAssignsPropertiesConnection!
+    # assignedProperties: XtdRelAssignsPropertiesConnection!
     assignedUnits: XtdRelAssignsUnitsConnection!
     assignedValues: XtdRelAssignsValuesConnection!
 }
 
-type XtdProperty implements Concept, XtdRoot, XtdConcept, XtdObject {
+type XtdProperty implements XtdRoot, XtdConcept, XtdObject {
     id: ID!
     recordType: CatalogRecordType!
     created: String!
@@ -545,16 +536,15 @@ type XtdProperty implements Concept, XtdRoot, XtdConcept, XtdObject {
     tags: [Tag!]!
     assignedMeasures: XtdRelAssignsMeasuresConnection!
     collectedBy: XtdRelCollectsConnection!
-    # documentedBy: XtdRelDocumentsConnection!
-    referenceDocument(input: LocalizationInput): String
-    referenceDocuments: [XtdExternalDocument!]!
+    documentedBy: [XtdExternalDocument!]
     assignedCollections: XtdRelAssignsCollectionsConnection!
-    assignedProperties: XtdRelAssignsPropertiesConnection!
-    assignedTo: XtdRelAssignsPropertiesConnection!
+    # assignedProperties: XtdRelAssignsPropertiesConnection!
+    subjects: [XtdSubject!]
+    # assignedTo: XtdRelAssignsPropertiesConnection!
 }
 
 
-type XtdUnit implements Concept, XtdRoot, XtdConcept, XtdObject {
+type XtdUnit implements XtdRoot, XtdConcept, XtdObject {
     id: ID!
     recordType: CatalogRecordType!
     created: String!
@@ -574,14 +564,12 @@ type XtdUnit implements Concept, XtdRoot, XtdConcept, XtdObject {
     tags: [Tag!]!
     assignedTo: XtdRelAssignsUnitsConnection!
     collectedBy: XtdRelCollectsConnection!
-    # documentedBy: XtdRelDocumentsConnection!
-    referenceDocument(input: LocalizationInput): String
-    referenceDocuments: [XtdExternalDocument!]!
+    documentedBy: [XtdExternalDocument!]
     assignedCollections: XtdRelAssignsCollectionsConnection!
-    assignedProperties: XtdRelAssignsPropertiesConnection!
+    # assignedProperties: XtdRelAssignsPropertiesConnection!
 }
 
-type XtdValue implements Concept, XtdRoot, XtdObject {
+type XtdValue implements XtdRoot, XtdObject {
     id: ID!
     recordType: CatalogRecordType!
     created: String!
@@ -606,13 +594,12 @@ type XtdValue implements Concept, XtdRoot, XtdObject {
     valueType: ValueType
     nominalValue: String
     collectedBy: XtdRelCollectsConnection!
-    # documentedBy: XtdRelDocumentsConnection!
     assignedCollections: XtdRelAssignsCollectionsConnection!
-    assignedProperties: XtdRelAssignsPropertiesConnection!
+    # assignedProperties: XtdRelAssignsPropertiesConnection!
     assignedTo: XtdRelAssignsValuesConnection!
 }
 
-type XtdBag implements Concept, XtdRoot, XtdCollection {
+type XtdBag implements XtdRoot, XtdCollection {
     id: ID!
     recordType: CatalogRecordType!
     created: String!
@@ -630,11 +617,11 @@ type XtdBag implements Concept, XtdRoot, XtdCollection {
     tags: [Tag!]!
     collectedBy: XtdRelCollectsConnection!
     collects: XtdRelCollectsConnection!
-    # documentedBy: XtdRelDocumentsConnection!
+    documentedBy: [XtdExternalDocument!]
     assignedTo: XtdRelAssignsCollectionsConnection!
 }
 
-type XtdNest implements Concept, XtdRoot, XtdCollection {
+type XtdNest implements XtdRoot, XtdCollection {
     id: ID!
     recordType: CatalogRecordType!
     created: String!
@@ -652,11 +639,11 @@ type XtdNest implements Concept, XtdRoot, XtdCollection {
     tags: [Tag!]!
     collectedBy: XtdRelCollectsConnection!
     collects: XtdRelCollectsConnection!
-    # documentedBy: XtdRelDocumentsConnection!
+    documentedBy: [XtdExternalDocument!]
     assignedTo: XtdRelAssignsCollectionsConnection!
 }
 
-type XtdRelAssignsCollections implements Concept, XtdRelationship {
+type XtdRelAssignsCollections implements XtdRelationship {
     id: ID!
     recordType: CatalogRecordType!
     created: String!
@@ -676,7 +663,7 @@ type XtdRelAssignsCollections implements Concept, XtdRelationship {
     relatedCollections: [XtdCollection!]!
 }
 
-type XtdRelAssignsMeasures implements Concept, XtdRelationship {
+type XtdRelAssignsMeasures implements XtdRelationship {
     id: ID!
     recordType: CatalogRecordType!
     created: String!
@@ -696,27 +683,27 @@ type XtdRelAssignsMeasures implements Concept, XtdRelationship {
     relatedMeasures: [XtdMeasureWithUnit!]!
 }
 
-type XtdRelAssignsProperties implements Concept, XtdRelationship {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    relatingObject: XtdObject!
-    relatedProperties: [XtdProperty!]!
-}
+# type XtdRelAssignsProperties implements XtdRelationship {
+#     id: ID!
+#     recordType: CatalogRecordType!
+#     created: String!
+#     createdBy: String!
+#     lastModified: String!
+#     lastModifiedBy: String!
+#     versionId: String
+#     versionDate: String
+#     name(input: LocalizationInput): String
+#     names: [Translation!]!
+#     description(input: LocalizationInput): String
+#     descriptions: [Translation!]!
+#     comment(input: LocalizationInput): String
+#     comments: [Translation!]!
+#     tags: [Tag!]!
+#     relatingObject: XtdObject!
+#     relatedProperties: [XtdProperty!]!
+# }
 
-type XtdRelAssignsUnits implements Concept, XtdRelationship {
+type XtdRelAssignsUnits implements XtdRelationship {
     id: ID!
     recordType: CatalogRecordType!
     created: String!
@@ -736,7 +723,7 @@ type XtdRelAssignsUnits implements Concept, XtdRelationship {
     relatedUnits: [XtdUnit!]!
 }
 
-type XtdRelAssignsValues implements Concept, XtdRelationship {
+type XtdRelAssignsValues implements XtdRelationship {
     id: ID!
     recordType: CatalogRecordType!
     created: String!
@@ -756,7 +743,7 @@ type XtdRelAssignsValues implements Concept, XtdRelationship {
     relatedValues: [XtdValue!]!
 }
 
-type XtdRelCollects implements Concept, XtdRelationship {
+type XtdRelCollects implements XtdRelationship {
     id: ID!
     recordType: CatalogRecordType!
     created: String!
@@ -775,26 +762,6 @@ type XtdRelCollects implements Concept, XtdRelationship {
     relatingCollection: XtdCollection!
     relatedThings: [XtdRoot!]!
 }
-
-# type XtdRelDocuments implements Concept, XtdRelationship {
-#     id: ID!
-#     recordType: CatalogRecordType!
-#     created: String!
-#     createdBy: String!
-#     lastModified: String!
-#     lastModifiedBy: String!
-#     versionId: String
-#     versionDate: String
-#     name(input: LocalizationInput): String
-#     names: [Translation!]!
-#     description(input: LocalizationInput): String
-#     descriptions: [Translation!]!
-#     comment(input: LocalizationInput): String
-#     comments: [Translation!]!
-#     tags: [Tag!]!
-#     relatingDocument: XtdExternalDocument!
-#     relatedThings: [XtdRoot!]!
-# }
 
 # Connections
 
@@ -899,11 +866,11 @@ type XtdRelAssignsCollectionsConnection {
     totalElements: Int!
 }
 
-type XtdRelAssignsPropertiesConnection {
-    nodes: [XtdRelAssignsProperties!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
-}
+# type XtdRelAssignsPropertiesConnection {
+#     nodes: [XtdRelAssignsProperties!]!
+#     pageInfo: PageInfo!
+#     totalElements: Int!
+# }
 
 type XtdRelAssignsMeasuresConnection {
     nodes: [XtdRelAssignsMeasures!]!
@@ -929,18 +896,12 @@ type XtdRelCollectsConnection {
     totalElements: Int!
 }
 
-# type XtdRelDocumentsConnection {
-#     nodes: [XtdRelDocuments!]!
-#     pageInfo: PageInfo!
-#     totalElements: Int!
-# }
-
 type Query {
     languages(input: LanguageFilterInput): LanguageConnection
 
     statistics: CatalogStatistics!
 
-    node(id: ID!): Concept
+    node(id: ID!): XtdRoot
 
     search(input: SearchInput, pageSize: Int, pageNumber: Int): SearchResultConnection!
 
@@ -1020,8 +981,8 @@ type Query {
     getCollects(id: ID!): XtdRelCollects
     findCollects(input: FilterInput): XtdRelCollectsConnection!
 
-    getAssignsProperties(id: ID!): XtdRelAssignsProperties
-    findAssignsProperties(input: FilterInput): XtdRelAssignsPropertiesConnection
+    # getAssignsProperties(id: ID!): XtdRelAssignsProperties
+    # findAssignsProperties(input: FilterInput): XtdRelAssignsPropertiesConnection
 
     getAssignsUnits(id: ID!): XtdRelAssignsUnits
     findAssignsUnits(input: FilterInput): XtdRelAssignsUnitsConnection

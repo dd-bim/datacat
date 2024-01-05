@@ -1,6 +1,6 @@
-package de.bentrm.datacat.catalog.service;
+// package de.bentrm.datacat.catalog.service;
 
-import de.bentrm.datacat.catalog.domain.XtdRelAssignsProperties;
+// import de.bentrm.datacat.catalog.domain.XtdRelAssignsProperties;
 
-public interface AssignsPropertiesRecordService extends RelationshipRecordService<XtdRelAssignsProperties> {
-}
+// public interface AssignsPropertiesRecordService extends RelationshipRecordService<XtdRelAssignsProperties> {
+// }

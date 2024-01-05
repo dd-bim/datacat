@@ -33,7 +33,6 @@
                                 ├── XtdRelationship.java
                                 ├── XtdRelClassifies.java
                                 ├── XtdRelCollects.java
-                                ├── XtdRelDocuments.java
                                 ├── XtdRoot.java
                                 ├── XtdSubject.java
                                 ├── XtdUnit.java
@@ -52,7 +51,6 @@
                                 ├── ClassifiesRepository.java
                                 ├── CollectionRepository.java
                                 ├── CollectsRepository.java
-                                ├── DocumentsRepository.java
                                 ├── ExternalDocumentRepository.java
                                 ├── HierarchyDao.java
                                 ├── [impl]
@@ -84,7 +82,6 @@
                                 ├── ClassificationRecordService.java
                                 ├── ClassifiesService.java
                                 ├── CollectsRecordService.java
-                                ├── DocumentsRecordService.java
                                 ├── EntityMapper.java
                                 ├── ExternalDocumentRecordService.java
                                 ├── [impl]
@@ -105,7 +102,6 @@
                                     ├── ClassificationRecordServiceImpl.java
                                     ├── ClassifiesServiceImpl.java
                                     ├── CollectsRecordServiceImpl.java
-                                    ├── DocumentsRecordServiceImpl.java
                                     ├── ExternalDocumentRecordServiceImpl.java
 
                                     ├── MeasureRecordServiceImpl.java
@@ -161,7 +157,6 @@
                                     ├── ObjectFetchersDelegate.java
                                     └── RootFetchersDelegate.java
                                 ├── DescriptionFetcher.java
-                                ├── DocumentsFetchers.java
                                 ├── ExternalDocumentFetchers.java
                                 ├── LanguageFetchers.java
                                 ├── LocalizedAttributeFetcher.java

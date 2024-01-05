@@ -58,16 +58,17 @@ public abstract class XtdObject extends XtdRoot {
     @Relationship(type = XtdRelAssignsCollections.RELATIONSHIP_TYPE)
     private final Set<XtdRelAssignsCollections> assignedCollections = new HashSet<>();
 
-    @Relationship(type = XtdRelAssignsProperties.RELATIONSHIP_TYPE)
-    private final Set<XtdRelAssignsProperties> assignedProperties = new HashSet<>();
+    // @Relationship(type = XtdRelAssignsProperties.RELATIONSHIP_TYPE)
+    // private final Set<XtdRelAssignsProperties> assignedProperties = new HashSet<>();
 
     @Override
     public List<XtdRelationship> getOwnedRelationships() {
         return Stream
                 .of(
                     super.getOwnedRelationships(),
-                    assignedCollections,
-                    assignedProperties
+                    assignedCollections
+                    // ,
+                    // assignedProperties
                 )
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());

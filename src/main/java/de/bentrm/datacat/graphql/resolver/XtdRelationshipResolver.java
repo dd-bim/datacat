@@ -26,9 +26,9 @@ public class XtdRelationshipResolver implements CustomResolver {
         if (obj instanceof XtdRelAssignsMeasures) {
             return schema.getObjectType(XtdRelAssignsMeasures.LABEL);
         }
-        if (obj instanceof XtdRelAssignsProperties) {
-            return schema.getObjectType(XtdRelAssignsProperties.LABEL);
-        }
+        // if (obj instanceof XtdRelAssignsProperties) {
+        //     return schema.getObjectType(XtdRelAssignsProperties.LABEL);
+        // }
         if (obj instanceof XtdRelAssignsUnits) {
             return schema.getObjectType(XtdRelAssignsUnits.LABEL);
         }
@@ -41,9 +41,6 @@ public class XtdRelationshipResolver implements CustomResolver {
         if (obj instanceof XtdRelCollects) {
             return schema.getObjectType(XtdRelCollects.LABEL);
         }
-        // if (obj instanceof XtdRelDocuments) {
-        //     return schema.getObjectType(XtdRelDocuments.LABEL);
-        // }
 
         throw new NotImplementedException("Unsupported relationships type: " + obj);
     }

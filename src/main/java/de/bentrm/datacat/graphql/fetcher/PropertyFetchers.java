@@ -2,9 +2,9 @@ package de.bentrm.datacat.graphql.fetcher;
 
 import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsMeasures;
-import de.bentrm.datacat.catalog.domain.XtdRelAssignsProperties;
+// import de.bentrm.datacat.catalog.domain.XtdRelAssignsProperties;
 import de.bentrm.datacat.catalog.service.AssignsMeasuresRecordService;
-import de.bentrm.datacat.catalog.service.AssignsPropertiesRecordService;
+// import de.bentrm.datacat.catalog.service.AssignsPropertiesRecordService;
 import de.bentrm.datacat.catalog.service.PropertyRecordService;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.fetcher.delegate.ObjectFetchersDelegate;
@@ -24,12 +24,12 @@ public class PropertyFetchers extends AbstractFetchers<XtdProperty> {
     private final ObjectFetchersDelegate objectFetchersDelegate;
 
     private final RelationshipFetcher<XtdRelAssignsMeasures> assignedMeasuresFetcher;
-    private final RelationshipFetcher<XtdRelAssignsProperties> assignedToFetcher;
+    // private final RelationshipFetcher<XtdRelAssignsProperties> assignedToFetcher;
 
     public PropertyFetchers(PropertyRecordService queryService,
                             RootFetchersDelegate rootFetchersDelegate,
                             ObjectFetchersDelegate objectFetchersDelegate,
-                            AssignsPropertiesRecordService assignsPropertiesService,
+                            // AssignsPropertiesRecordService assignsPropertiesService,
                             AssignsMeasuresRecordService assignsMeasuresService) {
         super(queryService);
 
@@ -46,14 +46,14 @@ public class PropertyFetchers extends AbstractFetchers<XtdProperty> {
             }
         };
 
-        this.assignedToFetcher = new RelationshipFetcher<>(assignsPropertiesService) {
-            @Override
-            public Connection<XtdRelAssignsProperties> get(DataFetchingEnvironment environment) {
-                final XtdProperty source = environment.getSource();
-                final Set<XtdRelAssignsProperties> fieldValues = source.getAssignedTo();
-                return get(fieldValues, environment);
-            }
-        };
+        // this.assignedToFetcher = new RelationshipFetcher<>(assignsPropertiesService) {
+        //     @Override
+        //     public Connection<XtdRelAssignsProperties> get(DataFetchingEnvironment environment) {
+        //         final XtdProperty source = environment.getSource();
+        //         final Set<XtdRelAssignsProperties> fieldValues = source.getAssignedTo();
+        //         return get(fieldValues, environment);
+        //     }
+        // };
 
     }
 
@@ -81,7 +81,7 @@ public class PropertyFetchers extends AbstractFetchers<XtdProperty> {
         fetchers.putAll(objectFetchersDelegate.getFetchers());
 
         fetchers.put("assignedMeasures", assignedMeasuresFetcher);
-        fetchers.put("assignedTo", assignedToFetcher);
+        // fetchers.put("assignedTo", assignedToFetcher);
 
         return fetchers;
     }

@@ -20,6 +20,11 @@ graphql:
     enabled: true
     corsEnabled: true
     mapping: /graphql
-    tracing-enabled: true
+    tracing-enabled: false
     actuator-metrics: true
     exception-handlers-enabled: true
+  playground:
+    enabled: true
+    mapping: /playground
+# voyager:
+#   enabled: true

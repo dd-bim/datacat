@@ -18,11 +18,10 @@ import java.util.Set;
 public class RootFetchersDelegate implements FetchingDelegate {
 
     private final RelationshipFetcher<XtdRelCollects> collectedByFetcher;
-    // private final RelationshipFetcher<XtdRelDocuments> documentedByFetcher;
     private final RelationshipFetcher<XtdRelClassifies> classifiedByFetcher;
 
     public RootFetchersDelegate(CollectsRecordService collectsService,
-                                ClassifiesService classifiesService) { //,DocumentsRecordService documentsService
+                                ClassifiesService classifiesService) {
 
         this.collectedByFetcher = new RelationshipFetcher<>(collectsService) {
             @Override
@@ -42,14 +41,6 @@ public class RootFetchersDelegate implements FetchingDelegate {
             }
         };
 
-        // this.documentedByFetcher = new RelationshipFetcher<>(documentsService) {
-        //     @Override
-        //     public Connection<XtdRelDocuments> get(DataFetchingEnvironment environment) {
-        //         final XtdRoot source = environment.getSource();
-        //         final Set<XtdRelDocuments> fieldValues = source.getDocumentedBy();
-        //         return get(fieldValues, environment);
-        //     }
-        // };
     }
 
     @Override
@@ -57,8 +48,6 @@ public class RootFetchersDelegate implements FetchingDelegate {
         return Map.of(
                 "classifiedBy", classifiedByFetcher,
                 "collectedBy", collectedByFetcher
-                // ,
-                // "documentedBy", documentedByFetcher
         );
     }
 

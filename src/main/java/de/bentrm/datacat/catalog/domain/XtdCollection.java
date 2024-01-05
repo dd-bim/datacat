@@ -21,6 +21,11 @@ public abstract class XtdCollection extends XtdRoot {
 
     public static final String LABEL = "XtdCollection";
 
+    // List of attached reference documents.
+    @ToString.Include
+    @Relationship(type = "REFERENCE_DOCUMENTS")
+    private final Set<XtdExternalDocument> documentedBy = new HashSet<>();
+
     @Relationship(type = XtdRelCollects.RELATIONSHIP_TYPE)
     private final Set<XtdRelCollects> collects = new HashSet<>();
 

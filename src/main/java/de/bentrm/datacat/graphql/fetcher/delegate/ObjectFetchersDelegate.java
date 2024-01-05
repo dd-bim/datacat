@@ -2,9 +2,9 @@ package de.bentrm.datacat.graphql.fetcher.delegate;
 
 import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.domain.XtdRelAssignsCollections;
-import de.bentrm.datacat.catalog.domain.XtdRelAssignsProperties;
+// import de.bentrm.datacat.catalog.domain.XtdRelAssignsProperties;
 import de.bentrm.datacat.catalog.service.AssignsCollectionsRecordService;
-import de.bentrm.datacat.catalog.service.AssignsPropertiesRecordService;
+// import de.bentrm.datacat.catalog.service.AssignsPropertiesRecordService;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.fetcher.RelationshipFetcher;
 import graphql.schema.DataFetcher;
@@ -21,10 +21,12 @@ import java.util.Set;
 public class ObjectFetchersDelegate implements FetchingDelegate {
 
     private final RelationshipFetcher<XtdRelAssignsCollections> assignedCollectionsFetcher;
-    private final RelationshipFetcher<XtdRelAssignsProperties> assignedPropertiesFetcher;
+    // private final RelationshipFetcher<XtdRelAssignsProperties> assignedPropertiesFetcher;
 
-    public ObjectFetchersDelegate(AssignsCollectionsRecordService assignsCollectionsService,
-                                  AssignsPropertiesRecordService assignsPropertiesService) {
+    public ObjectFetchersDelegate(AssignsCollectionsRecordService assignsCollectionsService
+    // ,
+    //                               AssignsPropertiesRecordService assignsPropertiesService
+    ) {
         this.assignedCollectionsFetcher = new RelationshipFetcher<>(assignsCollectionsService) {
             @Override
             public Connection<XtdRelAssignsCollections> get(DataFetchingEnvironment environment) {
@@ -34,21 +36,22 @@ public class ObjectFetchersDelegate implements FetchingDelegate {
             }
         };
 
-        this.assignedPropertiesFetcher = new RelationshipFetcher<>(assignsPropertiesService) {
-            @Override
-            public Connection<XtdRelAssignsProperties> get(DataFetchingEnvironment environment) {
-                final XtdObject source = environment.getSource();
-                final Set<XtdRelAssignsProperties> fieldValues = source.getAssignedProperties();
-                return get(fieldValues, environment);
-            }
-        };
+        // this.assignedPropertiesFetcher = new RelationshipFetcher<>(assignsPropertiesService) {
+        //     @Override
+        //     public Connection<XtdRelAssignsProperties> get(DataFetchingEnvironment environment) {
+        //         final XtdObject source = environment.getSource();
+        //         final Set<XtdRelAssignsProperties> fieldValues = source.getAssignedProperties();
+        //         return get(fieldValues, environment);
+        //     }
+        // };
     }
 
     @Override
     public Map<String, DataFetcher> getFetchers() {
         return Map.of(
-                "assignedCollections", assignedCollectionsFetcher,
-                "assignedProperties", assignedPropertiesFetcher
+                "assignedCollections", assignedCollectionsFetcher
+                // ,
+                // "assignedProperties", assignedPropertiesFetcher
         );
     }
 }

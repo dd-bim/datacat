@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
 @NodeEntity(label = XtdProperty.LABEL)
-public class XtdProperty extends XtdObject {
+public class XtdProperty extends XtdConcept {
 
     public static final String LABEL = "XtdProperty";
 
@@ -25,7 +25,8 @@ public class XtdProperty extends XtdObject {
     @ToString.Include
     private XtdDataTypeEnum datatype;
 
-    // Pattern for the property values, the meaning of the pattern is implementation dependant.
+    // Pattern for the property values, the meaning of the pattern is implementation
+    // dependant.
     @ToString.Include
     private String dataFormat;
 
@@ -37,18 +38,22 @@ public class XtdProperty extends XtdObject {
     // Intervals of possible values for the property.
     @ToString.Include
     @Relationship(type = "BOUNDARY_VALUES")
-    private final Set<XtdInterval> boundaryValues = new HashSet<>(); 
+    private final Set<XtdInterval> boundaryValues = new HashSet<>();
 
     // Dimension of the property according to the ISO 80000 series.
     @ToString.Include
     private XtdDimension dimension; // XtdDimension anlegen
 
-    // // List of the corresponding quantity kinds. All the quantity kinds shall have the same dimension as the property.
+    // // List of the corresponding quantity kinds. All the quantity kinds shall
+    // have the same dimension as the property.
     // @ToString.Include
     // @Relationship(type = "QUANTITY_KINDS")
-    // private final Set<XtdQuantityKind> quantityKinds = new HashSet<>(); // XtdQuantityKind anlegen
+    // private final Set<XtdQuantityKind> quantityKinds = new HashSet<>(); //
+    // XtdQuantityKind anlegen
 
-    // List of the possible values that can be provided for the property. Several sets of possible values can be provided to allow providing them in different languages.
+    // List of the possible values that can be provided for the property. Several
+    // sets of possible values can be provided to allow providing them in different
+    // languages.
     @ToString.Include
     @Relationship(type = "POSSIBLE_VALUES")
     private final Set<XtdValueList> possibleValues = new HashSet<>();
@@ -62,16 +67,23 @@ public class XtdProperty extends XtdObject {
 
     // }
 
-    // List of properties connected to the current property. The connection can be a specialization or a dependency.
+    // List of properties connected to the current property. The connection can be a
+    // specialization or a dependency.
     @Relationship(type = XtdRelationshipToProperty.RELATIONSHIP_TYPE)
     private final Set<XtdRelationshipToProperty> connectedProperties = new HashSet<>();
 
     // Incomming relations
     @Relationship(type = XtdRelationshipToProperty.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
-    private final Set<XtdRelationshipToProperty> connectingProperties = new HashSet<>();   
+    private final Set<XtdRelationshipToProperty> connectingProperties = new HashSet<>();
 
-    @Relationship(type = XtdRelAssignsProperties.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
-    private final Set<XtdRelAssignsProperties> assignedTo = new HashSet<>();
+    // @Relationship(type = XtdRelAssignsProperties.RELATIONSHIP_TYPE, direction =
+    // Relationship.INCOMING)
+    // private final Set<XtdRelAssignsProperties> assignedTo = new HashSet<>();
+
+    // List of the properties attached to the subject.
+    @ToString.Include
+    @Relationship(type = "HAS_PROPERTY", direction = Relationship.INCOMING)
+    private final Set<XtdSubject> subjects = new HashSet<>();
 
     @Relationship(type = XtdRelAssignsMeasures.RELATIONSHIP_TYPE)
     private final Set<XtdRelAssignsMeasures> assignedMeasures = new HashSet<>();
@@ -80,8 +92,7 @@ public class XtdProperty extends XtdObject {
     public List<XtdRelationship> getOwnedRelationships() {
         return Stream.of(
                 super.getOwnedRelationships(),
-                assignedMeasures
-        )
+                assignedMeasures)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
 

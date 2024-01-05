@@ -19,7 +19,7 @@ public class XtdSubject extends XtdObject {
 
     // List of the properties attached to the subject.
     @ToString.Include
-    @Relationship(type = "HAS_PROPERTIES")
+    @Relationship(type = "HAS_PROPERTY")
     private final Set<XtdProperty> properties = new HashSet<>();
 
     // List of subjects connected with a qualified relationship.
