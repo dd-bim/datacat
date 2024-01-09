@@ -397,27 +397,27 @@ interface XtdConcept implements XtdRoot, XtdObject {
     # assignedProperties: XtdRelAssignsPropertiesConnection!
 }
 
-interface XtdCollection implements XtdRoot {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    collectedBy: XtdRelCollectsConnection!
-    collects: XtdRelCollectsConnection!
-    documentedBy: [XtdExternalDocument!]
-    assignedTo: XtdRelAssignsCollectionsConnection!
-}
+# interface XtdCollection implements XtdRoot {
+#     id: ID!
+#     recordType: CatalogRecordType!
+#     created: String!
+#     createdBy: String!
+#     lastModified: String!
+#     lastModifiedBy: String!
+#     versionId: String
+#     versionDate: String
+#     name(input: LocalizationInput): String
+#     names: [Translation!]!
+#     description(input: LocalizationInput): String
+#     descriptions: [Translation!]!
+#     comment(input: LocalizationInput): String
+#     comments: [Translation!]!
+#     tags: [Tag!]!
+#     collectedBy: XtdRelCollectsConnection!
+#     collects: XtdRelCollectsConnection!
+#     documentedBy: [XtdExternalDocument!]
+#     assignedTo: XtdRelAssignsCollectionsConnection!
+# }
 
 interface XtdRelationship {
     id: ID!
@@ -455,12 +455,15 @@ type XtdSubject implements XtdRoot, XtdConcept, XtdObject {
     comment(input: LocalizationInput): String
     comments: [Translation!]!
     tags: [Tag!]!
-    groupOfProperties: [XtdNest!]!
+    # groupOfProperties: [XtdNest!]!
+    groupOfProperties: [XtdSubject!]!
     properties: [XtdProperty!]
     collectedBy: XtdRelCollectsConnection!
     documentedBy: [XtdExternalDocument!]
     assignedCollections: XtdRelAssignsCollectionsConnection!
     # assignedProperties: XtdRelAssignsPropertiesConnection!
+    # collects: XtdRelCollectsConnection!                   ##  
+    # assignedTo: XtdRelAssignsCollectionsConnection!       ## Relationen von Collection müssen übernommen werden
 }
 
 
@@ -599,49 +602,49 @@ type XtdValue implements XtdRoot, XtdObject {
     assignedTo: XtdRelAssignsValuesConnection!
 }
 
-type XtdBag implements XtdRoot, XtdCollection {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    collectedBy: XtdRelCollectsConnection!
-    collects: XtdRelCollectsConnection!
-    documentedBy: [XtdExternalDocument!]
-    assignedTo: XtdRelAssignsCollectionsConnection!
-}
+# type XtdBag implements XtdRoot, XtdCollection {
+#     id: ID!
+#     recordType: CatalogRecordType!
+#     created: String!
+#     createdBy: String!
+#     lastModified: String!
+#     lastModifiedBy: String!
+#     versionId: String
+#     versionDate: String
+#     name(input: LocalizationInput): String
+#     names: [Translation!]!
+#     description(input: LocalizationInput): String
+#     descriptions: [Translation!]!
+#     comment(input: LocalizationInput): String
+#     comments: [Translation!]!
+#     tags: [Tag!]!
+#     collectedBy: XtdRelCollectsConnection!
+#     collects: XtdRelCollectsConnection!
+#     documentedBy: [XtdExternalDocument!]
+#     assignedTo: XtdRelAssignsCollectionsConnection!
+# }
 
-type XtdNest implements XtdRoot, XtdCollection {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    collectedBy: XtdRelCollectsConnection!
-    collects: XtdRelCollectsConnection!
-    documentedBy: [XtdExternalDocument!]
-    assignedTo: XtdRelAssignsCollectionsConnection!
-}
+# type XtdNest implements XtdRoot, XtdCollection {
+#     id: ID!
+#     recordType: CatalogRecordType!
+#     created: String!
+#     createdBy: String!
+#     lastModified: String!
+#     lastModifiedBy: String!
+#     versionId: String
+#     versionDate: String
+#     name(input: LocalizationInput): String
+#     names: [Translation!]!
+#     description(input: LocalizationInput): String
+#     descriptions: [Translation!]!
+#     comment(input: LocalizationInput): String
+#     comments: [Translation!]!
+#     tags: [Tag!]!
+#     collectedBy: XtdRelCollectsConnection!
+#     collects: XtdRelCollectsConnection!
+#     documentedBy: [XtdExternalDocument!]
+#     assignedTo: XtdRelAssignsCollectionsConnection!
+# }
 
 type XtdRelAssignsCollections implements XtdRelationship {
     id: ID!
@@ -836,23 +839,23 @@ type XtdValueConnection {
     totalElements: Int!
 }
 
-type XtdCollectionConnection {
-    nodes: [XtdCollection!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
-}
+# type XtdCollectionConnection {
+#     nodes: [XtdCollection!]!
+#     pageInfo: PageInfo!
+#     totalElements: Int!
+# }
 
-type XtdBagConnection {
-    nodes: [XtdBag!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
-}
+# type XtdBagConnection {
+#     nodes: [XtdBag!]!
+#     pageInfo: PageInfo!
+#     totalElements: Int!
+# }
 
-type XtdNestConnection {
-    nodes: [XtdNest!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
-}
+# type XtdNestConnection {
+#     nodes: [XtdNest!]!
+#     pageInfo: PageInfo!
+#     totalElements: Int!
+# }
 
 type XtdRelationshipConnection {
     nodes: [XtdRelationship!]!
@@ -966,11 +969,11 @@ type Query {
     getValue(id: ID!): XtdValue
     findValues(input: FilterInput): XtdValueConnection!
 
-    getBag(id: ID!): XtdBag
-    findBags(input: FilterInput): XtdBagConnection!
+    # getBag(id: ID!): XtdBag
+    # findBags(input: FilterInput): XtdBagConnection!
 
-    getNest(id: ID!): XtdNest
-    findNests(input: FilterInput): XtdNestConnection!
+    # getNest(id: ID!): XtdNest
+    # findNests(input: FilterInput): XtdNestConnection!
 
     getAssignsCollections(id: ID!): XtdRelAssignsCollections
     findAssignsCollections(input: FilterInput): XtdRelAssignsCollectionsConnection!
