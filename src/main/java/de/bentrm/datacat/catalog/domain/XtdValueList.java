@@ -17,10 +17,19 @@ public class XtdValueList extends XtdConcept {
 
     public static final String LABEL = "XtdValueList";
 
+    @ToString.Include
+    @Relationship(type = "UNIT")
     private XtdUnit unit;
 
-    // private XtdLanguage language; // Language nicht implementiert, wie bisher?
+    @ToString.Include
+    @Relationship(type = "LANGUAGE")
+    private XtdLanguage language;
 
+    @ToString.Include
     @Relationship(type = "VALUES")
-    private Set<XtdOrderedValue> values = new HashSet<>();
+    private final Set<XtdOrderedValue> values = new HashSet<>();
+
+    @ToString.Include
+    @Relationship(type = "POSSIBLE_VALUES", direction = Relationship.INCOMING)
+    private final Set<XtdProperty> properties = new HashSet<>();
 }

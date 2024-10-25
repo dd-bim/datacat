@@ -18,7 +18,9 @@ public class XtdInterval extends XtdRoot {
 
     private boolean maximumIncluded;
 
+    @Relationship(type = "MINIMUM")
     private XtdValueList minimum;
 
+    @Relationship(type = "MAXIMUM")
     private XtdValueList maximum;
 }

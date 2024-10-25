@@ -1,6 +1,6 @@
 package de.bentrm.datacat.graphql.fetcher.verification;
 
-import de.bentrm.datacat.catalog.domain.CatalogRecord;
+import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.service.CatalogSearchService;
 import de.bentrm.datacat.catalog.service.CatalogVerificationService;
 import de.bentrm.datacat.catalog.service.value.verification.findValueWithoutMeasureValue;
@@ -42,7 +42,7 @@ public class findValueWithoutMeasureFetchers implements QueryFetchers {
         );
     }
 
-    public DataFetcher<Connection<CatalogRecord>> search() {
+    public DataFetcher<Connection<XtdObject>> search() {
         return environment -> {
             Map<String, Object> argument = environment.getArgument("input");
             SearchInput searchInput = inputMapper.toSearchInput(argument);
@@ -58,7 +58,7 @@ public class findValueWithoutMeasureFetchers implements QueryFetchers {
             CatalogRecordSpecification spec = specificationMapper.toCatalogRecordSpecification(searchInput);
 
             if (environment.getSelectionSet().containsAnyOf("nodes/*", "pageInfo/*")) {
-                Page<CatalogRecord> page = catalogSearchService.search(spec);
+                Page<XtdObject> page = catalogSearchService.search(spec);
                 return Connection.of(page);
             } else {
                 long totalElements = catalogSearchService.count(spec);

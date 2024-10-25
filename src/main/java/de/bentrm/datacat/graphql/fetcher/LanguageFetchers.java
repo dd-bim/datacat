@@ -1,99 +1,51 @@
 package de.bentrm.datacat.graphql.fetcher;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import de.bentrm.datacat.graphql.Connection;
-import de.bentrm.datacat.graphql.input.ApiInputMapper;
-import de.bentrm.datacat.graphql.input.LanguageFilterInput;
-import de.bentrm.datacat.graphql.input.LocaleInput;
+import de.bentrm.datacat.catalog.domain.XtdLanguage;
+import de.bentrm.datacat.catalog.service.LanguageRecordService;
+import de.bentrm.datacat.graphql.fetcher.delegate.ObjectFetchersDelegate;
+import de.bentrm.datacat.graphql.fetcher.delegate.RootFetchersDelegate;
 import graphql.schema.DataFetcher;
-import org.apache.commons.lang3.LocaleUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
-public class LanguageFetchers implements QueryFetchers, AttributeFetchers {
+public class LanguageFetchers extends AbstractFetchers<XtdLanguage> {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final RootFetchersDelegate rootFetchersDelegate;
+    private final ObjectFetchersDelegate objectFetchersDelegate;
 
-    public final static List<Locale> locales = new ArrayList<>();
-
-    static {
-        locales.addAll(LocaleUtils.availableLocaleList());
-        locales.sort(Comparator.comparing(Locale::toLanguageTag));
+    public LanguageFetchers(LanguageRecordService queryService,
+                           RootFetchersDelegate rootFetchersDelegate,
+                           ObjectFetchersDelegate objectFetchersDelegate) {
+        super(queryService);
+        this.rootFetchersDelegate = rootFetchersDelegate;
+        this.objectFetchersDelegate = objectFetchersDelegate;
     }
-
-    @Autowired
-    private ApiInputMapper apiInputMapper;
 
     @Override
     public String getTypeName() {
-        return "Language";
+        return "XtdLanguage";
     }
 
     @Override
-    public Map<String, DataFetcher> getQueryFetchers() {
-        return Map.of("languages", environment -> {
-            if (environment.containsArgument("input")) {
-                final Object argument = environment.getArgument("input");
-                final LanguageFilterInput languageFilterInput = objectMapper.convertValue(argument, LanguageFilterInput.class);
-                final String query = languageFilterInput.getQuery();
-                final List<String> exclude = languageFilterInput.getExcludeLanguageTags();
-                final List<Locale> filtered = locales.stream().filter(locale -> {
-                    if (query != null && !query.isBlank()) {
-                        String sanitizedQuery = query.toLowerCase().trim();
-                        if (!locale.toLanguageTag().toLowerCase().contains(sanitizedQuery)
-                                && !locale.getDisplayCountry().toLowerCase().contains(sanitizedQuery)
-                                && !locale.getDisplayLanguage().toLowerCase().contains(sanitizedQuery)) {
-                            return false;
-                        }
-                    }
-                    return exclude == null || !exclude.contains(locale.toLanguageTag());
-                }).collect(Collectors.toList());
-                return Connection.of(filtered);
-            }
-            return Connection.of(locales);
-        });
+    public String getFetcherName() {
+        return "getLanguage";
     }
 
-    // TODO: Add support and fallback for user defined locales
+    @Override
+    public String getListFetcherName() {
+        return "findLanguages";
+    }
+
     @Override
     public Map<String, DataFetcher> getAttributeFetchers() {
-        return Map.of(
-                "id", environment -> {
-                    final Locale locale = environment.getSource();
-                    return locale.toLanguageTag();
-                },
-                "languageTag", environment -> {
-                    final Locale locale = environment.getSource();
-                    return locale.toLanguageTag();
-                },
-                "displayLanguage", environment -> {
-                    final Locale locale = environment.getSource();
-                    if (environment.containsArgument("input")) {
-                        final Map<String, Object> argument = environment.getArgument("input");
-                        final LocaleInput input = apiInputMapper.toLocaleInput(argument);
-                        final Locale inLocale = input.getLocale();
-                        if (inLocale != null) {
-                            return locale.getDisplayLanguage(inLocale);
-                        }
-                    }
-                    return locale.getDisplayLanguage(locale);
-                },
-                "displayCountry", environment -> {
-                    final Locale locale = environment.getSource();
-                    if (environment.containsArgument("input")) {
-                        final Map<String, Object> argument = environment.getArgument("input");
-                        final LocaleInput input = apiInputMapper.toLocaleInput(argument);
-                        final Locale inLocale = input.getLocale();
-                        if (inLocale != null) {
-                            return locale.getDisplayCountry(inLocale);
-                        }
-                    }
-                    return locale.getDisplayCountry(locale);
-                }
-        );
+        Map<String, DataFetcher> fetchers = new HashMap<>();
+        fetchers.putAll(super.getAttributeFetchers());
+        // fetchers.putAll(rootFetchersDelegate.getFetchers());
+        // fetchers.putAll(objectFetchersDelegate.getFetchers());
+        return fetchers;
     }
 }

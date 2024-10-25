@@ -1,7 +1,7 @@
 package de.bentrm.datacat.graphql.fetcher;
 
 import de.bentrm.datacat.base.domain.Entity;
-import de.bentrm.datacat.catalog.domain.XtdRelationship;
+import de.bentrm.datacat.catalog.domain.AbstractRelationship;
 import de.bentrm.datacat.catalog.service.QueryService;
 import de.bentrm.datacat.graphql.Connection;
 import graphql.schema.DataFetcher;
@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class RelationshipFetcher<T extends XtdRelationship> implements DataFetcher<Connection<T>> {
+public abstract class RelationshipFetcher<T extends AbstractRelationship> implements DataFetcher<Connection<T>> {
 
     private final QueryService<T> service;
 

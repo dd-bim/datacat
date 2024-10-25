@@ -10,7 +10,7 @@ import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
-import static de.bentrm.datacat.catalog.domain.CatalogRecord.DEFAULT_LANGUAGE_TAG;
+import static de.bentrm.datacat.catalog.domain.XtdObject.DEFAULT_LANGUAGE_TAG;
 
 @Slf4j
 @ToString(callSuper = true)
@@ -31,10 +31,6 @@ public final class RootSpecification extends QuerySpecification {
         @Override
         protected Builder self() {
             return this;
-        }
-
-        public Builder collectedBy(String id) {
-            return related("id", id, new Filter.NestedPathSegment("collectedBy", XtdRelCollects.class));
         }
 
         @Override

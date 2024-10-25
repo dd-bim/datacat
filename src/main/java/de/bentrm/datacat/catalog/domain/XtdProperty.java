@@ -6,6 +6,8 @@ import lombok.ToString;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
+import de.bentrm.datacat.catalog.domain.Enums.XtdDataTypeEnum;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -23,17 +25,17 @@ public class XtdProperty extends XtdConcept {
 
     // Data type of the value of the property
     @ToString.Include
-    private XtdDataTypeEnum datatype;
+    private XtdDataTypeEnum dataType;
 
     // Pattern for the property values, the meaning of the pattern is implementation
     // dependant.
     @ToString.Include
     private String dataFormat;
 
-    // // Symbols of the property.
+    // Symbols of the property.
     // @ToString.Include
-    // @Relationship(type = "SYMBOLS")
-    // private final Set<XtdSymbol> symbols = new HashSet<>(); // XtdSymbol anlegen
+    @Relationship(type = "SYMBOLS")
+    private final Set<XtdSymbol> symbols = new HashSet<>();
 
     // Intervals of possible values for the property.
     @ToString.Include
@@ -42,14 +44,14 @@ public class XtdProperty extends XtdConcept {
 
     // Dimension of the property according to the ISO 80000 series.
     @ToString.Include
-    private XtdDimension dimension; // XtdDimension anlegen
+    @Relationship(type = "DIMENSION")
+    private XtdDimension dimension;
 
-    // // List of the corresponding quantity kinds. All the quantity kinds shall
+    // List of the corresponding quantity kinds. All the quantity kinds shall
     // have the same dimension as the property.
-    // @ToString.Include
-    // @Relationship(type = "QUANTITY_KINDS")
-    // private final Set<XtdQuantityKind> quantityKinds = new HashSet<>(); //
-    // XtdQuantityKind anlegen
+    @ToString.Include
+    @Relationship(type = "QUANTITY_KINDS")
+    private final Set<XtdQuantityKind> quantityKinds = new HashSet<>(); 
 
     // List of the possible values that can be provided for the property. Several
     // sets of possible values can be provided to allow providing them in different
@@ -63,9 +65,7 @@ public class XtdProperty extends XtdConcept {
     @Relationship(type = "UNITS")
     private final Set<XtdUnit> units = new HashSet<>();
 
-    // public void isUsedByFilters() {
-
-    // }
+    // isUsedByFilters() 
 
     // List of properties connected to the current property. The connection can be a
     // specialization or a dependency.
@@ -76,25 +76,8 @@ public class XtdProperty extends XtdConcept {
     @Relationship(type = XtdRelationshipToProperty.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
     private final Set<XtdRelationshipToProperty> connectingProperties = new HashSet<>();
 
-    // @Relationship(type = XtdRelAssignsProperties.RELATIONSHIP_TYPE, direction =
-    // Relationship.INCOMING)
-    // private final Set<XtdRelAssignsProperties> assignedTo = new HashSet<>();
-
     // List of the properties attached to the subject.
     @ToString.Include
-    @Relationship(type = "HAS_PROPERTY", direction = Relationship.INCOMING)
+    @Relationship(type = "PROPERTIES", direction = Relationship.INCOMING)
     private final Set<XtdSubject> subjects = new HashSet<>();
-
-    @Relationship(type = XtdRelAssignsMeasures.RELATIONSHIP_TYPE)
-    private final Set<XtdRelAssignsMeasures> assignedMeasures = new HashSet<>();
-
-    @Override
-    public List<XtdRelationship> getOwnedRelationships() {
-        return Stream.of(
-                super.getOwnedRelationships(),
-                assignedMeasures)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
-
-    }
 }

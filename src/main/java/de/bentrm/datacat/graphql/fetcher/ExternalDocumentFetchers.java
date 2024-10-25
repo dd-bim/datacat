@@ -1,32 +1,45 @@
 package de.bentrm.datacat.graphql.fetcher;
 
 import de.bentrm.datacat.catalog.domain.XtdExternalDocument;
+import de.bentrm.datacat.catalog.domain.XtdLanguage;
+import de.bentrm.datacat.catalog.domain.XtdConcept;
 import de.bentrm.datacat.catalog.service.ExternalDocumentRecordService;
 import de.bentrm.datacat.graphql.Connection;
+import de.bentrm.datacat.graphql.fetcher.delegate.ObjectFetchersDelegate;
+import de.bentrm.datacat.graphql.fetcher.delegate.RootFetchersDelegate;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+import java.util.List;
 
 @Component
 public class ExternalDocumentFetchers extends AbstractFetchers<XtdExternalDocument> {
 
-    // private final RelationshipFetcher<XtdRelDocuments> documents;
+    private final RootFetchersDelegate rootFetchersDelegate;
+    private final ObjectFetchersDelegate objectFetchersDelegate;
+    private final DataFetcher<List<XtdConcept>> concepts;
+    private final DataFetcher<List<XtdLanguage>> languages;
 
-    public ExternalDocumentFetchers(ExternalDocumentRecordService entityService) {  // , DocumentsRecordService documentsService
-        super(entityService);
+    public ExternalDocumentFetchers(ExternalDocumentRecordService queryService,
+                            RootFetchersDelegate rootFetchersDelegate,
+                            ObjectFetchersDelegate objectFetchersDelegate) {
+        super(queryService);
 
-        // this.documents = new RelationshipFetcher<>(documentsService) {
-        //     @Override
-        //     public Connection<XtdRelDocuments> get(DataFetchingEnvironment environment) throws Exception {
-        //         final XtdExternalDocument source = environment.getSource();
-        //         final Set<XtdRelDocuments> fieldValues = source.getDocuments();
-        //         return get(fieldValues, environment);
-        //     }
-        // };
+        this.rootFetchersDelegate = rootFetchersDelegate;
+        this.objectFetchersDelegate = objectFetchersDelegate;
+
+        this.concepts = environment -> {
+            final XtdExternalDocument source = environment.getSource();
+            return queryService.getConcepts(source);
+        };
+
+        this.languages = environment -> {
+            final XtdExternalDocument source = environment.getSource();
+            return queryService.getLanguages(source);
+        };
     }
 
     @Override
@@ -44,10 +57,16 @@ public class ExternalDocumentFetchers extends AbstractFetchers<XtdExternalDocume
         return "findExternalDocuments";
     }
 
-    // @Override
-    // public Map<String, DataFetcher> getAttributeFetchers() {
-    //     final Map<String, DataFetcher> fetchers = new HashMap<>(super.getAttributeFetchers());
-    //     fetchers.put("documents", documents);
-    //     return fetchers;
-    // }
+    @Override
+    public Map<String, DataFetcher> getAttributeFetchers() {
+        Map<String, DataFetcher> fetchers = new HashMap<>();
+
+        fetchers.putAll(super.getAttributeFetchers());
+        // fetchers.putAll(rootFetchersDelegate.getFetchers());
+        // fetchers.putAll(objectFetchersDelegate.getFetchers());
+        fetchers.put("documents", concepts);
+        fetchers.put("languages", languages);
+        
+        return fetchers;
+    }
 }

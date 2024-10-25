@@ -1,4 +1,5 @@
-FROM maven:3.6.3-adoptopenjdk-15 as builder
+FROM maven:3.6.3-adoptopenjdk-15 AS builder
+# FROM maven:3.9.6-eclipse-temurin-17 AS builder
 WORKDIR application
 
 COPY pom.xml .
@@ -8,6 +9,7 @@ COPY src/ ./src
 RUN mvn package && cp target/*.jar application.jar
 RUN java -Djarmode=layertools -jar application.jar extract
 
+# FROM eclipse-temurin:17-jre-alpine
 FROM adoptopenjdk:15-jre-hotspot
 
 RUN apt-get update && \

@@ -7,8 +7,9 @@ import de.bentrm.datacat.auth.service.dto.AccountDto;
 import de.bentrm.datacat.auth.service.dto.AccountUpdateDto;
 import de.bentrm.datacat.auth.service.dto.ProfileDto;
 import de.bentrm.datacat.auth.service.dto.ProfileUpdateDto;
-import de.bentrm.datacat.catalog.domain.CatalogRecord;
-import de.bentrm.datacat.catalog.domain.XtdRelationship;
+import de.bentrm.datacat.catalog.domain.*;
+import de.bentrm.datacat.graphql.input.*;
+
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -28,14 +29,6 @@ public interface ValueMapper {
         return AccountStatus.Unverified;
     }
 
-    @Mapping(target = "versionId", source = "version.versionId")
-    @Mapping(target = "versionDate", source = "version.versionDate")
-    void setProperties(CatalogRecordProperties properties, @MappingTarget CatalogRecord catalogEntry);
-
-    @Mapping(target = "versionId", source = "version.versionId")
-    @Mapping(target = "versionDate", source = "version.versionDate")
-    void setProperties(RelationshipProperties properties, @MappingTarget XtdRelationship relationship);
-
     @Mapping(target = "username", source = "username")
     @Mapping(target = "profile", source = ".")
     @Mapping(target = "status", source = "roles")
@@ -46,4 +39,26 @@ public interface ValueMapper {
     ProfileDto toProfileDto(User user);
 
     void setProperties(ProfileUpdateDto dto, @MappingTarget User user);
+
+    void setProperties(PropertyInput properties, @MappingTarget XtdProperty catalogEntry);
+
+    void setProperties(UnitInput properties, @MappingTarget XtdUnit catalogEntry);
+
+    void setProperties(ExternalDocumentInput properties, @MappingTarget XtdExternalDocument catalogEntry);
+
+    void setProperties(CountryInput properties, @MappingTarget XtdCountry catalogEntry);
+
+    void setProperties(CountryInput properties, @MappingTarget XtdSubdivision catalogEntry);
+
+    void setProperties(ValueInput properties, @MappingTarget XtdValue catalogEntry);
+
+    void setProperties(OrderedValueInput properties, @MappingTarget XtdOrderedValue catalogEntry);
+
+    void setProperties(IntervalInput properties, @MappingTarget XtdInterval catalogEntry);
+
+    void setProperties(LanguageInput properties, @MappingTarget XtdLanguage catalogEntry);
+
+    void setProperties(TextInput properties, @MappingTarget XtdText catalogEntry);
+
+
 }

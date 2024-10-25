@@ -181,7 +181,7 @@ public interface CatalogValidationQuery extends EntityRepository<XtdRoot> {
     /* bei großen Datensätzen führt Filterung nach allen Xtd zu Absturz, daher folgendes ergänzen: AND x:XtdSubject */
     @Query("""
     MATCH (x:XtdRoot)
-    WHERE NOT (x)-[:DESCRIBED]->()
+    WHERE NOT (x)-[:DESCRIPTIONS]->()
     WITH x.id AS paths
     RETURN paths
     """)
@@ -195,15 +195,15 @@ public interface CatalogValidationQuery extends EntityRepository<XtdRoot> {
     // MATCH (t_en:Translation) 
     // WHERE t_en.languageCode='en'
     // MATCH (x:XtdRoot)
-    // WHERE (x)-[:DESCRIBED]->(t_de)
-    // AND NOT (x)-[:DESCRIBED]->(t_en)
+    // WHERE (x)-[:DESCRIPTIONS]->(t_de)
+    // AND NOT (x)-[:DESCRIPTIONS]->(t_en)
     // WITH x.id AS paths
     // RETURN DISTINCT paths
     // """)
 
     // deutlich effizienter und Ergebnis richtiger
     @Query("""
-    MATCH (x:XtdRoot)-[:DESCRIBED]->(t:Translation) 
+    MATCH (x:XtdRoot)-[:DESCRIPTIONS]->(t:Translation) 
     WITH x.id AS paths, collect(t.languageCode) AS sum
     WHERE ("de" IN(sum) OR "de-DE" IN(sum) OR "de-CH" IN(sum) OR "de-AT" IN(sum))
     AND NOT "en" IN(sum)

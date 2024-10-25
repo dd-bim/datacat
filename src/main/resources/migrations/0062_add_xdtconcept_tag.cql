@@ -1,0 +1,1 @@
+MATCH(x) WHERE x:XtdSubject OR x:XtdProperty OR x:XtdExternalDocument OR x:XtdValueList OR x:XtdRelationshipToProperty OR x:XtdRelationshipType OR x:XtdUnit SET x:XtdConcept RETURN x

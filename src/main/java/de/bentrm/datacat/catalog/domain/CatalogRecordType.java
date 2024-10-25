@@ -6,21 +6,29 @@ import org.springframework.util.Assert;
  * Enumeration of all supported catalog record types.
  */
 public enum CatalogRecordType {
-    AssignsCollections(XtdRelAssignsCollections.LABEL),
-    AssignsMeasures(XtdRelAssignsMeasures.LABEL),
-    // AssignsProperties(XtdRelAssignsProperties.LABEL),
-    AssignsUnits(XtdRelAssignsUnits.LABEL),
-    AssignsValues(XtdRelAssignsValues.LABEL),
-    Bag(XtdBag.LABEL),
-    Classification(XtdClassification.LABEL),
-    Collects(XtdRelCollects.LABEL),
     ExternalDocument(XtdExternalDocument.LABEL),
-    Measure(de.bentrm.datacat.catalog.domain.Measure.LABEL),
-    Nest(XtdNest.LABEL),
     Property(XtdProperty.LABEL),
     Subject(XtdSubject.LABEL),
     Unit(XtdUnit.LABEL),
-    Value(XtdValue.LABEL);
+    Value(XtdValue.LABEL),
+    OrderedValue(XtdOrderedValue.LABEL),
+    ValueList(XtdValueList.LABEL),
+    RelationshipToSubject(XtdRelationshipToSubject.LABEL),
+    RelationshipToProperty(XtdRelationshipToProperty.LABEL),
+    RelationshipType(XtdRelationshipType.LABEL),
+    Concept(XtdConcept.LABEL),
+    Dimension(XtdDimension.LABEL),
+    Rational(XtdRational.LABEL),
+    MultiLanguageText(XtdMultiLanguageText.LABEL),
+    Text(XtdText.LABEL),
+    Symbol(XtdSymbol.LABEL),
+    Interval(XtdInterval.LABEL),
+    Dictionary(XtdDictionary.LABEL),
+    QuantityKind(XtdQuantityKind.LABEL),
+    Subdivision(XtdSubdivision.LABEL),
+    Country(XtdCountry.LABEL),
+    Object(XtdObject.LABEL),
+    Language(XtdLanguage.LABEL);
 
     private final String label;
 
@@ -44,8 +52,7 @@ public enum CatalogRecordType {
         Assert.notNull(record, "record may not be null");
         String simpleName = record.getClass().getSimpleName();
         simpleName = simpleName
-                .replace("Xtd", "")
-                .replace("Rel", "");
+                .replace("Xtd", "");
         return CatalogRecordType.valueOf(simpleName);
     }
 }

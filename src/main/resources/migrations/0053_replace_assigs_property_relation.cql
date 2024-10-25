@@ -1,2 +1,2 @@
-MATCH (x:XtdSubject) - [:ASSIGNS_PROPERTY] -> (z:XtdRelAssignsProperties) - [:ASSIGNS_PROPERTY] -> (y:XtdProperty) CREATE (x) - [:HAS_PROPERTY] -> (y) RETURN x,y,z
+MATCH (x:XtdSubject) - [:ASSIGNS_PROPERTY] -> (z:XtdRelAssignsProperties) - [:ASSIGNS_PROPERTY] -> (y:XtdProperty) CREATE (x) - [:PROPERTIES] -> (y) RETURN x,y,z
 MATCH (a:XtdRelAssignsProperties) DETACH DELETE a

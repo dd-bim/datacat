@@ -1,9 +1,9 @@
 package de.bentrm.datacat.graphql.payload;
 
-import de.bentrm.datacat.catalog.domain.XtdRelationship;
+import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import lombok.Data;
 
 @Data
 public class DeleteRelationshipPayload {
-    XtdRelationship relationship;
+    CatalogRecord catalogEntry;
 }

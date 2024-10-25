@@ -6,6 +6,9 @@ import lombok.ToString;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
+import de.bentrm.datacat.catalog.domain.Enums.XtdUnitBaseEnum;
+import de.bentrm.datacat.catalog.domain.Enums.XtdUnitScaleEnum;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,21 +25,24 @@ public class XtdUnit extends XtdConcept {
     // Allows to introduce irrational numbers.
     private XtdUnitBaseEnum base;
 
-    // // Optional symbol denominating the unit.
-    // @ToString.Include
-    // @Relationship(type = "SYMBOLS")
-    // private final XtdMultiLanguageText symbol; // XtdMultiLanguageText anlegen
+    // Optional symbol denominating the unit.
+    @ToString.Include
+    @Relationship(type = "SYMBOL")
+    private XtdMultiLanguageText symbol;
 
     // Offset of origins.
+    @Relationship(type = "OFFSET")
     private XtdRational offset;
 
     // Proportionality factor. See ISO 80000-1:2009.
+    @Relationship(type = "COEFFICIENT")
     private XtdRational coefficient;
 
     // Dimension of the unit.
-    private XtdDimension dimension; // XtdDimension anlegen
+    @Relationship(type = "DIMENSION")
+    private XtdDimension dimension; 
 
-
-    @Relationship(type = XtdRelAssignsUnits.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
-    private final Set<XtdRelAssignsUnits> assignedTo = new HashSet<>();
+    @ToString.Include
+    @Relationship(type = "UNITS", direction = Relationship.INCOMING)
+    private final Set<XtdProperty> properties = new HashSet<>();
 }

@@ -1,60 +1,90 @@
 package de.bentrm.datacat.graphql.fetcher;
 
+import de.bentrm.datacat.catalog.domain.XtdDimension;
+import de.bentrm.datacat.catalog.domain.XtdInterval;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
-import de.bentrm.datacat.catalog.domain.XtdRelAssignsMeasures;
-// import de.bentrm.datacat.catalog.domain.XtdRelAssignsProperties;
-import de.bentrm.datacat.catalog.service.AssignsMeasuresRecordService;
-// import de.bentrm.datacat.catalog.service.AssignsPropertiesRecordService;
+import de.bentrm.datacat.catalog.domain.XtdQuantityKind;
+import de.bentrm.datacat.catalog.domain.XtdRelationshipToProperty;
+import de.bentrm.datacat.catalog.domain.XtdSubject;
+import de.bentrm.datacat.catalog.domain.XtdSymbol;
+import de.bentrm.datacat.catalog.domain.XtdValueList;
+import de.bentrm.datacat.catalog.domain.XtdUnit;
 import de.bentrm.datacat.catalog.service.PropertyRecordService;
-import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.fetcher.delegate.ObjectFetchersDelegate;
 import de.bentrm.datacat.graphql.fetcher.delegate.RootFetchersDelegate;
 import graphql.schema.DataFetcher;
-import graphql.schema.DataFetchingEnvironment;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+import java.util.List;
 
 @Component
 public class PropertyFetchers extends AbstractFetchers<XtdProperty> {
 
     private final RootFetchersDelegate rootFetchersDelegate;
     private final ObjectFetchersDelegate objectFetchersDelegate;
-
-    private final RelationshipFetcher<XtdRelAssignsMeasures> assignedMeasuresFetcher;
-    // private final RelationshipFetcher<XtdRelAssignsProperties> assignedToFetcher;
+    private final DataFetcher<List<XtdSubject>> subjects;
+    private final DataFetcher<List<XtdValueList>> valueLists;
+    private final DataFetcher<List<XtdUnit>> units;
+    private final DataFetcher<List<XtdRelationshipToProperty>> connectedProperties;
+    private final DataFetcher<List<XtdRelationshipToProperty>> connectingProperties;
+    private final DataFetcher<XtdDimension> dimension;
+    private final DataFetcher<List<XtdSymbol>> symbols;
+    private final DataFetcher<List<XtdInterval>> intervals;
+    private final DataFetcher<List<XtdQuantityKind>> quantityKinds;
 
     public PropertyFetchers(PropertyRecordService queryService,
                             RootFetchersDelegate rootFetchersDelegate,
-                            ObjectFetchersDelegate objectFetchersDelegate,
-                            // AssignsPropertiesRecordService assignsPropertiesService,
-                            AssignsMeasuresRecordService assignsMeasuresService) {
+                            ObjectFetchersDelegate objectFetchersDelegate) {
         super(queryService);
-
         this.rootFetchersDelegate = rootFetchersDelegate;
         this.objectFetchersDelegate = objectFetchersDelegate;
 
-
-        this.assignedMeasuresFetcher = new RelationshipFetcher<>(assignsMeasuresService) {
-            @Override
-            public Connection<XtdRelAssignsMeasures> get(DataFetchingEnvironment environment) {
-                final XtdProperty source = environment.getSource();
-                final Set<XtdRelAssignsMeasures> fieldValues = source.getAssignedMeasures();
-                return get(fieldValues, environment);
-            }
+        this.subjects = environment -> {
+            final XtdProperty source = environment.getSource();
+            return queryService.getSubjects(source);
         };
 
-        // this.assignedToFetcher = new RelationshipFetcher<>(assignsPropertiesService) {
-        //     @Override
-        //     public Connection<XtdRelAssignsProperties> get(DataFetchingEnvironment environment) {
-        //         final XtdProperty source = environment.getSource();
-        //         final Set<XtdRelAssignsProperties> fieldValues = source.getAssignedTo();
-        //         return get(fieldValues, environment);
-        //     }
-        // };
+        this.valueLists = environment -> {
+            final XtdProperty source = environment.getSource();
+            return queryService.getValueLists(source);
+        };
 
+        this.units = environment -> {
+            final XtdProperty source = environment.getSource();
+            return queryService.getUnits(source);
+        };
+
+        this.connectedProperties = environment -> {
+            final XtdProperty source = environment.getSource();
+            return queryService.getConnectedProperties(source);
+        };
+
+        this.connectingProperties = environment -> {
+            final XtdProperty source = environment.getSource();
+            return queryService.getConnectingProperties(source);
+        };
+
+        this.dimension = environment -> {
+            final XtdProperty source = environment.getSource();
+            return queryService.getDimension(source);
+        };
+
+        this.symbols = environment -> {
+            final XtdProperty source = environment.getSource();
+            return queryService.getSymbols(source);
+        };
+
+        this.intervals = environment -> {
+            final XtdProperty source = environment.getSource();
+            return queryService.getIntervals(source);
+        };
+
+        this.quantityKinds = environment -> {
+            final XtdProperty source = environment.getSource();
+            return queryService.getQuantityKinds(source);
+        };
     }
 
     @Override
@@ -77,11 +107,17 @@ public class PropertyFetchers extends AbstractFetchers<XtdProperty> {
         Map<String, DataFetcher> fetchers = new HashMap<>();
 
         fetchers.putAll(super.getAttributeFetchers());
-        fetchers.putAll(rootFetchersDelegate.getFetchers());
-        fetchers.putAll(objectFetchersDelegate.getFetchers());
-
-        fetchers.put("assignedMeasures", assignedMeasuresFetcher);
-        // fetchers.put("assignedTo", assignedToFetcher);
+        // fetchers.putAll(rootFetchersDelegate.getFetchers());
+        // fetchers.putAll(objectFetchersDelegate.getFetchers());
+        fetchers.put("subjects", subjects);
+        fetchers.put("possibleValues", valueLists);
+        fetchers.put("units", units);
+        fetchers.put("connectedProperties", connectedProperties);
+        fetchers.put("connectingProperties", connectingProperties);
+        fetchers.put("dimension", dimension);
+        fetchers.put("symbols", symbols);
+        fetchers.put("boundaryValues", intervals);
+        fetchers.put("quantityKinds", quantityKinds);
 
         return fetchers;
     }

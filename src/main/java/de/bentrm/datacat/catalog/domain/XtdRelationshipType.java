@@ -5,6 +5,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.neo4j.ogm.annotation.NodeEntity;
 
+import de.bentrm.datacat.catalog.domain.Enums.XtdRelationshipKindEnum;
+
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
@@ -14,5 +16,5 @@ public class XtdRelationshipType extends XtdConcept {
     public static final String LABEL = "XtdRelationshipType";
 
     @ToString.Include
-    private XtdRelationshipKindEnum relationshipKindEnum;
+    private XtdRelationshipKindEnum kind;
 }

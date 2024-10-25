@@ -6,6 +6,8 @@ import lombok.ToString;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
+import de.bentrm.datacat.catalog.domain.Enums.XtdPropertyRelationshipTypeEnum;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,16 +17,21 @@ import javax.validation.constraints.NotNull;
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
 @NodeEntity(label = XtdRelationshipToProperty.LABEL)
-public abstract class XtdRelationshipToProperty extends XtdConcept {
+public class XtdRelationshipToProperty extends AbstractRelationship {
 
     public static final String LABEL = "XtdRelationshipToProperty";
     public static final String RELATIONSHIP_TYPE = "CONNECTED_PROPERTIES";
+    public static final String RELATIONSHIP_TYPE_OUT = "TARGET_PROPERTIES";
 
     @ToString.Include
-    private XtdPropertyRelationshipTypeEnum propertyRelationshipTypeEnum;
+    private XtdPropertyRelationshipTypeEnum relationshipType;
 
     @ToString.Include
-    @Relationship(type = "RELATED_PROPERTIES")
-    private final Set<XtdSubject> targetProperties = new HashSet<>();
+    @Relationship(type = XtdRelationshipToProperty.RELATIONSHIP_TYPE_OUT)
+    private final Set<XtdProperty> targetProperties = new HashSet<>();
+
+    @ToString.Include
+    @Relationship(type = XtdRelationshipToProperty.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
+    private XtdProperty connectingProperty;
 
 }

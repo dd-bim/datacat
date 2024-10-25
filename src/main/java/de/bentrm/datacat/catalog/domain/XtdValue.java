@@ -7,7 +7,9 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
@@ -17,20 +19,8 @@ public class XtdValue extends XtdObject {
 
     public static final String LABEL = "XtdValue";
 
-    // später entfernen
-    private ToleranceType toleranceType;
-
-    private String lowerTolerance;
-
-    private String upperTolerance;
-
-    private ValueRole valueRole;
-
-    private ValueType valueType;
-    // bis hier
-
     private String nominalValue;
 
-    @Relationship(type = XtdRelAssignsValues.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
-    private List<XtdRelAssignsValues> assignedTo = new ArrayList<>();
+    @Relationship(type = "ORDERED_VALUE", direction = Relationship.INCOMING)
+    private final Set<XtdOrderedValue> orderedValues = new HashSet<>();
 }

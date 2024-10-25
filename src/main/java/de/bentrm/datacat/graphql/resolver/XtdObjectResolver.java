@@ -5,6 +5,7 @@ import graphql.TypeResolutionEnvironment;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLSchema;
 import org.apache.commons.lang3.NotImplementedException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,31 +16,33 @@ public class XtdObjectResolver implements CustomResolver {
         return "XtdObject";
     }
 
+    @Autowired
+    private XtdConceptResolver conceptTypeResolver;
+
+    @Autowired AbstractRelationshipResolver abstractRelationshipResolver;
+
     @Override
     public GraphQLObjectType getType(TypeResolutionEnvironment env) {
-        Object obj = env.getObject();
+        XtdObject obj = env.getObject();
         GraphQLSchema schema = env.getSchema();
 
-        if (obj instanceof XtdClassification) {
-            return schema.getObjectType(XtdClassification.LABEL);
+        if (obj instanceof XtdConcept) {
+            return conceptTypeResolver.getType(env);
         }
-        if (obj instanceof Measure) {
-            return schema.getObjectType(Measure.LABEL);
+        if (obj instanceof AbstractRelationship) {
+            return abstractRelationshipResolver.getType(env);
         }
-        if (obj instanceof XtdProperty) {
-            return schema.getObjectType(XtdProperty.LABEL);
-        }
-        if (obj instanceof XtdSubject) {
-            return schema.getObjectType(XtdSubject.LABEL);
-        }
-        if (obj instanceof XtdUnit) {
-            return schema.getObjectType(XtdUnit.LABEL);
-        }
+        // if (obj instanceof XtdRelationshipToSubject) {
+        //     return schema.getObjectType(XtdRelationshipToSubject.LABEL);
+        // }
+        // if (obj instanceof XtdRelationshipToProperty) {
+        //     return schema.getObjectType(XtdRelationshipToProperty.LABEL);
+        // }
         if (obj instanceof XtdValue) {
             return schema.getObjectType(XtdValue.LABEL);
         }
-        if (obj instanceof XtdConcept) {
-            return schema.getObjectType(XtdConcept.LABEL);
+        if (obj instanceof XtdOrderedValue) {
+            return schema.getObjectType(XtdOrderedValue.LABEL);
         }
 
         throw new NotImplementedException("Unsupported type: " + obj);

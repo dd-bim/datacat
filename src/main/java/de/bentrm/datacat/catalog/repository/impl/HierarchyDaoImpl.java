@@ -15,7 +15,7 @@ public class HierarchyDaoImpl implements HierarchyDao {
 
     public static final String QUERY = """               
             MATCH p=(a)-[*0..10]->(c:XtdRoot)              
-            WHERE a.id IN $rootIds AND NOT (c)-->(:XtdRelationship)-->(:XtdRoot)                                    
+            WHERE a.id IN $rootIds AND NOT (c)-->(:Relationship)-->(:XtdRoot)                                    
             WITH [x IN nodes(p) | x.id] AS paths
             RETURN DISTINCT paths    
             """;

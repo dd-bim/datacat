@@ -33,9 +33,6 @@ public class CatalogVerificationServiceImpl implements CatalogVerificationServic
     private CatalogValidationQuery catalogValidationQuery;
 
     @Autowired
-    private TranslationRespository translationRespository;
-
-    @Autowired
     private TagRepository tagRepository;
 
     @Autowired
@@ -46,12 +43,6 @@ public class CatalogVerificationServiceImpl implements CatalogVerificationServic
 
     @Autowired
     private ObjectRepository objectRepository;
-
-    @Autowired
-    private CollectionRepository collectionRepository;
-
-    @Autowired
-    private RelationshipRepository relationshipRepository;
 
     @Override
     public findPropGroupWithoutPropValue getfindPropGroupWithoutProp() {

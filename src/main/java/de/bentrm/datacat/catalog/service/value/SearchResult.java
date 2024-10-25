@@ -11,8 +11,8 @@ public class SearchResult {
     String id;
     CatalogRecordType recordType;
     List<TagValue> tags;
-    String versionId;
-    String versionDate;
+    int majorVersion;
+    int minorVersion;
     String name;
     List<TranslationValue> names;
     List<TranslationValue> descriptions;

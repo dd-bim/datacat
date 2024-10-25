@@ -13,7 +13,7 @@ import org.springframework.data.domain.Sort;
 import java.util.List;
 import java.util.Optional;
 
-import static de.bentrm.datacat.catalog.domain.CatalogRecord.DEFAULT_LANGUAGE_TAG;
+import static de.bentrm.datacat.catalog.domain.XtdObject.DEFAULT_LANGUAGE_TAG;
 
 @Slf4j
 @ToString(callSuper = true)

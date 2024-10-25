@@ -11,20 +11,21 @@ import java.util.Map;
 @Repository
 public interface CatalogRecordRepository extends EntityRepository<CatalogRecord> {
 
+    // Counts, how many of each concepts are in the database.
     @Query("CALL apoc.meta.stats() YIELD labels RETURN labels")
     Map<String, Long> statistics();
 
     @Query("""
-        MATCH (t)<-[:NAMED|DESCRIBED]-(n:CatalogRecord)
-        WHERE t.label =~ $query AND t.languageCode STARTS WITH $languageTag
+        MATCH (l)<-[:LANGUAGE]-(t)<-[:TEXTS]-(x)<-[:NAMES|DESCRIPTIONS]-(n:XtdObject)
+        WHERE t.text CONTAINS $regex AND l.code STARTS WITH $languageTag
         RETURN n.id
         SKIP $skip LIMIT $limit
     """)
     List<String> findIdByRegex(String regex, String languageTag, int limit, int skip);
 
     @Query("""
-        MATCH (t)<-[:NAMED|DESCRIBED]-(n:CatalogRecord)
-        WHERE t.label =~ $query AND t.languageCode STARTS WITH $languageTag
+        MATCH (l)<-[:LANGUAGE]-(t)<-[:TEXTS]-(x)<-[:NAMES|DESCRIPTIONS]-(n:XtdObject)
+        WHERE t.text CONTAINS $regex AND l.code STARTS WITH $languageTag
         RETURN COUNT(n.id)
     """)
     long count(String regex, String languageTag);

@@ -2,11 +2,15 @@ package de.bentrm.datacat.catalog.domain;
 
 import org.neo4j.ogm.session.event.Event;
 import org.neo4j.ogm.session.event.EventListenerAdapter;
-import org.springframework.stereotype.Component;
 
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import de.bentrm.datacat.catalog.domain.Enums.XtdStatusOfActivationEnum;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -18,7 +22,7 @@ import java.util.stream.Collectors;
 class IndexingPreSaveEventListener extends EventListenerAdapter {
 
     /**
-     * The property {@link CatalogRecord#getLabels()} represents a map all
+     * The property {@link XtdObject#getLabels()} represents a map all
      * translations
      * mapped to their language tag. The persisted structure is used to index full
      * text
@@ -28,14 +32,19 @@ class IndexingPreSaveEventListener extends EventListenerAdapter {
      */
     @Override
     public void onPreSave(Event event) {
-        if (event.getObject() instanceof CatalogRecord catalogRecord) {
-            final Map<String, String> labels = catalogRecord.getNames().stream()
-                    .collect(Collectors.toMap(Translation::getLanguageTag, Translation::getValue));
+        if (event.getObject() instanceof XtdObject record) {
+            final XtdMultiLanguageText mName = record.getNames().stream().findFirst().orElse(null);
+            if (mName == null) {
+                return;
+            }
+            final Map<String, String> labels = mName.getTexts().stream()
+                    .collect(Collectors.toMap(text -> text.getLocale().toString(), XtdText::getText));
 
             if (labels.size() > 0) {
-                catalogRecord.getLabels().clear();
-                catalogRecord.getLabels().putAll(labels);
+                record.getLabels().clear();
+                record.getLabels().putAll(labels);
             }
         }
     }
+
 }

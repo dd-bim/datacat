@@ -19,9 +19,9 @@ public class SimpleRecordResolver extends XtdRootResolver {
         Object obj = env.getObject();
         GraphQLSchema schema = env.getSchema();
 
-        if (obj instanceof XtdExternalDocument) {
-            return schema.getObjectType(XtdExternalDocument.LABEL);
-        }
+        // if (obj instanceof XtdExternalDocument) {
+        //     return schema.getObjectType(XtdExternalDocument.LABEL);
+        // }
         return super.getType(env);
     }
 }

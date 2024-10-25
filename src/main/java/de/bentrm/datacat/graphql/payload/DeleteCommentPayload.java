@@ -1,9 +1,9 @@
 package de.bentrm.datacat.graphql.payload;
 
-import de.bentrm.datacat.catalog.domain.CatalogRecord;
+import de.bentrm.datacat.catalog.domain.XtdText;
 import lombok.Data;
 
 @Data
 public class DeleteCommentPayload {
-    CatalogRecord catalogEntry;
+    XtdText catalogEntry;
 }

@@ -1,10 +1,16 @@
 package de.bentrm.datacat.catalog.service;
 
 import de.bentrm.datacat.catalog.domain.CatalogRecord;
-import de.bentrm.datacat.catalog.service.value.CatalogRecordProperties;
+import de.bentrm.datacat.catalog.domain.SimpleRelationType;
+import de.bentrm.datacat.graphql.input.CatalogEntryPropertiesInput;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.util.List;
+
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -23,6 +29,16 @@ public interface SimpleRecordService<T extends CatalogRecord>
      * @return A new persistent catalog entry.
      */
     @PreAuthorize("hasRole('USER')")
-    @NotNull CatalogRecord addRecord(@Valid CatalogRecordProperties properties);
+    @NotNull CatalogRecord addRecord(@Valid CatalogEntryPropertiesInput properties);
 
+        /**
+     * Allows to update the members of a catalog record.
+     * @param recordId The id of the catalog record node to set related records.
+     * @param relatedRecordIds The ids of the catalog records that are members of this relationship.
+     * @param relationType The type of the relationship.
+     * @return The updated catalog record.
+     */
+    @PreAuthorize("hasRole('USER')")
+    @NotNull T setRelatedRecords(@NotBlank String recordId,
+                                 @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType);
 }

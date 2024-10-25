@@ -17,38 +17,9 @@ import java.util.Set;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class RootFetchersDelegate implements FetchingDelegate {
 
-    private final RelationshipFetcher<XtdRelCollects> collectedByFetcher;
-    private final RelationshipFetcher<XtdRelClassifies> classifiedByFetcher;
-
-    public RootFetchersDelegate(CollectsRecordService collectsService,
-                                ClassifiesService classifiesService) {
-
-        this.collectedByFetcher = new RelationshipFetcher<>(collectsService) {
-            @Override
-            public Connection<XtdRelCollects> get(DataFetchingEnvironment environment) {
-                final XtdRoot source = environment.getSource();
-                final Set<XtdRelCollects> fieldValues = source.getCollectedBy();
-                return get(fieldValues, environment);
-            }
-        };
-
-        this.classifiedByFetcher = new RelationshipFetcher<>(classifiesService) {
-            @Override
-            public Connection<XtdRelClassifies> get(DataFetchingEnvironment environment) {
-                final XtdRoot source = environment.getSource();
-                final Set<XtdRelClassifies> fieldValues = source.getClassifiedBy();
-                return get(fieldValues, environment);
-            }
-        };
-
-    }
-
     @Override
     public Map<String, DataFetcher> getFetchers() {
         return Map.of(
-                "classifiedBy", classifiedByFetcher,
-                "collectedBy", collectedByFetcher
         );
     }
-
 }

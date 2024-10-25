@@ -33,9 +33,6 @@ public class CatalogExportServiceImpl implements CatalogExportService {
     private CatalogExportQuery catalogExportQuery;
 
     @Autowired
-    private TranslationRespository translationRespository;
-
-    @Autowired
     private TagRepository tagRepository;
 
     @Autowired
@@ -46,12 +43,6 @@ public class CatalogExportServiceImpl implements CatalogExportService {
 
     @Autowired
     private ObjectRepository objectRepository;
-
-    @Autowired
-    private CollectionRepository collectionRepository;
-
-    @Autowired
-    private RelationshipRepository relationshipRepository;
 
     @Override
     public findExportCatalogRecordsValue getfindExportCatalogRecords() {

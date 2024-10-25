@@ -5,10 +5,11 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.util.Assert;
 
-import java.util.HashSet;
-import java.util.Set;
+import de.bentrm.datacat.util.LocalizationUtils;
 
+import java.util.*;
 import javax.validation.constraints.NotNull;
 
 @Data
@@ -19,42 +20,54 @@ public abstract class XtdConcept extends XtdObject {
 
     public static final String LABEL = "XtdConcept";
 
-    // // A list of instances of xtdMultiLanguageText that holds the definition of the concept in several languages.
-    // @ToString.Include
-    // @Relationship(type = "DEFINED")
-    // private final Set<Translation> definitions = new HashSet<>();
+    // A list of instances of xtdMultiLanguageText that holds the definition of the concept in several languages.
+    @ToString.Include
+    @Relationship(type = "DEFINITION")
+    private XtdMultiLanguageText definition;
 
-    // // A list of instances of xtdMultiLanguageText that holds examples of the concept in several languages.
-    // @ToString.Include
-    // @Relationship(type = "EXAMPLES")
-    // private final Set<Translation> examples = new HashSet<>();
+    // A list of instances of xtdMultiLanguageText that holds examples of the concept in several languages.
+    @ToString.Include
+    @Relationship(type = "EXAMPLES")
+    private final Set<XtdMultiLanguageText> examples = new HashSet<>();
 
-    // // Language of the creator of the concept.
-    // @ToString.Include
-    // private XtdLanguage languageOfCreator; // XtdLanguage erstellen
+    // Language of the creator of the concept.
+    @ToString.Include
+    @Relationship(type = "LANGUAGE_OF_CREATOR")
+    private XtdLanguage languageOfCreator;
 
     // List of attached reference documents.
     @ToString.Include
     @Relationship(type = "REFERENCE_DOCUMENTS")
     private final Set<XtdExternalDocument> documentedBy = new HashSet<>();
 
-    // in CatalogRecords bereits realisiert
     // A list of instances of xtdMultiLanguageText that holds descriptions of the concept in several languages.
-    // @ToString.Include
-    // @Relationship(type = "DESCRIBED")
-    // protected final Set<Translation> descriptions = new HashSet<>();
+    @ToString.Include
+    @Relationship(type = "DESCRIPTIONS")
+    protected final Set<XtdMultiLanguageText> descriptions = new HashSet<>();
 
-    // // Used to link similar concepts.
-    // @ToString.Include
-    // @Relationship(type = "SIMILAR_TO")
-    // private final Set<XtdConcept> similarTo = new HashSet<>();
+    // Used to link similar concepts.
+    @ToString.Include
+    @Relationship(type = "SIMILAR_TO")
+    private final Set<XtdConcept> similarTo = new HashSet<>();
 
     // // Visual representation of the concept through sketches, photos, videos or other multimedia objects.
     // @ToString.Include
     // @Relationship(type = "VISUALIZED")
     // private final Set<XtdVisualRepresentation> visualRepresentation = new HashSet<>();
 
-    // // Country from where the requirement for this concept originated.
-    // @ToString.Include
-    // private XtdCountryOfOrigin countryOfOrigin;
+    // Country from where the requirement for this concept originated.
+    @ToString.Include
+    @Relationship(type = "COUNTRY_OF_ORIGIN")
+    private XtdCountry countryOfOrigin;
+
+
+    public Optional<XtdText> getDescription(@NotNull List<Locale.LanguageRange> priorityList) {
+        final XtdMultiLanguageText description = this.descriptions.stream().findFirst().orElse(null);
+        if (description == null) {
+            return Optional.empty();
+        }
+        final XtdText translation = LocalizationUtils.getTranslation(priorityList, description.getId());
+        return Optional.ofNullable(translation);
+    }
+
 }

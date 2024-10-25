@@ -54,10 +54,12 @@ public abstract class GenericBuilder<B extends GenericBuilder<B>> {
         if (query == null || query.isBlank()) return Optional.empty();
         if (query.contains("*")) return Optional.of(query.trim());
 
-        final String[] strings = query.trim().split("\\s+");
-        final String sanitizedQuery = Arrays.stream(strings)
-                .map(str -> "*" + str + "*")
-                .collect(Collectors.joining("|"));
+        // final String[] strings = query.trim().split("\\s+"); //split prevents from searching strings containing whitespaces
+        // final String sanitizedQuery = Arrays.stream(strings)
+        //         .map(str -> "*" + str + "*")
+        //         .collect(Collectors.joining("|")
+        //         );
+        final String sanitizedQuery = "*" + query.trim() + "*";
         return Optional.of(sanitizedQuery);
     }
 

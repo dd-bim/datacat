@@ -18,36 +18,6 @@ public interface CatalogService {
 
     CatalogStatistics getStatistics();
 
-    @PreAuthorize("hasRole('USER')")
-    @NotNull CatalogRecord setVersion(@NotBlank String id, String versionId, String versionDate);
-
-    @PreAuthorize("hasRole('USER')")
-    @NotNull CatalogRecord addName(@NotBlank String id, String nameId, @NotNull Locale locale, @NotBlank String value);
-
-    @PreAuthorize("hasRole('USER')")
-    @NotNull CatalogRecord updateName(@NotBlank String id, @NotBlank String nameId, @NotBlank String value);
-
-    @PreAuthorize("hasRole('USER')")
-    @NotNull CatalogRecord deleteName(@NotBlank String id, @NotBlank String nameId);
-
-    @PreAuthorize("hasRole('USER')")
-    @NotNull CatalogRecord addDescription(@NotBlank String id, String descriptionId, @NotNull Locale locale, @NotBlank String value);
-
-    @PreAuthorize("hasRole('USER')")
-    @NotNull CatalogRecord updateDescription(@NotBlank String id, @NotBlank String descriptionId, @NotBlank String value);
-
-    @PreAuthorize("hasRole('USER')")
-    @NotNull CatalogRecord deleteDescription(@NotBlank String id, @NotBlank String descriptionId);
-
-    @PreAuthorize("hasRole('USER')")
-    @NotNull CatalogRecord addComment(@NotBlank String id, String commentId, @NotNull Locale locale, @NotBlank String value);
-
-    @PreAuthorize("hasRole('USER')")
-    @NotNull CatalogRecord updateComment(@NotBlank String id, @NotBlank String commentId, @NotBlank String value);
-
-    @PreAuthorize("hasRole('USER')")
-    @NotNull CatalogRecord deleteComment(@NotBlank String id, @NotBlank String commentId);
-
     @PreAuthorize("hasRole('ADMIN')")
     @NotNull Tag createTag(String id, @NotBlank String name);
 
@@ -61,12 +31,6 @@ public interface CatalogService {
     @NotNull CatalogRecord addTag(@NotBlank String entryId, @NotBlank String tagId);
 
     @PreAuthorize("hasRole('USER')")
-    @NotNull CatalogRecord setMajorVersion(@NotBlank String entryId, @NotNull int majorVersion);
-
-    @PreAuthorize("hasRole('USER')")
-    @NotNull CatalogRecord setMinorVersion(@NotBlank String entryId, @NotNull int minorVersion);
-
-    @PreAuthorize("hasRole('USER')")
     @NotNull CatalogRecord removeTag(@NotBlank String entryId, @NotBlank String tagId);
 
     @PreAuthorize("hasRole('READONLY')")
@@ -76,13 +40,16 @@ public interface CatalogService {
     @NotNull List<XtdRoot> getAllRootItemsById(List<String> ids);
 
     @PreAuthorize("hasRole('READONLY')")
+    @NotNull List<XtdText> getAllTextsById(List<String> ids);
+
+    @PreAuthorize("hasRole('READONLY')")
     @NotNull List<XtdObject> getAllObjectsById(List<String> ids);
 
     @PreAuthorize("hasRole('READONLY')")
     @NotNull List<XtdConcept> getAllConceptsById(List<String> ids);
 
     @PreAuthorize("hasRole('READONLY')")
-    @NotNull List<XtdCollection> getAllCollectionsById(List<String> ids);
+    @NotNull List<XtdExternalDocument> getAllExternalDocumentsById(List<String> ids);
 
     @PreAuthorize("hasRole('READONLY')")
     @NotNull Optional<CatalogRecord> getEntryById(@NotBlank String id);
@@ -97,10 +64,7 @@ public interface CatalogService {
     @NotNull Optional<XtdConcept> getConcept(@NotNull String id);
 
     @PreAuthorize("hasRole('READONLY')")
-    @NotNull Optional<XtdCollection> getCollection(@NotNull String id);
-
-    @PreAuthorize("hasRole('READONLY')")
-    @NotNull Optional<XtdRelationship> getRelationship(@NotNull String id);
+    @NotNull Optional<AbstractRelationship> getRelationship(@NotNull String id);
 
     @PreAuthorize("hasRole('READONLY')")
     @NotNull Page<CatalogRecord> findAllCatalogRecords(@NotNull CatalogRecordSpecification specification);

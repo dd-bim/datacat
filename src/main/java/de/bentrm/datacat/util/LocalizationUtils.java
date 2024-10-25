@@ -1,8 +1,18 @@
 package de.bentrm.datacat.util;
 
-import de.bentrm.datacat.catalog.domain.Translation;
+import de.bentrm.datacat.catalog.domain.XtdLanguage;
+import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
+import de.bentrm.datacat.catalog.domain.XtdObject;
+import de.bentrm.datacat.catalog.domain.XtdText;
+import de.bentrm.datacat.catalog.repository.MultiLanguageTextRepository;
+import de.bentrm.datacat.catalog.repository.TextRepository;
+import de.bentrm.datacat.catalog.repository.ObjectRepository;
+import de.bentrm.datacat.catalog.repository.LanguageRepository;
+import de.bentrm.datacat.catalog.service.MultiLanguageTextRecordService;
+import de.bentrm.datacat.catalog.service.ObjectRecordService;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
 import java.util.*;
@@ -10,11 +20,25 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
+@Component
 public final class LocalizationUtils {
 
     public static final List<Locale.LanguageRange> DEFAULT_LANGUAGE_RANGE = Locale.LanguageRange.parse("de,en-US;q=0.7,en;q=0.3");
 
-    private LocalizationUtils() {}
+    private static MultiLanguageTextRepository multiLanguageTextRepository;
+    private static TextRepository textRepository;
+    private static ObjectRepository repository;
+    private static LanguageRepository languageRepository;
+
+    private LocalizationUtils(MultiLanguageTextRepository multiLanguageTextRepository,
+                              TextRepository textRepository,
+                              LanguageRepository languageRepository,
+                              ObjectRepository repository) {
+        this.multiLanguageTextRepository = multiLanguageTextRepository;
+        this.textRepository = textRepository;
+        this.repository = repository;
+        this.languageRepository = languageRepository;
+    }
 
     public static List<Locale.LanguageRange> getPriorityList(Locale ...locales) {
         List<Locale.LanguageRange> ranges = new ArrayList<>();
@@ -28,14 +52,20 @@ public final class LocalizationUtils {
     }
 
     @Nullable
-    public static Translation getTranslation(@NotNull Collection<Translation> translations) {
-        return getTranslation(DEFAULT_LANGUAGE_RANGE, translations);
+    public static XtdText getTranslation(@NotNull String id) {
+        return getTranslation(DEFAULT_LANGUAGE_RANGE, id);
     }
 
     @Nullable
-    public static Translation getTranslation(@NotNull List<Locale.LanguageRange> priorityList, @NotNull Collection<Translation> translations) {
-        final Map<Locale, Translation> translationMap = translations.stream()
-                .collect(Collectors.toMap(Translation::getLocale, Function.identity()));
+    public static XtdText getTranslation(@NotNull List<Locale.LanguageRange> priorityList, @NotNull String id) {
+     
+        XtdMultiLanguageText mText = multiLanguageTextRepository.findById(id).orElse(null);
+
+        final Map<Locale, XtdText> translationMap = mText.getTexts().stream()
+        .map(t -> textRepository.findById(t.getId()).orElse(null))
+        .filter(Objects::nonNull)
+        .collect(Collectors.toMap(XtdText::getLocale, Function.identity()));
+
         final Set<Locale> locales = translationMap.keySet();
 
         if (translationMap.isEmpty()) {

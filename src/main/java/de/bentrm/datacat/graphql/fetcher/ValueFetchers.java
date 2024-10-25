@@ -1,8 +1,8 @@
 package de.bentrm.datacat.graphql.fetcher;
 
-import de.bentrm.datacat.catalog.domain.XtdRelAssignsValues;
+import de.bentrm.datacat.catalog.domain.XtdOrderedValue;
 import de.bentrm.datacat.catalog.domain.XtdValue;
-import de.bentrm.datacat.catalog.service.AssignsValuesRecordService;
+import de.bentrm.datacat.catalog.domain.XtdValueList;
 import de.bentrm.datacat.catalog.service.ValueRecordService;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.fetcher.delegate.ObjectFetchersDelegate;
@@ -20,24 +20,19 @@ public class ValueFetchers extends AbstractFetchers<XtdValue> {
 
     private final RootFetchersDelegate rootFetchersDelegate;
     private final ObjectFetchersDelegate objectFetchersDelegate;
-    private final RelationshipFetcher<XtdRelAssignsValues> assignsValuesFetcher;
+    // private final DataFetcher<List<XtdOrderedValue>> orderedValues;
 
     public ValueFetchers(ValueRecordService queryService,
                          RootFetchersDelegate rootFetchersDelegate,
-                         ObjectFetchersDelegate objectFetchersDelegate,
-                         AssignsValuesRecordService assignsValuesService) {
+                         ObjectFetchersDelegate objectFetchersDelegate) {
         super(queryService);
         this.rootFetchersDelegate = rootFetchersDelegate;
         this.objectFetchersDelegate = objectFetchersDelegate;
 
-        this.assignsValuesFetcher = new RelationshipFetcher<>(assignsValuesService) {
-            @Override
-            public Connection<XtdRelAssignsValues> get(DataFetchingEnvironment environment) {
-                final XtdValue source = environment.getSource();
-                final List<XtdRelAssignsValues> fieldValues = source.getAssignedTo();
-                return get(fieldValues, environment);
-            }
-        };
+        // this.orderedValues = environment -> {
+        //     final XtdValue source = environment.getSource();
+        //     return queryService.getOrderedValues(source);
+        // };
     }
 
     @Override
@@ -60,11 +55,10 @@ public class ValueFetchers extends AbstractFetchers<XtdValue> {
         Map<String, DataFetcher> fetchers = new HashMap<>();
 
         fetchers.putAll(super.getAttributeFetchers());
-        fetchers.putAll(rootFetchersDelegate.getFetchers());
-        fetchers.putAll(objectFetchersDelegate.getFetchers());
-
-        fetchers.put("assignedTo", assignsValuesFetcher);
-
+        // fetchers.putAll(rootFetchersDelegate.getFetchers());
+        // fetchers.putAll(objectFetchersDelegate.getFetchers());
+        // fetchers.put("orderedValues", orderedValues);
+        
         return fetchers;
     }
 }

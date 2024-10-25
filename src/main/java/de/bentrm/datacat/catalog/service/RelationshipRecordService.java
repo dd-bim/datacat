@@ -1,7 +1,7 @@
 package de.bentrm.datacat.catalog.service;
 
-import de.bentrm.datacat.catalog.domain.XtdRelationship;
-import de.bentrm.datacat.catalog.service.value.RelationshipProperties;
+import de.bentrm.datacat.catalog.domain.AbstractRelationship;
+import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.validation.Valid;
@@ -15,17 +15,17 @@ import java.util.List;
  *
  * @param <T>
  */
-public interface RelationshipRecordService<T extends XtdRelationship>
+public interface RelationshipRecordService<T extends AbstractRelationship>
         extends CatalogRecordService<T>, QueryService<T> {
 
     /**
      * Creates a new relationship record.
-     * @param properties The entity properties of the relationship node.
+     * @param id The entity id of the relationship node.
      * @param relatingRecordId The id of the catalog record node that this relationships originates from.
      * @param relatedRecordIds The ids of the catalog records that are members of this relationship.
      * @return The new relationship entity.
      */
-    T addRecord(@Valid RelationshipProperties properties,
+    T addRecord(@NotBlank String id,
                 @NotBlank String relatingRecordId,
                 @NotEmpty List<@NotBlank String> relatedRecordIds);
 
@@ -40,4 +40,14 @@ public interface RelationshipRecordService<T extends XtdRelationship>
                                  @NotEmpty List<@NotBlank String> relatedRecordIds);
 
 
+                                         /**
+     * Allows to update the members of a catalog record.
+     * @param recordId The id of the catalog record node to set related records.
+     * @param relatedRecordIds The ids of the catalog records that are members of this relationship.
+     * @param relationType The type of the relationship.
+     * @return The updated catalog record.
+     */
+    @PreAuthorize("hasRole('USER')")
+    @NotNull T setRelatedRecords(@NotBlank String recordId,
+                                 @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType);
 }

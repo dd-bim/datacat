@@ -1,8 +1,6 @@
 package de.bentrm.datacat.graphql.resolver;
 
 import de.bentrm.datacat.catalog.domain.CatalogRecord;
-import de.bentrm.datacat.catalog.domain.XtdExternalDocument;
-import de.bentrm.datacat.catalog.domain.XtdRelationship;
 import de.bentrm.datacat.catalog.domain.XtdRoot;
 import graphql.TypeResolutionEnvironment;
 import graphql.schema.GraphQLObjectType;
@@ -16,32 +14,21 @@ public class CatalogRecordResolver implements CustomResolver {
 
     private final XtdRootResolver rootTypeResolver;
 
-    private final XtdRelationshipResolver relationshipTypeResolver;
-
-    public CatalogRecordResolver(@Qualifier("xtdRootResolver") XtdRootResolver rootTypeResolver,
-                                 @Qualifier("xtdRelationshipResolver") XtdRelationshipResolver relationshipTypeResolver) {
+    public CatalogRecordResolver(@Qualifier("xtdRootResolver") XtdRootResolver rootTypeResolver) {
         this.rootTypeResolver = rootTypeResolver;
-        this.relationshipTypeResolver = relationshipTypeResolver;
     }
 
     @Override
     public String getTypeName() {
-        return "Concept";
+        return "CatalogRecord";
     }
 
     @Override
     public GraphQLObjectType getType(TypeResolutionEnvironment env) {
         CatalogRecord obj = env.getObject();
-        GraphQLSchema schema = env.getSchema();
 
-        if (obj instanceof XtdExternalDocument) {
-            return schema.getObjectType(XtdExternalDocument.LABEL);
-        }
         if (obj instanceof XtdRoot) {
             return rootTypeResolver.getType(env);
-        }
-        if (obj instanceof XtdRelationship) {
-            return relationshipTypeResolver.getType(env);
         }
 
         throw new NotImplementedException("Unable to resolve type " + obj);

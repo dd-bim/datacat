@@ -27,7 +27,7 @@ public interface CatalogExportQuery extends EntityRepository<XtdRoot> {
     OPTIONAL MATCH(x)-[:NAMED]->(ten:Translation)
     WHERE ten.languageCode="en" 
     OPTIONAL MATCH(x)-[:TAGGED]->(tag)
-    OPTIONAL MATCH(x)-[:DESCRIBED]->(d) 
+    OPTIONAL MATCH(x)-[:DESCRIPTIONS]->(d) 
     WHERE d.languageCode="de"
     CALL apoc.case([
     "XtdBag" IN(LABELS(x)), 'RETURN "XtdBag" AS type',

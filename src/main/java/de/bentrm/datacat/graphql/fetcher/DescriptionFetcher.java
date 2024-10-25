@@ -1,7 +1,7 @@
 package de.bentrm.datacat.graphql.fetcher;
 
-import de.bentrm.datacat.catalog.domain.CatalogRecord;
-import de.bentrm.datacat.catalog.domain.Translation;
+import de.bentrm.datacat.catalog.domain.XtdConcept;
+import de.bentrm.datacat.catalog.domain.XtdText;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 
@@ -11,11 +11,11 @@ import java.util.Locale;
 public class DescriptionFetcher extends LocalizedAttributeFetcher implements DataFetcher<String> {
     @Override
     public String get(DataFetchingEnvironment environment) {
-        final CatalogRecord source = environment.getSource();
+        final XtdConcept source = environment.getSource();
         final List<Locale.LanguageRange> priorityList = getPriorityList(environment);
         return source
                 .getDescription(priorityList)
-                .map(Translation::getValue)
+                .map(XtdText::getText)
                 .orElse(null);
     }
 }

@@ -14,18 +14,25 @@ public class XtdDimension extends XtdConcept {
 
     public static final String LABEL = "XtdDimension";
 
-    private XtdRational ThermodynamicTemperatureExponent;
+    @Relationship(type = "THERMODYNAMIC_TEMPERATURE_EXPONENT")
+    private XtdRational thermodynamicTemperatureExponent;
 
-    private XtdRational ElectricCurrentExponent;
+    @Relationship(type = "ELECTRIC_CURRENT_EXPONENT")
+    private XtdRational electricCurrentExponent;
 
-    private XtdRational TimeExponent;
+    @Relationship(type = "TIME_EXPONENT")
+    private XtdRational timeExponent;
 
-    private XtdRational MassExponent;
+    @Relationship(type = "MASS_EXPONENT")
+    private XtdRational massExponent;
 
-    private XtdRational LengthExponent;
+    @Relationship(type = "LENGTH_EXPONENT")
+    private XtdRational lengthExponent;
 
-    private XtdRational LuminousIntensityExponent;
+    @Relationship(type = "LUMINOUS_INTENSITY_EXPONENT")
+    private XtdRational luminousIntensityExponent;
 
-    private XtdRational AmountOfSubstanceExponent;
+    @Relationship(type = "AMOUNT_OF_SUBSTANCE_EXPONENT")
+    private XtdRational amountOfSubstanceExponent;
 
 }

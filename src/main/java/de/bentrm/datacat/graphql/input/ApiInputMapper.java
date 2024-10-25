@@ -1,8 +1,6 @@
 package de.bentrm.datacat.graphql.input;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.bentrm.datacat.catalog.service.value.CatalogRecordProperties;
-import de.bentrm.datacat.catalog.service.value.RelationshipProperties;
 import de.bentrm.datacat.catalog.service.value.TranslationValue;
 import de.bentrm.datacat.graphql.input.verification.*;
 import org.apache.commons.lang3.LocaleUtils;
@@ -26,10 +24,6 @@ public interface ApiInputMapper {
 
     ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    CatalogRecordProperties toProperties(CatalogEntryPropertiesInput input);
-
-    RelationshipProperties toProperties(RelationshipPropertiesInput input);
-
     default SearchInput toSearchInput(Map<String, Object> argument) {
         return OBJECT_MAPPER.convertValue(argument, SearchInput.class);
     }
@@ -41,7 +35,7 @@ public interface ApiInputMapper {
     default LocalizationInput toLocalizationInput(Map<String, Object> argument) {
         return OBJECT_MAPPER.convertValue(argument, LocalizationInput.class);
     }
-
+    
     default CreateRelationshipInput toCreateRelationshipInput(Map<String, Object> argument) {
         return OBJECT_MAPPER.convertValue(argument, CreateRelationshipInput.class);
     }
@@ -49,6 +43,11 @@ public interface ApiInputMapper {
     default DeleteRelationshipInput toDeleteRelationshipInput(Map<String, Object> argument) {
         return OBJECT_MAPPER.convertValue(argument, DeleteRelationshipInput.class);
     }
+
+    default DeleteObjectRelationshipInput toDeleteObjectRelationshipInput(Map<String, Object> argument) {
+        return OBJECT_MAPPER.convertValue(argument, DeleteObjectRelationshipInput.class);
+    }
+
 
     default UpdateDescriptionInput toUpdateDescriptionInput(Map<String, Object> argument) {
         return OBJECT_MAPPER.convertValue(argument, UpdateDescriptionInput.class);
@@ -64,14 +63,6 @@ public interface ApiInputMapper {
 
     default DeleteCommentInput toDeleteCommentInput(Map<String, Object> argument) {
         return OBJECT_MAPPER.convertValue(argument, DeleteCommentInput.class);
-    }
-
-    default SetNominalValueInput toSetNominalValueInput(Map<String, Object> argument) {
-        return OBJECT_MAPPER.convertValue(argument, SetNominalValueInput.class);
-    }
-
-    default UnsetNominalValueInput toUnsetNominalValueInput(Map<String, Object> argument) {
-        return OBJECT_MAPPER.convertValue(argument, UnsetNominalValueInput.class);
     }
 
     default HierarchyFilterInput toHierarchyFilterInput(Map<String, Object> arguments) {

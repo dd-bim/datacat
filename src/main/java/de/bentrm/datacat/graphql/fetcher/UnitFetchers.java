@@ -1,8 +1,8 @@
 package de.bentrm.datacat.graphql.fetcher;
 
-import de.bentrm.datacat.catalog.domain.XtdRelAssignsUnits;
+import de.bentrm.datacat.catalog.domain.XtdDimension;
+import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.domain.XtdUnit;
-import de.bentrm.datacat.catalog.service.AssignsUnitsRecordService;
 import de.bentrm.datacat.catalog.service.UnitRecordService;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.fetcher.delegate.ObjectFetchersDelegate;
@@ -12,6 +12,7 @@ import graphql.schema.DataFetchingEnvironment;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,23 +21,24 @@ public class UnitFetchers extends AbstractFetchers<XtdUnit> {
 
     private final RootFetchersDelegate rootFetchersDelegate;
     private final ObjectFetchersDelegate objectFetchersDelegate;
-    private final RelationshipFetcher<XtdRelAssignsUnits> assignsUnitsFetcher;
+    private final DataFetcher<List<XtdProperty>> properties;
+    private final DataFetcher<XtdDimension> dimension;
 
     public UnitFetchers(UnitRecordService entityService,
                         RootFetchersDelegate rootFetchersDelegate,
-                        ObjectFetchersDelegate objectFetchersDelegate,
-                        AssignsUnitsRecordService assignsUnitsService) {
+                        ObjectFetchersDelegate objectFetchersDelegate) {
         super(entityService);
         this.rootFetchersDelegate = rootFetchersDelegate;
         this.objectFetchersDelegate = objectFetchersDelegate;
 
-        this.assignsUnitsFetcher = new RelationshipFetcher<>(assignsUnitsService) {
-            @Override
-            public Connection<XtdRelAssignsUnits> get(DataFetchingEnvironment environment) {
-                final XtdUnit source = environment.getSource();
-                final Set<XtdRelAssignsUnits> fieldValues = source.getAssignedTo();
-                return get(fieldValues, environment);
-            }
+        this.properties = environment -> {
+            final XtdUnit source = environment.getSource();
+            return entityService.getProperties(source);
+        };
+
+        this.dimension = environment -> {
+            final XtdUnit source = environment.getSource();
+            return entityService.getDimension(source);
         };
     }
 
@@ -60,10 +62,10 @@ public class UnitFetchers extends AbstractFetchers<XtdUnit> {
         final Map<String, DataFetcher> fetchers = new HashMap<>(super.getAttributeFetchers());
 
         fetchers.putAll(super.getAttributeFetchers());
-        fetchers.putAll(rootFetchersDelegate.getFetchers());
-        fetchers.putAll(objectFetchersDelegate.getFetchers());
-
-        fetchers.put("assignedTo", assignsUnitsFetcher);
+        // fetchers.putAll(rootFetchersDelegate.getFetchers());
+        // fetchers.putAll(objectFetchersDelegate.getFetchers());
+        fetchers.put("properties", properties);
+        fetchers.put("dimension", dimension);
 
         return fetchers;
     }

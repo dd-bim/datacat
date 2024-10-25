@@ -39,9 +39,6 @@ public class CatalogServiceImpl implements CatalogService {
     private SessionFactory sessionFactory;
 
     @Autowired
-    private TranslationRespository translationRespository;
-
-    @Autowired
     private TagRepository tagRepository;
 
     @Autowired
@@ -57,10 +54,16 @@ public class CatalogServiceImpl implements CatalogService {
     private ConceptRepository conceptRepository;
 
     @Autowired
-    private CollectionRepository collectionRepository;
+    private TextRepository textRepository;
+
+    @Autowired
+    private ExternalDocumentRepository externalDocumentRepository;
 
     @Autowired
     private RelationshipRepository relationshipRepository;
+
+    @Autowired
+    private LanguageRepository languageRepository;
 
     @Override
     public CatalogStatistics getStatistics() {
@@ -72,111 +75,6 @@ public class CatalogServiceImpl implements CatalogService {
             }
         });
         return statistics;
-    }
-
-    @Transactional
-    @Override
-    public CatalogRecord setVersion(String id, String versionId, String versionDate) {
-        Assert.isTrue(versionId != null || versionDate != null, "No valid version provided.");
-
-        final CatalogRecord item = catalogRecordRepository.findById(id).orElseThrow();
-        if (versionId != null) {
-            item.setVersionId(versionId);
-        }
-        if (versionDate != null) {
-            item.setVersionDate(versionDate);
-        }
-
-        return catalogRecordRepository.save(item);
-    }
-
-    @Transactional
-    @Override
-    public CatalogRecord setMajorVersion(String entryId, int majorVersion) {
-        CatalogRecord item = catalogRecordRepository.findById(entryId).orElseThrow();
-        item.setMajorVersion(majorVersion);
-        return catalogRecordRepository.save(item);
-    }
-
-    @Transactional
-    @Override
-    public CatalogRecord setMinorVersion(String entryId, int minorVersion) {
-        CatalogRecord item = catalogRecordRepository.findById(entryId).orElseThrow();
-        item.setMinorVersion(minorVersion);
-        return catalogRecordRepository.save(item);
-    }
-
-    @Transactional
-    @Override
-    public CatalogRecord addName(String id, String nameId, Locale locale, String value) {
-        final CatalogRecord item = catalogRecordRepository.findById(id).orElseThrow();
-        item.addName(nameId, locale, value);
-        return catalogRecordRepository.save(item);
-    }
-
-    @Transactional
-    @Override
-    public CatalogRecord updateName(String id, String nameId, String value) {
-        final CatalogRecord item = catalogRecordRepository.findById(id).orElseThrow();
-        item.updateName(nameId, value);
-        return catalogRecordRepository.save(item);
-    }
-
-    @Transactional
-    @Override
-    public CatalogRecord deleteName(String id, String nameId) {
-        final CatalogRecord item = catalogRecordRepository.findById(id).orElseThrow();
-        final Translation translation = item.removeName(nameId);
-        translationRespository.delete(translation);
-        return item;
-    }
-
-    @Transactional
-    @Override
-    public CatalogRecord addDescription(String id, String descriptionId, Locale locale, String value) {
-        final CatalogRecord item = catalogRecordRepository.findById(id).orElseThrow();
-        item.addDescription(descriptionId, locale, value);
-        return catalogRecordRepository.save(item);
-    }
-
-    @Transactional
-    @Override
-    public CatalogRecord updateDescription(String id, String descriptionId, String value) {
-        final CatalogRecord item = catalogRecordRepository.findById(id).orElseThrow();
-        item.updateDescription(descriptionId, value);
-        return catalogRecordRepository.save(item);
-    }
-
-    @Transactional
-    @Override
-    public CatalogRecord deleteDescription(String id, String descriptionId) {
-        final CatalogRecord item = catalogRecordRepository.findById(id).orElseThrow();
-        item.deleteDescription(descriptionId);
-        return catalogRecordRepository.save(item);
-    }
-
-    @Transactional
-    @Override
-    public CatalogRecord addComment(String id, String commentId, Locale locale, String value) {
-        final CatalogRecord item = catalogRecordRepository.findById(id).orElseThrow();
-        item.addComment(commentId, locale, value);
-        return catalogRecordRepository.save(item);
-    }
-
-    @Transactional
-    @Override
-    public CatalogRecord updateComment(String id, String commentId, String value) {
-        final CatalogRecord item = catalogRecordRepository.findById(id).orElseThrow();
-        item.updateComment(commentId, value);
-        return catalogRecordRepository.save(item);
-    }
-
-    @Transactional
-    @Override
-    public CatalogRecord deleteComment(String id, String commentId) {
-        final CatalogRecord item = catalogRecordRepository.findById(id).orElseThrow();
-        item.deleteComment(commentId);
-        return catalogRecordRepository.save(item);
     }
 
     @Transactional
@@ -240,6 +138,14 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
+    public @NotNull List<XtdText> getAllTextsById(List<String> ids) {
+        final Iterable<XtdText> items = textRepository.findAllById(ids);
+        final List<XtdText> results = new ArrayList<>();
+        items.forEach(results::add);
+        return results;
+    }
+
+    @Override
     public @NotNull List<XtdObject> getAllObjectsById(List<String> ids) {
         final Iterable<XtdObject> items = objectRepository.findAllById(ids);
         final List<XtdObject> results = new ArrayList<>();
@@ -256,9 +162,9 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
-    public @NotNull List<XtdCollection> getAllCollectionsById(List<String> ids) {
-        final Iterable<XtdCollection> items = collectionRepository.findAllById(ids);
-        final List<XtdCollection> results = new ArrayList<>();
+    public @NotNull List<XtdExternalDocument> getAllExternalDocumentsById(List<String> ids) {
+        final Iterable<XtdExternalDocument> items = externalDocumentRepository.findAllById(ids);
+        final List<XtdExternalDocument> results = new ArrayList<>();
         items.forEach(results::add);
         return results;
     }
@@ -284,15 +190,10 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
-    public Optional<XtdCollection> getCollection(String id) {
-        return collectionRepository.findById(id);
-    }
-
-    @Override
-    public Optional<XtdRelationship> getRelationship(String id) {
+    public Optional<AbstractRelationship> getRelationship(String id) {
         return relationshipRepository.findById(id);
     }
-
+    
     @Override
     public Page<CatalogRecord> findAllCatalogRecords(CatalogRecordSpecification specification) {
         Collection<CatalogRecord> catalogRecords;

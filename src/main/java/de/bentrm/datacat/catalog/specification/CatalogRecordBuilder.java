@@ -4,12 +4,15 @@ import de.bentrm.datacat.base.specification.GenericBuilder;
 import de.bentrm.datacat.base.specification.HasLabelComparison;
 import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import de.bentrm.datacat.catalog.domain.Tag;
-import de.bentrm.datacat.catalog.domain.Translation;
+import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
+import de.bentrm.datacat.catalog.domain.XtdText;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.neo4j.ogm.cypher.BooleanOperator;
 import org.neo4j.ogm.cypher.ComparisonOperator;
 import org.neo4j.ogm.cypher.Filter;
+import org.neo4j.ogm.cypher.Filter.NestedPathSegment;
+import org.neo4j.ogm.cypher.function.FilterFunction;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,11 +25,22 @@ public abstract class CatalogRecordBuilder<B extends CatalogRecordBuilder<B>> ex
     @Override
     public B query(String query) {
         final Optional<String> regex = sanitizeQueryString(query);
+
         if (regex.isPresent()) {
-            final Filter filter = new Filter("label", ComparisonOperator.LIKE, regex.get());
-            filter.setBooleanOperator(BooleanOperator.AND);
-            filter.setNestedPath(new Filter.NestedPathSegment("names", Translation.class));
-            this.filters.add(filter);
+        // Create the filter for the text property in XtdText
+        final Filter textFilter = new Filter("text", ComparisonOperator.LIKE, regex.get());
+        textFilter.setBooleanOperator(BooleanOperator.AND);
+
+        // Create the nested path segments
+        Filter.NestedPathSegment textsSegment = new Filter.NestedPathSegment("texts", XtdText.class);
+        Filter.NestedPathSegment namesSegment = new Filter.NestedPathSegment("names", XtdMultiLanguageText.class);
+
+        // Set the nested path for the filter
+        NestedPathSegment[] paths = new NestedPathSegment[]{namesSegment, textsSegment};
+        textFilter.setNestedPath(paths);
+
+        // Add the filter to the list of filters
+        this.filters.add(textFilter);
         }
         return self();
     }

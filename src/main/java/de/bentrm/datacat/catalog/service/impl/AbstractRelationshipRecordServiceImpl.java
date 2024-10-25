@@ -1,11 +1,10 @@
 package de.bentrm.datacat.catalog.service.impl;
 
 import de.bentrm.datacat.base.repository.EntityRepository;
-import de.bentrm.datacat.catalog.domain.XtdRelationship;
+import de.bentrm.datacat.catalog.domain.AbstractRelationship;
+import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.RelationshipRecordService;
-import de.bentrm.datacat.catalog.service.value.RelationshipProperties;
-import de.bentrm.datacat.catalog.service.value.ValueMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,32 +16,29 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Slf4j
-public abstract class AbstractRelationshipRecordServiceImpl<T extends XtdRelationship, R extends EntityRepository<T>>
+public abstract class AbstractRelationshipRecordServiceImpl<T extends AbstractRelationship, R extends EntityRepository<T>>
         extends AbstractQueryServiceImpl<T, R>
         implements RelationshipRecordService<T> {
 
-    protected final ValueMapper VALUE_MAPPER = ValueMapper.INSTANCE;
     private final CatalogCleanupService cleanupService;
 
-
     public AbstractRelationshipRecordServiceImpl(Class<T> domainClass,
-                                                 SessionFactory sessionFactory,
-                                                 R repository,
-                                                 CatalogCleanupService cleanupService) {
+            SessionFactory sessionFactory,
+            R repository,
+            CatalogCleanupService cleanupService) {
         super(domainClass, sessionFactory, repository);
         this.cleanupService = cleanupService;
     }
 
     @Transactional
     @Override
-    public T addRecord(@Valid RelationshipProperties properties,
-                       @NotBlank String relatingRecordId,
-                       @NotEmpty List<@NotBlank String> relatedRecordIds) {
+    public T addRecord(@NotBlank String id,
+            @NotBlank String relatingRecordId,
+            @NotEmpty List<@NotBlank String> relatedRecordIds) {
         try {
             T newRecord = this.getDomainClass().getDeclaredConstructor().newInstance();
 
-            log.trace("Mapping catalog record properties.");
-            VALUE_MAPPER.setProperties(properties, newRecord);
+            newRecord.setId(id);
 
             log.trace("Setting relating record with id: {}", relatingRecordId);
             this.setRelatingRecord(newRecord, relatingRecordId);
@@ -77,13 +73,25 @@ public abstract class AbstractRelationshipRecordServiceImpl<T extends XtdRelatio
         return relationshipRecord;
     }
 
+    @Transactional
+    @Override
+    public @NotNull T removeRelationship(@NotBlank String recordId, @NotBlank String relatedRecordId, @NotNull SimpleRelationType relationType) {
+        log.trace("Deleting relationship from record with id {}...", recordId);
+        final T entry = this.getRepository()
+                .findById(recordId)
+                .orElseThrow();
+
+        cleanupService.purgeRelationship(recordId, relatedRecordId, relationType);
+        return entry;
+    }
+
     protected abstract void setRelatingRecord(@NotNull T relationshipRecord,
-                                              @NotBlank String relatingRecordId);
+            @NotBlank String relatingRecordId);
 
     @Transactional
     @Override
     public @NotNull T setRelatedRecords(@NotBlank String relationshipId,
-                                        @NotEmpty List<@NotBlank String> relatedRecordIds) {
+            @NotEmpty List<@NotBlank String> relatedRecordIds) {
         T record = this.getRepository()
                 .findById(relationshipId)
                 .orElseThrow();
@@ -98,5 +106,15 @@ public abstract class AbstractRelationshipRecordServiceImpl<T extends XtdRelatio
     }
 
     protected abstract void setRelatedRecords(@NotNull T relationshipRecord,
-                                              @NotEmpty List<@NotBlank String> relatedRecordIds);
+            @NotEmpty List<@NotBlank String> relatedRecordIds);
+
+    @Transactional
+    @Override
+    public @NotNull T setRelatedRecords(@NotBlank String recordId,
+            @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
+        T record = this.getRepository()
+                .findById(recordId)
+                .orElseThrow();
+        return record;
+    }
 }

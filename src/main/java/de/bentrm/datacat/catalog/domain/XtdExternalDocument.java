@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
 @NodeEntity(label = XtdExternalDocument.LABEL)
-public class XtdExternalDocument extends XtdRoot { // XtdConcept
+public class XtdExternalDocument extends XtdConcept {
 
     public static final String LABEL = "XtdExternalDocument";
 
@@ -31,9 +31,12 @@ public class XtdExternalDocument extends XtdRoot { // XtdConcept
 
     private String dateOfPublication;
 
-    // private Set<XtdLanguages> languages = new HashSet<>(); // XtdLanguages anlegen
+    // @ToString.Include
+    @Relationship(type = "LANGUAGES")
+    private Set<XtdLanguage> languages = new HashSet<>();
 
+    // @ToString.Include
     @Relationship(type = "REFERENCE_DOCUMENTS", direction = Relationship.INCOMING)
-    private Set<XtdRoot> documents = new HashSet<>();
+    private final Set<XtdConcept> documents = new HashSet<>();
 
 }

@@ -6,6 +6,5 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class DeleteDescriptionInput {
-    @NotNull String catalogEntryId;
     @NotNull String descriptionId;
 }
