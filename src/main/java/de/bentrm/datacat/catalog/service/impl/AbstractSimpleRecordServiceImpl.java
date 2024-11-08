@@ -62,6 +62,8 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
             final boolean idIsTaken = this.getRepository().existsById(id.trim());
             if (idIsTaken) {
                 throw new IllegalArgumentException("Id is already in use.");
+            } else {
+                newRecord.setId(id);
             }
 
         }
@@ -73,23 +75,27 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
                 xtdObject.getNames().clear();
                 xtdObject.getNames().add(createText(multiLanguage, name));
             });
-            final XtdMultiLanguageText multiLanguageComment = xtdObject.getComments().stream().findFirst()
-                    .orElse(new XtdMultiLanguageText());
-            properties.getComments().forEach(comment -> {
-                xtdObject.getComments().clear();
-                xtdObject.getComments().add(createText(multiLanguageComment, comment));
-            });
+            if (properties.getComments() != null) {
+                final XtdMultiLanguageText multiLanguageComment = xtdObject.getComments().stream().findFirst()
+                        .orElse(new XtdMultiLanguageText());
+                properties.getComments().forEach(comment -> {
+                    xtdObject.getComments().clear();
+                    xtdObject.getComments().add(createText(multiLanguageComment, comment));
+                });
+            }
             xtdObject.setMajorVersion(properties.getMajorVersion());
             xtdObject.setMinorVersion(properties.getMinorVersion());
             xtdObject.setStatus(properties.getStatus());
         }
         if (newRecord instanceof XtdConcept xtdConcept) {
-            final XtdMultiLanguageText multiLanguage = xtdConcept.getDescriptions().stream().findFirst()
-                    .orElse(new XtdMultiLanguageText());
-            properties.getDescriptions().forEach(description -> {
-                xtdConcept.getDescriptions().clear();
-                xtdConcept.getDescriptions().add(createText(multiLanguage, description));
-            });
+            if (properties.getDescriptions() != null) {
+                final XtdMultiLanguageText multiLanguage = xtdConcept.getDescriptions().stream().findFirst()
+                        .orElse(new XtdMultiLanguageText());
+                properties.getDescriptions().forEach(description -> {
+                    xtdConcept.getDescriptions().clear();
+                    xtdConcept.getDescriptions().add(createText(multiLanguage, description));
+                });
+            }
         }
         if (newRecord instanceof XtdProperty property) {
             VALUE_MAPPER.setProperties(properties.getPropertyProperties(), property);
@@ -122,7 +128,6 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
             VALUE_MAPPER.setProperties(properties.getTextProperties(), text);
         }
 
-        newRecord.setId(id);
         newRecord = this.getRepository().save(newRecord);
         log.trace("Persisted new catalog entry: {}", newRecord);
         return newRecord;
