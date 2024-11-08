@@ -5,7 +5,7 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class SetMinorVersionInput {
+public class UpdateMinorVersionInput {
     @NotNull String catalogEntryId;
     @NotNull int minorVersion;
 }

@@ -377,6 +377,33 @@ type RemoveTagPayload {
     tag: Tag
 }
 
+input updateStatusInput {
+    catalogEntryId: ID!
+    status: XtdStatusOfActivationEnum!
+}
+
+type updateStatusPayload {
+    catalogEntry: SimpleRecord
+}
+
+input updateMajorVersionInput {
+    catalogEntryId: ID!
+    majorVersion: Int!
+}
+
+type updateMajorVersionPayload {
+    catalogEntry: SimpleRecord
+}
+
+input updateMinorVersionInput {
+    catalogEntryId: ID!
+    minorVersion: Int!
+}
+
+type updateMinorVersionPayload {
+    catalogEntry: SimpleRecord
+}
+
 enum XtdDataTypeEnum {
     XTD_BOOLEAN
     XTD_INTEGER
@@ -475,4 +502,13 @@ type Mutation {
 
     # Removes a tag from an existing user defined tag.
     removeTag(input: RemoveTagInput!): RemoveTagPayload
+
+    # Updates the status of the given catalog entry.
+    updateStatus(input: updateStatusInput!): updateStatusPayload
+
+    # Updates the major version of the given catalog entry.
+    updateMajorVersion(input: updateMajorVersionInput!): updateMajorVersionPayload
+
+    # Updates the minor version of the given catalog entry.
+    updateMinorVersion(input: updateMinorVersionInput!): updateMinorVersionPayload
 }

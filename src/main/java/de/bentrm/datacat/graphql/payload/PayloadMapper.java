@@ -61,4 +61,12 @@ public interface PayloadMapper {
     @Mapping(source = "item", target = "catalogEntry")
     DeleteCommentPayload toDeleteCommentPayload(XtdText item);
 
+    @Mapping(source = "item", target = "catalogEntry")
+    UpdateStatusPayload toUpdateStatusPayload(XtdObject item);
+
+    @Mapping(source = "item", target = "catalogEntry")
+    UpdateMajorVersionPayload toUpdateMajorVersionPayload(XtdObject item);
+
+    @Mapping(source = "item", target = "catalogEntry")
+    UpdateMinorVersionPayload toUpdateMinorVersionPayload(XtdObject item);
 }

@@ -7,6 +7,7 @@ import de.bentrm.datacat.catalog.domain.XtdLanguage;
 import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.domain.XtdSubject;
 import de.bentrm.datacat.catalog.domain.XtdText;
+import de.bentrm.datacat.catalog.domain.Enums.XtdStatusOfActivationEnum;
 import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
 import de.bentrm.datacat.catalog.repository.DictionaryRepository;
 import de.bentrm.datacat.catalog.repository.LanguageRepository;
@@ -214,6 +215,30 @@ public class ObjectRecordServiceImpl
         item.getNames().clear();
         item.getNames().add(multiLanguage);
 
+        return repository.save(item);
+    }
+
+    @Transactional
+    @Override
+    public @NotNull XtdObject updateStatus(String id, XtdStatusOfActivationEnum status) {
+        final XtdObject item = repository.findById(id).orElseThrow();
+        item.setStatus(status);
+        return repository.save(item);
+    }
+
+    @Transactional
+    @Override
+    public @NotNull XtdObject updateMajorVersion(String id, Integer majorVersion) {
+        final XtdObject item = repository.findById(id).orElseThrow();
+        item.setMajorVersion(majorVersion);
+        return repository.save(item);
+    }
+
+    @Transactional
+    @Override
+    public @NotNull XtdObject updateMinorVersion(String id, Integer minorVersion) {
+        final XtdObject item = repository.findById(id).orElseThrow();
+        item.setMinorVersion(minorVersion);
         return repository.save(item);
     }
 }

@@ -77,6 +77,9 @@ public class ContentFetchers implements MutationFetchers {
         fetchers.put("addTag", addTag());
         fetchers.put("removeTag", removeTag());
 
+        fetchers.put("updateStatus", updateStatus());
+        fetchers.put("updateMajorVersion", updateMajorVersion());
+        fetchers.put("updateMinorVersion", updateMinorVersion());
 
         return fetchers;
     }
@@ -211,5 +214,31 @@ public class ContentFetchers implements MutationFetchers {
             return new RemoveTagPayload(catalogRecord, tag);
         };
     }
-    
+
+    protected DataFetcher<UpdateStatusPayload> updateStatus() {
+        return environment -> {
+            final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
+            final UpdateStatusInput input = OBJECT_MAPPER.convertValue(argument, UpdateStatusInput.class);
+            final XtdObject item = objectRecordService.updateStatus(input.getCatalogEntryId(), input.getStatus());
+            return payloadMapper.toUpdateStatusPayload(item);
+        };
+    }
+
+    protected DataFetcher<UpdateMajorVersionPayload> updateMajorVersion() {
+        return environment -> {
+            final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
+            final UpdateMajorVersionInput input = OBJECT_MAPPER.convertValue(argument, UpdateMajorVersionInput.class);
+            final XtdObject item = objectRecordService.updateMajorVersion(input.getCatalogEntryId(), input.getMajorVersion());
+            return payloadMapper.toUpdateMajorVersionPayload(item);
+        };
+    }
+
+    protected DataFetcher<UpdateMinorVersionPayload> updateMinorVersion() {
+        return environment -> {
+            final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
+            final UpdateMinorVersionInput input = OBJECT_MAPPER.convertValue(argument, UpdateMinorVersionInput.class);
+            final XtdObject item = objectRecordService.updateMinorVersion(input.getCatalogEntryId(), input.getMinorVersion());
+            return payloadMapper.toUpdateMinorVersionPayload(item);
+        };
+    }
 }

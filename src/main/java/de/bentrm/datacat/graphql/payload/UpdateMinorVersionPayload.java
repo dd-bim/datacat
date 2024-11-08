@@ -4,6 +4,6 @@ import de.bentrm.datacat.catalog.domain.XtdObject;
 import lombok.Data;
 
 @Data
-public class SetMinorVersionPayload {
+public class UpdateMinorVersionPayload {
     XtdObject catalogEntry;
 }
