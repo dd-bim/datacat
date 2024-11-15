@@ -6,8 +6,8 @@ import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public interface CatalogRecordService<T extends CatalogRecord> extends QueryService<T> {
 

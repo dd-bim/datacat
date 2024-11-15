@@ -3,14 +3,14 @@ package de.bentrm.datacat.catalog.domain;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.neo4j.ogm.annotation.NodeEntity;
+import org.springframework.data.neo4j.core.schema.Node;
 
 import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
-@NodeEntity(label = AbstractRelationship.LABEL)
+@Node(AbstractRelationship.LABEL)
 public abstract class AbstractRelationship extends XtdObject {
 
     public static final String LABEL = "Relationship";

@@ -9,18 +9,18 @@ import de.bentrm.datacat.catalog.service.CountryRecordService;
 import de.bentrm.datacat.catalog.service.ConceptRecordService;
 import lombok.extern.slf4j.Slf4j;
 import de.bentrm.datacat.catalog.domain.XtdSubdivision;
-import de.bentrm.datacat.catalog.domain.XtdSubject;
 import de.bentrm.datacat.catalog.repository.SubdivisionRepository;
 
-import org.neo4j.ogm.session.SessionFactory;
+import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.util.Assert;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -36,12 +36,12 @@ public class CountryRecordServiceImpl
             private final SubdivisionRepository subdivisionRepository;
             private final ConceptRecordService conceptRecordService;
 
-    public CountryRecordServiceImpl(SessionFactory sessionFactory,
+    public CountryRecordServiceImpl(Neo4jTemplate neo4jTemplate,
                                      CountryRepository repository,
                                     SubdivisionRepository subdivisionRepository,
                                     ConceptRecordService conceptRecordService,
                                      CatalogCleanupService cleanupService) {
-        super(XtdCountry.class, sessionFactory, repository, cleanupService);
+        super(XtdCountry.class, neo4jTemplate, repository, cleanupService);
         this.subdivisionRepository = subdivisionRepository;
         this.conceptRecordService = conceptRecordService;
     }
@@ -67,10 +67,10 @@ public class CountryRecordServiceImpl
     public @NotNull XtdCountry setRelatedRecords(@NotBlank String recordId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdCountry country = getRepository().findById(recordId, 0).orElseThrow();
+        final XtdCountry country = getRepository().findById(recordId).orElseThrow();
 
         switch (relationType) {
-            case Subdivisions:
+            case Subdivisions -> {
                 final Iterable<XtdSubdivision> items = subdivisionRepository.findAllById(relatedRecordIds);
                 final List<XtdSubdivision> related = StreamSupport
                         .stream(items.spliterator(), false)
@@ -78,11 +78,9 @@ public class CountryRecordServiceImpl
 
                 country.getSubdivisions().clear();
                 country.getSubdivisions().addAll(related);
-                break;
+                    }
         
-            default:
-                conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
-                break;
+            default -> conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
         }
 
         final XtdCountry persistentCountry = getRepository().save(country);

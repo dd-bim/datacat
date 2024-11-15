@@ -5,8 +5,8 @@ import de.bentrm.datacat.catalog.domain.XtdCountry;
 import de.bentrm.datacat.catalog.domain.XtdExternalDocument;
 import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 

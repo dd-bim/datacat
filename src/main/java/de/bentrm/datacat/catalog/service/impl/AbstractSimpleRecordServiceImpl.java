@@ -1,28 +1,38 @@
 package de.bentrm.datacat.catalog.service.impl;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.neo4j.core.Neo4jTemplate;
+import org.springframework.transaction.annotation.Transactional;
+
 import de.bentrm.datacat.base.repository.EntityRepository;
-import de.bentrm.datacat.catalog.domain.*;
+import de.bentrm.datacat.catalog.domain.CatalogRecord;
+import de.bentrm.datacat.catalog.domain.SimpleRelationType;
+import de.bentrm.datacat.catalog.domain.XtdConcept;
+import de.bentrm.datacat.catalog.domain.XtdCountry;
+import de.bentrm.datacat.catalog.domain.XtdExternalDocument;
+import de.bentrm.datacat.catalog.domain.XtdInterval;
+import de.bentrm.datacat.catalog.domain.XtdLanguage;
+import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
+import de.bentrm.datacat.catalog.domain.XtdObject;
+import de.bentrm.datacat.catalog.domain.XtdOrderedValue;
+import de.bentrm.datacat.catalog.domain.XtdProperty;
+import de.bentrm.datacat.catalog.domain.XtdSubdivision;
+import de.bentrm.datacat.catalog.domain.XtdText;
+import de.bentrm.datacat.catalog.domain.XtdUnit;
+import de.bentrm.datacat.catalog.domain.XtdValue;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.LanguageService;
 import de.bentrm.datacat.catalog.service.SimpleRecordService;
 import de.bentrm.datacat.catalog.service.value.ValueMapper;
 import de.bentrm.datacat.graphql.input.CatalogEntryPropertiesInput;
 import de.bentrm.datacat.graphql.input.TranslationInput;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
-import org.neo4j.ogm.session.SessionFactory;
-import org.neo4j.ogm.session.Session;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 @Slf4j
 public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R extends EntityRepository<T>>
@@ -35,14 +45,11 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
     @Autowired
     private LanguageService languageService;
 
-    @Autowired
-    private Session session;
-
     public AbstractSimpleRecordServiceImpl(Class<T> domainClass,
-            SessionFactory sessionFactory,
+            Neo4jTemplate neo4jTemplate,
             R repository,
             CatalogCleanupService cleanupService) {
-        super(domainClass, sessionFactory, repository);
+        super(domainClass, neo4jTemplate, repository);
         this.cleanupService = cleanupService;
     }
 
@@ -143,8 +150,8 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
 
         multiLanguage.getTexts().add(text);
 
-        session.save(multiLanguage);
-        session.save(text);
+        getNeo4jTemplate().save(multiLanguage);
+        getNeo4jTemplate().save(text);
 
         return multiLanguage;
     }

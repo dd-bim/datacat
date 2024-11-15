@@ -3,8 +3,8 @@ package de.bentrm.datacat.catalog.service.value;
 import lombok.Value;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.Locale;
 
 @Value

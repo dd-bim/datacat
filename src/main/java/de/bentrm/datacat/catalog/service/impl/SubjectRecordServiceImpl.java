@@ -3,7 +3,6 @@ package de.bentrm.datacat.catalog.service.impl;
 import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
-import de.bentrm.datacat.catalog.domain.XtdRelationshipToProperty;
 import de.bentrm.datacat.catalog.domain.XtdRelationshipToSubject;
 import de.bentrm.datacat.catalog.domain.XtdSubject;
 import de.bentrm.datacat.catalog.repository.PropertyRepository;
@@ -13,18 +12,21 @@ import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.SubjectRecordService;
 import de.bentrm.datacat.catalog.service.ConceptRecordService;
 import lombok.extern.slf4j.Slf4j;
-import org.neo4j.ogm.session.SessionFactory;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import org.springframework.data.neo4j.core.Neo4jTemplate;
 
 @Slf4j
 @Service
@@ -38,13 +40,13 @@ public class SubjectRecordServiceImpl
     private final RelationshipToSubjectRepository relationshipToSubjectRepository;
     private final ConceptRecordService conceptRecordService;
 
-    public SubjectRecordServiceImpl(SessionFactory sessionFactory,
+    public SubjectRecordServiceImpl(Neo4jTemplate neo4jTemplate,
             SubjectRepository repository,
             PropertyRepository propertyRepository,
             RelationshipToSubjectRepository relationshipToSubjectRepository,
             ConceptRecordService conceptRecordService,
             CatalogCleanupService cleanupService) {
-        super(XtdSubject.class, sessionFactory, repository, cleanupService);
+        super(XtdSubject.class, neo4jTemplate, repository, cleanupService);
         this.propertyRepository = propertyRepository;
         this.relationshipToSubjectRepository = relationshipToSubjectRepository;
         this.conceptRecordService = conceptRecordService;
@@ -97,21 +99,19 @@ public class SubjectRecordServiceImpl
     public @NotNull XtdSubject setRelatedRecords(@NotBlank String recordId,
             @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdSubject subject = getRepository().findById(recordId, 0).orElseThrow();
+        final XtdSubject subject = getRepository().findById(recordId).orElseThrow();
 
         switch (relationType) {
-            case Properties:
-                final Iterable<XtdProperty> items = propertyRepository.findAllById(relatedRecordIds, 0);
+            case Properties -> {
+                final Iterable<XtdProperty> items = propertyRepository.findAllById(relatedRecordIds);
                 final List<XtdProperty> related = StreamSupport
                         .stream(items.spliterator(), false)
                         .collect(Collectors.toList());
 
                 subject.getProperties().clear();
                 subject.getProperties().addAll(related);
-                break;
-            default:
-                conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
-                break;
+            }
+            default -> conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
         }
 
         final XtdSubject persistentSubject = getRepository().save(subject);

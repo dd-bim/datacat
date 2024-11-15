@@ -5,12 +5,9 @@ import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import de.bentrm.datacat.catalog.domain.XtdLanguage;
 import de.bentrm.datacat.catalog.domain.XtdOrderedValue;
 import de.bentrm.datacat.catalog.domain.XtdValueList;
-import de.bentrm.datacat.catalog.domain.XtdValue;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
-import de.bentrm.datacat.catalog.domain.XtdSubject;
 import de.bentrm.datacat.catalog.domain.XtdUnit;
 import de.bentrm.datacat.catalog.repository.ValueListRepository;
-import de.bentrm.datacat.catalog.repository.ValueRepository;
 import de.bentrm.datacat.catalog.repository.OrderedValueRepository;
 import de.bentrm.datacat.catalog.repository.PropertyRepository;
 import de.bentrm.datacat.catalog.repository.UnitRepository;
@@ -20,21 +17,20 @@ import de.bentrm.datacat.catalog.service.ValueListRecordService;
 import de.bentrm.datacat.catalog.service.ConceptRecordService;
 import lombok.extern.slf4j.Slf4j;
 
-import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 
-import com.fasterxml.jackson.annotation.JacksonInject.Value;
-import com.fasterxml.jackson.databind.annotation.JsonAppend.Prop;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import org.springframework.data.neo4j.core.Neo4jTemplate;
 
 @Slf4j
 @Service
@@ -50,7 +46,7 @@ public class ValueListRecordServiceImpl
             private final LanguageRepository languageRepository;
             private final ConceptRecordService conceptRecordService;
 
-    public ValueListRecordServiceImpl(SessionFactory sessionFactory,
+    public ValueListRecordServiceImpl(Neo4jTemplate neo4jTemplate,
                                     ValueListRepository repository,
                                     OrderedValueRepository orderedValueRepository,
                                     PropertyRepository propertyRepository,
@@ -58,7 +54,7 @@ public class ValueListRecordServiceImpl
                                     LanguageRepository languageRepository,
                                     ConceptRecordService conceptRecordService,
                                     CatalogCleanupService cleanupService) {
-        super(XtdValueList.class, sessionFactory, repository, cleanupService);
+        super(XtdValueList.class, neo4jTemplate, repository, cleanupService);
         this.orderedValueRepository = orderedValueRepository;
         this.propertyRepository = propertyRepository;
         this.unitRepository = unitRepository;
@@ -110,7 +106,7 @@ public class ValueListRecordServiceImpl
     public @NotNull XtdValueList setRelatedRecords(@NotBlank String recordId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdValueList valueList = getRepository().findById(recordId, 0).orElseThrow();
+        final XtdValueList valueList = getRepository().findById(recordId).orElseThrow();
 
         switch (relationType) {
             case Unit:

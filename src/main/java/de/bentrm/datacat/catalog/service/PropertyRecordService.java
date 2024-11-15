@@ -10,7 +10,7 @@ import de.bentrm.datacat.catalog.domain.XtdUnit;
 import de.bentrm.datacat.catalog.domain.XtdValueList;
 import de.bentrm.datacat.catalog.domain.XtdQuantityKind;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 public interface PropertyRecordService extends SimpleRecordService<XtdProperty> {

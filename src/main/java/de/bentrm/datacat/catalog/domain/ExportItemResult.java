@@ -1,13 +1,11 @@
 package de.bentrm.datacat.catalog.domain;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.neo4j.annotation.QueryResult;
+import org.springframework.data.neo4j.core.schema.Id;
 import java.util.List;
 
 import lombok.Data;
 
 @Data
-@QueryResult
 public class ExportItemResult {
     
     @Id

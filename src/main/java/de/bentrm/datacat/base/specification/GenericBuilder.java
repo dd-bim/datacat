@@ -2,6 +2,7 @@ package de.bentrm.datacat.base.specification;
 
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+
 import org.neo4j.ogm.cypher.BooleanOperator;
 import org.neo4j.ogm.cypher.ComparisonOperator;
 import org.neo4j.ogm.cypher.Filter;
@@ -10,10 +11,8 @@ import org.springframework.util.Assert;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * A generic builder class that bind method invocations to the creation of

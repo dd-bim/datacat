@@ -2,13 +2,8 @@ package de.bentrm.datacat.catalog.service.impl;
 
 import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import de.bentrm.datacat.catalog.domain.SimpleRelationType;
-import de.bentrm.datacat.catalog.domain.XtdDictionary;
-import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
-import de.bentrm.datacat.catalog.domain.XtdObject;
-import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.domain.XtdRelationshipToSubject;
 import de.bentrm.datacat.catalog.domain.XtdRelationshipType;
-import de.bentrm.datacat.catalog.domain.XtdRoot;
 import de.bentrm.datacat.catalog.domain.XtdSubject;
 import de.bentrm.datacat.catalog.repository.RelationshipToSubjectRepository;
 import de.bentrm.datacat.catalog.repository.SubjectRepository;
@@ -17,7 +12,7 @@ import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.RelationshipToSubjectRecordService;
 import de.bentrm.datacat.catalog.service.ObjectRecordService;
 import lombok.extern.slf4j.Slf4j;
-import org.neo4j.ogm.session.SessionFactory;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -27,9 +22,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
+import org.springframework.data.neo4j.core.Neo4jTemplate;
+
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 
 @Slf4j
 @Service
@@ -43,13 +40,13 @@ public class RelationshipToSubjectRecordServiceImpl
     private final RelationshipTypeRepository relationshipTypeRepository;
     private final ObjectRecordService objectRecordService;
 
-    public RelationshipToSubjectRecordServiceImpl(SessionFactory sessionFactory,
+    public RelationshipToSubjectRecordServiceImpl(Neo4jTemplate neo4jTemplate,
                                      RelationshipToSubjectRepository repository,
                                      SubjectRepository subjectRepository,
                                      RelationshipTypeRepository relationshipTypeRepository,
                                      ObjectRecordService objectRecordService,
                                      CatalogCleanupService cleanupService) {
-        super(XtdRelationshipToSubject.class, sessionFactory, repository, cleanupService);
+        super(XtdRelationshipToSubject.class, neo4jTemplate, repository, cleanupService);
         this.subjectRepository = subjectRepository;
         this.relationshipTypeRepository = relationshipTypeRepository;
         this.objectRecordService = objectRecordService;
@@ -76,9 +73,9 @@ public class RelationshipToSubjectRecordServiceImpl
    public @NotNull XtdRelationshipToSubject setRelatedRecords(@NotBlank String relationshipId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds) {
 
-       final XtdRelationshipToSubject relationship = getRepository().findById(relationshipId, 0).orElseThrow();
+       final XtdRelationshipToSubject relationship = getRepository().findById(relationshipId).orElseThrow();
 
-       final Iterable<XtdSubject> items = subjectRepository.findAllById(relatedRecordIds, 0);
+       final Iterable<XtdSubject> items = subjectRepository.findAllById(relatedRecordIds);
        final List<XtdSubject> related = StreamSupport
                .stream(items.spliterator(), false)
                .collect(Collectors.toList());
@@ -95,7 +92,7 @@ public class RelationshipToSubjectRecordServiceImpl
     protected void setRelatingRecord(@NotNull XtdRelationshipToSubject relationshipRecord,
                                      @NotBlank String relatingRecordId) {
         final XtdSubject relatingCatalogRecord = subjectRepository
-                .findById(relatingRecordId, 0)
+                .findById(relatingRecordId)
                 .orElseThrow();
         relationshipRecord.setConnectingSubject(relatingCatalogRecord);
     }
@@ -103,7 +100,7 @@ public class RelationshipToSubjectRecordServiceImpl
     @Override
     protected void setRelatedRecords(@NotNull XtdRelationshipToSubject relationshipRecord,
                                      @NotEmpty List<@NotBlank String> relatedRecordIds) {
-        final Iterable<XtdSubject> items = subjectRepository.findAllById(relatedRecordIds, 0);
+        final Iterable<XtdSubject> items = subjectRepository.findAllById(relatedRecordIds);
         final List<XtdSubject> related = StreamSupport
                 .stream(items.spliterator(), false)
                 .collect(Collectors.toList());
@@ -116,10 +113,10 @@ public class RelationshipToSubjectRecordServiceImpl
     public @NotNull XtdRelationshipToSubject setRelatedRecords(@NotBlank String recordId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdRelationshipToSubject relationship = getRepository().findById(recordId, 0).orElseThrow();
+        final XtdRelationshipToSubject relationship = getRepository().findById(recordId).orElseThrow();
 
         switch (relationType) {
-            case RelationshipType:
+            case RelationshipType -> {
                 if (relationship.getRelationshipType() != null) {
                     throw new IllegalArgumentException("Object already has a relationship type assigned.");
                 } else if (relatedRecordIds.size() != 1) {
@@ -128,8 +125,8 @@ public class RelationshipToSubjectRecordServiceImpl
                     final XtdRelationshipType relationshipType = relationshipTypeRepository.findById(relatedRecordIds.get(0)).orElseThrow();
                     relationship.setRelationshipType(relationshipType);
                 }
-                break;
-            case ScopeSubjects:
+            }
+            case ScopeSubjects -> {
                 final Iterable<XtdSubject> subjects = subjectRepository.findAllById(relatedRecordIds);
                 final List<XtdSubject> relatedSubjects = StreamSupport
                         .stream(subjects.spliterator(), false)
@@ -137,8 +134,8 @@ public class RelationshipToSubjectRecordServiceImpl
 
                 relationship.getScopeSubjects().clear();
                 relationship.getScopeSubjects().addAll(relatedSubjects);
-                break;
-            case TargetSubjects:
+            }
+            case TargetSubjects -> {
                 final Iterable<XtdSubject> targetSubjects = subjectRepository.findAllById(relatedRecordIds);
                 final List<XtdSubject> relatedTargetSubjects = StreamSupport
                         .stream(targetSubjects.spliterator(), false)
@@ -146,10 +143,8 @@ public class RelationshipToSubjectRecordServiceImpl
 
                 relationship.getTargetSubjects().clear();
                 relationship.getTargetSubjects().addAll(relatedTargetSubjects);
-                break;
-            default:
-                objectRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
-                break;
+            }
+            default -> objectRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
         }
 
         final XtdRelationshipToSubject persistentRelationship = getRepository().save(relationship);

@@ -24,15 +24,17 @@ import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.PropertyRecordService;
 import de.bentrm.datacat.catalog.service.ConceptRecordService;
 import lombok.extern.slf4j.Slf4j;
-import org.neo4j.ogm.session.SessionFactory;
+
+import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -55,7 +57,7 @@ public class PropertyRecordServiceImpl
         private final QuantityKindRepository quantityKindRepository;
         private final ConceptRecordService conceptRecordService;
 
-        public PropertyRecordServiceImpl(SessionFactory sessionFactory,
+        public PropertyRecordServiceImpl(Neo4jTemplate neo4jTemplate,	
                         PropertyRepository repository,
                         SubjectRepository subjectRepository,
                         ValueListRepository valueListRepository,
@@ -67,7 +69,7 @@ public class PropertyRecordServiceImpl
                         QuantityKindRepository quantityKindRepository,
                         ConceptRecordService conceptRecordService,
                         CatalogCleanupService cleanupService) {
-                super(XtdProperty.class, sessionFactory, repository, cleanupService);
+                super(XtdProperty.class, neo4jTemplate, repository, cleanupService);
                 this.subjectRepository = subjectRepository;
                 this.valueListRepository = valueListRepository;
                 this.unitRepository = unitRepository;
@@ -197,69 +199,67 @@ public class PropertyRecordServiceImpl
         public @NotNull XtdProperty setRelatedRecords(@NotBlank String recordId,
                         @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-                final XtdProperty property = getRepository().findById(recordId, 0).orElseThrow();
+                final XtdProperty property = getRepository().findById(recordId).orElseThrow();
 
                 switch (relationType) {
-                        case Symbols:
-                                final Iterable<XtdSymbol> symbols = symbolRepository.findAllById(relatedRecordIds, 0);
-                                final List<XtdSymbol> relatedSymbols = StreamSupport
-                                                .stream(symbols.spliterator(), false)
-                                                .collect(Collectors.toList());
-
-                                property.getSymbols().clear();
-                                property.getSymbols().addAll(relatedSymbols);
-                                break;
-                        case Units:
-                                final Iterable<XtdUnit> units = unitRepository.findAllById(relatedRecordIds, 0);
-                                final List<XtdUnit> relatedUnits = StreamSupport
-                                                .stream(units.spliterator(), false)
-                                                .collect(Collectors.toList());
-
-                                property.getUnits().clear();
-                                property.getUnits().addAll(relatedUnits);
-                                break;
-                        case Dimension:
-                                if (property.getDimension() != null) {
-                                        throw new IllegalArgumentException("Property already has a dimension assigned.");
-                                } else if (relatedRecordIds.size() != 1) {
-                                        throw new IllegalArgumentException("Exactly one dimension must be assigned.");
-                                } else {
-                                        final XtdDimension dimension = dimensionRepository.findById(relatedRecordIds.get(0))
-                                                        .orElseThrow();
-                                        property.setDimension(dimension);
-                                }
-                                break;
-                        case BoundaryValues:
-                                final Iterable<XtdInterval> intervals = intervalRepository.findAllById(relatedRecordIds, 0);
-                                final List<XtdInterval> relatedIntervals = StreamSupport
-                                                .stream(intervals.spliterator(), false)
-                                                .collect(Collectors.toList());
-
-                                property.getBoundaryValues().clear();
-                                property.getBoundaryValues().addAll(relatedIntervals);
-                                break;
-                        case QuantityKinds:
-                                final Iterable<XtdQuantityKind> quantityKinds = quantityKindRepository
-                                                .findAllById(relatedRecordIds, 0);
-                                final List<XtdQuantityKind> relatedQuantityKinds = StreamSupport
-                                                .stream(quantityKinds.spliterator(), false)
-                                                .collect(Collectors.toList());
-
-                                property.getQuantityKinds().clear();
-                                property.getQuantityKinds().addAll(relatedQuantityKinds);
-                                break;
-                        case PossibleValues:
-                                final Iterable<XtdValueList> valueLists = valueListRepository.findAllById(relatedRecordIds, 0);
-                                final List<XtdValueList> relatedValueLists = StreamSupport
-                                                .stream(valueLists.spliterator(), false)
-                                                .collect(Collectors.toList());
-
-                                property.getPossibleValues().clear();
-                                property.getPossibleValues().addAll(relatedValueLists);
-                                break;
-                        default:
-                                conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
-                                break;
+                        case Symbols -> {
+                            final Iterable<XtdSymbol> symbols = symbolRepository.findAllById(relatedRecordIds);
+                            final List<XtdSymbol> relatedSymbols = StreamSupport
+                                    .stream(symbols.spliterator(), false)
+                                    .collect(Collectors.toList());
+                            
+                            property.getSymbols().clear();
+                            property.getSymbols().addAll(relatedSymbols);
+                }
+                        case Units -> {
+                            final Iterable<XtdUnit> units = unitRepository.findAllById(relatedRecordIds);
+                            final List<XtdUnit> relatedUnits = StreamSupport
+                                    .stream(units.spliterator(), false)
+                                    .collect(Collectors.toList());
+                            
+                            property.getUnits().clear();
+                            property.getUnits().addAll(relatedUnits);
+                }
+                        case Dimension -> {
+                            if (property.getDimension() != null) {
+                                throw new IllegalArgumentException("Property already has a dimension assigned.");
+                            } else if (relatedRecordIds.size() != 1) {
+                                throw new IllegalArgumentException("Exactly one dimension must be assigned.");
+                            } else {
+                                final XtdDimension dimension = dimensionRepository.findById(relatedRecordIds.get(0))
+                                        .orElseThrow();
+                                property.setDimension(dimension);
+                            }
+                }
+                        case BoundaryValues -> {
+                            final Iterable<XtdInterval> intervals = intervalRepository.findAllById(relatedRecordIds);
+                            final List<XtdInterval> relatedIntervals = StreamSupport
+                                    .stream(intervals.spliterator(), false)
+                                    .collect(Collectors.toList());
+                            
+                            property.getBoundaryValues().clear();
+                            property.getBoundaryValues().addAll(relatedIntervals);
+                }
+                        case QuantityKinds -> {
+                            final Iterable<XtdQuantityKind> quantityKinds = quantityKindRepository
+                                    .findAllById(relatedRecordIds);
+                            final List<XtdQuantityKind> relatedQuantityKinds = StreamSupport
+                                    .stream(quantityKinds.spliterator(), false)
+                                    .collect(Collectors.toList());
+                            
+                            property.getQuantityKinds().clear();
+                            property.getQuantityKinds().addAll(relatedQuantityKinds);
+                }
+                        case PossibleValues -> {
+                            final Iterable<XtdValueList> valueLists = valueListRepository.findAllById(relatedRecordIds);
+                            final List<XtdValueList> relatedValueLists = StreamSupport
+                                    .stream(valueLists.spliterator(), false)
+                                    .collect(Collectors.toList());
+                            
+                            property.getPossibleValues().clear();
+                            property.getPossibleValues().addAll(relatedValueLists);
+                }
+                        default -> conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
                 }
 
                 final XtdProperty persistentProperty = getRepository().save(property);

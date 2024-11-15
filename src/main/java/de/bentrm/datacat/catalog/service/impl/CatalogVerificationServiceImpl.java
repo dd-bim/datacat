@@ -2,20 +2,16 @@ package de.bentrm.datacat.catalog.service.impl;
 
 import de.bentrm.datacat.catalog.domain.*;
 import de.bentrm.datacat.catalog.repository.*;
-import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.service.CatalogVerificationService;
 import de.bentrm.datacat.catalog.service.value.verification.*;
 import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
-import de.bentrm.datacat.catalog.specification.RootSpecification;
 import lombok.extern.slf4j.Slf4j;
-import org.neo4j.ogm.session.Session;
-import org.neo4j.ogm.session.SessionFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotNull;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -27,22 +23,11 @@ import java.util.stream.StreamSupport;
 public class CatalogVerificationServiceImpl implements CatalogVerificationService {
 
     @Autowired
-    private SessionFactory sessionFactory;
-
-    @Autowired
     private CatalogValidationQuery catalogValidationQuery;
-
-    @Autowired
-    private TagRepository tagRepository;
-
-    @Autowired
-    private CatalogRecordRepository catalogRecordRepository;
 
     @Autowired
     private RootRepository rootRepository;
 
-    @Autowired
-    private ObjectRepository objectRepository;
 
     @Override
     public findPropGroupWithoutPropValue getfindPropGroupWithoutProp() {

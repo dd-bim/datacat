@@ -1,10 +1,9 @@
 package de.bentrm.datacat.catalog.specification;
 
 import de.bentrm.datacat.base.specification.QuerySpecification;
-import de.bentrm.datacat.catalog.domain.*;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import org.neo4j.ogm.cypher.Filter;
+
 import org.neo4j.ogm.cypher.Filters;
 import org.springframework.data.domain.Sort;
 

@@ -2,7 +2,7 @@ package de.bentrm.datacat.catalog.service;
 
 import java.util.List;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import de.bentrm.datacat.catalog.domain.XtdDimension;
 import de.bentrm.datacat.catalog.domain.XtdQuantityKind;

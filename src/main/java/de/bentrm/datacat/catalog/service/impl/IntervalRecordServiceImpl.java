@@ -3,16 +3,14 @@ package de.bentrm.datacat.catalog.service.impl;
 import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import de.bentrm.datacat.catalog.domain.XtdInterval;
-import de.bentrm.datacat.catalog.domain.XtdSubject;
 import de.bentrm.datacat.catalog.domain.XtdValueList;
 import de.bentrm.datacat.catalog.repository.IntervalRepository;
 import de.bentrm.datacat.catalog.repository.ValueListRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.IntervalRecordService;
-import kotlin.reflect.jvm.internal.ReflectProperties.Val;
 import lombok.extern.slf4j.Slf4j;
 
-import org.neo4j.ogm.session.SessionFactory;
+import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -20,9 +18,9 @@ import org.springframework.util.Assert;
 
 import java.util.List;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 @Slf4j
 @Service
@@ -34,11 +32,11 @@ public class IntervalRecordServiceImpl
 
         private final ValueListRepository valueListRepository;
 
-    public IntervalRecordServiceImpl(SessionFactory sessionFactory,
+    public IntervalRecordServiceImpl(Neo4jTemplate neo4jTemplate,
                                      IntervalRepository repository,
                                      ValueListRepository valueListRepository,
                                      CatalogCleanupService cleanupService) {
-        super(XtdInterval.class, sessionFactory, repository, cleanupService);
+        super(XtdInterval.class, neo4jTemplate, repository, cleanupService);
         this.valueListRepository = valueListRepository;
     }
 
@@ -72,10 +70,10 @@ public class IntervalRecordServiceImpl
     public @NotNull XtdInterval setRelatedRecords(@NotBlank String recordId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdInterval interval = getRepository().findById(recordId, 0).orElseThrow();
+        final XtdInterval interval = getRepository().findById(recordId).orElseThrow();
 
         switch (relationType) {
-            case Minimum:
+            case Minimum -> {
                 if (interval.getMinimum() != null) {
                     throw new IllegalArgumentException("Minimum already set.");
                 } else if (relatedRecordIds.size() != 1) {
@@ -84,8 +82,8 @@ public class IntervalRecordServiceImpl
                     final XtdValueList valueList = valueListRepository.findById(relatedRecordIds.get(0)).orElseThrow();
                     interval.setMinimum(valueList);
                 }
-                break;
-            case Maximum:
+                }
+            case Maximum -> {
                 if (interval.getMaximum() != null) {
                     throw new IllegalArgumentException("Maximum already set.");
                 } else if (relatedRecordIds.size() != 1) {
@@ -94,10 +92,8 @@ public class IntervalRecordServiceImpl
                     final XtdValueList valueList = valueListRepository.findById(relatedRecordIds.get(0)).orElseThrow();
                     interval.setMaximum(valueList);
                 }
-                break;
-            default:
-                log.error("Unsupported relation type: {}", relationType);
-                break;
+                }
+            default -> log.error("Unsupported relation type: {}", relationType);
         }
         final XtdInterval persistentInterval = getRepository().save(interval);
         log.trace("Updated interval: {}", persistentInterval);

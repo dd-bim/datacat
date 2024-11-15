@@ -3,19 +3,19 @@ package de.bentrm.datacat.catalog.domain;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 import org.springframework.util.Assert;
 
 import de.bentrm.datacat.util.LocalizationUtils;
 
 import java.util.*;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
-@NodeEntity(label = XtdConcept.LABEL)
+@Node(XtdConcept.LABEL)
 public abstract class XtdConcept extends XtdObject {
 
     public static final String LABEL = "XtdConcept";

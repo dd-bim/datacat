@@ -1,14 +1,14 @@
 package de.bentrm.datacat;
 
-import de.bentrm.datacat.base.domain.Migration;
-import de.bentrm.datacat.base.repository.MigrationRepository;
-import de.bentrm.datacat.util.QueryStatisticsWrapper;
-import de.bentrm.datacat.util.UtilMapper;
-import lombok.extern.slf4j.Slf4j;
-import org.neo4j.ogm.model.QueryStatistics;
-import org.neo4j.ogm.model.Result;
-import org.neo4j.ogm.session.Session;
-import org.neo4j.ogm.session.SessionFactory;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ResourceLoaderAware;
@@ -16,20 +16,16 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.ResourcePatternUtils;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import javax.validation.constraints.NotNull;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.time.Instant;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import de.bentrm.datacat.base.domain.Migration;
+import de.bentrm.datacat.base.repository.MigrationRepository;
+import de.bentrm.datacat.util.UtilMapper;
+import jakarta.validation.constraints.NotNull;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Custom migration service that checks for CQL-migrations on the classpath.
@@ -44,20 +40,16 @@ public class DataStoreMigrationService implements ApplicationRunner, ResourceLoa
     private final String MIGRATIONS_RESOURCE_PATTERN = "classpath:migrations/*.cql";
 
     private final MigrationRepository migrationRepository;
-    private final SessionFactory sessionFactory;
-    private final UtilMapper utilMapper;
+    private final Neo4jClient neo4jClient;
     private ResourceLoader resourceLoader;
-    private Session session;
 
-    public DataStoreMigrationService(MigrationRepository migrationRepository, SessionFactory sessionFactory, UtilMapper utilMapper) {
+    public DataStoreMigrationService(MigrationRepository migrationRepository, Neo4jClient neo4jClient, UtilMapper utilMapper) {
         this.migrationRepository = migrationRepository;
-        this.sessionFactory = sessionFactory;
-        this.utilMapper = utilMapper;
+        this.neo4jClient = neo4jClient;
     }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        session = sessionFactory.openSession();
         importMigrationFixtures();
         runMigrations();
     }
@@ -105,12 +97,11 @@ public class DataStoreMigrationService implements ApplicationRunner, ResourceLoa
                 log.info("Applying migration with id {}", migration.getId());
                 for (String command : migration.getCommands()) {
                     log.info("Running migration command: {}", command);
-                    final Result result = session.query(command, Map.of());
+                    neo4jClient.query(command).run();
                     migration.setAppliedAt(Instant.now());
                     migrationRepository.save(migration);
-                    final QueryStatistics statistics = result.queryStatistics();
-                    final QueryStatisticsWrapper queryStatisticsWrapper = utilMapper.toWrapper(statistics);
-                    log.info("Result: {}", queryStatisticsWrapper);
+                    
+                    log.info("Applied migration command: {}", command);
                 }
             } else {
                 log.info("Skipping already applied migration with id {}", migration.getId());

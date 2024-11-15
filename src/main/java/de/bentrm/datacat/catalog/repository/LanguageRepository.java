@@ -5,7 +5,7 @@ import de.bentrm.datacat.catalog.domain.XtdLanguage;
 
 import java.util.List;
 
-import org.springframework.data.neo4j.annotation.Query;
+import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository

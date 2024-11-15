@@ -12,14 +12,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 // @Getter
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
-@NodeEntity(label = XtdSubject.LABEL)
+@Node(XtdSubject.LABEL)
 public class XtdSubject extends XtdConcept {
     public static final String LABEL = "XtdSubject";
 
@@ -35,7 +35,7 @@ public class XtdSubject extends XtdConcept {
 
     // Incomming relations
     // @ToString.Include
-    @Relationship(type = XtdRelationshipToSubject.RELATIONSHIP_TYPE_OUT, direction = Relationship.INCOMING)
+    @Relationship(type = XtdRelationshipToSubject.RELATIONSHIP_TYPE_OUT, direction = Relationship.Direction.INCOMING)
     private final Set<XtdRelationshipToSubject> connectingSubjects = new HashSet<>();
 
     // noch nicht implementiert

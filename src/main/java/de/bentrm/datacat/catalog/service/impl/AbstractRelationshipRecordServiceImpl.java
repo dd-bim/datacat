@@ -6,14 +6,16 @@ import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.RelationshipRecordService;
 import lombok.extern.slf4j.Slf4j;
-import org.neo4j.ogm.session.SessionFactory;
+
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.List;
+
+import org.springframework.data.neo4j.core.Neo4jTemplate;
 
 @Slf4j
 public abstract class AbstractRelationshipRecordServiceImpl<T extends AbstractRelationship, R extends EntityRepository<T>>
@@ -23,10 +25,10 @@ public abstract class AbstractRelationshipRecordServiceImpl<T extends AbstractRe
     private final CatalogCleanupService cleanupService;
 
     public AbstractRelationshipRecordServiceImpl(Class<T> domainClass,
-            SessionFactory sessionFactory,
+            Neo4jTemplate neo4jTemplate,
             R repository,
             CatalogCleanupService cleanupService) {
-        super(domainClass, sessionFactory, repository);
+        super(domainClass, neo4jTemplate, repository);
         this.cleanupService = cleanupService;
     }
 

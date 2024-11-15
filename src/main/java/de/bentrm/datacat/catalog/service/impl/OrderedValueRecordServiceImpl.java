@@ -3,7 +3,6 @@ package de.bentrm.datacat.catalog.service.impl;
 import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import de.bentrm.datacat.catalog.domain.XtdOrderedValue;
-import de.bentrm.datacat.catalog.domain.XtdSubject;
 import de.bentrm.datacat.catalog.domain.XtdValueList;
 import de.bentrm.datacat.catalog.domain.XtdValue;
 import de.bentrm.datacat.catalog.repository.ValueListRepository;
@@ -11,21 +10,18 @@ import de.bentrm.datacat.catalog.repository.ValueRepository;
 import de.bentrm.datacat.catalog.repository.OrderedValueRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.OrderedValueRecordService;
-import de.bentrm.datacat.catalog.service.ValueListRecordService;
 import lombok.extern.slf4j.Slf4j;
 
-import org.neo4j.ogm.session.SessionFactory;
+import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 
-import com.fasterxml.jackson.annotation.JacksonInject.Value;
-import com.fasterxml.jackson.databind.annotation.JsonAppend.Prop;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -41,12 +37,12 @@ public class OrderedValueRecordServiceImpl
             private final ValueRepository valueRepository;
             private final ValueListRepository valueListRepository;
 
-    public OrderedValueRecordServiceImpl(SessionFactory sessionFactory,
+    public OrderedValueRecordServiceImpl(Neo4jTemplate neo4jTemplate,
                                     OrderedValueRepository repository,
                                     ValueListRepository valueListRepository,
                                     ValueRepository valueRepository,
                                     CatalogCleanupService cleanupService) {
-        super(XtdOrderedValue.class, sessionFactory, repository, cleanupService);
+        super(XtdOrderedValue.class, neo4jTemplate, repository, cleanupService);
         this.valueRepository = valueRepository;
         this.valueListRepository = valueListRepository;
     }
@@ -84,7 +80,7 @@ public class OrderedValueRecordServiceImpl
     public @NotNull XtdOrderedValue setRelatedRecords(@NotBlank String recordId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdOrderedValue orderedValue = getRepository().findById(recordId, 0).orElseThrow();
+        final XtdOrderedValue orderedValue = getRepository().findById(recordId).orElseThrow();
 
         switch (relationType) {
             case Value:

@@ -3,8 +3,8 @@ package de.bentrm.datacat.catalog.domain;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import de.bentrm.datacat.catalog.domain.Enums.XtdDataTypeEnum;
 
@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
-@NodeEntity(label = XtdProperty.LABEL)
+@Node(XtdProperty.LABEL)
 public class XtdProperty extends XtdConcept {
 
     public static final String LABEL = "XtdProperty";
@@ -73,11 +73,11 @@ public class XtdProperty extends XtdConcept {
     private final Set<XtdRelationshipToProperty> connectedProperties = new HashSet<>();
 
     // Incomming relations
-    @Relationship(type = XtdRelationshipToProperty.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
+    @Relationship(type = XtdRelationshipToProperty.RELATIONSHIP_TYPE, direction = Relationship.Direction.INCOMING)
     private final Set<XtdRelationshipToProperty> connectingProperties = new HashSet<>();
 
     // List of the properties attached to the subject.
     @ToString.Include
-    @Relationship(type = "PROPERTIES", direction = Relationship.INCOMING)
+    @Relationship(type = "PROPERTIES", direction = Relationship.Direction.INCOMING)
     private final Set<XtdSubject> subjects = new HashSet<>();
 }

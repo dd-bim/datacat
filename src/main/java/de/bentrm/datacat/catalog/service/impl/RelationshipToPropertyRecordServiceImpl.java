@@ -3,10 +3,6 @@ package de.bentrm.datacat.catalog.service.impl;
 import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import de.bentrm.datacat.catalog.domain.XtdRelationshipToProperty;
-import de.bentrm.datacat.catalog.domain.XtdRelationshipToSubject;
-import de.bentrm.datacat.catalog.domain.XtdRelationshipType;
-import de.bentrm.datacat.catalog.domain.XtdRoot;
-import de.bentrm.datacat.catalog.domain.XtdSubject;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.repository.RelationshipToPropertyRepository;
 import de.bentrm.datacat.catalog.repository.PropertyRepository;
@@ -14,7 +10,8 @@ import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.RelationshipToPropertyRecordService;
 import de.bentrm.datacat.catalog.service.ObjectRecordService;
 import lombok.extern.slf4j.Slf4j;
-import org.neo4j.ogm.session.SessionFactory;
+
+import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -23,9 +20,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 
 @Slf4j
 @Service
@@ -38,12 +35,12 @@ public class RelationshipToPropertyRecordServiceImpl
     private final PropertyRepository propertyRepository;
     private final ObjectRecordService objectRecordService;
 
-    public RelationshipToPropertyRecordServiceImpl(SessionFactory sessionFactory,
+    public RelationshipToPropertyRecordServiceImpl(Neo4jTemplate neo4jTemplate,
                                      RelationshipToPropertyRepository repository,
                                      PropertyRepository propertyRepository,
                                      ObjectRecordService objectRecordService,
                                      CatalogCleanupService cleanupService) {
-        super(XtdRelationshipToProperty.class, sessionFactory, repository, cleanupService);
+        super(XtdRelationshipToProperty.class, neo4jTemplate, repository, cleanupService);
         this.propertyRepository = propertyRepository;
         this.objectRecordService = objectRecordService;
     }
@@ -58,9 +55,9 @@ public class RelationshipToPropertyRecordServiceImpl
    public @NotNull XtdRelationshipToProperty setRelatedRecords(@NotBlank String relationshipId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds) {
 
-       final XtdRelationshipToProperty relationship = getRepository().findById(relationshipId, 0).orElseThrow();
+       final XtdRelationshipToProperty relationship = getRepository().findById(relationshipId).orElseThrow();
 
-       final Iterable<XtdProperty> items = propertyRepository.findAllById(relatedRecordIds, 0);
+       final Iterable<XtdProperty> items = propertyRepository.findAllById(relatedRecordIds);
        final List<XtdProperty> related = StreamSupport
                .stream(items.spliterator(), false)
                .collect(Collectors.toList());
@@ -77,7 +74,7 @@ public class RelationshipToPropertyRecordServiceImpl
     protected void setRelatingRecord(@NotNull XtdRelationshipToProperty relationshipRecord,
                                      @NotBlank String relatingRecordId) {
         final XtdProperty relatingCatalogRecord = propertyRepository
-                .findById(relatingRecordId, 0)
+                .findById(relatingRecordId)
                 .orElseThrow();
         relationshipRecord.setConnectingProperty(relatingCatalogRecord);
     }
@@ -85,7 +82,7 @@ public class RelationshipToPropertyRecordServiceImpl
     @Override
     protected void setRelatedRecords(@NotNull XtdRelationshipToProperty relationshipRecord,
                                      @NotEmpty List<@NotBlank String> relatedRecordIds) {
-        final Iterable<XtdProperty> items = propertyRepository.findAllById(relatedRecordIds, 0);
+        final Iterable<XtdProperty> items = propertyRepository.findAllById(relatedRecordIds);
         final List<XtdProperty> related = StreamSupport
                 .stream(items.spliterator(), false)
                 .collect(Collectors.toList());
@@ -98,11 +95,11 @@ public class RelationshipToPropertyRecordServiceImpl
     public @NotNull XtdRelationshipToProperty setRelatedRecords(@NotBlank String recordId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdRelationshipToProperty relationship = getRepository().findById(recordId, 0).orElseThrow();
+        final XtdRelationshipToProperty relationship = getRepository().findById(recordId).orElseThrow();
 
         switch (relationType) {
 
-            case TargetProperties:
+            case TargetProperties -> {
                 final Iterable<XtdProperty> targetProperties = propertyRepository.findAllById(relatedRecordIds);
                 final List<XtdProperty> relatedTargetProperties = StreamSupport
                         .stream(targetProperties.spliterator(), false)
@@ -110,10 +107,8 @@ public class RelationshipToPropertyRecordServiceImpl
 
                 relationship.getTargetProperties().clear();
                 relationship.getTargetProperties().addAll(relatedTargetProperties);
-                break;
-            default:
-                objectRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
-                break;
+            }
+            default -> objectRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
         }
 
         final XtdRelationshipToProperty persistentRelationship = getRepository().save(relationship);

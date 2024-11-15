@@ -5,7 +5,6 @@ import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import de.bentrm.datacat.catalog.domain.XtdExternalDocument;
 import de.bentrm.datacat.catalog.domain.XtdConcept;
 import de.bentrm.datacat.catalog.domain.XtdLanguage;
-import de.bentrm.datacat.catalog.domain.XtdSubject;
 import de.bentrm.datacat.catalog.repository.ConceptRepository;
 import de.bentrm.datacat.catalog.repository.ExternalDocumentRepository;
 import de.bentrm.datacat.catalog.repository.LanguageRepository;
@@ -14,16 +13,16 @@ import de.bentrm.datacat.catalog.service.ExternalDocumentRecordService;
 import lombok.extern.slf4j.Slf4j;
 import de.bentrm.datacat.catalog.service.ConceptRecordService;
 
-import org.intellij.lang.annotations.Language;
-import org.neo4j.ogm.session.SessionFactory;
+import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -40,13 +39,13 @@ public class ExternalDocumentRecordServiceImpl
     private final LanguageRepository languageRepository;
     private final ConceptRecordService conceptRecordService;
 
-    public ExternalDocumentRecordServiceImpl(SessionFactory sessionFactory,
+    public ExternalDocumentRecordServiceImpl(Neo4jTemplate neo4jTemplate,
                                              ExternalDocumentRepository repository,
                                              ConceptRepository conceptRepository,
                                              LanguageRepository languageRepository,
                                              ConceptRecordService conceptRecordService,
                                              CatalogCleanupService cleanupService) {
-        super(XtdExternalDocument.class, sessionFactory, repository, cleanupService);
+        super(XtdExternalDocument.class, neo4jTemplate, repository, cleanupService);
         this.conceptRepository = conceptRepository;
         this.languageRepository = languageRepository;
         this.conceptRecordService = conceptRecordService;
@@ -86,7 +85,7 @@ public class ExternalDocumentRecordServiceImpl
     public @NotNull XtdExternalDocument setRelatedRecords(@NotBlank String recordId,
             @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdExternalDocument externalDocument = getRepository().findById(recordId, 0).orElseThrow();
+        final XtdExternalDocument externalDocument = getRepository().findById(recordId).orElseThrow();
 
         switch (relationType) {
             case Languages:

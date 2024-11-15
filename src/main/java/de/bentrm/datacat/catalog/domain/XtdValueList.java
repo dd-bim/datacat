@@ -3,8 +3,8 @@ package de.bentrm.datacat.catalog.domain;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,7 +12,7 @@ import java.util.Set;
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
-@NodeEntity(label = XtdValueList.LABEL)
+@Node(XtdValueList.LABEL)
 public class XtdValueList extends XtdConcept {
 
     public static final String LABEL = "XtdValueList";
@@ -30,6 +30,6 @@ public class XtdValueList extends XtdConcept {
     private final Set<XtdOrderedValue> values = new HashSet<>();
 
     @ToString.Include
-    @Relationship(type = "POSSIBLE_VALUES", direction = Relationship.INCOMING)
+    @Relationship(type = "POSSIBLE_VALUES", direction = Relationship.Direction.INCOMING)
     private final Set<XtdProperty> properties = new HashSet<>();
 }

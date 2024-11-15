@@ -2,9 +2,9 @@ package de.bentrm.datacat.graphql.input;
 
 import lombok.Data;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotEmpty;
 
 import de.bentrm.datacat.catalog.domain.Enums.XtdStatusOfActivationEnum;
 

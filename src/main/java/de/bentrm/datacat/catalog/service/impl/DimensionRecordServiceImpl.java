@@ -4,7 +4,6 @@ import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import de.bentrm.datacat.catalog.domain.XtdDimension;
 import de.bentrm.datacat.catalog.domain.XtdRational;
-import de.bentrm.datacat.catalog.domain.XtdSubject;
 import de.bentrm.datacat.catalog.repository.DimensionRepository;
 import de.bentrm.datacat.catalog.repository.RationalRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
@@ -12,16 +11,16 @@ import de.bentrm.datacat.catalog.service.ConceptRecordService;
 import de.bentrm.datacat.catalog.service.DimensionRecordService;
 import lombok.extern.slf4j.Slf4j;
 
-import org.neo4j.ogm.session.SessionFactory;
+import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 @Slf4j
 @Service
@@ -34,12 +33,12 @@ public class DimensionRecordServiceImpl
     private final RationalRepository rationalRepository;
     private final ConceptRecordService conceptRecordService;
 
-    public DimensionRecordServiceImpl(SessionFactory sessionFactory,
+    public DimensionRecordServiceImpl(Neo4jTemplate neo4jTemplate,
             DimensionRepository repository,
             RationalRepository rationalRepository,
             ConceptRecordService conceptRecordService,
             CatalogCleanupService cleanupService) {
-        super(XtdDimension.class, sessionFactory, repository, cleanupService);
+        super(XtdDimension.class, neo4jTemplate, repository, cleanupService);
         this.rationalRepository = rationalRepository;
         this.conceptRecordService = conceptRecordService;
     }
@@ -54,85 +53,83 @@ public class DimensionRecordServiceImpl
     public @NotNull XtdDimension setRelatedRecords(@NotBlank String recordId,
             @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdDimension dimension = getRepository().findById(recordId, 0).orElseThrow();
+        final XtdDimension dimension = getRepository().findById(recordId).orElseThrow();
 
         switch (relationType) {
-            case ThermodynamicTemperatureExponent:
+            case ThermodynamicTemperatureExponent -> {
                 if (dimension.getThermodynamicTemperatureExponent() != null) {
                     throw new IllegalArgumentException("ThermodynamicTemperatureExponent already set.");
                 } else if (relatedRecordIds.size() != 1) {
                     throw new IllegalArgumentException(
                             "ThermodynamicTemperatureExponent requires exactly one related record.");
                 } else {
-                    final XtdRational rational = rationalRepository.findById(relatedRecordIds.get(0), 0).orElseThrow();
+                    final XtdRational rational = rationalRepository.findById(relatedRecordIds.get(0)).orElseThrow();
                     dimension.setThermodynamicTemperatureExponent(rational);
                 }
-                break;
-            case AmountOfSubstanceExponent:
+            }
+            case AmountOfSubstanceExponent -> {
                 if (dimension.getAmountOfSubstanceExponent() != null) {
                     throw new IllegalArgumentException("AmountOfSubstanceExponent already set.");
                 } else if (relatedRecordIds.size() != 1) {
                     throw new IllegalArgumentException(
                             "AmountOfSubstanceExponent requires exactly one related record.");
                 } else {
-                    final XtdRational rational = rationalRepository.findById(relatedRecordIds.get(0), 0).orElseThrow();
+                    final XtdRational rational = rationalRepository.findById(relatedRecordIds.get(0)).orElseThrow();
                     dimension.setAmountOfSubstanceExponent(rational);
                 }
-                break;
-            case LengthExponent:
+            }
+            case LengthExponent -> {
                 if (dimension.getLengthExponent() != null) {
                     throw new IllegalArgumentException("LengthExponent already set.");
                 } else if (relatedRecordIds.size() != 1) {
                     throw new IllegalArgumentException("LengthExponent requires exactly one related record.");
                 } else {
-                    final XtdRational rational = rationalRepository.findById(relatedRecordIds.get(0), 0).orElseThrow();
+                    final XtdRational rational = rationalRepository.findById(relatedRecordIds.get(0)).orElseThrow();
                     dimension.setLengthExponent(rational);
                 }
-                break;
-            case MassExponent:
+            }
+            case MassExponent -> {
                 if (dimension.getMassExponent() != null) {
                     throw new IllegalArgumentException("MassExponent already set.");
                 } else if (relatedRecordIds.size() != 1) {
                     throw new IllegalArgumentException("MassExponent requires exactly one related record.");
                 } else {
-                    final XtdRational rational = rationalRepository.findById(relatedRecordIds.get(0), 0).orElseThrow();
+                    final XtdRational rational = rationalRepository.findById(relatedRecordIds.get(0)).orElseThrow();
                     dimension.setMassExponent(rational);
                 }
-                break;
-            case TimeExponent:
+            }
+            case TimeExponent -> {
                 if (dimension.getTimeExponent() != null) {
                     throw new IllegalArgumentException("TimeExponent already set.");
                 } else if (relatedRecordIds.size() != 1) {
                     throw new IllegalArgumentException("TimeExponent requires exactly one related record.");
                 } else {
-                    final XtdRational rational = rationalRepository.findById(relatedRecordIds.get(0), 0).orElseThrow();
+                    final XtdRational rational = rationalRepository.findById(relatedRecordIds.get(0)).orElseThrow();
                     dimension.setTimeExponent(rational);
                 }
-                break;
-            case ElectricCurrentExponent:
+            }
+            case ElectricCurrentExponent -> {
                 if (dimension.getElectricCurrentExponent() != null) {
                     throw new IllegalArgumentException("ElectricCurrentExponent already set.");
                 } else if (relatedRecordIds.size() != 1) {
                     throw new IllegalArgumentException("ElectricCurrentExponent requires exactly one related record.");
                 } else {
-                    final XtdRational rational = rationalRepository.findById(relatedRecordIds.get(0), 0).orElseThrow();
+                    final XtdRational rational = rationalRepository.findById(relatedRecordIds.get(0)).orElseThrow();
                     dimension.setElectricCurrentExponent(rational);
                 }
-                break;
-            case LuminousIntensityExponent:
+            }
+            case LuminousIntensityExponent -> {
                 if (dimension.getLuminousIntensityExponent() != null) {
                     throw new IllegalArgumentException("LuminousIntensityExponent already set.");
                 } else if (relatedRecordIds.size() != 1) {
                     throw new IllegalArgumentException(
                             "LuminousIntensityExponent requires exactly one related record.");
                 } else {
-                    final XtdRational rational = rationalRepository.findById(relatedRecordIds.get(0), 0).orElseThrow();
+                    final XtdRational rational = rationalRepository.findById(relatedRecordIds.get(0)).orElseThrow();
                     dimension.setLuminousIntensityExponent(rational);
                 }
-                break;
-            default:
-                conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
-                break;
+            }
+            default -> conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
         }
 
         final XtdDimension persistentDimension = getRepository().save(dimension);

@@ -4,12 +4,11 @@ import de.bentrm.datacat.base.domain.Entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.neo4j.ogm.annotation.Index;
-import org.neo4j.ogm.annotation.NodeEntity;
+import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,12 +17,12 @@ import java.util.stream.Collectors;
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
-@NodeEntity(label = "User")
+@Node("User")
 public class User extends Entity implements UserDetails {
 
     @ToString.Include
     @EqualsAndHashCode.Include
-    @Index(unique = true)
+    // @Index(unique = true)
     @NotBlank
     protected String username;
 
@@ -38,7 +37,7 @@ public class User extends Entity implements UserDetails {
     @NotBlank
     private String lastName;
 
-    @Index(unique = true)
+    // @Index(unique = true)
     @NotBlank
     private String email;
 

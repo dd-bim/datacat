@@ -24,9 +24,9 @@ graphql:
     # tracing-enabled: true
     actuator-metrics: true
     exception-handlers-enabled: true
-  playground:
-    enabled: true
-    mapping: /playground
+  # playground:
+  #   enabled: true
+  #   mapping: /playground
 # voyager:
 #   enabled: true
 logging:

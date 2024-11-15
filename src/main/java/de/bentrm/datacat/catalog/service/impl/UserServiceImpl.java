@@ -3,12 +3,13 @@ package de.bentrm.datacat.catalog.service.impl;
 import de.bentrm.datacat.auth.domain.User;
 import de.bentrm.datacat.base.repository.UserRepository;
 import de.bentrm.datacat.catalog.service.UserService;
-import org.neo4j.ogm.session.SessionFactory;
+
+import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 @Service
 @Validated
@@ -19,8 +20,8 @@ public class UserServiceImpl
 
     private final UserRepository repository;
 
-    public UserServiceImpl(SessionFactory sessionFactory, UserRepository repository) {
-        super(User.class, sessionFactory, repository);
+    public UserServiceImpl(Neo4jTemplate neo4jTemplate, UserRepository repository) {
+        super(User.class, neo4jTemplate, repository);
         this.repository = repository;
     }
 

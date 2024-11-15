@@ -50,6 +50,7 @@ public class TagSpecification extends QuerySpecification {
             return self();
         }
 
+        @Override
         public TagSpecification build() {
             return new TagSpecification(this.filters, this.pageNumber, this.pageSize);
         }

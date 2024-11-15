@@ -5,7 +5,6 @@ import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import de.bentrm.datacat.catalog.domain.XtdUnit;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.domain.XtdRational;
-import de.bentrm.datacat.catalog.domain.XtdSubject;
 import de.bentrm.datacat.catalog.domain.XtdDimension;
 import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
 import de.bentrm.datacat.catalog.repository.UnitRepository;
@@ -13,24 +12,25 @@ import de.bentrm.datacat.catalog.repository.DimensionRepository;
 import de.bentrm.datacat.catalog.repository.MultiLanguageTextRepository;
 import de.bentrm.datacat.catalog.repository.PropertyRepository;
 import de.bentrm.datacat.catalog.repository.RationalRepository;
-import de.bentrm.datacat.catalog.service.PropertyRecordService;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.UnitRecordService;
 import de.bentrm.datacat.catalog.service.ConceptRecordService;
 import lombok.extern.slf4j.Slf4j;
 
-import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import org.springframework.data.neo4j.core.Neo4jTemplate;
 
 @Slf4j
 @Service
@@ -46,7 +46,7 @@ public class UnitRecordServiceImpl
     private final RationalRepository rationalRepository;
     private final ConceptRecordService conceptRecordService;
 
-    public UnitRecordServiceImpl(SessionFactory sessionFactory,
+    public UnitRecordServiceImpl(Neo4jTemplate neo4jTemplate,
             UnitRepository repository,
             PropertyRepository propertyRepository,
             DimensionRepository dimensionRepository,
@@ -54,7 +54,7 @@ public class UnitRecordServiceImpl
             RationalRepository rationalRepository,
             ConceptRecordService conceptRecordService,
             CatalogCleanupService cleanupService) {
-        super(XtdUnit.class, sessionFactory, repository, cleanupService);
+        super(XtdUnit.class, neo4jTemplate, repository, cleanupService);
         this.propertyRepository = propertyRepository;
         this.dimensionRepository = dimensionRepository;
         this.multiLanguageTextRepository = multiLanguageTextRepository;
@@ -95,10 +95,10 @@ public class UnitRecordServiceImpl
     public @NotNull XtdUnit setRelatedRecords(@NotBlank String recordId,
             @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdUnit unit = getRepository().findById(recordId, 0).orElseThrow();
+        final XtdUnit unit = getRepository().findById(recordId).orElseThrow();
 
         switch (relationType) {
-            case Symbol:
+            case Symbol -> {
                 if (unit.getSymbol() != null) {
                     throw new IllegalArgumentException("Unit already has a symbol.");
                 } else if (relatedRecordIds.size() != 1) {
@@ -108,8 +108,8 @@ public class UnitRecordServiceImpl
                             .orElseThrow();
                     unit.setSymbol(symbol);
                 }
-                break;
-            case Offset:
+            }
+            case Offset -> {
                 if (unit.getOffset() != null) {
                     throw new IllegalArgumentException("Unit already has an offset.");
                 } else if (relatedRecordIds.size() != 1) {
@@ -118,8 +118,8 @@ public class UnitRecordServiceImpl
                     final XtdRational offset = rationalRepository.findById(relatedRecordIds.get(0)).orElseThrow();
                     unit.setOffset(offset);
                 }
-                break;
-            case Coefficient:
+            }
+            case Coefficient -> {
                 if (unit.getCoefficient() != null) {
                     throw new IllegalArgumentException("Unit already has a coefficient.");
                 } else if (relatedRecordIds.size() != 1) {
@@ -128,8 +128,8 @@ public class UnitRecordServiceImpl
                     final XtdRational coefficient = rationalRepository.findById(relatedRecordIds.get(0)).orElseThrow();
                     unit.setCoefficient(coefficient);
                 }
-                break;
-            case Dimension:
+            }
+            case Dimension -> {
                 if (unit.getDimension() != null) {
                     throw new IllegalArgumentException("Unit already has a dimension.");
                 } else if (relatedRecordIds.size() != 1) {
@@ -138,10 +138,8 @@ public class UnitRecordServiceImpl
                     final XtdDimension dimension = dimensionRepository.findById(relatedRecordIds.get(0)).orElseThrow();
                     unit.setDimension(dimension);
                 }
-                break;
-            default:
-                conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
-                break;
+            }
+            default -> conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
         }
 
         final XtdUnit persistentUnit = getRepository().save(unit);

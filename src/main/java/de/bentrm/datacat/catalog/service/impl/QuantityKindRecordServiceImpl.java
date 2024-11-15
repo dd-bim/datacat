@@ -5,7 +5,6 @@ import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import de.bentrm.datacat.catalog.domain.XtdDimension;
 import de.bentrm.datacat.catalog.domain.XtdUnit;
 import de.bentrm.datacat.catalog.domain.XtdQuantityKind;
-import de.bentrm.datacat.catalog.domain.XtdSubject;
 import de.bentrm.datacat.catalog.repository.QuantityKindRepository;
 import de.bentrm.datacat.catalog.repository.UnitRepository;
 import de.bentrm.datacat.catalog.repository.DimensionRepository;
@@ -14,15 +13,16 @@ import de.bentrm.datacat.catalog.service.ConceptRecordService;
 import de.bentrm.datacat.catalog.service.QuantityKindRecordService;
 import lombok.extern.slf4j.Slf4j;
 
-import org.neo4j.ogm.session.SessionFactory;
+import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -39,13 +39,13 @@ public class QuantityKindRecordServiceImpl
             private final DimensionRepository dimensionRepository;
             private final ConceptRecordService conceptRecordService;
 
-    public QuantityKindRecordServiceImpl(SessionFactory sessionFactory,
+    public QuantityKindRecordServiceImpl(Neo4jTemplate neo4jTemplate,
                                      QuantityKindRepository repository,
                                      UnitRepository unitRepository,
                                      DimensionRepository dimensionRepository,
                                      ConceptRecordService conceptRecordService,
                                      CatalogCleanupService cleanupService) {
-        super(XtdQuantityKind.class, sessionFactory, repository, cleanupService);
+        super(XtdQuantityKind.class, neo4jTemplate, repository, cleanupService);
         this.unitRepository = unitRepository;
         this.dimensionRepository = dimensionRepository;
         this.conceptRecordService = conceptRecordService;
@@ -83,19 +83,19 @@ public class QuantityKindRecordServiceImpl
     public @NotNull XtdQuantityKind setRelatedRecords(@NotBlank String recordId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdQuantityKind quantityKind = getRepository().findById(recordId, 0).orElseThrow();
+        final XtdQuantityKind quantityKind = getRepository().findById(recordId).orElseThrow();
         
         switch (relationType) {
-            case Units:
+            case Units -> {
                 final Iterable<XtdUnit> units = unitRepository.findAllById(relatedRecordIds);
                 final List<XtdUnit> relatedUnits = StreamSupport
-                    .stream(units.spliterator(), false)
-                    .collect(Collectors.toList());
-
+                        .stream(units.spliterator(), false)
+                        .collect(Collectors.toList());
+                
                 quantityKind.getUnits().clear();
                 quantityKind.getUnits().addAll(relatedUnits);
-                break;
-            case Dimension:
+                    }
+            case Dimension -> {
                 if (quantityKind.getDimension() != null) {
                     throw new IllegalArgumentException("QuantityKind already has a dimension assigned.");
                 } else if (relatedRecordIds.size() != 1) {
@@ -103,11 +103,8 @@ public class QuantityKindRecordServiceImpl
                 } else {
                     final XtdDimension dimension = dimensionRepository.findById(relatedRecordIds.get(0)).orElseThrow();
                     quantityKind.setDimension(dimension);
-                }
-                break;
-            default:
-                conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
-                break;
+                }   }
+            default -> conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
         }
 
         final XtdQuantityKind persistentQuantityKind = getRepository().save(quantityKind);

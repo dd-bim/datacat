@@ -3,16 +3,13 @@ package de.bentrm.datacat.catalog.service.impl;
 import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import de.bentrm.datacat.catalog.domain.XtdLanguage;
-import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.domain.XtdText;
-import de.bentrm.datacat.catalog.domain.XtdUnit;
 import de.bentrm.datacat.catalog.repository.LanguageRepository;
 import de.bentrm.datacat.catalog.repository.TextRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.TextRecordService;
 import lombok.extern.slf4j.Slf4j;
 
-import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -20,9 +17,11 @@ import org.springframework.util.Assert;
 
 import java.util.List;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import org.springframework.data.neo4j.core.Neo4jTemplate;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 @Slf4j
 @Service
@@ -34,11 +33,11 @@ public class TextRecordServiceImpl
 
             private final LanguageRepository languageRepository;
 
-    public TextRecordServiceImpl(SessionFactory sessionFactory,
+    public TextRecordServiceImpl(Neo4jTemplate neo4jTemplate,
                                      TextRepository repository,
                                      LanguageRepository languageRepository,
                                      CatalogCleanupService cleanupService) {
-        super(XtdText.class, sessionFactory, repository, cleanupService);
+        super(XtdText.class, neo4jTemplate, repository, cleanupService);
         this.languageRepository = languageRepository;
     }
 
@@ -65,22 +64,20 @@ public class TextRecordServiceImpl
     public @NotNull XtdText setRelatedRecords(@NotBlank String recordId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdText text = getRepository().findById(recordId, 0).orElseThrow();
+        final XtdText text = getRepository().findById(recordId).orElseThrow();
 
         switch (relationType) {
-            case Language:
-                    if (text.getLanguage() != null) {
-                        throw new IllegalArgumentException("Text already has a language assigned.");
-                    } else if (relatedRecordIds.size() != 1) {
-                        throw new IllegalArgumentException("Exactly one language must be assigned to a text.");
-                    } else {
-                        final XtdLanguage language = languageRepository.findById(relatedRecordIds.get(0)).orElseThrow();
-                        text.setLanguage(language);
+            case Language -> {
+                if (text.getLanguage() != null) {
+                    throw new IllegalArgumentException("Text already has a language assigned.");
+                } else if (relatedRecordIds.size() != 1) {
+                    throw new IllegalArgumentException("Exactly one language must be assigned to a text.");
+                } else {
+                    final XtdLanguage language = languageRepository.findById(relatedRecordIds.get(0)).orElseThrow();
+                    text.setLanguage(language);
+                }
                     }
-                break;
-            default:
-                log.error("Unsupported relation type: {}", relationType);
-                break;
+            default -> log.error("Unsupported relation type: {}", relationType);
         }
 
         final XtdText persistentText = getRepository().save(text);

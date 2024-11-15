@@ -4,19 +4,18 @@ import de.bentrm.datacat.base.domain.Entity;
 import de.bentrm.datacat.util.LocalizationUtils;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Properties;
-import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 import org.springframework.util.Assert;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.util.*;
 
 @Slf4j
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
-@NodeEntity(label = "CatalogRecord")
+@Node("CatalogRecord")
 public abstract class CatalogRecord extends Entity {
 
     // public static final String DEFAULT_LANGUAGE_TAG = "de";

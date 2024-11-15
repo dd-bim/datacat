@@ -34,6 +34,7 @@ public final class CatalogRecordSpecification extends QuerySpecification {
             return this;
         }
 
+        @Override
         public CatalogRecordSpecification build() {
             return new CatalogRecordSpecification(this.filters, this.pageNumber, this.pageSize);
         }

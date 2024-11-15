@@ -5,15 +5,15 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import java.util.HashSet;
 import java.util.Set;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
-@NodeEntity(label = XtdQuantityKind.LABEL)
+@Node(XtdQuantityKind.LABEL)
 public class XtdQuantityKind extends XtdConcept {
 
     public static final String LABEL = "XtdQuantityKind";

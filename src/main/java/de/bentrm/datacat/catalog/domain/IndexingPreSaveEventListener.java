@@ -4,13 +4,10 @@ import org.neo4j.ogm.session.event.Event;
 import org.neo4j.ogm.session.event.EventListenerAdapter;
 
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
-import de.bentrm.datacat.catalog.domain.Enums.XtdStatusOfActivationEnum;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
-import java.util.HashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -40,7 +37,7 @@ class IndexingPreSaveEventListener extends EventListenerAdapter {
             final Map<String, String> labels = mName.getTexts().stream()
                     .collect(Collectors.toMap(text -> text.getLocale().toString(), XtdText::getText));
 
-            if (labels.size() > 0) {
+            if (!labels.isEmpty()) {
                 record.getLabels().clear();
                 record.getLabels().putAll(labels);
             }

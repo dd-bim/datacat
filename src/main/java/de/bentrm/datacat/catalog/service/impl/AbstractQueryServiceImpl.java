@@ -1,28 +1,28 @@
 package de.bentrm.datacat.catalog.service.impl;
 
-import de.bentrm.datacat.base.domain.Entity;
-import de.bentrm.datacat.base.repository.EntityRepository;
-import de.bentrm.datacat.base.specification.QuerySpecification;
-import de.bentrm.datacat.catalog.service.QueryService;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.neo4j.ogm.cypher.query.Pagination;
-import org.neo4j.ogm.cypher.query.SortOrder;
-import org.neo4j.ogm.session.Session;
-import org.neo4j.ogm.session.SessionFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.support.PageableExecutionUtils;
-
-import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import org.neo4j.ogm.cypher.query.Pagination;
+import org.neo4j.ogm.cypher.query.SortOrder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.neo4j.core.Neo4jTemplate;
+import org.springframework.data.support.PageableExecutionUtils;
+
+import de.bentrm.datacat.base.domain.Entity;
+import de.bentrm.datacat.base.repository.EntityRepository;
+import de.bentrm.datacat.base.specification.QuerySpecification;
+import de.bentrm.datacat.catalog.service.QueryService;
+import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter(AccessLevel.PROTECTED)
@@ -30,21 +30,23 @@ public abstract class AbstractQueryServiceImpl<T extends Entity, R extends Entit
         implements QueryService<T> {
 
     private final Class<T> domainClass;
-    private final SessionFactory sessionFactory;
+    private final Neo4jTemplate neo4jTemplate;
     private final R repository;
 
     public AbstractQueryServiceImpl(Class<T> domainClass,
-                                    SessionFactory sessionFactory,
+                                    Neo4jTemplate neo4jTemplate,
                                     R repository) {
         this.domainClass = domainClass;
-        this.sessionFactory = sessionFactory;
+        this.neo4jTemplate = neo4jTemplate;
         this.repository = repository;
     }
 
+    @Override
     public @NotNull Optional<T> findById(@NotNull String id) {
         return repository.findById(id);
     }
 
+    @Override
     public @NotNull List<T> findAllByIds(@NotNull List<String> ids) {
         Iterable<T> source = repository.findAllById(ids);
         return StreamSupport
@@ -57,7 +59,6 @@ public abstract class AbstractQueryServiceImpl<T extends Entity, R extends Entit
         Collection<T> users;
         Pageable pageable;
         final long count = count(specification);
-        final Session session = sessionFactory.openSession();
 
         final Optional<Pageable> paged = specification.getPageable();
         if (paged.isPresent()) {
@@ -83,7 +84,7 @@ public abstract class AbstractQueryServiceImpl<T extends Entity, R extends Entit
 
     @Override
     public @NotNull long count(@NotNull QuerySpecification specification) {
-        final Session session = sessionFactory.openSession();
-        return session.count(domainClass, specification.getFilters());
+        // return session.count(domainClass, specification.getFilters());
+        return neo4jTemplate.count(domainClass, specification.getFilters());
     }
 }

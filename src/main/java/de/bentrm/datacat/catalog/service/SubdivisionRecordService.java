@@ -1,6 +1,6 @@
 package de.bentrm.datacat.catalog.service;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 import de.bentrm.datacat.catalog.domain.XtdSubdivision;

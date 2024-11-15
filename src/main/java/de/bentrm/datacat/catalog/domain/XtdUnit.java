@@ -3,8 +3,8 @@ package de.bentrm.datacat.catalog.domain;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import de.bentrm.datacat.catalog.domain.Enums.XtdUnitBaseEnum;
 import de.bentrm.datacat.catalog.domain.Enums.XtdUnitScaleEnum;
@@ -15,7 +15,7 @@ import java.util.Set;
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
-@NodeEntity(label = XtdUnit.LABEL)
+@Node(XtdUnit.LABEL)
 public class XtdUnit extends XtdConcept {
     public static final String LABEL = "XtdUnit";
 
@@ -43,6 +43,6 @@ public class XtdUnit extends XtdConcept {
     private XtdDimension dimension; 
 
     @ToString.Include
-    @Relationship(type = "UNITS", direction = Relationship.INCOMING)
+    @Relationship(type = "UNITS", direction = Relationship.Direction.INCOMING)
     private final Set<XtdProperty> properties = new HashSet<>();
 }

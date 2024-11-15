@@ -3,9 +3,9 @@ package de.bentrm.datacat.catalog.domain;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Properties;
-import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Property;
+import org.springframework.data.neo4j.core.schema.Relationship;
 import org.springframework.util.Assert;
 
 import de.bentrm.datacat.util.LocalizationUtils;
@@ -14,13 +14,13 @@ import de.bentrm.datacat.catalog.domain.Enums.XtdStatusOfActivationEnum;
 import de.bentrm.datacat.catalog.service.ObjectRecordService;
 
 import java.util.*;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 @Slf4j
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
-@NodeEntity(label = XtdObject.LABEL)
+@Node(XtdObject.LABEL)
 public abstract class XtdObject extends XtdRoot {
 
     public static final String LABEL = "XtdObject";
@@ -40,7 +40,7 @@ public abstract class XtdObject extends XtdRoot {
     // Primary use case for this property is search and lookup optimization
     // TODO: Add external full text search component to improve on this mechanic
     @Setter(AccessLevel.NONE)
-    @Properties
+    @Property
     private final Map<String, String> labels = new HashMap<>();
 
     // // Set of names of the object in different languages. Each object may have multiple names, and this allows for its expression in terms of synonyms. 
@@ -61,11 +61,11 @@ public abstract class XtdObject extends XtdRoot {
     private XtdStatusOfActivationEnum status;
 
     // List of objects replaced by the current object.
-    @Relationship(type = XtdObject.REPLACE_OBJECT_TYPE, direction = Relationship.OUTGOING)
+    @Relationship(type = XtdObject.REPLACE_OBJECT_TYPE, direction = Relationship.Direction.OUTGOING)
     private final Set<XtdObject> replacedObjects = new HashSet<>();
 
     // Incoming relations of above relation
-    @Relationship(type = XtdObject.REPLACE_OBJECT_TYPE, direction = Relationship.INCOMING)
+    @Relationship(type = XtdObject.REPLACE_OBJECT_TYPE, direction = Relationship.Direction.INCOMING)
     private final Set<XtdObject> replacingObjects = new HashSet<>();
 
     // Sentence explaining the reason of the deprecation, which can explain how to convert values to conform to the new object.

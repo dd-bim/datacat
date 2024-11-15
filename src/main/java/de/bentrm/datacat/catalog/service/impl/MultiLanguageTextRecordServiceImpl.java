@@ -3,7 +3,6 @@ package de.bentrm.datacat.catalog.service.impl;
 import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
-import de.bentrm.datacat.catalog.domain.XtdSubject;
 import de.bentrm.datacat.catalog.domain.XtdText;
 import de.bentrm.datacat.catalog.repository.TextRepository;
 import de.bentrm.datacat.catalog.repository.MultiLanguageTextRepository;
@@ -11,15 +10,16 @@ import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.MultiLanguageTextRecordService;
 import lombok.extern.slf4j.Slf4j;
 
-import org.neo4j.ogm.session.SessionFactory;
+import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.util.Assert;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -34,11 +34,11 @@ public class MultiLanguageTextRecordServiceImpl
 
     private final TextRepository textRepository;
 
-    public MultiLanguageTextRecordServiceImpl(SessionFactory sessionFactory,
+    public MultiLanguageTextRecordServiceImpl(Neo4jTemplate neo4jTemplate,
             MultiLanguageTextRepository repository,
             TextRepository textRepository,
             CatalogCleanupService cleanupService) {
-        super(XtdMultiLanguageText.class, sessionFactory, repository, cleanupService);
+        super(XtdMultiLanguageText.class, neo4jTemplate, repository, cleanupService);
         this.textRepository = textRepository;
     }
 
@@ -64,21 +64,19 @@ public class MultiLanguageTextRecordServiceImpl
     public @NotNull XtdMultiLanguageText setRelatedRecords(@NotBlank String recordId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdMultiLanguageText multiLanguageText = getRepository().findById(recordId, 0).orElseThrow();
+        final XtdMultiLanguageText multiLanguageText = getRepository().findById(recordId).orElseThrow();
 
         switch (relationType) {
-            case Texts:
-                final Iterable<XtdText> items = textRepository.findAllById(relatedRecordIds, 0);
+            case Texts -> {
+                final Iterable<XtdText> items = textRepository.findAllById(relatedRecordIds);
                 final List<XtdText> related = StreamSupport
                         .stream(items.spliterator(), false)
                         .collect(Collectors.toList());
 
                 multiLanguageText.getTexts().clear();
                 multiLanguageText.getTexts().addAll(related);
-                break;
-            default:
-                log.error("Unsupported relation type: {}", relationType);
-                break;
+            }
+            default -> log.error("Unsupported relation type: {}", relationType);
         }
 
         final XtdMultiLanguageText persistentMultiLanguageText = getRepository().save(multiLanguageText);

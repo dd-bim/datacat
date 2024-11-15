@@ -13,6 +13,7 @@ import de.bentrm.datacat.base.repository.EmailConfirmationRepository;
 import de.bentrm.datacat.base.repository.UserRepository;
 import de.bentrm.datacat.catalog.service.impl.AbstractQueryServiceImpl;
 import de.bentrm.datacat.catalog.service.value.ValueMapper;
+
 import org.neo4j.ogm.cypher.query.Pagination;
 import org.neo4j.ogm.cypher.query.SortOrder;
 import org.neo4j.ogm.session.Session;
@@ -21,18 +22,21 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.support.PageableExecutionUtils;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.springframework.data.neo4j.core.Neo4jTemplate;
 
 @Service
 @Validated
@@ -43,12 +47,12 @@ public class AdminServiceImpl extends AbstractQueryServiceImpl<User, UserReposit
     private final EmailService emailService;
     private final ValueMapper valueMapper;
 
-    public AdminServiceImpl(SessionFactory sessionFactory,
+    public AdminServiceImpl(Neo4jTemplate neo4jTemplate,
                             UserRepository repository,
                             EmailConfirmationRepository emailConfirmationRepository,
                             EmailService emailService,
                             ValueMapper valueMapper) {
-        super(User.class, sessionFactory, repository);
+        super(User.class, neo4jTemplate, repository);
         this.emailConfirmationRepository = emailConfirmationRepository;
         this.emailService = emailService;
         this.valueMapper = valueMapper;
@@ -153,7 +157,6 @@ public class AdminServiceImpl extends AbstractQueryServiceImpl<User, UserReposit
 
     @Override
     public long countAccounts(UserSpecification specification) {
-        final Session session = getSessionFactory().openSession();
         return session.count(User.class, specification.getFilters());
     }
 

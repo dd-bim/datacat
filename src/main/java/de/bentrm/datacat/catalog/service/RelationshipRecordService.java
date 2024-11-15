@@ -4,10 +4,10 @@ import de.bentrm.datacat.catalog.domain.AbstractRelationship;
 import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 /**

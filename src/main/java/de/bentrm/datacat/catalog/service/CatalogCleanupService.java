@@ -1,8 +1,8 @@
 package de.bentrm.datacat.catalog.service;
 
 import de.bentrm.datacat.catalog.domain.SimpleRelationType;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Internal utility service whose primary purpose is to be used by other service

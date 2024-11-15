@@ -3,18 +3,18 @@ package de.bentrm.datacat.catalog.domain;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
-@NodeEntity(label = XtdRelationshipToSubject.LABEL)
+@Node(XtdRelationshipToSubject.LABEL)
 public class XtdRelationshipToSubject extends AbstractRelationship {
 
     public static final String LABEL = "XtdRelationshipToSubject";
@@ -34,7 +34,7 @@ public class XtdRelationshipToSubject extends AbstractRelationship {
     private final Set<XtdSubject> targetSubjects = new HashSet<>();
 
     @ToString.Include
-    @Relationship(type = XtdRelationshipToSubject.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
+    @Relationship(type = XtdRelationshipToSubject.RELATIONSHIP_TYPE, direction = Relationship.Direction.INCOMING)
     private XtdSubject connectingSubject;
 
 }

@@ -1,26 +1,21 @@
 package de.bentrm.datacat.catalog.service.impl;
 
 import de.bentrm.datacat.catalog.domain.*;
-import de.bentrm.datacat.catalog.repository.OrderedValueRepository;
-import de.bentrm.datacat.catalog.repository.ValueListRepository;
 import de.bentrm.datacat.catalog.repository.ValueRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.ValueRecordService;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.neo4j.ogm.session.SessionFactory;
-import org.springframework.core.Ordered;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+
+import org.springframework.data.neo4j.core.Neo4jTemplate;
 
 @Service
 @Validated
@@ -31,11 +26,11 @@ public class ValueRecordServiceImpl
 
             // private final OrderedValueRepository orderedValueRepository;
 
-    public ValueRecordServiceImpl(SessionFactory sessionFactory,
-                                  ValueRepository repository,
+    public ValueRecordServiceImpl(ValueRepository repository,
+                                  Neo4jTemplate neo4jTemplate,
                                 //   OrderedValueRepository orderedValueRepository,
                                   CatalogCleanupService cleanupService) {
-        super(XtdValue.class, sessionFactory, repository, cleanupService);
+        super(XtdValue.class, neo4jTemplate, repository, cleanupService);
         // this.orderedValueRepository = orderedValueRepository;
     }
 
@@ -60,7 +55,7 @@ public class ValueRecordServiceImpl
     public @NotNull XtdValue setRelatedRecords(@NotBlank String recordId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdValue value = getRepository().findById(recordId, 0).orElseThrow();
+        final XtdValue value = getRepository().findById(recordId).orElseThrow();
 
        return value;                                                 
     }

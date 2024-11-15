@@ -1,11 +1,8 @@
 package de.bentrm.datacat.catalog.domain;
 
-import org.springframework.data.neo4j.annotation.QueryResult;
-
 import lombok.Data;
 
 @Data
-@QueryResult
 public class ExportRelationshipResult {
     
     public String entity1;

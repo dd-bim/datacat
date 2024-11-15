@@ -5,8 +5,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -14,12 +14,12 @@ import java.time.Instant;
 @Getter
 @Setter
 @ToString
-@NodeEntity(label = "EmailConfirmation")
+@Node("EmailConfirmation")
 public class EmailConfirmationRequest extends Entity {
 
     public static final Duration VALIDITY_DURATION = Duration.ofHours(24);
 
-    @Relationship(type = "HAS_EMAIL_CONFIRMATION", direction = Relationship.INCOMING)
+    @Relationship(type = "HAS_EMAIL_CONFIRMATION", direction = Relationship.Direction.INCOMING)
     private User user;
 
     private String token;

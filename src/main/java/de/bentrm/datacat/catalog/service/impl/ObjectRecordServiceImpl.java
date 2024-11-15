@@ -5,7 +5,6 @@ import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import de.bentrm.datacat.catalog.domain.XtdDictionary;
 import de.bentrm.datacat.catalog.domain.XtdLanguage;
 import de.bentrm.datacat.catalog.domain.XtdObject;
-import de.bentrm.datacat.catalog.domain.XtdSubject;
 import de.bentrm.datacat.catalog.domain.XtdText;
 import de.bentrm.datacat.catalog.domain.Enums.XtdStatusOfActivationEnum;
 import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
@@ -15,25 +14,21 @@ import de.bentrm.datacat.catalog.repository.MultiLanguageTextRepository;
 import de.bentrm.datacat.catalog.repository.ObjectRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.ObjectRecordService;
-import de.bentrm.datacat.util.LocalizationUtils;
-import de.bentrm.datacat.catalog.repository.TextRepository;
 import lombok.extern.slf4j.Slf4j;
 
-import org.neo4j.ogm.session.SessionFactory;
+import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.util.Assert;
+
 import java.util.List;
-import java.util.Locale;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import java.util.Optional;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 @Slf4j
 @Service
@@ -47,21 +42,18 @@ public class ObjectRecordServiceImpl
             private final MultiLanguageTextRepository multiLanguageTextRepository;
             private final ObjectRepository repository;
             private final LanguageRepository languageRepository;
-            private final TextRepository textRepository;
 
-    public ObjectRecordServiceImpl(SessionFactory sessionFactory,
+    public ObjectRecordServiceImpl(Neo4jTemplate neo4jTemplate,
                                     ObjectRepository repository,
                                     DictionaryRepository dictionaryRepository,
                                     MultiLanguageTextRepository multiLanguageTextRepository,
                                     LanguageRepository languageRepository,
-                                    TextRepository textRepository,
                                     CatalogCleanupService cleanupService) {
-        super(XtdObject.class, sessionFactory, repository, cleanupService);
+        super(XtdObject.class, neo4jTemplate, repository, cleanupService);
         this.dictionaryRepository = dictionaryRepository;
         this.multiLanguageTextRepository = multiLanguageTextRepository;
         this.repository = repository;
         this.languageRepository = languageRepository;
-        this.textRepository = textRepository;
     }
 
     @Override
@@ -130,10 +122,10 @@ public class ObjectRecordServiceImpl
     public @NotNull XtdObject setRelatedRecords(@NotBlank String recordId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdObject object = getRepository().findById(recordId, 0).orElseThrow();
+        final XtdObject object = getRepository().findById(recordId).orElseThrow();
 
         switch (relationType) {
-            case Dictionary:
+            case Dictionary -> {
                 if (object.getDictionary() != null) {
                     throw new IllegalArgumentException("Object already has a dictionary assigned.");
                 } else if (relatedRecordIds.size() != 1) {
@@ -141,9 +133,8 @@ public class ObjectRecordServiceImpl
                 } else {
                     final XtdDictionary dictionary = dictionaryRepository.findById(relatedRecordIds.get(0)).orElseThrow();
                     object.setDictionary(dictionary);
-                }
-                break;
-            case DeprecationExplanation:
+                }   }
+            case DeprecationExplanation -> {
                 if (object.getDeprecationExplanation() != null) {
                     throw new IllegalArgumentException("Object already has a deprecation explanation assigned.");
                 } else if (relatedRecordIds.size() != 1) {
@@ -151,9 +142,8 @@ public class ObjectRecordServiceImpl
                 } else {
                     final XtdMultiLanguageText deprecationExplanation = multiLanguageTextRepository.findById(relatedRecordIds.get(0)).orElseThrow();
                     object.setDeprecationExplanation(deprecationExplanation);
-                }
-                break;
-            case ReplacedObjects:
+                }   }
+            case ReplacedObjects -> {
                 final Iterable<XtdObject> replacedObjects = repository.findAllById(relatedRecordIds);
                 final List<XtdObject> relatedObjects = StreamSupport
                         .stream(replacedObjects.spliterator(), false)
@@ -161,10 +151,8 @@ public class ObjectRecordServiceImpl
 
                 object.getReplacedObjects().clear();
                 object.getReplacedObjects().addAll(relatedObjects);
-                break;
-            default:
-                log.error("Unsupported relation type: {}", relationType);
-                break;
+                    }
+            default -> log.error("Unsupported relation type: {}", relationType);
         }
 
         final XtdObject persistentObject = getRepository().save(object);
