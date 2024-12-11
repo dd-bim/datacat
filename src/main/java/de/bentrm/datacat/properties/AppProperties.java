@@ -1,6 +1,9 @@
 package de.bentrm.datacat.properties;
 
 import de.bentrm.datacat.auth.domain.Role;
+import de.bentrm.datacat.properties.AppProperties.AuthProperties;
+import de.bentrm.datacat.properties.AppProperties.EmailProperties;
+import de.bentrm.datacat.properties.AppProperties.UserProperties;
 import lombok.Data;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -11,6 +14,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

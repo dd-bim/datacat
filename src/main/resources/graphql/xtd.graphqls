@@ -341,7 +341,7 @@ interface XtdObject implements XtdRoot {
   tags: [Tag!]!
 }
 
-interface XtdConcept implements XtdRoot, XtdObject {
+interface XtdConcept implements XtdRoot & XtdObject {
   id: ID!
   recordType: CatalogRecordType!
   created: String!
@@ -372,7 +372,7 @@ interface XtdConcept implements XtdRoot, XtdObject {
   documentedBy: [XtdExternalDocument!]!
 }
 
-type XtdExternalDocument implements XtdRoot, XtdObject, XtdConcept {
+type XtdExternalDocument implements XtdRoot & XtdObject & XtdConcept {
   id: ID!
   recordType: CatalogRecordType!
   created: String!
@@ -410,7 +410,7 @@ type XtdExternalDocument implements XtdRoot, XtdObject, XtdConcept {
   documentedBy: [XtdExternalDocument!]!
 }
 
-type XtdSubject implements XtdRoot, XtdObject, XtdConcept {
+type XtdSubject implements XtdRoot & XtdObject & XtdConcept {
   id: ID!
   recordType: CatalogRecordType!
   created: String!
@@ -445,7 +445,7 @@ type XtdSubject implements XtdRoot, XtdObject, XtdConcept {
   # filters: [XtdFilter]
 }
 
-type XtdProperty implements XtdRoot, XtdObject, XtdConcept {
+type XtdProperty implements XtdRoot & XtdObject & XtdConcept {
   id: ID!
   recordType: CatalogRecordType!
   created: String!
@@ -487,7 +487,7 @@ type XtdProperty implements XtdRoot, XtdObject, XtdConcept {
   units: [XtdUnit!]
 }
 
-type XtdValueList implements XtdRoot, XtdObject, XtdConcept {
+type XtdValueList implements XtdRoot & XtdObject & XtdConcept {
   id: ID!
   recordType: CatalogRecordType!
   created: String!
@@ -522,7 +522,7 @@ type XtdValueList implements XtdRoot, XtdObject, XtdConcept {
   properties: [XtdProperty!]
 }
 
-type XtdUnit implements XtdRoot, XtdObject, XtdConcept {
+type XtdUnit implements XtdRoot & XtdObject & XtdConcept {
   id: ID!
   recordType: CatalogRecordType!
   created: String!
@@ -560,7 +560,7 @@ type XtdUnit implements XtdRoot, XtdObject, XtdConcept {
   properties: [XtdProperty!]
 }
 
-type XtdOrderedValue implements XtdRoot, XtdObject {
+type XtdOrderedValue implements XtdRoot & XtdObject {
   id: ID!
   recordType: CatalogRecordType!
   created: String!
@@ -586,7 +586,7 @@ type XtdOrderedValue implements XtdRoot, XtdObject {
 
 }
 
-type XtdValue implements XtdRoot, XtdObject {
+type XtdValue implements XtdRoot & XtdObject {
   id: ID!
   recordType: CatalogRecordType!
   created: String!
@@ -610,7 +610,7 @@ type XtdValue implements XtdRoot, XtdObject {
   nominalValue: String
 }
 
-type XtdRelationshipToSubject implements XtdRoot, XtdObject {
+type XtdRelationshipToSubject implements XtdRoot & XtdObject {
   id: ID!
   recordType: CatalogRecordType!
   created: String!
@@ -636,8 +636,8 @@ type XtdRelationshipToSubject implements XtdRoot, XtdObject {
   relationshipType: XtdRelationshipType # Should be changed to required
 }
 
-# type XtdRelationshipToProperty implements XtdRoot, XtdObject, XtdConcept {
-type XtdRelationshipToProperty implements XtdRoot, XtdObject {
+# type XtdRelationshipToProperty implements XtdRoot & XtdObject & XtdConcept {
+type XtdRelationshipToProperty implements XtdRoot & XtdObject {
   id: ID!
   recordType: CatalogRecordType!
   created: String!
@@ -671,7 +671,7 @@ type XtdRelationshipToProperty implements XtdRoot, XtdObject {
   relationshipType: XtdPropertyRelationshipTypeEnum!
 }
 
-type XtdRelationshipType implements XtdRoot, XtdObject, XtdConcept {
+type XtdRelationshipType implements XtdRoot & XtdObject & XtdConcept {
   id: ID!
   recordType: CatalogRecordType!
   created: String!
@@ -717,7 +717,7 @@ type XtdLanguage implements XtdRoot {
   tags: [Tag!]!
 }
 
-type XtdDimension implements XtdRoot, XtdObject, XtdConcept {
+type XtdDimension implements XtdRoot & XtdObject & XtdConcept {
   id: ID!
   recordType: CatalogRecordType!
   created: String!
@@ -827,7 +827,7 @@ type XtdDictionary implements XtdRoot {
   name: XtdMultiLanguageText # required
 }
 
-type XtdSubdivision implements XtdRoot, XtdObject, XtdConcept {
+type XtdSubdivision implements XtdRoot & XtdObject & XtdConcept {
   id: ID!
   recordType: CatalogRecordType!
   created: String!
@@ -860,7 +860,7 @@ type XtdSubdivision implements XtdRoot, XtdObject, XtdConcept {
   subdivisions: [XtdSubdivision]
 }
 
-type XtdCountry implements XtdRoot, XtdObject, XtdConcept {
+type XtdCountry implements XtdRoot & XtdObject & XtdConcept {
   id: ID!
   recordType: CatalogRecordType!
   created: String!
@@ -893,7 +893,7 @@ type XtdCountry implements XtdRoot, XtdObject, XtdConcept {
   subdivisions: [XtdSubdivision]
 }
 
-type XtdQuantityKind implements XtdRoot, XtdObject, XtdConcept {
+type XtdQuantityKind implements XtdRoot & XtdObject & XtdConcept {
   id: ID!
   recordType: CatalogRecordType!
   created: String!

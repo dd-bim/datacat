@@ -4,15 +4,15 @@ import de.bentrm.datacat.graphql.fetcher.AttributeFetchers;
 import de.bentrm.datacat.graphql.fetcher.MutationFetchers;
 import de.bentrm.datacat.graphql.fetcher.QueryFetchers;
 import de.bentrm.datacat.graphql.resolver.CustomResolver;
+import graphql.ErrorClassification;
 import graphql.GraphQLError;
-import graphql.kickstart.spring.error.ThrowableGraphQLError;
+import graphql.language.SourceLocation;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.Bean;
@@ -21,22 +21,20 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.graphql.execution.ErrorType;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Configuration
 public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
 
-    private final static String[] schemaFiles = {
-            "classpath:graphql/xtd.graphqls",
-            "classpath:graphql/auth.graphqls",
-            "classpath:graphql/admin.graphqls",
-            "classpath:graphql/management.graphqls"
-    };
+    private final static String[] schemaFiles = { "classpath:graphql/xtd.graphqls", "classpath:graphql/auth.graphqls",
+            "classpath:graphql/admin.graphqls", "classpath:graphql/management.graphqls" };
 
     private ResourceLoader resourceLoader;
 
@@ -59,7 +57,7 @@ public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
 
     @ExceptionHandler(BadCredentialsException.class)
     GraphQLError handle(Throwable e) {
-        return new ThrowableGraphQLError(e, "Catch all handler");
+        return GraphQLError.newError().errorType(ErrorType.BAD_REQUEST).message(e.getMessage(), "Catch all handler").build();
     }
 
     @Bean
@@ -110,7 +108,7 @@ public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
     }
 
     @Override
-    public void setResourceLoader(@NotNull ResourceLoader resourceLoader) {
+    public void setResourceLoader(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }
 

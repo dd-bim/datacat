@@ -38,3 +38,24 @@ logging:
     #     transaction: DEBUG
     #     orm:
     #       jpa: DEBUG
+spring:
+  graphql:
+    path: /graphql
+    cors:
+      allow-credentials: true
+      allowed-methods: POST
+      allowed-origin-patterns:
+      - "*"
+      allowed-headers:
+      - Authorization
+      - Cache-Control
+      - Content-Type
+      - apollographql-client-name
+      - apollographql-client-version
+    graphiql:
+      enabled: true
+      path: /graphiql
+  # mail:
+  #   properties:
+  #     "mail.smtp.ssl.enable": true
+            

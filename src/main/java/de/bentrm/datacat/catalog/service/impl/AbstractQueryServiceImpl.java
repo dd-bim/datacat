@@ -6,8 +6,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.neo4j.ogm.cypher.query.Pagination;
-import org.neo4j.ogm.cypher.query.SortOrder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +28,7 @@ public abstract class AbstractQueryServiceImpl<T extends Entity, R extends Entit
         implements QueryService<T> {
 
     private final Class<T> domainClass;
-    private final Neo4jTemplate neo4jTemplate;
+    public final Neo4jTemplate neo4jTemplate;
     private final R repository;
 
     public AbstractQueryServiceImpl(Class<T> domainClass,
@@ -63,20 +61,24 @@ public abstract class AbstractQueryServiceImpl<T extends Entity, R extends Entit
         final Optional<Pageable> paged = specification.getPageable();
         if (paged.isPresent()) {
             pageable = paged.get();
-            final Pagination pagination = new Pagination(pageable.getPageNumber(), pageable.getPageSize());
+            // final Pagination pagination = new Pagination(pageable.getPageNumber(), pageable.getPageSize());
 
             if (pageable.getSort().isUnsorted()) {
-                users = session.loadAll(domainClass, specification.getFilters(), pagination);
+                // users = session.loadAll(domainClass, specification.getFilters(), pagination);
+                users = neo4jTemplate.findAll(domainClass);
+
             } else {
                 final Sort sort = pageable.getSort();
                 final Sort.Direction direction = sort.get().findFirst().map(Sort.Order::getDirection).get();
                 final String[] properties = sort.get().map(Sort.Order::getProperty).toArray(String[]::new);
-                final SortOrder sortOrder = new SortOrder(SortOrder.Direction.valueOf(direction.name()), properties);
-                users = session.loadAll(domainClass, specification.getFilters(), sortOrder, pagination);
+                // final SortOrder sortOrder = new SortOrder(SortOrder.Direction.valueOf(direction.name()), properties);
+                // users = session.loadAll(domainClass, specification.getFilters(), sortOrder, pagination);
+                users = neo4jTemplate.findAll(domainClass);
             }
         } else {
             pageable = PageRequest.of(0, (int) Math.max(count, 10));
-            users = session.loadAll(domainClass, specification.getFilters());
+            // users = session.loadAll(domainClass, specification.getFilters());
+            users = neo4jTemplate.findAll(domainClass);
         }
 
         return PageableExecutionUtils.getPage(List.copyOf(users), pageable, () -> count);
@@ -85,6 +87,6 @@ public abstract class AbstractQueryServiceImpl<T extends Entity, R extends Entit
     @Override
     public @NotNull long count(@NotNull QuerySpecification specification) {
         // return session.count(domainClass, specification.getFilters());
-        return neo4jTemplate.count(domainClass, specification.getFilters());
+        return neo4jTemplate.count(domainClass);
     }
 }

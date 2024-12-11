@@ -4,7 +4,6 @@ import de.bentrm.datacat.base.specification.QuerySpecification;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
-import org.neo4j.ogm.cypher.Filters;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
@@ -19,7 +18,7 @@ public final class RootSpecification extends QuerySpecification {
         return new Builder();
     }
 
-    protected RootSpecification(Filters filters, Integer pageNumber, Integer pageSize) {
+    protected RootSpecification(List<String> filters, Integer pageNumber, Integer pageSize) {
         super(filters, Sort.Direction.ASC, List.of("labels." + DEFAULT_LANGUAGE_TAG), pageNumber, pageSize);
     }
 

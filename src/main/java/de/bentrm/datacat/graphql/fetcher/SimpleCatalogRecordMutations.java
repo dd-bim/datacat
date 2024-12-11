@@ -44,10 +44,10 @@ import de.bentrm.datacat.graphql.payload.CreateEntryPayload;
 import de.bentrm.datacat.graphql.payload.DeleteCatalogEntryPayload;
 import de.bentrm.datacat.graphql.payload.PayloadMapper;
 import graphql.schema.DataFetcher;
-import kotlin.Unit;
 import lombok.extern.slf4j.Slf4j;
 
-import org.jetbrains.annotations.NotNull;
+// import org.jetbrains.annotations.NotNull;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -56,8 +56,6 @@ import java.util.Set;
 import java.util.HashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import javax.management.relation.Relation;
 
 @Slf4j
 @Component

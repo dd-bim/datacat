@@ -24,7 +24,8 @@ import de.bentrm.datacat.graphql.payload.DeleteRelationshipPayload;
 import de.bentrm.datacat.graphql.payload.PayloadMapper;
 import graphql.schema.DataFetcher;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
+// import org.jetbrains.annotations.NotNull;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
 

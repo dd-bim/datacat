@@ -1,14 +1,13 @@
 package de.bentrm.datacat.catalog.repository.impl;
 
 import de.bentrm.datacat.catalog.repository.HierarchyDao;
-import org.neo4j.ogm.model.Result;
-import org.neo4j.ogm.session.Session;
-import org.neo4j.ogm.session.SessionFactory;
+import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Collection;
 
 @Component
 public class HierarchyDaoImpl implements HierarchyDao {
@@ -20,10 +19,10 @@ public class HierarchyDaoImpl implements HierarchyDao {
             RETURN DISTINCT paths    
             """;
 
-    private final SessionFactory sessionFactory;
+    private final Neo4jClient neo4jClient;
 
-    public HierarchyDaoImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public HierarchyDaoImpl(Neo4jClient neo4jClient) {
+        this.neo4jClient = neo4jClient;
     }
 
     @Override
@@ -33,13 +32,12 @@ public class HierarchyDaoImpl implements HierarchyDao {
                 "rootIds", rootNodeIds,
                 "depth", depth
         );
-        final Session session = sessionFactory.openSession();
-        final Result result = session.query(query, parameters);
+        final Collection<Map<String, Object>> result = neo4jClient.query(query).bindAll(parameters).fetch().all();
         final List<List<String>> paths = new ArrayList<>();
-        result.forEach(x -> {
+        for (Map<String, Object> x : result) {
             final List<String> arr = List.of((String[]) x.get("paths"));
             paths.add(arr);
-        });
+        }
         return paths;
     }
 }

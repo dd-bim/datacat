@@ -14,10 +14,6 @@ import de.bentrm.datacat.base.repository.UserRepository;
 import de.bentrm.datacat.catalog.service.impl.AbstractQueryServiceImpl;
 import de.bentrm.datacat.catalog.service.value.ValueMapper;
 
-import org.neo4j.ogm.cypher.query.Pagination;
-import org.neo4j.ogm.cypher.query.SortOrder;
-import org.neo4j.ogm.session.Session;
-import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -157,7 +153,8 @@ public class AdminServiceImpl extends AbstractQueryServiceImpl<User, UserReposit
 
     @Override
     public long countAccounts(UserSpecification specification) {
-        return session.count(User.class, specification.getFilters());
+        // return session.count(User.class, specification.getFilters());
+        return neo4jTemplate.count(User.class);
     }
 
     @Override
@@ -165,25 +162,27 @@ public class AdminServiceImpl extends AbstractQueryServiceImpl<User, UserReposit
         Collection<User> users;
         Pageable pageable;
         final long count = countAccounts(specification);
-        final Session session = getSessionFactory().openSession();
 
         final Optional<Pageable> paged = specification.getPageable();
         if (paged.isPresent()) {
             pageable = paged.get();
-            final Pagination pagination = new Pagination(pageable.getPageNumber(), pageable.getPageSize());
+            // final Pagination pagination = new Pagination(pageable.getPageNumber(), pageable.getPageSize());
 
             if (pageable.getSort().isUnsorted()) {
-                users = session.loadAll(User.class, specification.getFilters(), pagination);
+                // users = session.loadAll(User.class, specification.getFilters(), pagination);
+                users = neo4jTemplate.findAll(User.class);
             } else {
                 final Sort sort = pageable.getSort();
                 final Sort.Direction direction = sort.get().findFirst().map(Sort.Order::getDirection).get();
                 final String[] properties = sort.get().map(Sort.Order::getProperty).toArray(String[]::new);
-                final SortOrder sortOrder = new SortOrder(SortOrder.Direction.valueOf(direction.name()), properties);
-                users = session.loadAll(User.class, specification.getFilters(), sortOrder, pagination);
+                // final SortOrder sortOrder = new SortOrder(SortOrder.Direction.valueOf(direction.name()), properties);
+                // users = session.loadAll(User.class, specification.getFilters(), sortOrder, pagination);
+                users = neo4jTemplate.findAll(User.class);
             }
         } else {
             pageable = PageRequest.of(0, (int) Math.max(count, 10));
-            users = session.loadAll(User.class, specification.getFilters());
+            // users = session.loadAll(User.class, specification.getFilters());
+            users = neo4jTemplate.findAll(User.class);
         }
 
         final List<AccountDto> newContent = users.stream()

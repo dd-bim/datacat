@@ -111,7 +111,7 @@ public class DataStoreMigrationService implements ApplicationRunner, ResourceLoa
     }
 
     @Override
-    public void setResourceLoader(@org.jetbrains.annotations.NotNull ResourceLoader resourceLoader) {
+    public void setResourceLoader(@NotNull ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }
 }

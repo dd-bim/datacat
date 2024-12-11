@@ -9,15 +9,12 @@ import de.bentrm.datacat.catalog.specification.RootSpecification;
 import de.bentrm.datacat.graphql.dto.CatalogRecordStatistics;
 import de.bentrm.datacat.graphql.dto.CatalogStatistics;
 import lombok.extern.slf4j.Slf4j;
-import org.neo4j.ogm.cypher.query.Pagination;
-import org.neo4j.ogm.cypher.query.SortOrder;
-import org.neo4j.ogm.session.Session;
-import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +33,7 @@ import java.util.stream.StreamSupport;
 public class CatalogServiceImpl implements CatalogService {
 
     @Autowired
-    private SessionFactory sessionFactory;
+    Neo4jTemplate neo4jTemplate;
 
     @Autowired
     private TagRepository tagRepository;
@@ -196,25 +193,27 @@ public class CatalogServiceImpl implements CatalogService {
         Collection<CatalogRecord> catalogRecords;
         Pageable pageable;
         final long count = countCatalogRecords(specification);
-        final Session session = sessionFactory.openSession();
 
         final Optional<Pageable> paged = specification.getPageable();
         if (paged.isPresent()) {
             pageable = paged.get();
-            final Pagination pagination = new Pagination(pageable.getPageNumber(), pageable.getPageSize());
+            // final Pagination pagination = new Pagination(pageable.getPageNumber(), pageable.getPageSize());
 
             if (pageable.getSort().isUnsorted()) {
-                catalogRecords = session.loadAll(CatalogRecord.class, specification.getFilters(), pagination);
+                // catalogRecords = session.loadAll(CatalogRecord.class, specification.getFilters(), pagination);
+                catalogRecords = neo4jTemplate.findAll(CatalogRecord.class);
             } else {
                 final Sort sort = pageable.getSort();
                 final Sort.Direction direction = sort.get().findFirst().map(Sort.Order::getDirection).get();
                 final String[] properties = sort.get().map(Sort.Order::getProperty).toArray(String[]::new);
-                final SortOrder sortOrder = new SortOrder(SortOrder.Direction.valueOf(direction.name()), properties);
-                catalogRecords = session.loadAll(CatalogRecord.class, specification.getFilters(), sortOrder, pagination);
+                // final SortOrder sortOrder = new SortOrder(SortOrder.Direction.valueOf(direction.name()), properties);
+                // catalogRecords = session.loadAll(CatalogRecord.class, specification.getFilters(), sortOrder, pagination);
+                catalogRecords = neo4jTemplate.findAll(CatalogRecord.class);
             }
         } else {
             pageable = PageRequest.of(0, (int) Math.max(count, 10));
-            catalogRecords = session.loadAll(CatalogRecord.class, specification.getFilters());
+            // catalogRecords = session.loadAll(CatalogRecord.class, specification.getFilters());
+            catalogRecords = neo4jTemplate.findAll(CatalogRecord.class);
         }
 
         return PageableExecutionUtils.getPage(List.copyOf(catalogRecords), pageable, () -> count);
@@ -222,14 +221,14 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public long countCatalogRecords(CatalogRecordSpecification specification) {
-        final Session session = sessionFactory.openSession();
-        return session.count(CatalogRecord.class, specification.getFilters());
+        // return session.count(CatalogRecord.class, specification.getFilters());
+        return neo4jTemplate.count(CatalogRecord.class);
     }
 
     @Override
     public long countRootItems(RootSpecification specification) {
-        final Session session = sessionFactory.openSession();
-        return session.count(XtdRoot.class, specification.getFilters());
+        // return session.count(XtdRoot.class, specification.getFilters());
+        return neo4jTemplate.count(XtdRoot.class);
     }
 
     @Override

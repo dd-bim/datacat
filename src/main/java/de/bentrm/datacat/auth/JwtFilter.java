@@ -1,7 +1,8 @@
 package de.bentrm.datacat.auth;
 
 import de.bentrm.datacat.auth.service.AuthenticationService;
-import org.jetbrains.annotations.NotNull;
+// import org.jetbrains.annotations.NotNull;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;

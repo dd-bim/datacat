@@ -5,8 +5,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.support.UUIDStringGenerator;
 import org.springframework.data.neo4j.core.schema.Id;
-import org.neo4j.ogm.id.UuidStrategy;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -16,6 +16,7 @@ import org.springframework.util.Assert;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
+import java.util.UUID;
 
 /**
  * Base class of all node entities of the application.
@@ -33,7 +34,7 @@ public abstract class Entity {
 
     @Id
     @NotBlank
-    @GeneratedValue
+    @GeneratedValue(generatorClass = UUIDStringGenerator.class)
     @EqualsAndHashCode.Include
     @ToString.Include
     private String id;

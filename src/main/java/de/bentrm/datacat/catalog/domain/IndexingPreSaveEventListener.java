@@ -1,8 +1,6 @@
 package de.bentrm.datacat.catalog.domain;
 
-import org.neo4j.ogm.session.event.Event;
-import org.neo4j.ogm.session.event.EventListenerAdapter;
-
+import org.springframework.data.neo4j.core.mapping.callback.BeforeBindCallback;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +14,9 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Component
-class IndexingPreSaveEventListener extends EventListenerAdapter {
+// class IndexingPreSaveEventListener extends EventListenerAdapter {
+public class IndexingPreSaveEventListener implements BeforeBindCallback<XtdObject> {
+
 
     /**
      * The property {@link XtdObject#getLabels()} represents a map all
@@ -28,11 +28,12 @@ class IndexingPreSaveEventListener extends EventListenerAdapter {
      * @param event The persistence event.
      */
     @Override
-    public void onPreSave(Event event) {
-        if (event.getObject() instanceof XtdObject record) {
+    // public void onPreSave(Event event) {
+    public XtdObject onBeforeBind(XtdObject record) {
+    //     if (event.getObject() instanceof XtdObject record) {
             final XtdMultiLanguageText mName = record.getNames().stream().findFirst().orElse(null);
             if (mName == null) {
-                return;
+                return null;
             }
             final Map<String, String> labels = mName.getTexts().stream()
                     .collect(Collectors.toMap(text -> text.getLocale().toString(), XtdText::getText));
@@ -41,7 +42,8 @@ class IndexingPreSaveEventListener extends EventListenerAdapter {
                 record.getLabels().clear();
                 record.getLabels().putAll(labels);
             }
-        }
+    //     }
+            return record;
     }
 
 }

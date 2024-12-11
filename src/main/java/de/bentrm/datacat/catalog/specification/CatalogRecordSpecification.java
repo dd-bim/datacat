@@ -3,7 +3,7 @@ package de.bentrm.datacat.catalog.specification;
 import de.bentrm.datacat.base.specification.QuerySpecification;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import org.neo4j.ogm.cypher.Filters;
+
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
@@ -18,7 +18,7 @@ public final class CatalogRecordSpecification extends QuerySpecification {
         return new Builder();
     }
 
-    private CatalogRecordSpecification(Filters filters, Integer pageNumber, Integer pageSize) {
+    private CatalogRecordSpecification(List<String> filters, Integer pageNumber, Integer pageSize) {
         super(filters, Sort.Direction.ASC, List.of("labels." + DEFAULT_LANGUAGE_TAG), pageNumber, pageSize);
     }
 
