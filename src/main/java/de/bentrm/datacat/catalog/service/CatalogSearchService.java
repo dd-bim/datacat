@@ -1,6 +1,5 @@
 package de.bentrm.datacat.catalog.service;
 
-import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
 import org.springframework.data.domain.Page;

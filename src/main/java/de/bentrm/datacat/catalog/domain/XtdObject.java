@@ -11,7 +11,6 @@ import org.springframework.util.Assert;
 import de.bentrm.datacat.util.LocalizationUtils;
 
 import de.bentrm.datacat.catalog.domain.Enums.XtdStatusOfActivationEnum;
-import de.bentrm.datacat.catalog.service.ObjectRecordService;
 
 import java.util.*;
 import jakarta.validation.constraints.NotNull;

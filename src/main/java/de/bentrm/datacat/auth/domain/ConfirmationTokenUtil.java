@@ -9,7 +9,7 @@ public class ConfirmationTokenUtil {
 
     private static final RandomStringGenerator generator = new RandomStringGenerator.Builder()
             .withinRange(CONFIRMATION_TOKEN_PAIRS)
-            .build();
+            .get();
 
     public static String generateConfirmationToken() {
         return generator.generate(CONFIRMATION_TOKEN_LENGTH);

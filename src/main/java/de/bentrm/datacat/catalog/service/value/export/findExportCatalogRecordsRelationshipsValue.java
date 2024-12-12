@@ -1,6 +1,5 @@
 package de.bentrm.datacat.catalog.service.value.export;
 
-import de.bentrm.datacat.catalog.domain.XtdRoot;
 import de.bentrm.datacat.catalog.domain.ExportRelationshipResult;
 import lombok.Value;
 

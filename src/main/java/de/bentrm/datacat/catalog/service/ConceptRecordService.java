@@ -11,7 +11,6 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
-import java.util.Locale;
 
 public interface ConceptRecordService extends SimpleRecordService<XtdConcept> {
 

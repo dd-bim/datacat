@@ -1,15 +1,11 @@
 package de.bentrm.datacat.util;
 
-import de.bentrm.datacat.catalog.domain.XtdLanguage;
 import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
-import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.domain.XtdText;
 import de.bentrm.datacat.catalog.repository.MultiLanguageTextRepository;
 import de.bentrm.datacat.catalog.repository.TextRepository;
 import de.bentrm.datacat.catalog.repository.ObjectRepository;
 import de.bentrm.datacat.catalog.repository.LanguageRepository;
-import de.bentrm.datacat.catalog.service.MultiLanguageTextRecordService;
-import de.bentrm.datacat.catalog.service.ObjectRecordService;
 import lombok.extern.slf4j.Slf4j;
 import jakarta.annotation.Nullable;
 import org.springframework.stereotype.Component;
@@ -27,8 +23,6 @@ public final class LocalizationUtils {
 
     private static MultiLanguageTextRepository multiLanguageTextRepository;
     private static TextRepository textRepository;
-    private static ObjectRepository repository;
-    private static LanguageRepository languageRepository;
 
     private LocalizationUtils(MultiLanguageTextRepository multiLanguageTextRepository,
                               TextRepository textRepository,
@@ -36,8 +30,6 @@ public final class LocalizationUtils {
                               ObjectRepository repository) {
         this.multiLanguageTextRepository = multiLanguageTextRepository;
         this.textRepository = textRepository;
-        this.repository = repository;
-        this.languageRepository = languageRepository;
     }
 
     public static List<Locale.LanguageRange> getPriorityList(Locale ...locales) {

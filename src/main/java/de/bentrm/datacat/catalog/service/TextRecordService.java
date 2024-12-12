@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import de.bentrm.datacat.catalog.domain.XtdText;
-import de.bentrm.datacat.catalog.domain.XtdConcept;
 import de.bentrm.datacat.catalog.domain.XtdLanguage;
 
 public interface TextRecordService extends SimpleRecordService<XtdText> {

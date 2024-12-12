@@ -6,7 +6,6 @@ import lombok.ToString;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 

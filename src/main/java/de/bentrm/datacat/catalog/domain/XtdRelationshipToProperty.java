@@ -11,8 +11,6 @@ import de.bentrm.datacat.catalog.domain.Enums.XtdPropertyRelationshipTypeEnum;
 import java.util.HashSet;
 import java.util.Set;
 
-import jakarta.validation.constraints.NotNull;
-
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)

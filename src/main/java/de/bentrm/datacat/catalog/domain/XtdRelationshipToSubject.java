@@ -9,8 +9,6 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 import java.util.HashSet;
 import java.util.Set;
 
-import jakarta.validation.constraints.NotNull;
-
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)

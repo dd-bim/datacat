@@ -62,6 +62,7 @@ public class CatalogServiceImpl implements CatalogService {
     @Override
     public CatalogStatistics getStatistics() {
         final Map<String, Long> labelsStats = catalogRecordRepository.statistics();
+        labelsStats.forEach((label, count) -> log.info("Label: {} Count: {}", label, count));
         final CatalogStatistics statistics = new CatalogStatistics();
         labelsStats.forEach((label, count) -> {
             if (label.startsWith("Xtd")) {

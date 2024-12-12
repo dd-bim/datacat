@@ -4,16 +4,9 @@ import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.XtdRoot;
 import de.bentrm.datacat.catalog.domain.ExportItemResult;
 import de.bentrm.datacat.catalog.domain.ExportRelationshipResult;
-import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
-import de.bentrm.datacat.catalog.domain.CatalogRecordType;
-import org.springframework.data.neo4j.repository.Neo4jRepository;
-import org.springframework.data.repository.NoRepositoryBean;
-import org.neo4j.driver.Result;
 import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Repository

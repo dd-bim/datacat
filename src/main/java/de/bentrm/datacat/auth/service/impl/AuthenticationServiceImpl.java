@@ -164,7 +164,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
         final UserDetails userDetails = new JwtUserDetails(jwt);
-        final HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        final ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attributes == null) {
+            throw new IllegalStateException("No request attributes found");
+        }
+        final HttpServletRequest request = attributes.getRequest();
         final WebAuthenticationDetails webAuthenticationDetails = new WebAuthenticationDetailsSource().buildDetails(request);
         final var authenticationToken = new JwtPreAuthenticatedAuthenticationToken(
                 userDetails.getUsername(),

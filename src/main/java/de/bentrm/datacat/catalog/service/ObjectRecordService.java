@@ -8,12 +8,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import de.bentrm.datacat.catalog.domain.XtdDictionary;
 import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
 import de.bentrm.datacat.catalog.domain.XtdObject;
-import de.bentrm.datacat.catalog.domain.XtdText;
 import de.bentrm.datacat.catalog.domain.Enums.XtdStatusOfActivationEnum;
 
 import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
 
 public interface ObjectRecordService extends SimpleRecordService<XtdObject> {
 

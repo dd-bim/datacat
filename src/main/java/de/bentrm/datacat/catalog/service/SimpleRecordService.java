@@ -20,7 +20,7 @@ import jakarta.validation.constraints.NotNull;
  * @param <T>
  */
 public interface SimpleRecordService<T extends CatalogRecord>
-        extends CatalogRecordService<T>, QueryService<T> {
+        extends CatalogRecordService<T> {
 
     /**
      * Constructs and persists a new catalog entry.

@@ -4,9 +4,7 @@ import de.bentrm.datacat.graphql.fetcher.AttributeFetchers;
 import de.bentrm.datacat.graphql.fetcher.MutationFetchers;
 import de.bentrm.datacat.graphql.fetcher.QueryFetchers;
 import de.bentrm.datacat.graphql.resolver.CustomResolver;
-import graphql.ErrorClassification;
 import graphql.GraphQLError;
-import graphql.language.SourceLocation;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
@@ -22,12 +20,12 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.graphql.execution.ErrorType;
+import org.springframework.lang.NonNull;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Configuration
@@ -108,7 +106,7 @@ public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
     }
 
     @Override
-    public void setResourceLoader(ResourceLoader resourceLoader) {
+    public void setResourceLoader(@NonNull ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }
 

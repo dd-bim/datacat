@@ -1,6 +1,5 @@
 package de.bentrm.datacat.catalog.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.bentrm.datacat.catalog.domain.XtdLanguage;
 import de.bentrm.datacat.catalog.repository.LanguageRepository;

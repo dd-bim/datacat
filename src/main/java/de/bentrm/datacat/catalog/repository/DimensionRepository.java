@@ -5,8 +5,6 @@ import de.bentrm.datacat.catalog.domain.XtdDimension;
 import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface DimensionRepository extends EntityRepository<XtdDimension> {
 

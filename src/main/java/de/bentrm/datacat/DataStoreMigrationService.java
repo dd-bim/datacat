@@ -17,6 +17,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.ResourcePatternUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.neo4j.core.Neo4jClient;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -111,7 +112,7 @@ public class DataStoreMigrationService implements ApplicationRunner, ResourceLoa
     }
 
     @Override
-    public void setResourceLoader(@NotNull ResourceLoader resourceLoader) {
+    public void setResourceLoader(@NonNull ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }
 }

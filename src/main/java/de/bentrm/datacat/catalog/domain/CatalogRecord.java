@@ -1,14 +1,12 @@
 package de.bentrm.datacat.catalog.domain;
 
 import de.bentrm.datacat.base.domain.Entity;
-import de.bentrm.datacat.util.LocalizationUtils;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 import org.springframework.util.Assert;
 
-import jakarta.validation.constraints.NotNull;
 import java.util.*;
 
 @Slf4j

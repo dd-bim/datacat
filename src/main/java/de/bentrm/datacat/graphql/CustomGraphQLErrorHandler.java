@@ -13,6 +13,7 @@ package de.bentrm.datacat.graphql;
 
 import org.springframework.graphql.execution.DataFetcherExceptionResolverAdapter;
 import org.springframework.graphql.execution.ErrorType;
+import org.springframework.lang.NonNull;
 
 import graphql.ErrorClassification;
 import graphql.GraphQLError;
@@ -21,12 +22,11 @@ import graphql.schema.DataFetchingEnvironment;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class CustomGraphQLErrorHandler extends DataFetcherExceptionResolverAdapter {
 
     @Override
-    protected GraphQLError resolveToSingleError(Throwable exception, DataFetchingEnvironment env) {
+    protected GraphQLError resolveToSingleError(@NonNull Throwable exception, @NonNull DataFetchingEnvironment env) {
 
         return new GraphQLError() {
             @Override

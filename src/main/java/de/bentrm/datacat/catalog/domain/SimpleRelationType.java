@@ -1,8 +1,5 @@
 package de.bentrm.datacat.catalog.domain;
 
-import org.neo4j.driver.types.Relationship;
-import org.springframework.util.Assert;
-
 /**
  * Enumeration of all supported catalog record types.
  */

@@ -3,7 +3,6 @@ package de.bentrm.datacat.graphql.dto;
 import de.bentrm.datacat.auth.service.dto.AccountUpdateDto;
 import de.bentrm.datacat.auth.service.dto.ProfileUpdateDto;
 import de.bentrm.datacat.auth.specification.UserSpecification;
-import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
 import de.bentrm.datacat.catalog.specification.TagSpecification;
 import de.bentrm.datacat.graphql.input.HierarchyRootNodeFilterInput;

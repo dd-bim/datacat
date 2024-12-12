@@ -11,14 +11,11 @@ import de.bentrm.datacat.graphql.input.ApiInputMapper;
 import de.bentrm.datacat.graphql.input.HierarchyFilterInput;
 import de.bentrm.datacat.graphql.input.HierarchyRootNodeFilterInput;
 import de.bentrm.datacat.graphql.input.SearchInput;
-import de.bentrm.datacat.validation.LanguageCodeValidator;
 import graphql.schema.DataFetcher;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;

@@ -5,8 +5,6 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.springframework.data.neo4j.core.schema.Node;
 
-import java.util.List;
-
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)

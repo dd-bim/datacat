@@ -11,7 +11,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 public interface CatalogService {

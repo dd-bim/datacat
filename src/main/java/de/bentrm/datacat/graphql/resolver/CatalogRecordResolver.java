@@ -4,7 +4,6 @@ import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.domain.XtdRoot;
 import graphql.TypeResolutionEnvironment;
 import graphql.schema.GraphQLObjectType;
-import graphql.schema.GraphQLSchema;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;

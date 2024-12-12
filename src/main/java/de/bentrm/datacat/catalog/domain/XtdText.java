@@ -10,8 +10,6 @@ import java.util.Locale;
 
 import jakarta.validation.constraints.NotBlank;
 
-import java.util.List;
-
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)

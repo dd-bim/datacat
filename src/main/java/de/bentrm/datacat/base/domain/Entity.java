@@ -16,7 +16,6 @@ import org.springframework.util.Assert;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
-import java.util.UUID;
 
 /**
  * Base class of all node entities of the application.

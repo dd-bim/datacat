@@ -1,10 +1,9 @@
 package de.bentrm.datacat.auth;
 
 import de.bentrm.datacat.auth.service.AuthenticationService;
-// import org.jetbrains.annotations.NotNull;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -35,7 +34,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private AuthenticationService authenticationService;
 
     @Override
-    protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         getToken(request).ifPresent(token -> authenticationService.login(token));
         filterChain.doFilter(request, response);
     }

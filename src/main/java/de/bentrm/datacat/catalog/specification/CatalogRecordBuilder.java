@@ -3,9 +3,6 @@ package de.bentrm.datacat.catalog.specification;
 import de.bentrm.datacat.base.specification.GenericBuilder;
 // import de.bentrm.datacat.base.specification.HasLabelComparison;
 import de.bentrm.datacat.catalog.domain.CatalogRecordType;
-import de.bentrm.datacat.catalog.domain.Tag;
-import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
-import de.bentrm.datacat.catalog.domain.XtdText;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 

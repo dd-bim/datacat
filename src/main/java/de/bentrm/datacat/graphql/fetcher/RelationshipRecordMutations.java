@@ -4,19 +4,14 @@ import de.bentrm.datacat.catalog.domain.AbstractRelationship;
 import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import de.bentrm.datacat.catalog.domain.SimpleRelationType;
-import de.bentrm.datacat.catalog.domain.XtdProperty;
-import de.bentrm.datacat.catalog.domain.XtdSubject;
-import de.bentrm.datacat.catalog.domain.XtdSymbol;
 import de.bentrm.datacat.catalog.service.CatalogService;
 import de.bentrm.datacat.catalog.service.RelationshipRecordService;
 import de.bentrm.datacat.catalog.service.SimpleRecordService;
 import de.bentrm.datacat.catalog.domain.XtdRelationshipToProperty;
 import de.bentrm.datacat.catalog.repository.RelationshipToPropertyRepository;
-import de.bentrm.datacat.graphql.input.ApiInputMapper;
 import de.bentrm.datacat.graphql.input.CreateRelationshipInput;
 import de.bentrm.datacat.graphql.input.DeleteRelationshipInput;
 import de.bentrm.datacat.graphql.input.RelationshipPropertiesInput;
-import de.bentrm.datacat.graphql.input.RelationshipToPropertyInput;
 import de.bentrm.datacat.graphql.input.DeleteObjectRelationshipInput;
 import de.bentrm.datacat.graphql.payload.DeleteObjectRelationshipPayload;
 import de.bentrm.datacat.graphql.payload.CreateRelationshipPayload;
@@ -27,15 +22,10 @@ import lombok.extern.slf4j.Slf4j;
 // import org.jetbrains.annotations.NotNull;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Component;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
 import static de.bentrm.datacat.graphql.input.ApiInputMapper.OBJECT_MAPPER;
 
 @Slf4j
