@@ -61,12 +61,18 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public CatalogStatistics getStatistics() {
-        final Map<String, Long> labelsStats = catalogRecordRepository.statistics();
-        labelsStats.forEach((label, count) -> log.info("Label: {} Count: {}", label, count));
+        // final Map<String,Long> labelsStats = catalogRecordRepository.statistics();
+        final List<CatalogRecordStatistics> labelsStats = catalogRecordRepository.statistics();
+
         final CatalogStatistics statistics = new CatalogStatistics();
-        labelsStats.forEach((label, count) -> {
-            if (label.startsWith("Xtd")) {
-                statistics.getItems().add(new CatalogRecordStatistics(label, count));
+        // labelsStats.forEach((id, count) -> {
+        //     if (id.startsWith("Xtd")) {
+        //         statistics.getItems().add(new CatalogRecordStatistics(id, count));
+        //     }
+        // });
+        labelsStats.forEach(record -> {
+            if (record.getId().startsWith("Xtd")) {
+                statistics.getItems().add(record);
             }
         });
         return statistics;

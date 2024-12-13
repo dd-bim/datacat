@@ -57,6 +57,7 @@ public abstract class AbstractQueryServiceImpl<T extends Entity, R extends Entit
         Collection<T> users;
         Pageable pageable;
         final long count = count(specification);
+        log.info(getQuery(specification));
 
         final Optional<Pageable> paged = specification.getPageable();
         if (paged.isPresent()) {
@@ -65,7 +66,7 @@ public abstract class AbstractQueryServiceImpl<T extends Entity, R extends Entit
 
             if (pageable.getSort().isUnsorted()) {
                 // users = session.loadAll(domainClass, specification.getFilters(), pagination);
-                users = neo4jTemplate.findAll(domainClass);
+                users = neo4jTemplate.findAll(getQuery(specification), domainClass);
 
             } else {
                 final Sort sort = pageable.getSort();
@@ -73,12 +74,12 @@ public abstract class AbstractQueryServiceImpl<T extends Entity, R extends Entit
                 final String[] properties = sort.get().map(Sort.Order::getProperty).toArray(String[]::new);
                 // final SortOrder sortOrder = new SortOrder(SortOrder.Direction.valueOf(direction.name()), properties);
                 // users = session.loadAll(domainClass, specification.getFilters(), sortOrder, pagination);
-                users = neo4jTemplate.findAll(domainClass);
+                users = neo4jTemplate.findAll(getQuery(specification),domainClass);
             }
         } else {
             pageable = PageRequest.of(0, (int) Math.max(count, 10));
             // users = session.loadAll(domainClass, specification.getFilters());
-            users = neo4jTemplate.findAll(domainClass);
+            users = neo4jTemplate.findAll(getQuery(specification),domainClass);
         }
 
         return PageableExecutionUtils.getPage(List.copyOf(users), pageable, () -> count);
@@ -86,7 +87,13 @@ public abstract class AbstractQueryServiceImpl<T extends Entity, R extends Entit
 
     @Override
     public @NotNull long count(@NotNull QuerySpecification specification) {
-        // return session.count(domainClass, specification.getFilters());
-        return neo4jTemplate.count(domainClass);
+        String whereClause = String.join(" AND ", specification.getFilters());
+        String query = "MATCH (n:" + domainClass.getSimpleName() + ") WHERE " + whereClause + " RETURN count(n)";
+        return neo4jTemplate.count(query);
+    }
+
+    public String getQuery(QuerySpecification specification) {
+        String whereClause = String.join(" AND ", specification.getFilters());
+        return "MATCH (n:" + domainClass.getSimpleName() + ") WHERE " + whereClause + " RETURN n";
     }
 }

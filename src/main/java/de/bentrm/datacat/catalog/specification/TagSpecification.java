@@ -39,7 +39,7 @@ public class TagSpecification extends QuerySpecification {
         public TagSpecification.Builder query(String query) {
             final Optional<String> regex = sanitizeQueryString(query);
             if (regex.isPresent()) {
-                final String textFilter = "EXISTS {MATCH(n)-[:NAMES]->(y:XtdMultiLanguageText)-[:TEXTS]->(z:XtdText) WHERE z.text =~ '.*" + regex.get() + ".*'}";
+                final String textFilter = " n.name =~ '" + regex.get() + "'";
                 this.filters.add(textFilter);
             }
             return self();

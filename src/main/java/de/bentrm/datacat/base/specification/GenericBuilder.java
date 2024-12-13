@@ -66,7 +66,7 @@ public abstract class GenericBuilder<B extends GenericBuilder<B>> {
         //         .map(str -> "*" + str + "*")
         //         .collect(Collectors.joining("|")
         //         );
-        final String sanitizedQuery = "*" + query.trim() + "*";
+        final String sanitizedQuery = ".*" + query.trim() + ".*";
         return Optional.of(sanitizedQuery);
     }
 
