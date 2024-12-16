@@ -203,6 +203,9 @@ input SearchInput {
   idIn: [ID!]
   idNotIn: [ID!]
   tagged: [ID!]
+  """
+  Default: 0
+  """
   pageNumber: Int
   pageSize: Int
 }

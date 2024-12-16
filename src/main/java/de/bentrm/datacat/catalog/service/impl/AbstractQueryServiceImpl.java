@@ -1,5 +1,6 @@
 package de.bentrm.datacat.catalog.service.impl;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -31,9 +32,7 @@ public abstract class AbstractQueryServiceImpl<T extends Entity, R extends Entit
     public final Neo4jTemplate neo4jTemplate;
     private final R repository;
 
-    public AbstractQueryServiceImpl(Class<T> domainClass,
-                                    Neo4jTemplate neo4jTemplate,
-                                    R repository) {
+    public AbstractQueryServiceImpl(Class<T> domainClass, Neo4jTemplate neo4jTemplate, R repository) {
         this.domainClass = domainClass;
         this.neo4jTemplate = neo4jTemplate;
         this.repository = repository;
@@ -47,9 +46,7 @@ public abstract class AbstractQueryServiceImpl<T extends Entity, R extends Entit
     @Override
     public @NotNull List<T> findAllByIds(@NotNull List<String> ids) {
         Iterable<T> source = repository.findAllById(ids);
-        return StreamSupport
-                .stream(source.spliterator(), false)
-                .collect(Collectors.toList());
+        return StreamSupport.stream(source.spliterator(), false).collect(Collectors.toList());
     }
 
     @Override
@@ -57,29 +54,21 @@ public abstract class AbstractQueryServiceImpl<T extends Entity, R extends Entit
         Collection<T> users;
         Pageable pageable;
         final long count = count(specification);
-        log.info(getQuery(specification));
 
         final Optional<Pageable> paged = specification.getPageable();
         if (paged.isPresent()) {
             pageable = paged.get();
-            // final Pagination pagination = new Pagination(pageable.getPageNumber(), pageable.getPageSize());
-
             if (pageable.getSort().isUnsorted()) {
-                // users = session.loadAll(domainClass, specification.getFilters(), pagination);
-                users = neo4jTemplate.findAll(getQuery(specification), domainClass);
-
+                users = neo4jTemplate.findAll(getQuery(specification, pageable), domainClass);
             } else {
                 final Sort sort = pageable.getSort();
                 final Sort.Direction direction = sort.get().findFirst().map(Sort.Order::getDirection).get();
                 final String[] properties = sort.get().map(Sort.Order::getProperty).toArray(String[]::new);
-                // final SortOrder sortOrder = new SortOrder(SortOrder.Direction.valueOf(direction.name()), properties);
-                // users = session.loadAll(domainClass, specification.getFilters(), sortOrder, pagination);
-                users = neo4jTemplate.findAll(getQuery(specification),domainClass);
+                users = neo4jTemplate.findAll(getQuery(specification, pageable, direction, properties), domainClass);
             }
         } else {
             pageable = PageRequest.of(0, (int) Math.max(count, 10));
-            // users = session.loadAll(domainClass, specification.getFilters());
-            users = neo4jTemplate.findAll(getQuery(specification),domainClass);
+            users = neo4jTemplate.findAll(getQuery(specification, pageable), domainClass);
         }
 
         return PageableExecutionUtils.getPage(List.copyOf(users), pageable, () -> count);
@@ -87,13 +76,37 @@ public abstract class AbstractQueryServiceImpl<T extends Entity, R extends Entit
 
     @Override
     public @NotNull long count(@NotNull QuerySpecification specification) {
-        String whereClause = String.join(" AND ", specification.getFilters());
-        String query = "MATCH (n:" + domainClass.getSimpleName() + ") WHERE " + whereClause + " RETURN count(n)";
+        String query;
+        if (specification.getFilters().isEmpty()) {
+            query = "MATCH (n:" + domainClass.getSimpleName() + ") RETURN count(n)";
+        } else {
+            String whereClause = "WHERE " + String.join(" AND ", specification.getFilters());
+            query = "MATCH (n:" + domainClass.getSimpleName() + ") " + whereClause + " RETURN count(n)";
+        }
         return neo4jTemplate.count(query);
     }
 
-    public String getQuery(QuerySpecification specification) {
-        String whereClause = String.join(" AND ", specification.getFilters());
-        return "MATCH (n:" + domainClass.getSimpleName() + ") WHERE " + whereClause + " RETURN n";
+    public String getQuery(QuerySpecification specification, Pageable pageable) {
+        return (getQuery(specification, pageable, null, null));
+    }
+
+    public String getQuery(QuerySpecification specification, Pageable pageable, Sort.Direction direction,
+            String[] properties) {
+        String query;
+        String sort = "";
+        if (direction != null && properties != null) {
+            List<String> prefixedProperties = Arrays.stream(properties).map(property -> "n." + property)
+                    .collect(Collectors.toList());
+            sort = " ORDER BY " + String.join(", ", prefixedProperties) + " " + direction.name();
+        } 
+
+        if (specification.getFilters().isEmpty()) {
+            query = "MATCH (n:" + domainClass.getSimpleName() + ")" + sort + " RETURN n";
+        } else {
+            String whereClause = "WHERE " + String.join(" AND ", specification.getFilters());
+            query = "MATCH (n:" + domainClass.getSimpleName() + ") " + whereClause + sort +" RETURN n";
+        }
+        query = query + " SKIP " + pageable.getOffset() + " LIMIT " + pageable.getPageSize();
+        return query;
     }
 }
