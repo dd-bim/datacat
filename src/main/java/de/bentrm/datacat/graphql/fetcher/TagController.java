@@ -2,6 +2,7 @@ package de.bentrm.datacat.graphql.fetcher;
 
 import de.bentrm.datacat.catalog.domain.Tag;
 import de.bentrm.datacat.catalog.service.TagService;
+import de.bentrm.datacat.catalog.repository.TagRepository;
 import de.bentrm.datacat.catalog.specification.TagSpecification;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.dto.FilterInput;
@@ -25,10 +26,13 @@ public class TagController {
     @Autowired
     private TagService tagService;
 
+    @Autowired
+    private TagRepository repository;
+
 
     @QueryMapping
     public Optional<Tag> getTag(@Argument String id) {
-        return tagService.findById(id);
+        return repository.findById(id);
     }
 
     @QueryMapping

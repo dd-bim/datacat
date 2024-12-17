@@ -19,7 +19,7 @@ public abstract class CatalogRecord extends Entity {
     // public static final String DEFAULT_LANGUAGE_TAG = "de";
 
     @Relationship(type = "TAGGED")
-    protected final Set<Tag> tags = new HashSet<>();
+    protected Set<Tag> tags = new HashSet<>();
     
     /**
      * @return An immutable set of tags.

@@ -171,15 +171,6 @@ type ExportRelationshipResult {
   entity2Type: String!
 }
 
-# Xtd misc
-
-extend type Translation {
-  created: String!
-  createdBy: String!
-  lastModified: String!
-  lastModifiedBy: String!
-}
-
 # inputs
 
 input CatalogEntryTypeFilterInput {
@@ -288,23 +279,6 @@ input FilterInput {
 }
 
 # Query type
-
-input LanguageFilterInput {
-  query: String
-  excludeLanguageTags: [String!]
-}
-
-type LanguageConnection {
-  nodes: [Language!]!
-  pageInfo: PageInfo!
-  totalElements: Int!
-}
-
-type Translation {
-  id: ID!
-  value: String!
-  language: Language!
-}
 
 input LocalizationInput {
   languageTags: [String!]
@@ -1087,8 +1061,6 @@ type XtdQuantityKindConnection {
 }
 
 type Query {
-  languages(input: LanguageFilterInput): LanguageConnection
-
   statistics: CatalogStatistics!
 
   node(id: ID!): XtdRoot
@@ -1184,6 +1156,7 @@ type Query {
 
   getLanguage(id: ID!): XtdLanguage
   findLanguages(input: FilterInput): XtdLanguageConnection!
+  getLanguageByCode(code: String!): XtdLanguage
 
   getDimension(id: ID!): XtdDimension
   findDimensions(input: FilterInput): XtdDimensionConnection!

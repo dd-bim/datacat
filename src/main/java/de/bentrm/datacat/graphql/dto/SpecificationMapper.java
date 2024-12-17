@@ -4,6 +4,7 @@ import de.bentrm.datacat.auth.service.dto.AccountUpdateDto;
 import de.bentrm.datacat.auth.service.dto.ProfileUpdateDto;
 import de.bentrm.datacat.auth.specification.UserSpecification;
 import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
+import de.bentrm.datacat.catalog.specification.LanguageSpecification;
 import de.bentrm.datacat.catalog.specification.TagSpecification;
 import de.bentrm.datacat.graphql.input.HierarchyRootNodeFilterInput;
 import de.bentrm.datacat.graphql.input.verification.*;
@@ -42,6 +43,8 @@ public interface SpecificationMapper {
     CatalogRecordSpecification toCatalogRecordSpecification(@NotNull findMultipleNamesNodeTypeFilterInput input);
 
     CatalogRecordSpecification toCatalogRecordSpecification(@NotNull findMultipleNamesAcrossClassesNodeTypeFilterInput input);
+
+    LanguageSpecification toLanguageSpecification(@NotNull FilterInput input);
 
     UserSpecification toSpecification(@NotNull AccountFilterInput filter);
 

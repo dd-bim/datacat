@@ -207,7 +207,7 @@ public class ConceptRecordServiceImpl
     @Override
     public XtdConcept addDescription(String id, String descriptionId, String languageTag, String value) {
         final XtdConcept item = repository.findById(id).orElseThrow();
-        final XtdLanguage language = languageRepository.findByCode(languageTag);
+        final XtdLanguage language = languageRepository.findByCode(languageTag).orElseThrow();
 
         final XtdText text = new XtdText();
         text.setText(value);

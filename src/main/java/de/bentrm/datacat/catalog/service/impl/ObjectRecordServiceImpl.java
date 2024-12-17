@@ -164,7 +164,7 @@ public class ObjectRecordServiceImpl
     @Override
     public XtdObject addComment(String id, String commentId, String languageTag, String value) {
         final XtdObject item = repository.findById(id).orElseThrow();
-        final XtdLanguage language = languageRepository.findByCode(languageTag);
+        final XtdLanguage language = languageRepository.findByCode(languageTag).orElseThrow();
 
         final XtdText text = new XtdText();
         text.setText(value);
@@ -187,7 +187,7 @@ public class ObjectRecordServiceImpl
     @Override
     public XtdObject addName(String id, String nameId, String languageTag, String value) {
         final XtdObject item = repository.findById(id).orElseThrow();
-        final XtdLanguage language = languageRepository.findByCode(languageTag);
+        final XtdLanguage language = languageRepository.findByCode(languageTag).orElseThrow();
 
         final XtdText text = new XtdText();
         text.setText(value);

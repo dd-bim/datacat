@@ -7,6 +7,7 @@ import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.bentrm.datacat.base.repository.EntityRepository;
+import de.bentrm.datacat.catalog.repository.LanguageRepository;
 import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import de.bentrm.datacat.catalog.domain.XtdConcept;
@@ -23,7 +24,6 @@ import de.bentrm.datacat.catalog.domain.XtdText;
 import de.bentrm.datacat.catalog.domain.XtdUnit;
 import de.bentrm.datacat.catalog.domain.XtdValue;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
-import de.bentrm.datacat.catalog.service.LanguageService;
 import de.bentrm.datacat.catalog.service.SimpleRecordService;
 import de.bentrm.datacat.catalog.service.value.ValueMapper;
 import de.bentrm.datacat.graphql.input.CatalogEntryPropertiesInput;
@@ -43,7 +43,7 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
     private final CatalogCleanupService cleanupService;
 
     @Autowired
-    private LanguageService languageService;
+    private LanguageRepository languageRepository;
 
     public AbstractSimpleRecordServiceImpl(Class<T> domainClass,
             Neo4jTemplate neo4jTemplate,
@@ -141,7 +141,7 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
     }
 
     public XtdMultiLanguageText createText(XtdMultiLanguageText multiLanguage, TranslationInput translation) {
-        final XtdLanguage language = languageService.findByCode(translation.getLanguageTag());
+        final XtdLanguage language = languageRepository.findByCode(translation.getLanguageTag()).orElseThrow();
 
         final XtdText text = new XtdText();
         text.setText(translation.getValue());
