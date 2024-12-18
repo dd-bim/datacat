@@ -55,7 +55,3 @@ spring:
     graphiql:
       enabled: true
       path: /graphiql
-  # mail:
-  #   properties:
-  #     "mail.smtp.ssl.enable": true
-            

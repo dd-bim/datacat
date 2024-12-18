@@ -26,7 +26,7 @@ public abstract class XtdConcept extends XtdObject {
     // A list of instances of xtdMultiLanguageText that holds examples of the concept in several languages.
     @ToString.Include
     @Relationship(type = "EXAMPLES")
-    private final Set<XtdMultiLanguageText> examples = new HashSet<>();
+    private Set<XtdMultiLanguageText> examples = new HashSet<>();
 
     // Language of the creator of the concept.
     @ToString.Include
@@ -36,17 +36,17 @@ public abstract class XtdConcept extends XtdObject {
     // List of attached reference documents.
     @ToString.Include
     @Relationship(type = "REFERENCE_DOCUMENTS")
-    private final Set<XtdExternalDocument> documentedBy = new HashSet<>();
+    private Set<XtdExternalDocument> documentedBy = new HashSet<>();
 
     // A list of instances of xtdMultiLanguageText that holds descriptions of the concept in several languages.
     @ToString.Include
     @Relationship(type = "DESCRIPTIONS")
-    protected final Set<XtdMultiLanguageText> descriptions = new HashSet<>();
+    protected Set<XtdMultiLanguageText> descriptions = new HashSet<>();
 
     // Used to link similar concepts.
     @ToString.Include
     @Relationship(type = "SIMILAR_TO")
-    private final Set<XtdConcept> similarTo = new HashSet<>();
+    private Set<XtdConcept> similarTo = new HashSet<>();
 
     // // Visual representation of the concept through sketches, photos, videos or other multimedia objects.
     // @ToString.Include

@@ -32,7 +32,7 @@ public class TagController {
 
     @QueryMapping
     public Optional<Tag> getTag(@Argument String id) {
-        return repository.findById(id);
+        return repository.findByIdWithDirectRelations(id);
     }
 
     @QueryMapping

@@ -25,6 +25,6 @@ public class XtdOrderedValue extends XtdObject {
 
     @ToString.Include
     @Relationship(type = "VALUES", direction = Relationship.Direction.INCOMING)
-    private final Set<XtdValueList> valueLists = new HashSet<>();
+    private Set<XtdValueList> valueLists = new HashSet<>();
 
 }

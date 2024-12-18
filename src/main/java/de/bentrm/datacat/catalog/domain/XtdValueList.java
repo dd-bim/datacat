@@ -27,9 +27,9 @@ public class XtdValueList extends XtdConcept {
 
     @ToString.Include
     @Relationship(type = "VALUES")
-    private final Set<XtdOrderedValue> values = new HashSet<>();
+    private Set<XtdOrderedValue> values = new HashSet<>();
 
     @ToString.Include
     @Relationship(type = "POSSIBLE_VALUES", direction = Relationship.Direction.INCOMING)
-    private final Set<XtdProperty> properties = new HashSet<>();
+    private Set<XtdProperty> properties = new HashSet<>();
 }

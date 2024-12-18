@@ -44,8 +44,19 @@ public abstract class AbstractQueryServiceImpl<T extends Entity, R extends Entit
     }
 
     @Override
+    public @NotNull Optional<T> findByIdWithDirectRelations(@NotNull String id) {
+        return repository.findByIdWithDirectRelations(id);
+    }
+
+    @Override
     public @NotNull List<T> findAllByIds(@NotNull List<String> ids) {
         Iterable<T> source = repository.findAllById(ids);
+        return StreamSupport.stream(source.spliterator(), false).collect(Collectors.toList());
+    }
+
+    @Override
+    public @NotNull List<T> findAllEntitiesById(@NotNull List<String> ids) {
+        Iterable<T> source = repository.findAllEntitiesById(ids);
         return StreamSupport.stream(source.spliterator(), false).collect(Collectors.toList());
     }
 

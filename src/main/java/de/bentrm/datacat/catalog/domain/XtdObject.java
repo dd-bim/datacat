@@ -40,13 +40,13 @@ public abstract class XtdObject extends XtdRoot {
     // TODO: Add external full text search component to improve on this mechanic
     @Setter(AccessLevel.NONE)
     @Property
-    private final Map<String, String> labels = new HashMap<>();
+    private Map<String, String> labels = new HashMap<>();
 
     // // Set of names of the object in different languages. Each object may have multiple names, and this allows for its expression in terms of synonyms. 
     // // At least a name shall be provided in international English and in the original language of its creator.
     @ToString.Include
     @Relationship(type = "NAMES")
-    private final Set<XtdMultiLanguageText> names = new HashSet<>();
+    private Set<XtdMultiLanguageText> names = new HashSet<>();
 
     // Data dictionary to which the object belongs to.
     @Relationship(type = "DICTIONARY")
@@ -61,11 +61,11 @@ public abstract class XtdObject extends XtdRoot {
 
     // List of objects replaced by the current object.
     @Relationship(type = XtdObject.REPLACE_OBJECT_TYPE, direction = Relationship.Direction.OUTGOING)
-    private final Set<XtdObject> replacedObjects = new HashSet<>();
+    private Set<XtdObject> replacedObjects = new HashSet<>();
 
     // Incoming relations of above relation
     @Relationship(type = XtdObject.REPLACE_OBJECT_TYPE, direction = Relationship.Direction.INCOMING)
-    private final Set<XtdObject> replacingObjects = new HashSet<>();
+    private Set<XtdObject> replacingObjects = new HashSet<>();
 
     // Sentence explaining the reason of the deprecation, which can explain how to convert values to conform to the new object.
     @Relationship(type = "DEPRECATION_EXPLANATION")
@@ -73,7 +73,7 @@ public abstract class XtdObject extends XtdRoot {
 
     @ToString.Include
     @Relationship(type = "COMMENTS")
-    protected final Set<XtdMultiLanguageText> comments = new HashSet<>();
+    protected Set<XtdMultiLanguageText> comments = new HashSet<>();
 
     public void setMinorVersion(int minorVersion) {
         Assert.notNull(minorVersion, "minorVersion may not be null");

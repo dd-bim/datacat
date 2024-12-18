@@ -17,6 +17,7 @@ import org.springframework.util.Assert;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
 
 import jakarta.validation.constraints.NotBlank;
@@ -31,14 +32,13 @@ public class TextRecordServiceImpl
         extends AbstractSimpleRecordServiceImpl<XtdText, TextRepository>
         implements TextRecordService {
 
-            private final LanguageRepository languageRepository;
+            @Autowired
+            private LanguageRepository languageRepository;
 
     public TextRecordServiceImpl(Neo4jTemplate neo4jTemplate,
                                      TextRepository repository,
-                                     LanguageRepository languageRepository,
                                      CatalogCleanupService cleanupService) {
         super(XtdText.class, neo4jTemplate, repository, cleanupService);
-        this.languageRepository = languageRepository;
     }
 
     @Override
@@ -49,11 +49,12 @@ public class TextRecordServiceImpl
     @Override
     public XtdLanguage getLanguage(XtdText text) {
         Assert.notNull(text, "Text must not be null");
-        final String languageId = languageRepository.findLanguageIdAssignedToText(text.getId());
+        final String languageId = getRepository().findLanguageIdByTextId(text.getId());
         if (languageId == null) {
             return null;
         }
-        final XtdLanguage language = languageRepository.findById(languageId).orElse(null);  
+  
+        final XtdLanguage language = languageRepository.findByIdWithDirectRelations(languageId).orElse(null);  
 
         return language;
         
@@ -73,7 +74,9 @@ public class TextRecordServiceImpl
                 } else if (relatedRecordIds.size() != 1) {
                     throw new IllegalArgumentException("Exactly one language must be assigned to a text.");
                 } else {
-                    final XtdLanguage language = languageRepository.findById(relatedRecordIds.get(0)).orElseThrow();
+                    // final XtdLanguage language = languageRepository.findById(relatedRecordIds.get(0)).orElseThrow();
+                    final XtdLanguage language = neo4jTemplate.findById(relatedRecordIds.get(0), XtdLanguage.class).orElseThrow();
+
                     text.setLanguage(language);
                 }
                     }

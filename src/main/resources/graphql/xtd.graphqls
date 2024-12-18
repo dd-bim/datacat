@@ -1190,4 +1190,7 @@ type Query {
 
   getConcept(id: ID!): XtdConcept
   findConcepts(input: FilterInput): XtdConceptConnection!
+
+  getObject(id: ID!): XtdObject
+  findObjects(input: FilterInput): XtdObjectConnection!
 }

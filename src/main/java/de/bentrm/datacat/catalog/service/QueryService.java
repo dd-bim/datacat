@@ -22,4 +22,10 @@ public interface QueryService<T extends Entity> {
 
     @PreAuthorize("hasRole('READONLY')")
     @NotNull long count(@NotNull QuerySpecification specification);
+
+    @PreAuthorize("hasRole('READONLY')")
+    @NotNull Optional<T> findByIdWithDirectRelations(@NotNull String id);
+
+    @PreAuthorize("hasRole('READONLY')")
+    @NotNull List<T> findAllEntitiesById(@NotNull List<String> ids);
 }

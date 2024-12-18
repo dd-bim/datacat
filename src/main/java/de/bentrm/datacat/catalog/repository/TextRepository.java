@@ -3,8 +3,6 @@ package de.bentrm.datacat.catalog.repository;
 import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.XtdText;
 
-import java.util.List;
-
 import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +10,8 @@ import org.springframework.stereotype.Repository;
 public interface TextRepository extends EntityRepository<XtdText> {
 
     @Query("""
-            MATCH (n {id: $multiLanguageTextId})-[:TEXTS]->(p:XtdText)
-            RETURN p.id""")
-    List<String> findAllTextIdsAssignedToMultiLanguageText(String multiLanguageTextId);
+            MATCH (x:XtdText {id: $textId})-[:LANGUAGE]->(y:XtdLanguage)
+            RETURN y.id""")
+    String findLanguageIdByTextId(String textId);
+
 }

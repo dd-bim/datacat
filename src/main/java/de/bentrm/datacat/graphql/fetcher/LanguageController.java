@@ -32,7 +32,7 @@ public class LanguageController {
 
     @QueryMapping
     public Optional<XtdLanguage> getLanguage(@Argument String id) {
-        return repository.findById(id);
+        return languageRecordService.findByIdWithDirectRelations(id);
     }
 
     @QueryMapping

@@ -20,5 +20,5 @@ public class XtdMultiLanguageText extends XtdRoot {
     public static final String LABEL = "XtdMultiLanguageText";
 
     @Relationship(type = "TEXTS")
-    private final Set<XtdText> texts = new HashSet<>();
+    private Set<XtdText> texts = new HashSet<>();
 }

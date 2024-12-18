@@ -31,12 +31,12 @@ public class XtdProperty extends XtdConcept {
     // Symbols of the property.
     // @ToString.Include
     @Relationship(type = "SYMBOLS")
-    private final Set<XtdSymbol> symbols = new HashSet<>();
+    private Set<XtdSymbol> symbols = new HashSet<>();
 
     // Intervals of possible values for the property.
     @ToString.Include
     @Relationship(type = "BOUNDARY_VALUES")
-    private final Set<XtdInterval> boundaryValues = new HashSet<>();
+    private Set<XtdInterval> boundaryValues = new HashSet<>();
 
     // Dimension of the property according to the ISO 80000 series.
     @ToString.Include
@@ -47,33 +47,33 @@ public class XtdProperty extends XtdConcept {
     // have the same dimension as the property.
     @ToString.Include
     @Relationship(type = "QUANTITY_KINDS")
-    private final Set<XtdQuantityKind> quantityKinds = new HashSet<>(); 
+    private Set<XtdQuantityKind> quantityKinds = new HashSet<>(); 
 
     // List of the possible values that can be provided for the property. Several
     // sets of possible values can be provided to allow providing them in different
     // languages.
     @ToString.Include
     @Relationship(type = "POSSIBLE_VALUES")
-    private final Set<XtdValueList> possibleValues = new HashSet<>();
+    private Set<XtdValueList> possibleValues = new HashSet<>();
 
     // List of units that can be attached to a value.
     @ToString.Include
     @Relationship(type = "UNITS")
-    private final Set<XtdUnit> units = new HashSet<>();
+    private Set<XtdUnit> units = new HashSet<>();
 
     // isUsedByFilters() 
 
     // List of properties connected to the current property. The connection can be a
     // specialization or a dependency.
     @Relationship(type = XtdRelationshipToProperty.RELATIONSHIP_TYPE)
-    private final Set<XtdRelationshipToProperty> connectedProperties = new HashSet<>();
+    private Set<XtdRelationshipToProperty> connectedProperties = new HashSet<>();
 
     // Incomming relations
     @Relationship(type = XtdRelationshipToProperty.RELATIONSHIP_TYPE, direction = Relationship.Direction.INCOMING)
-    private final Set<XtdRelationshipToProperty> connectingProperties = new HashSet<>();
+    private Set<XtdRelationshipToProperty> connectingProperties = new HashSet<>();
 
     // List of the properties attached to the subject.
     @ToString.Include
     @Relationship(type = "PROPERTIES", direction = Relationship.Direction.INCOMING)
-    private final Set<XtdSubject> subjects = new HashSet<>();
+    private Set<XtdSubject> subjects = new HashSet<>();
 }

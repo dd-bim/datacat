@@ -109,8 +109,8 @@ public class ObjectRecordServiceImpl
     @Override
     public List<XtdMultiLanguageText> getNames(XtdObject object) {
         Assert.notNull(object.getId(), "Object must be persistent.");
-        final List<String> nameIds = multiLanguageTextRepository.findAllNamesAssignedToObject(object.getId());
-        final Iterable<XtdMultiLanguageText> names = multiLanguageTextRepository.findAllById(nameIds);
+        final List<String> nameIds = getRepository().findAllNamesAssignedToObject(object.getId());
+        final Iterable<XtdMultiLanguageText> names = neo4jTemplate.findAllById(nameIds, XtdMultiLanguageText.class);
 
         return StreamSupport
                 .stream(names.spliterator(), false)

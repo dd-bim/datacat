@@ -17,10 +17,5 @@ public interface LanguageRepository extends EntityRepository<XtdLanguage> {
                         RETURN p.id""")
         List<String> findAllLanguageIdsAssignedToExternalDocument(String externalDocumentId);
 
-        @Query("""
-                        MATCH (n {id: $textId})-[:LANGUAGE]->(p:XtdLanguage)
-                        RETURN p.id""")
-        String findLanguageIdAssignedToText(String textId);
-
         Optional<XtdLanguage> findByCode(String languageCode);
 }

@@ -25,11 +25,11 @@ public class XtdRelationshipToSubject extends AbstractRelationship {
 
     @ToString.Include
     @Relationship(type = "SCOPE_SUBJECTS")
-    private final Set<XtdSubject> scopeSubjects = new HashSet<>();
+    private Set<XtdSubject> scopeSubjects = new HashSet<>();
 
     @ToString.Include
     @Relationship(type = XtdRelationshipToSubject.RELATIONSHIP_TYPE_OUT)
-    private final Set<XtdSubject> targetSubjects = new HashSet<>();
+    private Set<XtdSubject> targetSubjects = new HashSet<>();
 
     @ToString.Include
     @Relationship(type = XtdRelationshipToSubject.RELATIONSHIP_TYPE, direction = Relationship.Direction.INCOMING)

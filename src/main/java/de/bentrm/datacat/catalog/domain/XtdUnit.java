@@ -44,5 +44,5 @@ public class XtdUnit extends XtdConcept {
 
     @ToString.Include
     @Relationship(type = "UNITS", direction = Relationship.Direction.INCOMING)
-    private final Set<XtdProperty> properties = new HashSet<>();
+    private Set<XtdProperty> properties = new HashSet<>();
 }

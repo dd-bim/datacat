@@ -8,8 +8,10 @@ import de.bentrm.datacat.catalog.repository.TextRepository;
 import de.bentrm.datacat.catalog.repository.MultiLanguageTextRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.MultiLanguageTextRecordService;
+import de.bentrm.datacat.catalog.service.TextRecordService;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +36,9 @@ public class MultiLanguageTextRecordServiceImpl
 
     private final TextRepository textRepository;
 
+    @Autowired
+    private TextRecordService textRecordService;
+
     public MultiLanguageTextRecordServiceImpl(Neo4jTemplate neo4jTemplate,
             MultiLanguageTextRepository repository,
             TextRepository textRepository,
@@ -50,9 +55,9 @@ public class MultiLanguageTextRecordServiceImpl
     @Override
     public List<XtdText> getTexts(XtdMultiLanguageText multiLanguageText) {
         Assert.notNull(multiLanguageText, "MultiLanguageText must not be null");
-        final List<String> textIds = textRepository
+        final List<String> textIds = getRepository()
                 .findAllTextIdsAssignedToMultiLanguageText(multiLanguageText.getId());
-        final Iterable<XtdText> texts = textRepository.findAllById(textIds);
+        final Iterable<XtdText> texts = textRecordService.findAllEntitiesById(textIds);
 
         return StreamSupport
                 .stream(texts.spliterator(), false)

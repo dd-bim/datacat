@@ -26,7 +26,7 @@ public class XtdRelationshipToProperty extends AbstractRelationship {
 
     @ToString.Include
     @Relationship(type = XtdRelationshipToProperty.RELATIONSHIP_TYPE_OUT)
-    private final Set<XtdProperty> targetProperties = new HashSet<>();
+    private Set<XtdProperty> targetProperties = new HashSet<>();
 
     @ToString.Include
     @Relationship(type = XtdRelationshipToProperty.RELATIONSHIP_TYPE, direction = Relationship.Direction.INCOMING)

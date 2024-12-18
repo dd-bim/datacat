@@ -17,7 +17,7 @@ public class XtdQuantityKind extends XtdConcept {
     public static final String LABEL = "XtdQuantityKind";
 
     @Relationship(type = "UNITS")
-    private final Set<XtdUnit> units = new HashSet<>();
+    private Set<XtdUnit> units = new HashSet<>();
 
     @Relationship(type = "DIMENSION")
     private XtdDimension dimension;

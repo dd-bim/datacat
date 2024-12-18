@@ -33,6 +33,6 @@ public class XtdExternalDocument extends XtdConcept {
 
     // @ToString.Include
     @Relationship(type = "REFERENCE_DOCUMENTS", direction = Relationship.Direction.INCOMING)
-    private final Set<XtdConcept> documents = new HashSet<>();
+    private Set<XtdConcept> documents = new HashSet<>();
 
 }
