@@ -6,12 +6,13 @@ import de.bentrm.datacat.catalog.domain.XtdSymbol;
 import de.bentrm.datacat.catalog.domain.XtdText;
 import de.bentrm.datacat.catalog.domain.XtdSubject;
 import de.bentrm.datacat.catalog.repository.SymbolRepository;
-import de.bentrm.datacat.catalog.repository.SubjectRepository;
-import de.bentrm.datacat.catalog.repository.TextRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
+import de.bentrm.datacat.catalog.service.SubjectRecordService;
 import de.bentrm.datacat.catalog.service.SymbolRecordService;
+import de.bentrm.datacat.catalog.service.TextRecordService;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.util.Assert;
 
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -32,17 +34,16 @@ public class SymbolRecordServiceImpl
         extends AbstractSimpleRecordServiceImpl<XtdSymbol, SymbolRepository>
         implements SymbolRecordService {
 
-    private final SubjectRepository subjectRepository;
-    private final TextRepository textRepository;
+            @Autowired
+            private SubjectRecordService subjectRecordService;
+
+            @Autowired
+            private TextRecordService textRecordService;
 
     public SymbolRecordServiceImpl(Neo4jTemplate neo4jTemplate,
                                      SymbolRepository repository,
-                                     SubjectRepository subjectRepository,
-                                     TextRepository textRepository,
                                      CatalogCleanupService cleanupService) {
         super(XtdSymbol.class, neo4jTemplate, repository, cleanupService);
-        this.subjectRepository = subjectRepository;
-        this.textRepository = textRepository;
     }
 
     @Override
@@ -51,14 +52,26 @@ public class SymbolRecordServiceImpl
     }
 
     @Override
-    public XtdSubject getSubject(XtdSymbol symbol) {
+    public Optional<XtdSubject> getSubject(XtdSymbol symbol) {
         Assert.notNull(symbol.getId(), "Symbol must be persistent.");
-        final String subjectId = subjectRepository.findSubjectIdAssignedToSymbol(symbol.getId());
+        final String subjectId = getRepository().findSubjectIdAssignedToSymbol(symbol.getId());
         if (subjectId == null) {
             return null;
         }
-        final XtdSubject subject = subjectRepository.findById(subjectId).orElse(null);
+        final Optional<XtdSubject> subject = subjectRecordService.findByIdWithDirectRelations(subjectId);
+        // final Optional<XtdSubject> subject = getRepository().findSubjectAssignedToSymbol(symbol.getId());
         return subject;
+    }
+
+    @Override
+    public @NotNull XtdText getSymbolText(XtdSymbol symbol) {
+        Assert.notNull(symbol.getId(), "Symbol must be persistent.");
+        final String textId = getRepository().findSymbolText(symbol.getId());
+        if (textId == null) {
+            return null;
+        }
+        final XtdText text = textRecordService.findByIdWithDirectRelations(textId).orElseThrow();
+        return text;
     }
 
     @Transactional
@@ -66,7 +79,7 @@ public class SymbolRecordServiceImpl
     public @NotNull XtdSymbol setRelatedRecords(@NotBlank String recordId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdSymbol symbol = getRepository().findById(recordId).orElseThrow();
+        final XtdSymbol symbol = getRepository().findByIdWithDirectRelations(recordId).orElseThrow();
 
         switch (relationType) {
             case Subject -> {
@@ -75,7 +88,7 @@ public class SymbolRecordServiceImpl
                 } else if (relatedRecordIds.size() != 1) {
                     throw new IllegalArgumentException("Exactly one subject must be assigned.");
                 } else {
-                    final XtdSubject subject = subjectRepository.findById(relatedRecordIds.get(0)).orElseThrow();
+                    final XtdSubject subject = subjectRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
                     symbol.setSubject(subject);
                 }
             }
@@ -85,7 +98,7 @@ public class SymbolRecordServiceImpl
                 } else if (relatedRecordIds.size() != 1) {
                     throw new IllegalArgumentException("Exactly one text must be assigned.");
                 } else {
-                    final XtdText text = textRepository.findById(relatedRecordIds.get(0)).orElseThrow();
+                    final XtdText text = textRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
                     symbol.setSymbol(text);
                 }
             }

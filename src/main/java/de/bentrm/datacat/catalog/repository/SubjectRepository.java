@@ -20,8 +20,4 @@ public interface SubjectRepository extends EntityRepository<XtdSubject> {
                         RETURN p.id""")
         List<String> findAllScopeSubjectIdsAssignedToRelationshipToSubject(String relationshiptToSubjectId);
 
-        @Query("""
-                        MATCH (n {id: $symbolId})-[:SUBJECT]->(p:XtdSubject)
-                        RETURN p.id""")
-        String findSubjectIdAssignedToSymbol(String symbolId);
 }
