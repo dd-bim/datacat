@@ -55,7 +55,7 @@ public class ValueRecordServiceImpl
     public @NotNull XtdValue setRelatedRecords(@NotBlank String recordId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdValue value = getRepository().findById(recordId).orElseThrow();
+        final XtdValue value = getRepository().findByIdWithDirectRelations(recordId).orElseThrow();
 
        return value;                                                 
     }

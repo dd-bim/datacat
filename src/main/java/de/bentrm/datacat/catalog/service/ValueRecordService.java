@@ -4,6 +4,4 @@ import de.bentrm.datacat.catalog.domain.XtdValue;
 
 public interface ValueRecordService extends SimpleRecordService<XtdValue> {
 
-    // List<XtdOrderedValue> getOrderedValues(@NotNull XtdValue value);
-
 }
