@@ -68,7 +68,7 @@ public class DataStoreMigrationService implements ApplicationRunner, ResourceLoa
             final String filename = resource.getFilename();
             Assert.notNull(filename, "Filename of migration may not be null");
 
-            @NotNull final Optional<Migration> optionalMigration = migrationRepository.findById(filename);
+            @NotNull final Optional<Migration> optionalMigration = migrationRepository.findByIdWithDirectRelations(filename);
             if (optionalMigration.isPresent()) {
                 log.info("Skipping already imported migration: {}", filename);
                 continue;
@@ -90,7 +90,7 @@ public class DataStoreMigrationService implements ApplicationRunner, ResourceLoa
     }
 
     private void runMigrations() {
-        final Iterable<Migration> migrations = migrationRepository.findAll(Sort.by("id"));
+        final Iterable<Migration> migrations = migrationRepository.findAllMigrationsOrderedById();
 
         log.info("Starting execution of graph schema migration.");
         for (Migration migration : migrations) {
