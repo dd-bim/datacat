@@ -61,15 +61,9 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public CatalogStatistics getStatistics() {
-        // final Map<String,Long> labelsStats = catalogRecordRepository.statistics();
         final List<CatalogRecordStatistics> labelsStats = catalogRecordRepository.statistics();
 
         final CatalogStatistics statistics = new CatalogStatistics();
-        // labelsStats.forEach((id, count) -> {
-        //     if (id.startsWith("Xtd")) {
-        //         statistics.getItems().add(new CatalogRecordStatistics(id, count));
-        //     }
-        // });
         labelsStats.forEach(record -> {
             if (record.getId().startsWith("Xtd")) {
                 statistics.getItems().add(record);
@@ -90,7 +84,7 @@ public class CatalogServiceImpl implements CatalogService {
     @Transactional
     @Override
     public @NotNull Tag updateTag(String id, String name) {
-        final Tag tag = tagRepository.findById(id).orElseThrow();
+        final Tag tag = tagRepository.findByIdWithDirectRelations(id).orElseThrow();
         tag.setName(name);
         return tagRepository.save(tag);
     }
@@ -99,7 +93,7 @@ public class CatalogServiceImpl implements CatalogService {
     @Override
     public @NotNull Tag deleteTag(String id) {
         Assert.notNull(id, "id may not be null.");
-        final Tag tag = tagRepository.findById(id).orElseThrow();
+        final Tag tag = tagRepository.findByIdWithDirectRelations(id).orElseThrow();
         tagRepository.delete(tag);
         return tag;
     }
@@ -107,8 +101,8 @@ public class CatalogServiceImpl implements CatalogService {
     @Transactional
     @Override
     public CatalogRecord addTag(String entryId, String tagId) {
-        CatalogRecord item = catalogRecordRepository.findById(entryId).orElseThrow();
-        final Tag tag = tagRepository.findById(tagId).orElseThrow();
+        CatalogRecord item = catalogRecordRepository.findByIdWithDirectRelations(entryId).orElseThrow();
+        final Tag tag = tagRepository.findByIdWithDirectRelations(tagId).orElseThrow();
         item.addTag(tag);
         return catalogRecordRepository.save(item);
     }
@@ -116,15 +110,15 @@ public class CatalogServiceImpl implements CatalogService {
     @Transactional
     @Override
     public CatalogRecord removeTag(String entryId, String tagId) {
-        final CatalogRecord item = catalogRecordRepository.findById(entryId).orElseThrow();
-        final Tag tag = tagRepository.findById(tagId).orElseThrow();
+        final CatalogRecord item = catalogRecordRepository.findByIdWithDirectRelations(entryId).orElseThrow();
+        final Tag tag = tagRepository.findByIdWithDirectRelations(tagId).orElseThrow();
         item.removeTag(tag);
         return catalogRecordRepository.save(item);
     }
 
     @Override
     public @NotNull List<CatalogRecord> getAllEntriesById(List<String> ids) {
-        final Iterable<CatalogRecord> items = catalogRecordRepository.findAllById(ids);
+        final Iterable<CatalogRecord> items = catalogRecordRepository.findAllEntitiesById(ids);
         final List<CatalogRecord> results = new ArrayList<>();
         items.forEach(results::add);
         return results;
@@ -132,7 +126,7 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public @NotNull List<XtdRoot> getAllRootItemsById(List<String> ids) {
-        final Iterable<XtdRoot> items = rootRepository.findAllById(ids);
+        final Iterable<XtdRoot> items = rootRepository.findAllEntitiesById(ids);
         final List<XtdRoot> results = new ArrayList<>();
         items.forEach(results::add);
         return results;
@@ -140,7 +134,7 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public @NotNull List<XtdText> getAllTextsById(List<String> ids) {
-        final Iterable<XtdText> items = textRepository.findAllById(ids);
+        final Iterable<XtdText> items = textRepository.findAllEntitiesById(ids);
         final List<XtdText> results = new ArrayList<>();
         items.forEach(results::add);
         return results;
@@ -148,7 +142,7 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public @NotNull List<XtdObject> getAllObjectsById(List<String> ids) {
-        final Iterable<XtdObject> items = objectRepository.findAllById(ids);
+        final Iterable<XtdObject> items = objectRepository.findAllEntitiesById(ids);
         final List<XtdObject> results = new ArrayList<>();
         items.forEach(results::add);
         return results;
@@ -156,7 +150,7 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public @NotNull List<XtdConcept> getAllConceptsById(List<String> ids) {
-        final Iterable<XtdConcept> items = conceptRepository.findAllById(ids);
+        final Iterable<XtdConcept> items = conceptRepository.findAllEntitiesById(ids);
         final List<XtdConcept> results = new ArrayList<>();
         items.forEach(results::add);
         return results;
@@ -164,7 +158,7 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public @NotNull List<XtdExternalDocument> getAllExternalDocumentsById(List<String> ids) {
-        final Iterable<XtdExternalDocument> items = externalDocumentRepository.findAllById(ids);
+        final Iterable<XtdExternalDocument> items = externalDocumentRepository.findAllEntitiesById(ids);
         final List<XtdExternalDocument> results = new ArrayList<>();
         items.forEach(results::add);
         return results;
@@ -172,27 +166,27 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public Optional<CatalogRecord> getEntryById(String id) {
-        return catalogRecordRepository.findById(id);
+        return catalogRecordRepository.findByIdWithDirectRelations(id);
     }
 
     @Override
     public Optional<XtdRoot> getRootItem(String id) {
-        return rootRepository.findById(id);
+        return rootRepository.findByIdWithDirectRelations(id);
     }
 
     @Override
     public Optional<XtdObject> getObject(String id) {
-        return objectRepository.findById(id);
+        return objectRepository.findByIdWithDirectRelations(id);
     }
 
     @Override
     public Optional<XtdConcept> getConcept(String id) {
-        return conceptRepository.findById(id);
+        return conceptRepository.findByIdWithDirectRelations(id);
     }
 
     @Override
     public Optional<AbstractRelationship> getRelationship(String id) {
-        return relationshipRepository.findById(id);
+        return relationshipRepository.findByIdWithDirectRelations(id);
     }
     
     @Override
@@ -247,7 +241,7 @@ public class CatalogServiceImpl implements CatalogService {
         final Set<String> nodeIds = new HashSet<>();
         paths.forEach(nodeIds::addAll);
 
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
+        final Iterable<XtdRoot> nodes = rootRepository.findAllEntitiesById(nodeIds);
         final List<XtdRoot> leaves = StreamSupport
                 .stream(nodes.spliterator(), false)
                 .collect(Collectors.toList());

@@ -2,6 +2,7 @@ package de.bentrm.datacat.base.repository;
 
 import de.bentrm.datacat.base.domain.Entity;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,5 +30,5 @@ public interface EntityRepository<T extends Entity> extends Neo4jRepository<T, S
             MATCH (o)
             WHERE o.id IN $ids
             RETURN o""")
-    List<T> findAllEntitiesById(@Param("ids") List<String> ids);
+    List<T> findAllEntitiesById(@Param("ids") Collection<String> ids);
 }

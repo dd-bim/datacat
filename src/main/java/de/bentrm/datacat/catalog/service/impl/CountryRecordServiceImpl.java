@@ -6,11 +6,11 @@ import de.bentrm.datacat.catalog.domain.XtdCountry;
 import de.bentrm.datacat.catalog.repository.CountryRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.CountryRecordService;
+import de.bentrm.datacat.catalog.service.SubdivisionRecordService;
 import de.bentrm.datacat.catalog.service.ConceptRecordService;
 import lombok.extern.slf4j.Slf4j;
 import de.bentrm.datacat.catalog.domain.XtdSubdivision;
-import de.bentrm.datacat.catalog.repository.SubdivisionRepository;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,17 +33,16 @@ public class CountryRecordServiceImpl
         extends AbstractSimpleRecordServiceImpl<XtdCountry, CountryRepository>
         implements CountryRecordService {
 
-            private final SubdivisionRepository subdivisionRepository;
-            private final ConceptRecordService conceptRecordService;
+            @Autowired
+            private SubdivisionRecordService subdivisionRecordService;
+
+            @Autowired
+            private ConceptRecordService conceptRecordService;
 
     public CountryRecordServiceImpl(Neo4jTemplate neo4jTemplate,
                                      CountryRepository repository,
-                                    SubdivisionRepository subdivisionRepository,
-                                    ConceptRecordService conceptRecordService,
                                      CatalogCleanupService cleanupService) {
         super(XtdCountry.class, neo4jTemplate, repository, cleanupService);
-        this.subdivisionRepository = subdivisionRepository;
-        this.conceptRecordService = conceptRecordService;
     }
 
     @Override
@@ -54,8 +53,8 @@ public class CountryRecordServiceImpl
     @Override
     public List<XtdSubdivision> getSubdivisions(XtdCountry country) {
         Assert.notNull(country.getId(), "Subdivision must be persistent.");
-        final List<String> subdivisionIds = subdivisionRepository.findAllSubdivisionIdsAssignedToCountry(country.getId());
-        final Iterable<XtdSubdivision> subdivisions = subdivisionRepository.findAllById(subdivisionIds);
+        final List<String> subdivisionIds = getRepository().findAllSubdivisionIdsAssignedToCountry(country.getId());
+        final Iterable<XtdSubdivision> subdivisions = subdivisionRecordService.findAllEntitiesById(subdivisionIds);
 
         return StreamSupport
                 .stream(subdivisions.spliterator(), false)
@@ -71,7 +70,7 @@ public class CountryRecordServiceImpl
 
         switch (relationType) {
             case Subdivisions -> {
-                final Iterable<XtdSubdivision> items = subdivisionRepository.findAllById(relatedRecordIds);
+                final Iterable<XtdSubdivision> items = subdivisionRecordService.findAllEntitiesById(relatedRecordIds);
                 final List<XtdSubdivision> related = StreamSupport
                         .stream(items.spliterator(), false)
                         .collect(Collectors.toList());

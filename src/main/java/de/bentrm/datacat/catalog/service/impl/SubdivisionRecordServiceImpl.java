@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,16 +31,13 @@ public class SubdivisionRecordServiceImpl
         extends AbstractSimpleRecordServiceImpl<XtdSubdivision, SubdivisionRepository>
         implements SubdivisionRecordService {
 
-            private final SubdivisionRepository repository;
-            private final ConceptRecordService conceptRecordService;
+            @Autowired
+            private ConceptRecordService conceptRecordService;
 
     public SubdivisionRecordServiceImpl(Neo4jTemplate neo4jTemplate,
                                      SubdivisionRepository repository,
-                                     ConceptRecordService conceptRecordService,
                                      CatalogCleanupService cleanupService) {
         super(XtdSubdivision.class, neo4jTemplate, repository, cleanupService);
-        this.repository = repository;
-        this.conceptRecordService = conceptRecordService;
     }
 
     @Override
@@ -50,8 +48,8 @@ public class SubdivisionRecordServiceImpl
     @Override
     public List<XtdSubdivision> getSubdivisions(XtdSubdivision subdivision) {
         Assert.notNull(subdivision.getId(), "Subdivision must be persistent.");
-        final List<String> subdivisionIds = repository.findAllSubdivisionIdsAssignedToSubdivision(subdivision.getId());
-        final Iterable<XtdSubdivision> subdivisions = repository.findAllById(subdivisionIds);
+        final List<String> subdivisionIds = getRepository().findAllSubdivisionIdsAssignedToSubdivision(subdivision.getId());
+        final Iterable<XtdSubdivision> subdivisions = getRepository().findAllEntitiesById(subdivisionIds);
 
         return StreamSupport
                 .stream(subdivisions.spliterator(), false)
@@ -67,7 +65,7 @@ public class SubdivisionRecordServiceImpl
 
         switch (relationType) {
             case Subdivisions -> {
-                final Iterable<XtdSubdivision> items = repository.findAllById(relatedRecordIds);
+                final Iterable<XtdSubdivision> items = getRepository().findAllEntitiesById(relatedRecordIds);
                 final List<XtdSubdivision> related = StreamSupport
                         .stream(items.spliterator(), false)
                         .collect(Collectors.toList());

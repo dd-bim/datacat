@@ -15,9 +15,4 @@ public interface SubdivisionRepository extends EntityRepository<XtdSubdivision> 
                         MATCH (n {id: $subdivisionId})-[:SUBDIVISIONS]->(p:XtdSubdivision)
                         RETURN p.id""")
         List<String> findAllSubdivisionIdsAssignedToSubdivision(String subdivisionId);
-
-        @Query("""
-                        MATCH (n {id: $countryId})-[:SUBDIVISIONS]->(p:XtdSubdivision)
-                        RETURN p.id""")
-        List<String> findAllSubdivisionIdsAssignedToCountry(String countryId);
 }

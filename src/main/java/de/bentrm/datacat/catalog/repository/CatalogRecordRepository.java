@@ -8,16 +8,12 @@ import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public interface CatalogRecordRepository extends EntityRepository<CatalogRecord> {
 
     // Counts, how many of each concepts are in the database.
-    // @Query("CALL apoc.meta.stats() YIELD labels RETURN labels")
-    // @Query("CALL apoc.meta.stats() YIELD labels RETURN keys(labels) AS id, labels[keys(labels)] AS count")
     @Query("CALL apoc.meta.stats() YIELD labels UNWIND keys(labels) AS id RETURN id, labels[id] AS count")
-    // Map<String, Long> statistics();
     List<CatalogRecordStatistics> statistics();
 
 
