@@ -5,13 +5,15 @@ import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import de.bentrm.datacat.catalog.domain.XtdOrderedValue;
 import de.bentrm.datacat.catalog.domain.XtdValueList;
 import de.bentrm.datacat.catalog.domain.XtdValue;
-import de.bentrm.datacat.catalog.repository.ValueListRepository;
-import de.bentrm.datacat.catalog.repository.ValueRepository;
 import de.bentrm.datacat.catalog.repository.OrderedValueRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.OrderedValueRecordService;
+import de.bentrm.datacat.catalog.service.ValueListRecordService;
+import de.bentrm.datacat.catalog.service.ValueRecordService;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,17 +36,17 @@ public class OrderedValueRecordServiceImpl
         extends AbstractSimpleRecordServiceImpl<XtdOrderedValue, OrderedValueRepository>
         implements OrderedValueRecordService {
 
-            private final ValueRepository valueRepository;
-            private final ValueListRepository valueListRepository;
+        @Autowired
+        private ValueRecordService valueRecordService;
+
+        @Autowired
+        @Lazy
+        private ValueListRecordService valueListRecordService;
 
     public OrderedValueRecordServiceImpl(Neo4jTemplate neo4jTemplate,
                                     OrderedValueRepository repository,
-                                    ValueListRepository valueListRepository,
-                                    ValueRepository valueRepository,
                                     CatalogCleanupService cleanupService) {
         super(XtdOrderedValue.class, neo4jTemplate, repository, cleanupService);
-        this.valueRepository = valueRepository;
-        this.valueListRepository = valueListRepository;
     }
 
     @Override
@@ -55,11 +57,11 @@ public class OrderedValueRecordServiceImpl
     @Override
     public XtdValue getValue(XtdOrderedValue orderedValue) {
         Assert.notNull(orderedValue.getId(), "OrderedValue must be persistent.");
-        final String valueId = valueRepository.findValueIdAssignedToOrderedValue(orderedValue.getId());
+        final String valueId = getRepository().findValueIdAssignedToOrderedValue(orderedValue.getId());
         if (valueId == null) {
             return null;
         }
-        final XtdValue value = valueRepository.findById(valueId).orElse(null);
+        final XtdValue value = valueRecordService.findById(valueId).orElseThrow();
 
         return value;
     }
@@ -67,8 +69,8 @@ public class OrderedValueRecordServiceImpl
     @Override
     public List<XtdValueList> getValueLists(@NotNull XtdOrderedValue orderedValue) {
         Assert.notNull(orderedValue.getId(), "OrderedValue must be persistent.");
-        final List<String> valueListIds = valueListRepository.findAllValueListIdsAssignedToOrderedValue(orderedValue.getId());
-        final Iterable<XtdValueList> valueLists = valueListRepository.findAllById(valueListIds);
+        final List<String> valueListIds = getRepository().findAllValueListIdsAssigningOrderedValue(orderedValue.getId());
+        final Iterable<XtdValueList> valueLists = valueListRecordService.findAllEntitiesById(valueListIds);
 
         return StreamSupport
                 .stream(valueLists.spliterator(), false)
@@ -89,7 +91,7 @@ public class OrderedValueRecordServiceImpl
                 } else if (relatedRecordIds.size() != 1) {
                     throw new IllegalArgumentException("Exactly one Value must be assigned to an OrderedValue.");
                 } else {
-                    final XtdValue value = valueRepository.findById(relatedRecordIds.get(0)).orElseThrow();
+                    final XtdValue value = valueRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
                     orderedValue.setOrderedValue(value);
                 }
             default:

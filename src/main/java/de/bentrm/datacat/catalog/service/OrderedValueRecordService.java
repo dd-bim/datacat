@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface OrderedValueRecordService extends SimpleRecordService<XtdOrderedValue> {
 
-    XtdValue getValue(@NotNull XtdOrderedValue orderedValue);
+    @NotNull XtdValue getValue(@NotNull XtdOrderedValue orderedValue);
 
     List<XtdValueList> getValueLists(@NotNull XtdOrderedValue orderedValue);
 }

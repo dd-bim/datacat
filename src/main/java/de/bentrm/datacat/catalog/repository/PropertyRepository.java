@@ -16,11 +16,6 @@ public interface PropertyRepository extends EntityRepository<XtdProperty> {
     List<String> findAllPropertyIdsAssignedToSubject(String subjectId);
 
     @Query("""
-            MATCH (n {id: $valueListId})<-[:POSSIBLE_VALUES]->(p:XtdProperty)
-            RETURN p.id""")
-    List<String> findAllPropertyIdsAssignedToValueList(String valueListId);
-
-    @Query("""
             MATCH (n {id: $unitId})<-[:UNITS]->(p:XtdProperty)
             RETURN p.id""")
     List<String> findAllPropertyIdsAssignedToUnit(String unitId);

@@ -1,5 +1,6 @@
 package de.bentrm.datacat.catalog.service;
 
+import de.bentrm.datacat.catalog.domain.XtdLanguage;
 import de.bentrm.datacat.catalog.domain.XtdOrderedValue;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.domain.XtdUnit;
@@ -7,6 +8,7 @@ import de.bentrm.datacat.catalog.domain.XtdValueList;
 
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Optional;
 
 public interface ValueListRecordService extends SimpleRecordService<XtdValueList> {
 
@@ -14,6 +16,8 @@ public interface ValueListRecordService extends SimpleRecordService<XtdValueList
 
     List<XtdProperty> getProperties(@NotNull XtdValueList valueList);
 
-    XtdUnit getUnit(@NotNull XtdValueList valueList);
+    Optional<XtdUnit> getUnit(@NotNull XtdValueList valueList);
+
+    Optional<XtdLanguage> getLanguage(@NotNull XtdValueList valueList);
 
 }

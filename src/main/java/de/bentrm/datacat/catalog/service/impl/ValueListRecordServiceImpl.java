@@ -8,13 +8,13 @@ import de.bentrm.datacat.catalog.domain.XtdValueList;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.domain.XtdUnit;
 import de.bentrm.datacat.catalog.repository.ValueListRepository;
-import de.bentrm.datacat.catalog.repository.OrderedValueRepository;
-import de.bentrm.datacat.catalog.repository.PropertyRepository;
-import de.bentrm.datacat.catalog.repository.UnitRepository;
-import de.bentrm.datacat.catalog.repository.LanguageRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.ValueListRecordService;
 import de.bentrm.datacat.catalog.service.ConceptRecordService;
+import de.bentrm.datacat.catalog.service.LanguageRecordService;
+import de.bentrm.datacat.catalog.service.OrderedValueRecordService;
+import de.bentrm.datacat.catalog.service.PropertyRecordService;
+import de.bentrm.datacat.catalog.service.UnitRecordService;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
@@ -27,39 +27,38 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
 
 @Slf4j
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class ValueListRecordServiceImpl
-        extends AbstractSimpleRecordServiceImpl<XtdValueList, ValueListRepository>
+public class ValueListRecordServiceImpl extends AbstractSimpleRecordServiceImpl<XtdValueList, ValueListRepository>
         implements ValueListRecordService {
 
-            private final OrderedValueRepository orderedValueRepository;
-            private final PropertyRepository propertyRepository;
-            private final UnitRepository unitRepository;
-            private final LanguageRepository languageRepository;
-            private final ConceptRecordService conceptRecordService;
+    @Autowired
+    private OrderedValueRecordService orderedValueRecordService;
 
-    public ValueListRecordServiceImpl(Neo4jTemplate neo4jTemplate,
-                                    ValueListRepository repository,
-                                    OrderedValueRepository orderedValueRepository,
-                                    PropertyRepository propertyRepository,
-                                    UnitRepository unitRepository,
-                                    LanguageRepository languageRepository,
-                                    ConceptRecordService conceptRecordService,
-                                    CatalogCleanupService cleanupService) {
+    @Autowired
+    private LanguageRecordService languageRecordService;
+
+    @Autowired
+    private UnitRecordService unitRecordService;
+
+    @Autowired
+    private PropertyRecordService propertyRecordService;
+
+    @Autowired
+    private ConceptRecordService conceptRecordService;
+
+    public ValueListRecordServiceImpl(Neo4jTemplate neo4jTemplate, ValueListRepository repository,
+            CatalogCleanupService cleanupService) {
         super(XtdValueList.class, neo4jTemplate, repository, cleanupService);
-        this.orderedValueRepository = orderedValueRepository;
-        this.propertyRepository = propertyRepository;
-        this.unitRepository = unitRepository;
-        this.languageRepository = languageRepository;
-        this.conceptRecordService = conceptRecordService;
     }
 
     @Override
@@ -70,77 +69,85 @@ public class ValueListRecordServiceImpl
     @Override
     public List<XtdOrderedValue> getOrderedValues(XtdValueList valueList) {
         Assert.notNull(valueList.getId(), "ValueList must be persistent.");
-        final List<String> valueIds = orderedValueRepository.findAllOrderedValueIdsAssignedToValueList(valueList.getId());
-        final Iterable<XtdOrderedValue> values = orderedValueRepository.findAllById(valueIds);
+        final List<String> valueIds = getRepository().findAllOrderedValueIdsAssignedToValueList(valueList.getId());
+        final Iterable<XtdOrderedValue> values = orderedValueRecordService.findAllEntitiesById(valueIds);
 
-        return StreamSupport
-                .stream(values.spliterator(), false)
-                .collect(Collectors.toList());
+        return StreamSupport.stream(values.spliterator(), false).collect(Collectors.toList());
     }
 
     @Override
     public List<XtdProperty> getProperties(XtdValueList valueList) {
         Assert.notNull(valueList.getId(), "ValueList must be persistent.");
-        final List<String> propertyIds = propertyRepository.findAllPropertyIdsAssignedToValueList(valueList.getId());
-        final Iterable<XtdProperty> properties = propertyRepository.findAllById(propertyIds);
+        final List<String> propertyIds = getRepository().findAllPropertyIdsAssignedToValueList(valueList.getId());
+        final Iterable<XtdProperty> properties = propertyRecordService.findAllEntitiesById(propertyIds);
 
-        return StreamSupport
-                .stream(properties.spliterator(), false)
-                .collect(Collectors.toList());
+        return StreamSupport.stream(properties.spliterator(), false).collect(Collectors.toList());
     }
 
     @Override
-    public XtdUnit getUnit(XtdValueList valueList) {
+    public Optional<XtdUnit> getUnit(XtdValueList valueList) {
         Assert.notNull(valueList.getId(), "ValueList must be persistent.");
-        final String unitId = unitRepository.findUnitIdAssignedToValueList(valueList.getId());
+        final String unitId = getRepository().findUnitIdAssignedToValueList(valueList.getId());
         if (unitId == null) {
             return null;
         } else {
-            XtdUnit unit = unitRepository.findById(unitId).orElse(null);
+            Optional<XtdUnit> unit = unitRecordService.findByIdWithDirectRelations(unitId);
             return unit;
+        }
+    }
+
+    @Override
+    public Optional<XtdLanguage> getLanguage(XtdValueList valueList) {
+        Assert.notNull(valueList.getId(), "ValueList must be persistent.");
+        final String languageId = getRepository().findLanguageIdAssignedToValueList(valueList.getId());
+        if (languageId == null) {
+            return null;
+        } else {
+            Optional<XtdLanguage> language = languageRecordService.findByIdWithDirectRelations(languageId);
+            return language;
         }
     }
 
     @Transactional
     @Override
     public @NotNull XtdValueList setRelatedRecords(@NotBlank String recordId,
-                                                    @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
+            @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
         final XtdValueList valueList = getRepository().findById(recordId).orElseThrow();
 
         switch (relationType) {
-            case Unit:
-                if (valueList.getUnit() != null) {
-                    throw new IllegalArgumentException("ValueList already has a Unit assigned.");
-                } else if (relatedRecordIds.size() != 1) {
-                    throw new IllegalArgumentException("Exactly one Unit must be assigned to a ValueList.");
-                } else {
-                    final XtdUnit unit = unitRepository.findById(relatedRecordIds.get(0)).orElseThrow();
-                    valueList.setUnit(unit);
-                }
-                break;
-            case Values:
-                final Iterable<XtdOrderedValue> items = orderedValueRepository.findAllById(relatedRecordIds);
-                final List<XtdOrderedValue> related = StreamSupport
-                        .stream(items.spliterator(), false)
-                        .collect(Collectors.toList());
+        case Unit:
+            if (valueList.getUnit() != null) {
+                throw new IllegalArgumentException("ValueList already has a Unit assigned.");
+            } else if (relatedRecordIds.size() != 1) {
+                throw new IllegalArgumentException("Exactly one Unit must be assigned to a ValueList.");
+            } else {
+                final XtdUnit unit = unitRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0))
+                        .orElseThrow();
+                valueList.setUnit(unit);
+            }
+            break;
+        case Values:
+            final Iterable<XtdOrderedValue> items = orderedValueRecordService.findAllEntitiesById(relatedRecordIds);
+            final List<XtdOrderedValue> related = StreamSupport.stream(items.spliterator(), false)
+                    .collect(Collectors.toList());
 
-                valueList.getValues().clear();
-                valueList.getValues().addAll(related);
-                break;
-            case Language:
-                if (valueList.getLanguage() != null) {
-                    throw new IllegalArgumentException("ValueList already has a Language assigned.");
-                } else if (relatedRecordIds.size() != 1) {
-                    throw new IllegalArgumentException("Exactly one Language must be assigned to a ValueList.");
-                } else {
-                    final XtdLanguage language = languageRepository.findById(relatedRecordIds.get(0))
-                            .orElseThrow();
-                    valueList.setLanguage(language);
-                }
-            default:
-                conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
-                break;
+            valueList.getValues().clear();
+            valueList.getValues().addAll(related);
+            break;
+        case Language:
+            if (valueList.getLanguage() != null) {
+                throw new IllegalArgumentException("ValueList already has a Language assigned.");
+            } else if (relatedRecordIds.size() != 1) {
+                throw new IllegalArgumentException("Exactly one Language must be assigned to a ValueList.");
+            } else {
+                final XtdLanguage language = languageRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0))
+                        .orElseThrow();
+                valueList.setLanguage(language);
+            }
+        default:
+            conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
+            break;
         }
 
         final XtdValueList persistentValueList = getRepository().save(valueList);

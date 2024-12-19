@@ -11,12 +11,13 @@ import java.util.List;
 public interface OrderedValueRepository extends EntityRepository<XtdOrderedValue> {
 
     @Query("""
-            MATCH (n {id: $valueListId})-[:VALUES]->(p:XtdOrderedValue)
+            MATCH (n:XtdOrderedValue {id: $OrderedValueId})<-[:VALUES]-(p:XtdValueList)
             RETURN p.id""")
-    List<String> findAllOrderedValueIdsAssignedToValueList(String valueListId);
+    List<String> findAllValueListIdsAssigningOrderedValue(String OrderedValueId);
 
-//     @Query("""
-//             MATCH (n {id: $valueId})<-[:ORDERED_VALUE]-(p:XtdOrderedValue)
-//             RETURN p""")
-//     List<String> findAllOrderedValueIdsAssignedToValue(String valueId);
+    @Query("""
+            MATCH (n:XtdOrderedValue {id: $orderedValueId})-[:ORDERED_VALUE]->(p:XtdValue)
+            RETURN p.id""")
+    String findValueIdAssignedToOrderedValue(String orderedValueId);
+
 }
