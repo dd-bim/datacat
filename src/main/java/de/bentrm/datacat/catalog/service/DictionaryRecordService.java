@@ -7,5 +7,5 @@ import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
 
 public interface DictionaryRecordService extends SimpleRecordService<XtdDictionary> {
 
-    XtdMultiLanguageText getName(@NotNull XtdDictionary dictionary);
+    @NotNull XtdMultiLanguageText getName(@NotNull XtdDictionary dictionary);
 }

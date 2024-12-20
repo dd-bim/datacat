@@ -5,10 +5,9 @@ import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import de.bentrm.datacat.catalog.domain.XtdDictionary;
 import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
 import de.bentrm.datacat.catalog.repository.DictionaryRepository;
-import de.bentrm.datacat.catalog.repository.MultiLanguageTextRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.DictionaryRecordService;
-
+import de.bentrm.datacat.catalog.service.MultiLanguageTextRecordService;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
@@ -18,6 +17,7 @@ import org.springframework.util.Assert;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
 
 import jakarta.validation.constraints.NotBlank;
@@ -32,14 +32,13 @@ public class DictionaryRecordServiceImpl
         extends AbstractSimpleRecordServiceImpl<XtdDictionary, DictionaryRepository>
         implements DictionaryRecordService {
 
-            private final MultiLanguageTextRepository multiLanguageTextRepository;
+    @Autowired
+    private MultiLanguageTextRecordService multiLanguageTextRecordService;
 
     public DictionaryRecordServiceImpl(Neo4jTemplate neo4jTemplate,
                                      DictionaryRepository repository,
-                                     MultiLanguageTextRepository multiLanguageTextRepository,
                                      CatalogCleanupService cleanupService) {
         super(XtdDictionary.class, neo4jTemplate, repository, cleanupService);
-        this.multiLanguageTextRepository = multiLanguageTextRepository;
     }
 
     @Override
@@ -48,13 +47,13 @@ public class DictionaryRecordServiceImpl
     }
 
     @Override
-    public XtdMultiLanguageText getName(XtdDictionary dictionary) {
+    public @NotNull XtdMultiLanguageText getName(XtdDictionary dictionary) {
         Assert.notNull(dictionary.getId(), "Dictionary must be persistent.");
-        final String nameId = multiLanguageTextRepository.findMultiLanguageTextIdAssignedToDictionary(dictionary.getId());
+        final String nameId = getRepository().findMultiLanguageTextIdAssignedToDictionary(dictionary.getId());
         if (nameId == null) {
             return null;
         }
-        final XtdMultiLanguageText name = multiLanguageTextRepository.findById(nameId).orElse(null);
+        final XtdMultiLanguageText name = multiLanguageTextRecordService.findByIdWithDirectRelations(nameId).orElseThrow();
         return name;
     }
 
@@ -72,7 +71,7 @@ public class DictionaryRecordServiceImpl
                 } else if (relatedRecordIds.size() != 1) {
                     throw new IllegalArgumentException("Exactly one name must be assigned to a dictionary.");
                 } else {
-                    final XtdMultiLanguageText name = multiLanguageTextRepository.findById(relatedRecordIds.get(0)).orElseThrow();
+                    final XtdMultiLanguageText name = multiLanguageTextRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
                     dictionary.setName(name);
                 }   }
             default -> log.error("Unsupported relation type: {}", relationType);

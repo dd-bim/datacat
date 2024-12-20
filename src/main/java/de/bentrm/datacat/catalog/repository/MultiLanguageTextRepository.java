@@ -17,11 +17,6 @@ public interface MultiLanguageTextRepository extends EntityRepository<XtdMultiLa
     List<String> findAllMultiLanguageTextIdsAssignedToConcept(String conceptId);
 
     @Query("""
-            MATCH (n {id: $dictionaryId})-[:NAME]->(p:XtdMultiLanguageText)
-            RETURN p.id""")
-    String findMultiLanguageTextIdAssignedToDictionary(String dictionaryId);
-
-    @Query("""
             MATCH (n {id: $objectId})-[:DEPRECATION_EXPLANATION]->(p:XtdMultiLanguageText)
             RETURN p.id""")
     String findMultiLanguageTextIdAssignedToObject(String objectId);
