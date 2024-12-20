@@ -1,6 +1,7 @@
 package de.bentrm.datacat.catalog.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -12,5 +13,5 @@ public interface QuantityKindRecordService extends SimpleRecordService<XtdQuanti
 
     List<XtdUnit> getUnits(@NotNull XtdQuantityKind quantityKind);
 
-    XtdDimension getDimension(@NotNull XtdQuantityKind quantityKind);
+    Optional<XtdDimension> getDimension(@NotNull XtdQuantityKind quantityKind);
 }

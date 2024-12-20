@@ -14,11 +14,6 @@ public interface DimensionRepository extends EntityRepository<XtdDimension> {
         String findDimensionIdAssignedToProperty(String propertyId);
 
         @Query("""
-                        MATCH (n {id: $quantityKindId})-[:DIMENSION]->(p:XtdDimension)
-                        RETURN p.id""")
-        String findDimensionIdAssignedToQuantityKind(String quantityKindId);
-
-        @Query("""
                         MATCH (n:XtdDimension {id: $dimension})-[:THERMODYNAMIC_TEMPERATURE_EXPONENT]->(p:XtdRational)
                         RETURN p.id""")
         String findThermodynamicTemperatureExponentIdAssignedToDimension(String dimension);

@@ -16,11 +16,6 @@ public interface UnitRepository extends EntityRepository<XtdUnit> {
             RETURN p.id""")
     List<String> findAllUnitIdsAssignedToProperty(String propertyId);
 
-    @Query("""
-            MATCH (n {id: $quantityKindId})-[:UNITS]->(p:XtdUnit)
-            RETURN p.id""")
-    List<String> findAllUnitIdsAssignedToQuantityKind(String quantityKindId);
-
         @Query("""
                 MATCH (n:XtdUnit {id: $unitId})<-[:UNITS]-(p:XtdProperty)
                 RETURN p.id""")
