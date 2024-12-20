@@ -5,12 +5,12 @@ import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.domain.XtdRelationshipToSubject;
 import de.bentrm.datacat.catalog.domain.XtdSubject;
-import de.bentrm.datacat.catalog.repository.PropertyRepository;
-import de.bentrm.datacat.catalog.repository.RelationshipToSubjectRepository;
 import de.bentrm.datacat.catalog.repository.SubjectRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.SubjectRecordService;
 import de.bentrm.datacat.catalog.service.ConceptRecordService;
+import de.bentrm.datacat.catalog.service.PropertyRecordService;
+import de.bentrm.datacat.catalog.service.RelationshipToSubjectRecordService;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
 
 @Slf4j
@@ -36,20 +37,19 @@ public class SubjectRecordServiceImpl
         extends AbstractSimpleRecordServiceImpl<XtdSubject, SubjectRepository>
         implements SubjectRecordService {
 
-    private final PropertyRepository propertyRepository;
-    private final RelationshipToSubjectRepository relationshipToSubjectRepository;
-    private final ConceptRecordService conceptRecordService;
+    @Autowired
+    private PropertyRecordService propertyRecordService;
+
+    @Autowired
+    private RelationshipToSubjectRecordService relationshipToSubjectRecordService;
+
+    @Autowired
+    private ConceptRecordService conceptRecordService;
 
     public SubjectRecordServiceImpl(Neo4jTemplate neo4jTemplate,
             SubjectRepository repository,
-            PropertyRepository propertyRepository,
-            RelationshipToSubjectRepository relationshipToSubjectRepository,
-            ConceptRecordService conceptRecordService,
             CatalogCleanupService cleanupService) {
         super(XtdSubject.class, neo4jTemplate, repository, cleanupService);
-        this.propertyRepository = propertyRepository;
-        this.relationshipToSubjectRepository = relationshipToSubjectRepository;
-        this.conceptRecordService = conceptRecordService;
     }
 
     @Override
@@ -60,8 +60,8 @@ public class SubjectRecordServiceImpl
     @Override
     public List<XtdProperty> getProperties(XtdSubject subject) {
         Assert.notNull(subject.getId(), "Subject must be persistent.");
-        final List<String> propertyIds = propertyRepository.findAllPropertyIdsAssignedToSubject(subject.getId());
-        final Iterable<XtdProperty> properties = propertyRepository.findAllById(propertyIds);
+        final List<String> propertyIds = getRepository().findAllPropertyIdsAssignedToSubject(subject.getId());
+        final Iterable<XtdProperty> properties = propertyRecordService.findAllEntitiesById(propertyIds);
 
         return StreamSupport
                 .stream(properties.spliterator(), false)
@@ -71,10 +71,10 @@ public class SubjectRecordServiceImpl
     @Override
     public List<XtdRelationshipToSubject> getConnectedSubjects(XtdSubject subject) {
         Assert.notNull(subject.getId(), "Subject must be persistent.");
-        final List<String> relationshipIds = relationshipToSubjectRepository
+        final List<String> relationshipIds = getRepository()
                 .findAllConnectedSubjectRelationshipIdsAssignedToSubject(subject.getId());
-        final Iterable<XtdRelationshipToSubject> relations = relationshipToSubjectRepository
-                .findAllById(relationshipIds);
+        final Iterable<XtdRelationshipToSubject> relations = relationshipToSubjectRecordService
+                .findAllEntitiesById(relationshipIds);
 
         return StreamSupport
                 .stream(relations.spliterator(), false)
@@ -84,10 +84,10 @@ public class SubjectRecordServiceImpl
     @Override
     public List<XtdRelationshipToSubject> getConnectingSubjects(XtdSubject subject) {
         Assert.notNull(subject.getId(), "Subject must be persistent.");
-        final List<String> relationshipIds = relationshipToSubjectRepository
+        final List<String> relationshipIds = getRepository()
                 .findAllConnectingSubjectRelationshipIdsAssignedToSubject(subject.getId());
-        final Iterable<XtdRelationshipToSubject> relations = relationshipToSubjectRepository
-                .findAllById(relationshipIds);
+        final Iterable<XtdRelationshipToSubject> relations = relationshipToSubjectRecordService
+                .findAllEntitiesById(relationshipIds);
 
         return StreamSupport
                 .stream(relations.spliterator(), false)
@@ -99,11 +99,11 @@ public class SubjectRecordServiceImpl
     public @NotNull XtdSubject setRelatedRecords(@NotBlank String recordId,
             @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdSubject subject = getRepository().findById(recordId).orElseThrow();
+        final XtdSubject subject = getRepository().findByIdWithDirectRelations(recordId).orElseThrow();
 
         switch (relationType) {
             case Properties -> {
-                final Iterable<XtdProperty> items = propertyRepository.findAllById(relatedRecordIds);
+                final Iterable<XtdProperty> items = propertyRecordService.findAllEntitiesById(relatedRecordIds);
                 final List<XtdProperty> related = StreamSupport
                         .stream(items.spliterator(), false)
                         .collect(Collectors.toList());

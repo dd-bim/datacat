@@ -11,13 +11,27 @@ import java.util.List;
 public interface SubjectRepository extends EntityRepository<XtdSubject> {
 
         @Query("""
-                        MATCH (n {id: $propertyId})<-[:PROPERTIES]-(p:XtdSubject)
+                        MATCH (n:XtdProperty {id: $propertyId})<-[:PROPERTIES]-(p:XtdSubject)
                         RETURN p.id""")
         List<String> findAllSubjectIdsAssignedToProperty(String propertyId);
 
         @Query("""
-                        MATCH (n {id: $relationshiptToSubjectId})-[:SCOPE_SUBJECTS]->(p:XtdSubject)
+                        MATCH (n:XtdRelationshipToSubject {id: $relationshiptToSubjectId})-[:SCOPE_SUBJECTS]->(p:XtdSubject)
                         RETURN p.id""")
         List<String> findAllScopeSubjectIdsAssignedToRelationshipToSubject(String relationshiptToSubjectId);
 
+        @Query("""
+                        MATCH (n:XtdSubject {id: $subjectId})-[:PROPERTIES]->(p:XtdProperty)
+                        RETURN p.id""")
+        List<String> findAllPropertyIdsAssignedToSubject(String subjectId);
+
+        @Query("""
+                        MATCH (n:XtdSubject {id: $subjectId})-[:CONNECTED_SUBJECTS]->(p:XtdRelationshipToSubject)
+                        RETURN p.id""")
+        List<String> findAllConnectedSubjectRelationshipIdsAssignedToSubject(String subjectId);
+
+        @Query("""
+                        MATCH (n:XtdSubject {id: $subjectId})<-[:TARGET_SUBJECTS]-(p:XtdRelationshipToSubject)
+                        RETURN p.id""")
+        List<String> findAllConnectingSubjectRelationshipIdsAssignedToSubject(String subjectId);
 }
