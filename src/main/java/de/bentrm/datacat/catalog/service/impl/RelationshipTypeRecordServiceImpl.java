@@ -2,6 +2,7 @@ package de.bentrm.datacat.catalog.service.impl;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,14 +26,13 @@ public class RelationshipTypeRecordServiceImpl
         extends AbstractSimpleRecordServiceImpl<XtdRelationshipType, RelationshipTypeRepository>
         implements RelationshipTypeRecordService {
 
-    private final ConceptRecordService conceptRecordService;
+    @Autowired
+    private ConceptRecordService conceptRecordService;
 
     public RelationshipTypeRecordServiceImpl(Neo4jTemplate neo4jTemplate,
                                      RelationshipTypeRepository repository,
-                                     ConceptRecordService conceptRecordService,
                                      CatalogCleanupService cleanupService) {
         super(XtdRelationshipType.class, neo4jTemplate, repository, cleanupService);
-        this.conceptRecordService = conceptRecordService;
     }
 
     @Override
@@ -45,7 +45,7 @@ public class RelationshipTypeRecordServiceImpl
     public @NotNull XtdRelationshipType setRelatedRecords(@NotBlank String recordId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdRelationshipType relationshipType = getRepository().findById(recordId).orElseThrow();
+        final XtdRelationshipType relationshipType = getRepository().findByIdWithDirectRelations(recordId).orElseThrow();
 
         switch (relationType) {
             default -> conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
