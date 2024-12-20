@@ -10,13 +10,4 @@ import java.util.List;
 @Repository
 public interface RelationshipToPropertyRepository extends EntityRepository<XtdRelationshipToProperty> {
 
-    @Query("""
-            MATCH (n {id: $propertyId})-[:CONNECTED_PROPERTIES]->(p:XtdRelationshipToProperty)
-            RETURN p.id""")
-    List<String> findAllConnectedPropertyRelationshipIdsAssignedToProperty(String propertyId);
-
-    @Query("""
-        MATCH (n {id: $propertyId})<-[:TARGET_PROPERTIES]-(p:XtdRelationshipToProperty)
-        RETURN p.id""")
-    List<String> findAllConnectingPropertyRelationshipIdsAssignedToProperty(String propertyId);
 }

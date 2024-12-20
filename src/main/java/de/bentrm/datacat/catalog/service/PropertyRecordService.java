@@ -12,6 +12,7 @@ import de.bentrm.datacat.catalog.domain.XtdQuantityKind;
 
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Optional;
 
 public interface PropertyRecordService extends SimpleRecordService<XtdProperty> {
 
@@ -25,7 +26,7 @@ public interface PropertyRecordService extends SimpleRecordService<XtdProperty> 
 
     List<XtdRelationshipToProperty> getConnectingProperties(@NotNull XtdProperty property);
 
-    XtdDimension getDimension(@NotNull XtdProperty property);
+    Optional<XtdDimension> getDimension(@NotNull XtdProperty property);
 
     List<XtdSymbol> getSymbols(@NotNull XtdProperty property);
 

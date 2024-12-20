@@ -11,11 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface SymbolRepository extends EntityRepository<XtdSymbol> {
 
     @Query("""
-            MATCH (n {id: $propertyId})-[:SYMBOLS]->(p:XtdSymbol)
-            RETURN p.id""")
-    List<String> findAllSymbolIdsAssignedToProperty(String propertyId);
-
-    @Query("""
         MATCH (n:XtdSymbol {id: $symbolId})-[:SUBJECT]->(p:XtdSubject)
         RETURN p.id""")
     String findSubjectIdAssignedToSymbol(String symbolId);

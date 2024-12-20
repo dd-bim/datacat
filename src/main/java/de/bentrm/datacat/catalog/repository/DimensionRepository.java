@@ -9,11 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface DimensionRepository extends EntityRepository<XtdDimension> {
 
         @Query("""
-                        MATCH (n {id: $propertyId})-[:DIMENSION]->(p:XtdDimension)
-                        RETURN p.id""")
-        String findDimensionIdAssignedToProperty(String propertyId);
-
-        @Query("""
                         MATCH (n:XtdDimension {id: $dimension})-[:THERMODYNAMIC_TEMPERATURE_EXPONENT]->(p:XtdRational)
                         RETURN p.id""")
         String findThermodynamicTemperatureExponentIdAssignedToDimension(String dimension);

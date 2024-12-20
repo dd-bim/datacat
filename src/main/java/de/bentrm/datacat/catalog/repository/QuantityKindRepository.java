@@ -12,11 +12,6 @@ import org.springframework.stereotype.Repository;
 public interface QuantityKindRepository extends EntityRepository<XtdQuantityKind> {
 
     @Query("""
-            MATCH (n {id: $propertyId})-[:QUANTITY_KINDS]->(p:XtdQuantityKind)
-            RETURN p.id""")
-    List<String> findAllQuantityKindIdsAssignedToProperty(String propertyId);
-
-    @Query("""
             MATCH (n:XtdQuantityKind {id: $quantityKindId})-[:UNITS]->(p:XtdUnit)
             RETURN p.id""")
     List<String> findAllUnitIdsAssignedToQuantityKind(String quantityKindId);

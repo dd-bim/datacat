@@ -11,20 +11,22 @@ import de.bentrm.datacat.catalog.domain.XtdDimension;
 import de.bentrm.datacat.catalog.domain.XtdInterval;
 import de.bentrm.datacat.catalog.domain.XtdSymbol;
 import de.bentrm.datacat.catalog.domain.XtdQuantityKind;
-import de.bentrm.datacat.catalog.repository.DimensionRepository;
 import de.bentrm.datacat.catalog.repository.PropertyRepository;
-import de.bentrm.datacat.catalog.repository.QuantityKindRepository;
-import de.bentrm.datacat.catalog.repository.RelationshipToPropertyRepository;
-import de.bentrm.datacat.catalog.repository.SubjectRepository;
-import de.bentrm.datacat.catalog.repository.UnitRepository;
-import de.bentrm.datacat.catalog.repository.ValueListRepository;
-import de.bentrm.datacat.catalog.repository.SymbolRepository;
-import de.bentrm.datacat.catalog.repository.IntervalRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.PropertyRecordService;
+import de.bentrm.datacat.catalog.service.QuantityKindRecordService;
+import de.bentrm.datacat.catalog.service.RelationshipToPropertyRecordService;
+import de.bentrm.datacat.catalog.service.SubjectRecordService;
+import de.bentrm.datacat.catalog.service.SymbolRecordService;
+import de.bentrm.datacat.catalog.service.UnitRecordService;
+import de.bentrm.datacat.catalog.service.ValueListRecordService;
 import de.bentrm.datacat.catalog.service.ConceptRecordService;
+import de.bentrm.datacat.catalog.service.DimensionRecordService;
+import de.bentrm.datacat.catalog.service.IntervalRecordService;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +38,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -43,42 +46,45 @@ import java.util.stream.StreamSupport;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class PropertyRecordServiceImpl
-                extends AbstractSimpleRecordServiceImpl<XtdProperty, PropertyRepository>
+public class PropertyRecordServiceImpl extends AbstractSimpleRecordServiceImpl<XtdProperty, PropertyRepository>
                 implements PropertyRecordService {
 
-        private final SubjectRepository subjectRepository;
-        private final ValueListRepository valueListRepository;
-        private final UnitRepository unitRepository;
-        private final RelationshipToPropertyRepository relationshipToPropertyRepository;
-        private final DimensionRepository dimensionRepository;
-        private final SymbolRepository symbolRepository;
-        private final IntervalRepository intervalRepository;
-        private final QuantityKindRepository quantityKindRepository;
-        private final ConceptRecordService conceptRecordService;
+        @Autowired
+        @Lazy
+        private SubjectRecordService subjectRecordService;
 
-        public PropertyRecordServiceImpl(Neo4jTemplate neo4jTemplate,	
-                        PropertyRepository repository,
-                        SubjectRepository subjectRepository,
-                        ValueListRepository valueListRepository,
-                        UnitRepository unitRepository,
-                        RelationshipToPropertyRepository relationshipToPropertyRepository,
-                        DimensionRepository dimensionRepository,
-                        SymbolRepository symbolRepository,
-                        IntervalRepository intervalRepository,
-                        QuantityKindRepository quantityKindRepository,
-                        ConceptRecordService conceptRecordService,
+        @Autowired
+        @Lazy
+        private ValueListRecordService valueListRecordService;
+
+        @Autowired
+        @Lazy
+        private UnitRecordService unitRecordService;
+
+        @Autowired
+        private RelationshipToPropertyRecordService relationshipToPropertyRecordService;
+
+        @Autowired
+        private DimensionRecordService dimensionRecordService;
+
+        @Autowired
+        @Lazy
+        private SymbolRecordService symbolRecordService;
+
+        @Autowired
+        @Lazy
+        private IntervalRecordService intervalRecordService;
+
+        @Autowired
+        @Lazy
+        private QuantityKindRecordService quantityKindRecordService;
+
+        @Autowired
+        private ConceptRecordService conceptRecordService;
+
+        public PropertyRecordServiceImpl(Neo4jTemplate neo4jTemplate, PropertyRepository repository,
                         CatalogCleanupService cleanupService) {
                 super(XtdProperty.class, neo4jTemplate, repository, cleanupService);
-                this.subjectRepository = subjectRepository;
-                this.valueListRepository = valueListRepository;
-                this.unitRepository = unitRepository;
-                this.relationshipToPropertyRepository = relationshipToPropertyRepository;
-                this.dimensionRepository = dimensionRepository;
-                this.symbolRepository = symbolRepository;
-                this.intervalRepository = intervalRepository;
-                this.quantityKindRepository = quantityKindRepository;
-                this.conceptRecordService = conceptRecordService;
         }
 
         @Override
@@ -89,71 +95,61 @@ public class PropertyRecordServiceImpl
         @Override
         public List<XtdSubject> getSubjects(XtdProperty property) {
                 Assert.notNull(property.getId(), "Property must be persistent.");
-                final List<String> subjectIds = subjectRepository.findAllSubjectIdsAssignedToProperty(property.getId());
-                final Iterable<XtdSubject> subjects = subjectRepository.findAllById(subjectIds);
+                final List<String> subjectIds = getRepository().findAllSubjectIdsAssignedToProperty(property.getId());
+                final Iterable<XtdSubject> subjects = subjectRecordService.findAllEntitiesById(subjectIds);
 
-                return StreamSupport
-                                .stream(subjects.spliterator(), false)
-                                .collect(Collectors.toList());
+                return StreamSupport.stream(subjects.spliterator(), false).collect(Collectors.toList());
         }
 
         @Override
         public List<XtdValueList> getValueLists(XtdProperty property) {
                 Assert.notNull(property.getId(), "Property must be persistent.");
-                final List<String> valueListIds = valueListRepository
+                final List<String> valueListIds = getRepository()
                                 .findAllValueListIdsAssignedToProperty(property.getId());
-                final Iterable<XtdValueList> valueLists = valueListRepository.findAllById(valueListIds);
+                final Iterable<XtdValueList> valueLists = valueListRecordService.findAllEntitiesById(valueListIds);
 
-                return StreamSupport
-                                .stream(valueLists.spliterator(), false)
-                                .collect(Collectors.toList());
+                return StreamSupport.stream(valueLists.spliterator(), false).collect(Collectors.toList());
         }
 
         @Override
         public List<XtdUnit> getUnits(XtdProperty property) {
                 Assert.notNull(property.getId(), "Property must be persistent.");
-                final List<String> unitIds = unitRepository.findAllUnitIdsAssignedToProperty(property.getId());
-                final Iterable<XtdUnit> units = unitRepository.findAllById(unitIds);
+                final List<String> unitIds = getRepository().findAllUnitIdsAssignedToProperty(property.getId());
+                final Iterable<XtdUnit> units = unitRecordService.findAllEntitiesById(unitIds);
 
-                return StreamSupport
-                                .stream(units.spliterator(), false)
-                                .collect(Collectors.toList());
+                return StreamSupport.stream(units.spliterator(), false).collect(Collectors.toList());
         }
 
         @Override
         public List<XtdRelationshipToProperty> getConnectedProperties(XtdProperty property) {
                 Assert.notNull(property.getId(), "Property must be persistent.");
-                final List<String> relationshipIds = relationshipToPropertyRepository
+                final List<String> relationshipIds = getRepository()
                                 .findAllConnectedPropertyRelationshipIdsAssignedToProperty(property.getId());
-                final Iterable<XtdRelationshipToProperty> relations = relationshipToPropertyRepository
-                                .findAllById(relationshipIds);
+                final Iterable<XtdRelationshipToProperty> relations = relationshipToPropertyRecordService
+                                .findAllEntitiesById(relationshipIds);
 
-                return StreamSupport
-                                .stream(relations.spliterator(), false)
-                                .collect(Collectors.toList());
+                return StreamSupport.stream(relations.spliterator(), false).collect(Collectors.toList());
         }
 
         @Override
         public List<XtdRelationshipToProperty> getConnectingProperties(XtdProperty property) {
                 Assert.notNull(property.getId(), "Property must be persistent.");
-                final List<String> relationshipIds = relationshipToPropertyRepository
+                final List<String> relationshipIds = getRepository()
                                 .findAllConnectingPropertyRelationshipIdsAssignedToProperty(property.getId());
-                final Iterable<XtdRelationshipToProperty> relations = relationshipToPropertyRepository
-                                .findAllById(relationshipIds);
+                final Iterable<XtdRelationshipToProperty> relations = relationshipToPropertyRecordService
+                                .findAllEntitiesById(relationshipIds);
 
-                return StreamSupport
-                                .stream(relations.spliterator(), false)
-                                .collect(Collectors.toList());
+                return StreamSupport.stream(relations.spliterator(), false).collect(Collectors.toList());
         }
 
         @Override
-        public XtdDimension getDimension(XtdProperty property) {
+        public Optional<XtdDimension> getDimension(XtdProperty property) {
                 Assert.notNull(property.getId(), "Property must be persistent.");
-                final String dimensionId = dimensionRepository.findDimensionIdAssignedToProperty(property.getId());
+                final String dimensionId = getRepository().findDimensionIdAssignedToProperty(property.getId());
                 if (dimensionId == null) {
                         return null;
                 }
-                final XtdDimension dimension = dimensionRepository.findById(dimensionId).orElse(null);
+                final Optional<XtdDimension> dimension = dimensionRecordService.findById(dimensionId);
 
                 return dimension;
         }
@@ -161,37 +157,31 @@ public class PropertyRecordServiceImpl
         @Override
         public List<XtdSymbol> getSymbols(XtdProperty property) {
                 Assert.notNull(property.getId(), "Property must be persistent.");
-                final List<String> symbolIds = symbolRepository.findAllSymbolIdsAssignedToProperty(property.getId());
-                final Iterable<XtdSymbol> symbols = symbolRepository.findAllById(symbolIds);
+                final List<String> symbolIds = getRepository().findAllSymbolIdsAssignedToProperty(property.getId());
+                final Iterable<XtdSymbol> symbols = symbolRecordService.findAllEntitiesById(symbolIds);
 
-                return StreamSupport
-                                .stream(symbols.spliterator(), false)
-                                .collect(Collectors.toList());
+                return StreamSupport.stream(symbols.spliterator(), false).collect(Collectors.toList());
         }
 
         @Override
         public List<XtdInterval> getIntervals(XtdProperty property) {
                 Assert.notNull(property.getId(), "Property must be persistent.");
-                final List<String> intervalIds = intervalRepository
-                                .findAllIntervalIdsAssignedToProperty(property.getId());
-                final Iterable<XtdInterval> intervals = intervalRepository.findAllById(intervalIds);
+                final List<String> intervalIds = getRepository().findAllIntervalIdsAssignedToProperty(property.getId());
+                final Iterable<XtdInterval> intervals = intervalRecordService.findAllEntitiesById(intervalIds);
 
-                return StreamSupport
-                                .stream(intervals.spliterator(), false)
-                                .collect(Collectors.toList());
+                return StreamSupport.stream(intervals.spliterator(), false).collect(Collectors.toList());
 
         }
 
         @Override
         public List<XtdQuantityKind> getQuantityKinds(XtdProperty property) {
                 Assert.notNull(property.getId(), "Property must be persistent.");
-                final List<String> quantityKindIds = quantityKindRepository
+                final List<String> quantityKindIds = getRepository()
                                 .findAllQuantityKindIdsAssignedToProperty(property.getId());
-                final Iterable<XtdQuantityKind> quantityKinds = quantityKindRepository.findAllById(quantityKindIds);
+                final Iterable<XtdQuantityKind> quantityKinds = quantityKindRecordService
+                                .findAllEntitiesById(quantityKindIds);
 
-                return StreamSupport
-                                .stream(quantityKinds.spliterator(), false)
-                                .collect(Collectors.toList());
+                return StreamSupport.stream(quantityKinds.spliterator(), false).collect(Collectors.toList());
         }
 
         @Transactional
@@ -199,67 +189,64 @@ public class PropertyRecordServiceImpl
         public @NotNull XtdProperty setRelatedRecords(@NotBlank String recordId,
                         @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-                final XtdProperty property = getRepository().findById(recordId).orElseThrow();
+                final XtdProperty property = getRepository().findByIdWithDirectRelations(recordId).orElseThrow();
 
                 switch (relationType) {
-                        case Symbols -> {
-                            final Iterable<XtdSymbol> symbols = symbolRepository.findAllById(relatedRecordIds);
-                            final List<XtdSymbol> relatedSymbols = StreamSupport
-                                    .stream(symbols.spliterator(), false)
-                                    .collect(Collectors.toList());
-                            
-                            property.getSymbols().clear();
-                            property.getSymbols().addAll(relatedSymbols);
+                case Symbols -> {
+                        final Iterable<XtdSymbol> symbols = symbolRecordService.findAllEntitiesById(relatedRecordIds);
+                        final List<XtdSymbol> relatedSymbols = StreamSupport.stream(symbols.spliterator(), false)
+                                        .collect(Collectors.toList());
+
+                        property.getSymbols().clear();
+                        property.getSymbols().addAll(relatedSymbols);
                 }
-                        case Units -> {
-                            final Iterable<XtdUnit> units = unitRepository.findAllById(relatedRecordIds);
-                            final List<XtdUnit> relatedUnits = StreamSupport
-                                    .stream(units.spliterator(), false)
-                                    .collect(Collectors.toList());
-                            
-                            property.getUnits().clear();
-                            property.getUnits().addAll(relatedUnits);
+                case Units -> {
+                        final Iterable<XtdUnit> units = unitRecordService.findAllEntitiesById(relatedRecordIds);
+                        final List<XtdUnit> relatedUnits = StreamSupport.stream(units.spliterator(), false)
+                                        .collect(Collectors.toList());
+
+                        property.getUnits().clear();
+                        property.getUnits().addAll(relatedUnits);
                 }
-                        case Dimension -> {
-                            if (property.getDimension() != null) {
+                case Dimension -> {
+                        if (property.getDimension() != null) {
                                 throw new IllegalArgumentException("Property already has a dimension assigned.");
-                            } else if (relatedRecordIds.size() != 1) {
+                        } else if (relatedRecordIds.size() != 1) {
                                 throw new IllegalArgumentException("Exactly one dimension must be assigned.");
-                            } else {
-                                final XtdDimension dimension = dimensionRepository.findById(relatedRecordIds.get(0))
-                                        .orElseThrow();
+                        } else {
+                                final XtdDimension dimension = dimensionRecordService
+                                                .findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
                                 property.setDimension(dimension);
-                            }
+                        }
                 }
-                        case BoundaryValues -> {
-                            final Iterable<XtdInterval> intervals = intervalRepository.findAllById(relatedRecordIds);
-                            final List<XtdInterval> relatedIntervals = StreamSupport
-                                    .stream(intervals.spliterator(), false)
-                                    .collect(Collectors.toList());
-                            
-                            property.getBoundaryValues().clear();
-                            property.getBoundaryValues().addAll(relatedIntervals);
+                case BoundaryValues -> {
+                        final Iterable<XtdInterval> intervals = intervalRecordService
+                                        .findAllEntitiesById(relatedRecordIds);
+                        final List<XtdInterval> relatedIntervals = StreamSupport.stream(intervals.spliterator(), false)
+                                        .collect(Collectors.toList());
+
+                        property.getBoundaryValues().clear();
+                        property.getBoundaryValues().addAll(relatedIntervals);
                 }
-                        case QuantityKinds -> {
-                            final Iterable<XtdQuantityKind> quantityKinds = quantityKindRepository
-                                    .findAllById(relatedRecordIds);
-                            final List<XtdQuantityKind> relatedQuantityKinds = StreamSupport
-                                    .stream(quantityKinds.spliterator(), false)
-                                    .collect(Collectors.toList());
-                            
-                            property.getQuantityKinds().clear();
-                            property.getQuantityKinds().addAll(relatedQuantityKinds);
+                case QuantityKinds -> {
+                        final Iterable<XtdQuantityKind> quantityKinds = quantityKindRecordService
+                                        .findAllEntitiesById(relatedRecordIds);
+                        final List<XtdQuantityKind> relatedQuantityKinds = StreamSupport
+                                        .stream(quantityKinds.spliterator(), false).collect(Collectors.toList());
+
+                        property.getQuantityKinds().clear();
+                        property.getQuantityKinds().addAll(relatedQuantityKinds);
                 }
-                        case PossibleValues -> {
-                            final Iterable<XtdValueList> valueLists = valueListRepository.findAllById(relatedRecordIds);
-                            final List<XtdValueList> relatedValueLists = StreamSupport
-                                    .stream(valueLists.spliterator(), false)
-                                    .collect(Collectors.toList());
-                            
-                            property.getPossibleValues().clear();
-                            property.getPossibleValues().addAll(relatedValueLists);
+                case PossibleValues -> {
+                        final Iterable<XtdValueList> valueLists = valueListRecordService
+                                        .findAllEntitiesById(relatedRecordIds);
+                        final List<XtdValueList> relatedValueLists = StreamSupport
+                                        .stream(valueLists.spliterator(), false).collect(Collectors.toList());
+
+                        property.getPossibleValues().clear();
+                        property.getPossibleValues().addAll(relatedValueLists);
                 }
-                        default -> conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
+                default -> conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
                 }
 
                 final XtdProperty persistentProperty = getRepository().save(property);

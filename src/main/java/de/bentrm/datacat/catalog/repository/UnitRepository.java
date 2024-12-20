@@ -11,11 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UnitRepository extends EntityRepository<XtdUnit> {
 
-    @Query("""
-            MATCH (n {id: $propertyId})-[:UNITS]->(p:XtdUnit)
-            RETURN p.id""")
-    List<String> findAllUnitIdsAssignedToProperty(String propertyId);
-
         @Query("""
                 MATCH (n:XtdUnit {id: $unitId})<-[:UNITS]-(p:XtdProperty)
                 RETURN p.id""")

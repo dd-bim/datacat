@@ -11,11 +11,6 @@ import java.util.List;
 public interface ValueListRepository extends EntityRepository<XtdValueList> {
 
         @Query("""
-                        MATCH (n:XtdProperty {id: $propertyId})-[:POSSIBLE_VALUES]->(p:XtdValueList)
-                        RETURN p.id""")
-        List<String> findAllValueListIdsAssignedToProperty(String propertyId);
-
-        @Query("""
                         MATCH (n:XtdValueList {id: $valueListId})-[:VALUES]->(p:XtdOrderedValue)
                         RETURN p.id""")
         List<String> findAllOrderedValueIdsAssignedToValueList(String valueListId);
