@@ -5,14 +5,14 @@ import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import de.bentrm.datacat.catalog.domain.XtdExternalDocument;
 import de.bentrm.datacat.catalog.domain.XtdConcept;
 import de.bentrm.datacat.catalog.domain.XtdLanguage;
-import de.bentrm.datacat.catalog.repository.ConceptRepository;
 import de.bentrm.datacat.catalog.repository.ExternalDocumentRepository;
-import de.bentrm.datacat.catalog.repository.LanguageRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.ExternalDocumentRecordService;
+import de.bentrm.datacat.catalog.service.LanguageRecordService;
 import lombok.extern.slf4j.Slf4j;
 import de.bentrm.datacat.catalog.service.ConceptRecordService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,20 +35,16 @@ public class ExternalDocumentRecordServiceImpl
         extends AbstractSimpleRecordServiceImpl<XtdExternalDocument, ExternalDocumentRepository>
         implements ExternalDocumentRecordService {
 
-    private final ConceptRepository conceptRepository;
-    private final LanguageRepository languageRepository;
-    private final ConceptRecordService conceptRecordService;
+        @Autowired
+        private ConceptRecordService conceptRecordService;
+
+        @Autowired
+        private LanguageRecordService languageRecordService;
 
     public ExternalDocumentRecordServiceImpl(Neo4jTemplate neo4jTemplate,
                                              ExternalDocumentRepository repository,
-                                             ConceptRepository conceptRepository,
-                                             LanguageRepository languageRepository,
-                                             ConceptRecordService conceptRecordService,
                                              CatalogCleanupService cleanupService) {
         super(XtdExternalDocument.class, neo4jTemplate, repository, cleanupService);
-        this.conceptRepository = conceptRepository;
-        this.languageRepository = languageRepository;
-        this.conceptRecordService = conceptRecordService;
     }
 
     @Override
@@ -59,9 +55,9 @@ public class ExternalDocumentRecordServiceImpl
     @Override
     public List<XtdConcept> getConcepts(XtdExternalDocument externalDocument) {
         Assert.notNull(externalDocument.getId(), "External document must be persistent.");
-        final List<String> conceptIds = conceptRepository
+        final List<String> conceptIds = getRepository()
                 .findAllConceptIdsAssignedToExternalDocument(externalDocument.getId());
-        final Iterable<XtdConcept> concepts = conceptRepository.findAllById(conceptIds);
+        final Iterable<XtdConcept> concepts = conceptRecordService.findAllEntitiesById(conceptIds);
 
         return StreamSupport
                 .stream(concepts.spliterator(), false)
@@ -71,9 +67,9 @@ public class ExternalDocumentRecordServiceImpl
     @Override
     public List<XtdLanguage> getLanguages(XtdExternalDocument externalDocument) {
         Assert.notNull(externalDocument.getId(), "External document must be persistent.");
-        final List<String> languageIds = languageRepository
+        final List<String> languageIds = getRepository()
                 .findAllLanguageIdsAssignedToExternalDocument(externalDocument.getId());
-        final Iterable<XtdLanguage> languages = languageRepository.findAllById(languageIds);
+        final Iterable<XtdLanguage> languages = languageRecordService.findAllEntitiesById(languageIds);
 
         return StreamSupport
                 .stream(languages.spliterator(), false)
@@ -85,11 +81,11 @@ public class ExternalDocumentRecordServiceImpl
     public @NotNull XtdExternalDocument setRelatedRecords(@NotBlank String recordId,
             @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdExternalDocument externalDocument = getRepository().findById(recordId).orElseThrow();
+        final XtdExternalDocument externalDocument = getRepository().findByIdWithDirectRelations(recordId).orElseThrow();
 
         switch (relationType) {
             case Languages:
-                final Iterable<XtdLanguage> items = languageRepository.findAllById(relatedRecordIds);
+                final Iterable<XtdLanguage> items = languageRecordService.findAllByIds(relatedRecordIds);
                 final List<XtdLanguage> related = StreamSupport
                         .stream(items.spliterator(), false)
                         .collect(Collectors.toList());

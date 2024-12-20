@@ -11,13 +11,7 @@ import java.util.List;
 public interface ConceptRepository extends EntityRepository<XtdConcept> {
 
     @Query("""
-            MATCH (n {id: $externalDocumentId})<-[:REFERENCE_DOCUMENTS]-(p:XtdConcept)
-            RETURN p.id""")
-    List<String> findAllConceptIdsAssignedToExternalDocument(String externalDocumentId);
-
-
-    @Query("""
-            MATCH (n {id: $conceptId})-[:SIMILAR_TO]->(p:XtdConcept)
+            MATCH (n:XtdConcept {id: $conceptId})-[:SIMILAR_TO]->(p:XtdConcept)
             RETURN p.id""")
     List<String> findAllConceptIdsAssignedToConcept(String conceptId);
 }
