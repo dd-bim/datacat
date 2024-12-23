@@ -1,9 +1,12 @@
 package de.bentrm.datacat.catalog.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,12 +22,13 @@ import de.bentrm.datacat.catalog.domain.XtdLanguage;
 import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
 import de.bentrm.datacat.catalog.domain.XtdText;
 import de.bentrm.datacat.catalog.repository.ConceptRepository;
-import de.bentrm.datacat.catalog.repository.CountryRepository;
-import de.bentrm.datacat.catalog.repository.ExternalDocumentRepository;
 import de.bentrm.datacat.catalog.repository.LanguageRepository;
-import de.bentrm.datacat.catalog.repository.MultiLanguageTextRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.ConceptRecordService;
+import de.bentrm.datacat.catalog.service.CountryRecordService;
+import de.bentrm.datacat.catalog.service.ExternalDocumentRecordService;
+import de.bentrm.datacat.catalog.service.LanguageRecordService;
+import de.bentrm.datacat.catalog.service.MultiLanguageTextRecordService;
 import de.bentrm.datacat.catalog.service.ObjectRecordService;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -39,28 +43,34 @@ public class ConceptRecordServiceImpl
         extends AbstractSimpleRecordServiceImpl<XtdConcept, ConceptRepository>
         implements ConceptRecordService {
 
-    private final ExternalDocumentRepository externalDocumentRepository;
-    private final MultiLanguageTextRepository multiLanguageTextRepository;
-    private final CountryRepository countryRepository;
-    private final ConceptRepository repository;
-    private final LanguageRepository languageRepository;
-    private final ObjectRecordService objectRecordService;
+    @Autowired
+    @Lazy
+    private ExternalDocumentRecordService externalDocumentRecordService;
+
+    @Autowired
+    @Lazy
+    private MultiLanguageTextRecordService multiLanguageTextRecordService;
+
+    @Autowired
+    @Lazy
+    private CountryRecordService countryRecordService;
+
+    @Autowired
+    @Lazy
+    private LanguageRecordService languageRecordService;
+
+    @Autowired
+    @Lazy
+    private ObjectRecordService objectRecordService;
+
+    @Autowired
+    @Lazy
+    private LanguageRepository languageRepository;
 
     public ConceptRecordServiceImpl(Neo4jTemplate neo4jTemplate,
             ConceptRepository repository,
-            ExternalDocumentRepository externalDocumentRepository,
-            MultiLanguageTextRepository multiLanguageTextRepository,
-            CountryRepository countryRepository,
-            LanguageRepository languageRepository,
-            ObjectRecordService objectRecordService,
             CatalogCleanupService cleanupService) {
         super(XtdConcept.class, neo4jTemplate, repository, cleanupService);
-        this.externalDocumentRepository = externalDocumentRepository;
-        this.multiLanguageTextRepository = multiLanguageTextRepository;
-        this.countryRepository = countryRepository;
-        this.repository = repository;
-        this.languageRepository = languageRepository;
-        this.objectRecordService = objectRecordService;
     }
 
     @Override
@@ -69,11 +79,23 @@ public class ConceptRecordServiceImpl
     }
 
     @Override
-    public List<XtdExternalDocument> getExternalDocuments(XtdConcept concept) {
+    public Optional<XtdMultiLanguageText> getDefinition(XtdConcept concept) {
         Assert.notNull(concept.getId(), "Concept must be persistent.");
-        final List<String> conceptIds = externalDocumentRepository
+        final String definitionId = getRepository().findDefinitionIdAssignedToConcept(concept.getId());
+        if (definitionId == null) {
+            return null;
+        }
+        final Optional<XtdMultiLanguageText> definition = multiLanguageTextRecordService.findById(definitionId);
+
+        return definition;
+    }
+
+    @Override
+    public List<XtdExternalDocument> getReferenceDocuments(XtdConcept concept) {
+        Assert.notNull(concept.getId(), "Concept must be persistent.");
+        final List<String> conceptIds = getRepository()
                 .findAllExternalDocumentIdsAssignedToConcept(concept.getId());
-        final Iterable<XtdExternalDocument> externalDocuments = externalDocumentRepository.findAllById(conceptIds);
+        final Iterable<XtdExternalDocument> externalDocuments = externalDocumentRecordService.findAllEntitiesById(conceptIds);
 
         return StreamSupport
                 .stream(externalDocuments.spliterator(), false)
@@ -81,11 +103,11 @@ public class ConceptRecordServiceImpl
     }
 
     @Override
-    public List<XtdMultiLanguageText> getMultiLanguageTexts(XtdConcept concept) {
+    public List<XtdMultiLanguageText> getExamples(XtdConcept concept) {
         Assert.notNull(concept.getId(), "Concept must be persistent.");
-        final List<String> conceptIds = multiLanguageTextRepository
-                .findAllMultiLanguageTextIdsAssignedToConcept(concept.getId());
-        final Iterable<XtdMultiLanguageText> multiLanguageTexts = multiLanguageTextRepository.findAllById(conceptIds);
+        final List<String> conceptIds = getRepository()
+                .findAllExampleIdsAssignedToConcept(concept.getId());
+        final Iterable<XtdMultiLanguageText> multiLanguageTexts = multiLanguageTextRecordService.findAllEntitiesById(conceptIds);
 
         return StreamSupport
                 .stream(multiLanguageTexts.spliterator(), false)
@@ -93,13 +115,13 @@ public class ConceptRecordServiceImpl
     }
 
     @Override
-    public XtdCountry getCountry(XtdConcept concept) {
+    public Optional<XtdCountry> getCountryOfOrigin(XtdConcept concept) {
         Assert.notNull(concept.getId(), "Concept must be persistent.");
-        final String countryId = countryRepository.findCountryIdAssignedToConcept(concept.getId());
+        final String countryId = getRepository().findCountryIdAssignedToConcept(concept.getId());
         if (countryId == null) {
             return null;
         }
-        final XtdCountry country = countryRepository.findById(countryId).orElse(null);
+        final Optional<XtdCountry> country = countryRecordService.findByIdWithDirectRelations(countryId);
 
         return country;
     }
@@ -107,11 +129,34 @@ public class ConceptRecordServiceImpl
     @Override
     public List<XtdConcept> getSimilarConcepts(XtdConcept concept) {
         Assert.notNull(concept.getId(), "Concept must be persistent.");
-        final List<String> similarConceptIds = repository.findAllConceptIdsAssignedToConcept(concept.getId());
-        final Iterable<XtdConcept> similarConcepts = repository.findAllById(similarConceptIds);
+        final List<String> similarConceptIds = getRepository().findAllConceptIdsAssignedToConcept(concept.getId());
+        final Iterable<XtdConcept> similarConcepts = getRepository().findAllEntitiesById(similarConceptIds);
 
         return StreamSupport
                 .stream(similarConcepts.spliterator(), false)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<XtdLanguage> getLanguageOfCreator(XtdConcept concept) {
+        Assert.notNull(concept.getId(), "Concept must be persistent.");
+        final String languageId = getRepository().findLanguageIdAssignedToConcept(concept.getId());
+        if (languageId == null) {
+            return null;
+        }
+        final Optional<XtdLanguage> languageOfCreator = languageRecordService.findByIdWithDirectRelations(languageId);
+
+        return languageOfCreator;
+    }
+
+    @Override
+    public List<XtdMultiLanguageText> getDescriptions(XtdConcept concept) {
+        Assert.notNull(concept.getId(), "Concept must be persistent.");
+        final List<String> descriptionIds = getRepository().findAllDescriptionIdsAssignedToConcept(concept.getId());
+        final Iterable<XtdMultiLanguageText> descriptions = multiLanguageTextRecordService.findAllEntitiesById(descriptionIds);
+
+        return StreamSupport
+                .stream(descriptions.spliterator(), false)
                 .collect(Collectors.toList());
     }
 
@@ -129,14 +174,14 @@ public class ConceptRecordServiceImpl
                 } else if (relatedRecordIds.size() != 1) {
                     throw new IllegalArgumentException("Exactly one definition must be given.");
                 } else {
-                    final XtdMultiLanguageText definition = multiLanguageTextRepository
-                            .findById(relatedRecordIds.get(0)).orElseThrow();
+                    final XtdMultiLanguageText definition = multiLanguageTextRecordService
+                            .findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
                     concept.setDefinition(definition);
                 }
             }
             case Examples -> {
-                final Iterable<XtdMultiLanguageText> examples = multiLanguageTextRepository
-                        .findAllById(relatedRecordIds);
+                final Iterable<XtdMultiLanguageText> examples = multiLanguageTextRecordService
+                        .findAllEntitiesById(relatedRecordIds);
                 final List<XtdMultiLanguageText> relatedExamples = StreamSupport
                         .stream(examples.spliterator(), false)
                         .collect(Collectors.toList());
@@ -150,24 +195,24 @@ public class ConceptRecordServiceImpl
                 } else if (relatedRecordIds.size() != 1) {
                     throw new IllegalArgumentException("Exactly one language of creator must be given.");
                 } else {
-                    final XtdLanguage languageOfCreator = languageRepository.findById(relatedRecordIds.get(0))
+                    final XtdLanguage languageOfCreator = languageRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0))
                             .orElseThrow();
                     concept.setLanguageOfCreator(languageOfCreator);
                 }
             }
             case ReferenceDocuments -> {
-                final Iterable<XtdExternalDocument> referenceDocuments = externalDocumentRepository
-                        .findAllById(relatedRecordIds);
+                final Iterable<XtdExternalDocument> referenceDocuments = externalDocumentRecordService
+                        .findAllEntitiesById(relatedRecordIds);
                 final List<XtdExternalDocument> relatedReferenceDocuments = StreamSupport
                         .stream(referenceDocuments.spliterator(), false)
                         .collect(Collectors.toList());
 
-                concept.getDocumentedBy().clear();
-                concept.getDocumentedBy().addAll(relatedReferenceDocuments);
+                concept.getReferenceDocuments().clear();
+                concept.getReferenceDocuments().addAll(relatedReferenceDocuments);
             }
             case Descriptions -> {
-                final Iterable<XtdMultiLanguageText> descriptions = multiLanguageTextRepository
-                        .findAllById(relatedRecordIds);
+                final Iterable<XtdMultiLanguageText> descriptions = multiLanguageTextRecordService
+                        .findAllEntitiesById(relatedRecordIds);
                 final List<XtdMultiLanguageText> relatedDescriptions = StreamSupport
                         .stream(descriptions.spliterator(), false)
                         .collect(Collectors.toList());
@@ -176,7 +221,7 @@ public class ConceptRecordServiceImpl
                 concept.getDescriptions().addAll(relatedDescriptions);
             }
             case SimilarTo -> {
-                final Iterable<XtdConcept> similarConcepts = repository.findAllById(relatedRecordIds);
+                final Iterable<XtdConcept> similarConcepts = getRepository().findAllEntitiesById(relatedRecordIds);
                 final List<XtdConcept> relatedSimilarConcepts = StreamSupport
                         .stream(similarConcepts.spliterator(), false)
                         .collect(Collectors.toList());
@@ -190,7 +235,7 @@ public class ConceptRecordServiceImpl
                 } else if (relatedRecordIds.size() != 1) {
                     throw new IllegalArgumentException("Exactly one country of origin must be given.");
                 } else {
-                    final XtdCountry countryOfOrigin = countryRepository.findById(relatedRecordIds.get(0))
+                    final XtdCountry countryOfOrigin = countryRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0))
                             .orElseThrow();
                     concept.setCountryOfOrigin(countryOfOrigin);
                 }
@@ -206,7 +251,7 @@ public class ConceptRecordServiceImpl
     @Transactional
     @Override
     public XtdConcept addDescription(String id, String descriptionId, String languageTag, String value) {
-        final XtdConcept item = repository.findById(id).orElseThrow();
+        final XtdConcept item = getRepository().findByIdWithDirectRelations(id).orElseThrow();
         final XtdLanguage language = languageRepository.findByCode(languageTag).orElseThrow();
 
         final XtdText text = new XtdText();
@@ -223,6 +268,6 @@ public class ConceptRecordServiceImpl
         item.getDescriptions().clear();
         item.getDescriptions().add(multiLanguage);
 
-        return repository.save(item);
+        return getRepository().save(item);
     }
 }

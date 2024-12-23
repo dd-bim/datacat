@@ -36,7 +36,7 @@ public abstract class XtdConcept extends XtdObject {
     // List of attached reference documents.
     @ToString.Include
     @Relationship(type = "REFERENCE_DOCUMENTS")
-    private Set<XtdExternalDocument> documentedBy = new HashSet<>();
+    private Set<XtdExternalDocument> referenceDocuments = new HashSet<>();
 
     // A list of instances of xtdMultiLanguageText that holds descriptions of the concept in several languages.
     @ToString.Include

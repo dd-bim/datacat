@@ -12,12 +12,8 @@ import org.springframework.stereotype.Repository;
 public interface CountryRepository extends EntityRepository<XtdCountry> {
 
         @Query("""
-            MATCH (n {id: $countryId})-[:SUBDIVISIONS]->(p:XtdSubdivision)
+            MATCH (n:XtdCountry {id: $countryId})-[:SUBDIVISIONS]->(p:XtdSubdivision)
             RETURN p.id""")
     List<String> findAllSubdivisionIdsAssignedToCountry(String countryId);
 
-    @Query("""
-            MATCH (n {id: $conceptId})-[:COUNTRY_OF_ORIGIN]->(p:XtdSubdivision)
-            RETURN p.id""")
-    String findCountryIdAssignedToConcept(String conceptId);
 }

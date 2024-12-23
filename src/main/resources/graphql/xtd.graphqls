@@ -346,7 +346,7 @@ interface XtdConcept implements XtdRoot & XtdObject {
   comment(input: LocalizationInput): String
   comments: [XtdMultiLanguageText!]!
   tags: [Tag!]!
-  documentedBy: [XtdExternalDocument!]!
+  referenceDocuments: [XtdExternalDocument!]!
 }
 
 type XtdExternalDocument implements XtdRoot & XtdObject & XtdConcept {
@@ -384,7 +384,7 @@ type XtdExternalDocument implements XtdRoot & XtdObject & XtdConcept {
   comments: [XtdMultiLanguageText!]!
   tags: [Tag!]!
   documents: [XtdConcept!]!
-  documentedBy: [XtdExternalDocument!]!
+  referenceDocuments: [XtdExternalDocument!]!
 }
 
 type XtdSubject implements XtdRoot & XtdObject & XtdConcept {
@@ -415,7 +415,7 @@ type XtdSubject implements XtdRoot & XtdObject & XtdConcept {
   comment(input: LocalizationInput): String
   comments: [XtdMultiLanguageText!]!
   tags: [Tag!]!
-  documentedBy: [XtdExternalDocument!]!
+  referenceDocuments: [XtdExternalDocument!]!
   connectedSubjects: [XtdRelationshipToSubject!]!
   connectingSubjects: [XtdRelationshipToSubject!]!
   properties: [XtdProperty!]!
@@ -456,7 +456,7 @@ type XtdProperty implements XtdRoot & XtdObject & XtdConcept {
   comment(input: LocalizationInput): String
   comments: [XtdMultiLanguageText!]!
   tags: [Tag!]!
-  documentedBy: [XtdExternalDocument!]!
+  referenceDocuments: [XtdExternalDocument!]!
   connectedProperties: [XtdRelationshipToProperty!]!
   connectingProperties: [XtdRelationshipToProperty!]!
   subjects: [XtdSubject!]!
@@ -493,7 +493,7 @@ type XtdValueList implements XtdRoot & XtdObject & XtdConcept {
   comment(input: LocalizationInput): String
   comments: [XtdMultiLanguageText!]!
   tags: [Tag!]!
-  documentedBy: [XtdExternalDocument!]!
+  referenceDocuments: [XtdExternalDocument!]!
   unit: XtdUnit
   values: [XtdOrderedValue!]!
   properties: [XtdProperty!]
@@ -533,7 +533,7 @@ type XtdUnit implements XtdRoot & XtdObject & XtdConcept {
   comment(input: LocalizationInput): String
   comments: [XtdMultiLanguageText!]!
   tags: [Tag!]!
-  documentedBy: [XtdExternalDocument!]!
+  referenceDocuments: [XtdExternalDocument!]!
   properties: [XtdProperty!]
 }
 
@@ -676,7 +676,7 @@ type XtdRelationshipType implements XtdRoot & XtdObject & XtdConcept {
   comment(input: LocalizationInput): String
   comments: [XtdMultiLanguageText!]!
   tags: [Tag!]!
-  documentedBy: [XtdExternalDocument!]!
+  referenceDocuments: [XtdExternalDocument!]!
   kind: XtdRelationshipKindEnum!
 }
 
@@ -722,7 +722,7 @@ type XtdDimension implements XtdRoot & XtdObject & XtdConcept {
   comment(input: LocalizationInput): String
   comments: [XtdMultiLanguageText!]!
   tags: [Tag!]!
-  documentedBy: [XtdExternalDocument!]!
+  referenceDocuments: [XtdExternalDocument!]!
   thermodynamicTemperatureExponent: XtdRational!
   electricCurrentExponent: XtdRational!
   timeExponent: XtdRational!
@@ -832,7 +832,7 @@ type XtdSubdivision implements XtdRoot & XtdObject & XtdConcept {
   comment(input: LocalizationInput): String
   comments: [XtdMultiLanguageText!]!
   tags: [Tag!]!
-  documentedBy: [XtdExternalDocument!]!
+  referenceDocuments: [XtdExternalDocument!]!
   code: String!
   subdivisions: [XtdSubdivision]
 }
@@ -865,7 +865,7 @@ type XtdCountry implements XtdRoot & XtdObject & XtdConcept {
   comment(input: LocalizationInput): String
   comments: [XtdMultiLanguageText!]!
   tags: [Tag!]!
-  documentedBy: [XtdExternalDocument!]!
+  referenceDocuments: [XtdExternalDocument!]!
   code: String!
   subdivisions: [XtdSubdivision]
 }
@@ -898,7 +898,7 @@ type XtdQuantityKind implements XtdRoot & XtdObject & XtdConcept {
   comment(input: LocalizationInput): String
   comments: [XtdMultiLanguageText!]!
   tags: [Tag!]!
-  documentedBy: [XtdExternalDocument!]!
+  referenceDocuments: [XtdExternalDocument!]!
   units: [XtdUnit]
   dimension: XtdDimension
 }
