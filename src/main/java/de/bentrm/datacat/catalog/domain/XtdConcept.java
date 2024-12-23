@@ -3,13 +3,16 @@ package de.bentrm.datacat.catalog.domain;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
-import de.bentrm.datacat.util.LocalizationUtils;
 
-import java.util.*;
-import jakarta.validation.constraints.NotNull;
 
+@Slf4j
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
@@ -57,15 +60,5 @@ public abstract class XtdConcept extends XtdObject {
     @ToString.Include
     @Relationship(type = "COUNTRY_OF_ORIGIN")
     private XtdCountry countryOfOrigin;
-
-
-    public Optional<XtdText> getDescription(@NotNull List<Locale.LanguageRange> priorityList) {
-        final XtdMultiLanguageText description = this.descriptions.stream().findFirst().orElse(null);
-        if (description == null) {
-            return Optional.empty();
-        }
-        final XtdText translation = LocalizationUtils.getTranslation(priorityList, description.getId());
-        return Optional.ofNullable(translation);
-    }
 
 }
