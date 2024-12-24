@@ -10,12 +10,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MultiLanguageTextRepository extends EntityRepository<XtdMultiLanguageText> {
-
-    @Query("""
-            MATCH (n:XtdObject {id: $objectId})-[:DEPRECATION_EXPLANATION]->(p:XtdMultiLanguageText)
-            RETURN p.id""")
-    String findMultiLanguageTextIdAssignedToObject(String objectId);
-
+        
     @Query("""
         MATCH (n:XtdMultiLanguageText {id: $multiLanguageTextId})-[:TEXTS]->(p:XtdText)
         RETURN p.id""")

@@ -3,17 +3,18 @@ package de.bentrm.datacat.graphql.fetcher;
 import de.bentrm.datacat.catalog.domain.XtdDictionary;
 import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
 import de.bentrm.datacat.catalog.domain.XtdObject;
-import de.bentrm.datacat.catalog.repository.ObjectRepository;
+import de.bentrm.datacat.catalog.domain.XtdText;
 import de.bentrm.datacat.catalog.service.ObjectRecordService;
 import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.dto.FilterInput;
 import de.bentrm.datacat.graphql.dto.SpecificationMapper;
+import de.bentrm.datacat.graphql.input.LocalizationInput;
+import de.bentrm.datacat.util.LocalizationUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
@@ -27,120 +28,89 @@ import java.util.Optional;
 public class ObjectController {
 
     @Autowired
-    private ObjectRecordService objectRecordService;
+    private ObjectRecordService service;
 
     @Autowired
     private SpecificationMapper specificationMapper;
 
-    @Autowired
-    private ObjectRepository repository;
-
-    @Autowired Neo4jTemplate neo4jTemplate;
-
     @QueryMapping
     public Optional<XtdObject> getObject(@Argument String id) {
-        // return repository.findById(id);
-        // return objectRecordService.findById(id);
-        return objectRecordService.findByIdWithDirectRelations(id);
-
-        // return neo4jTemplate.findById(id, XtdObject.class);
+        return service.findByIdWithDirectRelations(id);
     }
-    
+
     @QueryMapping
     public Connection<XtdObject> findObjects(@Argument FilterInput input) {
-        if (input == null) input = new FilterInput();
+        if (input == null)
+            input = new FilterInput();
         final CatalogRecordSpecification specification = specificationMapper.toCatalogRecordSpecification(input);
-        final Page<XtdObject> page = objectRecordService.findAll(specification);
+        final Page<XtdObject> page = service.findAll(specification);
         return Connection.of(page);
     }
 
-    // @SchemaMapping(typeName = "XtdObject", field = "name")
-    // public String getName(XtdObject object) {
-    //     return "Hello World";
-    // }
-
     @SchemaMapping(typeName = "XtdObject", field = "names")
     public List<XtdMultiLanguageText> getNames(XtdObject object) {
-        return objectRecordService.getNames(object);
+        return service.getNames(object);
     }
 
     @SchemaMapping(typeName = "XtdObject", field = "dictionary")
-    public XtdDictionary getDictionary(XtdObject object) {
-        return objectRecordService.getDictionary(object);
+    public Optional<XtdDictionary> getDictionary(XtdObject object) {
+        return service.getDictionary(object);
     }
 
     @SchemaMapping(typeName = "XtdObject", field = "deprecationExplanation")
-    public XtdMultiLanguageText getDeprecationExplanation(XtdObject object) {
-        return objectRecordService.getDeprecationExplanation(object);
+    public Optional<XtdMultiLanguageText> getDeprecationExplanation(XtdObject object) {
+        return service.getDeprecationExplanation(object);
     }
 
     @SchemaMapping(typeName = "XtdObject", field = "replacedObjects")
     public List<XtdObject> getReplacedObjects(XtdObject object) {
-        return objectRecordService.getReplacedObjects(object);
+        return service.getReplacedObjects(object);
     }
 
     @SchemaMapping(typeName = "XtdObject", field = "replacingObjects")
     public List<XtdObject> getReplacingObjects(XtdObject object) {
-        return objectRecordService.getReplacingObjects(object);
+        return service.getReplacingObjects(object);
     }
 
+    @SchemaMapping(typeName = "XtdObject", field = "comments")
+    public List<XtdMultiLanguageText> getComments(XtdObject object) {
+        return service.getComments(object);
+    }
 
-    //     this.dictionary = environment -> {
-    //         final XtdObject object = environment.getSource();
-    //         return queryService.getDictionary(object);
-    //     };
+    @SchemaMapping(typeName = "XtdObject", field = "name")
+    public Optional<String> getName(XtdObject object, @Argument LocalizationInput input) {
 
-    //     this.deprecationExplanation = environment -> {
-    //         final XtdObject object = environment.getSource();
-    //         return queryService.getDeprecationExplanation(object);
-    //     };
+        XtdMultiLanguageText name = service.getNames(object).stream().findFirst().orElse(null);
+        if (name == null) {
+            return null;
+        }
 
-    //     this.replacedObjects = environment -> {
-    //         final XtdObject object = environment.getSource();
-    //         return queryService.getReplacedObjects(object);
-    //     };
+        XtdText translation = null;
+        if (input != null && input.getPriorityList() != null) {
+            translation = LocalizationUtils.getTranslation(input.getPriorityList(), name.getId());
+        } else {
+            translation = LocalizationUtils.getTranslation(name.getId());
+        }
 
-    //     this.replacingObjects = environment -> {
-    //         final XtdObject object = environment.getSource();
-    //         return queryService.getReplacingObjects(object);
-    //     };
+        return Optional.ofNullable(translation != null ? translation.getText() : null);
+    }
 
-    //     // this.replacedObjects = environment -> {
-    //     //     final XtdObject object = environment.getSource();
-    //     //     final List<String> replacedObjectsIds = object.getReplacedObjects().stream().map(XtdObject::getId).collect(Collectors.toList());
-    //     //     return catalogService.getAllObjectsById(replacedObjectsIds);
-    //     // };
+    @SchemaMapping(typeName = "XtdObject", field = "comment")
+    public Optional<String> getComment(XtdObject object, @Argument LocalizationInput input) {
 
-    //     // this.replacingObjects = environment -> {
-    //     //     final XtdObject object = environment.getSource();
-    //     //     final List<String> replacingObjectsIds = object.getReplacingObjects().stream().map(XtdObject::getId).collect(Collectors.toList());
-    //     //     return catalogService.getAllObjectsById(replacingObjectsIds);
-    //     // };
+        XtdMultiLanguageText comment = service.getComments(object).stream().findFirst().orElse(null);
+        if (comment == null) {
+            return null;
+        }
 
-    //     this.names = environment -> {
-    //         final XtdObject object = environment.getSource();
-    //         return queryService.getNames(object);
-    //     };
-    // }
+        XtdText translation = null;
+        if (input != null && input.getPriorityList() != null) {
+            translation = LocalizationUtils.getTranslation(input.getPriorityList(), comment.getId());
+        } else {
+            translation = LocalizationUtils.getTranslation(comment.getId());
+        }
 
-    // @Override
-    // public String getFetcherName() {
-    //     return "getObject";
-    // }
+        return Optional.ofNullable(translation != null ? translation.getText() : null);
+    }
 
-    // @Override
-    // public String getListFetcherName() {
-    //     return "findObjects";
-    // }
-
-    // @Override
-    // public Map<String, DataFetcher> getAttributeFetchers() {
-    //     Map<String, DataFetcher> fetchers = new HashMap<>();
-    //     fetchers.put("dictionary", dictionary);
-    //     fetchers.put("deprecationExplanation", deprecationExplanation);
-    //     fetchers.put("replacedObjects", replacedObjects);
-    //     fetchers.put("replacingObjects", replacingObjects);
-    //     fetchers.put("names", names);
-    //     return fetchers;
-    // }
 }

@@ -38,11 +38,6 @@ type Language {
   displayLanguage(input: LocaleInput): String!
 }
 
-type LocalizedText {
-  language: Language!
-  text: String!
-}
-
 type Tag {
   id: ID!
   name: String!

@@ -21,9 +21,7 @@ public class SearchResultFetchers implements AttributeFetchers {
                 "recordType", environment -> {
                     final CatalogRecord source = environment.getSource();
                     return CatalogRecordType.getByDomainClass(source);
-                },
-                "name", new NameFetcher(),
-                "comment", new CommentFetcher()
+                }
         );
     }
 }

@@ -10,11 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface DictionaryRepository extends EntityRepository<XtdDictionary> {
 
         @Query("""
-                        MATCH (n:XtdObject {id: $objectId})-[:DICTIONARY]->(p:XtdDictionary)
-                        RETURN p.id""")
-        String findDictionaryIdAssignedToObject(String objectId);
-
-        @Query("""
                         MATCH (n:XtdDictionary {id: $dictionaryId})-[:NAME]->(p:XtdMultiLanguageText)
                         RETURN p.id""")
         String findMultiLanguageTextIdAssignedToDictionary(String dictionaryId);

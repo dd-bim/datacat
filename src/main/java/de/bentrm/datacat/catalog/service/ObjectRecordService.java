@@ -11,12 +11,13 @@ import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.domain.Enums.XtdStatusOfActivationEnum;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ObjectRecordService extends SimpleRecordService<XtdObject> {
 
-    XtdDictionary getDictionary(@NotNull XtdObject object);
+    Optional<XtdDictionary> getDictionary(@NotNull XtdObject object);
 
-    XtdMultiLanguageText getDeprecationExplanation(@NotNull XtdObject object);
+    Optional<XtdMultiLanguageText> getDeprecationExplanation(@NotNull XtdObject object);
 
     List<XtdObject> getReplacedObjects(@NotNull XtdObject object);
 
@@ -24,6 +25,8 @@ public interface ObjectRecordService extends SimpleRecordService<XtdObject> {
 
     List<XtdMultiLanguageText> getNames(@NotNull XtdObject object);
 
+    List<XtdMultiLanguageText> getComments(@NotNull XtdObject object);
+    
     @PreAuthorize("hasRole('USER')")
     @NotNull XtdObject addComment(@NotBlank String id, String commentId, @NotBlank String languageTag, @NotBlank String value);
 

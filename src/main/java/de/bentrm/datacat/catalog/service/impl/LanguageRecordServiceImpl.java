@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -34,6 +35,11 @@ public class LanguageRecordServiceImpl
     @Override
     public @NotNull CatalogRecordType getSupportedCatalogRecordType() {
         return CatalogRecordType.Language;
+    }
+
+    @Override
+    public Optional<XtdLanguage> findByCode(@NotNull String code) {
+        return getRepository().findByCode(code);
     }
 
     @Transactional

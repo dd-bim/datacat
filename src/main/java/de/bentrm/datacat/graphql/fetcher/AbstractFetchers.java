@@ -24,9 +24,6 @@ public abstract class AbstractFetchers<T extends Entity>
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private final NameFetcher nameFetcher = new NameFetcher();
-    private final CommentFetcher commentFetcher = new CommentFetcher();
-
     private final DataFetcher<Optional<T>> fetchOne;
     private final DataFetcher<Connection<T>> fetchAll;
 
@@ -70,9 +67,7 @@ public abstract class AbstractFetchers<T extends Entity>
                 "recordType", environment -> {
                     final CatalogRecord source = environment.getSource();
                     return CatalogRecordType.getByDomainClass(source);
-                },
-                "name", nameFetcher,
-                "comment", commentFetcher
+                }
         );
     }
 }

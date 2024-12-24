@@ -72,25 +72,4 @@ public final class LocalizationUtils {
 
         return translationMap.getOrDefault(Locale.ENGLISH, null);
     }
-
-    /**
-     * Returns the first text in the given locale selecting the most specific
-     * language tag including all specifiers and defaulting to the ISO639 language
-     * code of the given locale. If no match is acquired the default value is
-     * returned.
-     *
-     * @param texts        The map of translations key by language tag.
-     * @param defaultValue The default value if no localization is found.
-     * @param locales      The locales that will be searched for.
-     * @return The translated text.
-     */
-    public static @NotNull String getLocalizedText(Map<String, String> texts, String defaultValue, Locale... locales) {
-        for (Locale locale : locales) {
-            final String languageTag = locale.toLanguageTag();
-            if (texts.containsKey(languageTag)) {
-                return texts.get(languageTag);
-            }
-        }
-        return defaultValue;
-    }
 }

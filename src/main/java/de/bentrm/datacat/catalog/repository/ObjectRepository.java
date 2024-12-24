@@ -24,4 +24,18 @@ public interface ObjectRepository extends EntityRepository<XtdObject> {
                         RETURN p.id""")
         List<String> findAllNamesAssignedToObject(String objectId);
 
+        @Query("""
+                        MATCH (n:XtdObject {id: $objectId})-[:DICTIONARY]->(p:XtdDictionary)
+                        RETURN p.id""")
+        String findDictionaryIdAssignedToObject(String objectId);
+
+        @Query("""
+                        MATCH (n:XtdObject {id: $objectId})-[:DEPRECATION_EXPLANATION]->(p:XtdMultiLanguageText)
+                        RETURN p.id""")
+        String findMultiLanguageTextIdAssignedToObject(String objectId);
+
+        @Query("""
+                        MATCH (n:XtdObject {id: $objectId})-[:COMMENTS]->(p:XtdMultiLanguageText)
+                        RETURN p.id""")
+        List<String> findCommentsAssignedToObject(String objectId);
 }

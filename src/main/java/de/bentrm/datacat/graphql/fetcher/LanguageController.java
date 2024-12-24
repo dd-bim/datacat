@@ -2,7 +2,6 @@ package de.bentrm.datacat.graphql.fetcher;
 
 import de.bentrm.datacat.base.specification.QuerySpecification;
 import de.bentrm.datacat.catalog.domain.XtdLanguage;
-import de.bentrm.datacat.catalog.repository.LanguageRepository;
 import de.bentrm.datacat.catalog.service.LanguageRecordService;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.dto.FilterInput;
@@ -25,9 +24,6 @@ public class LanguageController {
     private LanguageRecordService languageRecordService;
 
     @Autowired
-    private LanguageRepository repository;
-
-    @Autowired
     private SpecificationMapper specificationMapper;
 
     @QueryMapping
@@ -37,7 +33,7 @@ public class LanguageController {
 
     @QueryMapping
     public Optional<XtdLanguage> getLanguageByCode(@Argument String code) {
-        return repository.findByCode(code);
+        return languageRecordService.findByCode(code);
     }
 
     @QueryMapping

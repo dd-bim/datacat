@@ -22,7 +22,6 @@ import de.bentrm.datacat.catalog.domain.XtdLanguage;
 import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
 import de.bentrm.datacat.catalog.domain.XtdText;
 import de.bentrm.datacat.catalog.repository.ConceptRepository;
-import de.bentrm.datacat.catalog.repository.LanguageRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.ConceptRecordService;
 import de.bentrm.datacat.catalog.service.CountryRecordService;
@@ -62,10 +61,6 @@ public class ConceptRecordServiceImpl
     @Autowired
     @Lazy
     private ObjectRecordService objectRecordService;
-
-    @Autowired
-    @Lazy
-    private LanguageRepository languageRepository;
 
     public ConceptRecordServiceImpl(Neo4jTemplate neo4jTemplate,
             ConceptRepository repository,
@@ -252,7 +247,7 @@ public class ConceptRecordServiceImpl
     @Override
     public XtdConcept addDescription(String id, String descriptionId, String languageTag, String value) {
         final XtdConcept item = getRepository().findByIdWithDirectRelations(id).orElseThrow();
-        final XtdLanguage language = languageRepository.findByCode(languageTag).orElseThrow();
+        final XtdLanguage language = languageRecordService.findByCode(languageTag).orElseThrow();
 
         final XtdText text = new XtdText();
         text.setText(value);
