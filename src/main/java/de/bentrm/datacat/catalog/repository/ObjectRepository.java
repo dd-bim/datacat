@@ -10,12 +10,12 @@ import java.util.List;
 public interface ObjectRepository extends EntityRepository<XtdObject> {
 
         @Query("""
-                        MATCH (n {id: $objectId})-[:REPLACED_OBJECTS]->(p:XtdObject)
+                        MATCH (n:XtdObject {id: $objectId})-[:REPLACED_OBJECTS]->(p:XtdObject)
                         RETURN p.id""")
         List<String> findAllReplacedObjectIdsAssignedToObject(String objectId);
 
         @Query("""
-                        MATCH (n {id: $objectId})<-[:REPLACED_OBJECTS]-(p:XtdObject)
+                        MATCH (n:XtdObject {id: $objectId})<-[:REPLACED_OBJECTS]-(p:XtdObject)
                         RETURN p.id""")
         List<String> findAllReplacingObjectIdsAssignedToObject(String objectId);
 

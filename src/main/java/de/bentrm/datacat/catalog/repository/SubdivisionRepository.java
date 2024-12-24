@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 public interface SubdivisionRepository extends EntityRepository<XtdSubdivision> {
 
         @Query("""
-                        MATCH (n {id: $subdivisionId})-[:SUBDIVISIONS]->(p:XtdSubdivision)
+                        MATCH (n:XtdSubdivision {id: $subdivisionId})-[:SUBDIVISIONS]->(p:XtdSubdivision)
                         RETURN p.id""")
         List<String> findAllSubdivisionIdsAssignedToSubdivision(String subdivisionId);
 }

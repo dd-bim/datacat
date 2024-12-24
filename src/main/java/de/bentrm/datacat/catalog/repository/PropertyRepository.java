@@ -11,11 +11,6 @@ import java.util.List;
 public interface PropertyRepository extends EntityRepository<XtdProperty> {
 
     @Query("""
-            MATCH (n:XtdUnit {id: $unitId})<-[:UNITS]->(p:XtdProperty)
-            RETURN p.id""")
-    List<String> findAllPropertyIdsAssignedToUnit(String unitId);
-
-    @Query("""
             MATCH (n:XtdProperty {id: $propertyId})<-[:PROPERTIES]-(p:XtdSubject)
             RETURN p.id""")
     List<String> findAllSubjectIdsAssignedToProperty(String propertyId);
