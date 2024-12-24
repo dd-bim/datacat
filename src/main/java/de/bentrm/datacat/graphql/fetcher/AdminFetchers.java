@@ -28,7 +28,6 @@ public class AdminFetchers implements QueryFetchers, MutationFetchers {
     private final SpecificationMapper specificationMapper;
     private final AdminService adminService;
 
-//    private final DataFetcher<Optional<AccountDto>> fetchOne;
     private final DataFetcher<Connection<AccountDto>> fetchAllAccounts;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
