@@ -7,22 +7,8 @@ type CatalogStatistics {
   items: [CatalogRecordStatistics!]!
 }
 
-type SearchResult {
-  id: ID!
-  recordType: CatalogRecordType!
-  tags: [Tag!]!
-  majorVersion: Int!
-  minorVersion: Int!
-  name(input: LocalizationInput): String
-  names: [XtdMultiLanguageText!]!
-  description(input: LocalizationInput): String
-  descriptions: [XtdMultiLanguageText!]!
-  comment(input: LocalizationInput): String
-  comments: [XtdMultiLanguageText!]!
-}
-
 type SearchResultConnection {
-  nodes: [SearchResult!]!
+  nodes: [XtdObject!]!
   pageInfo: PageInfo!
   totalElements: Int!
 }
@@ -54,7 +40,7 @@ type TagConnection {
 }
 
 type HierarchyPayload {
-  nodes: [XtdRoot!]!
+  nodes: [XtdObject!]!
   paths: [[ID!]!]!
 }
 

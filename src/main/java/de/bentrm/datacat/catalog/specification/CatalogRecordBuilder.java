@@ -26,37 +26,16 @@ public abstract class CatalogRecordBuilder<B extends CatalogRecordBuilder<B>> ex
         }
         return self();
     }
-    
-    // @Override
-    // public B query(String query) {
-    //     final Optional<String> regex = sanitizeQueryString(query);
-
-    //     if (regex.isPresent()) {
-    //     // Create the filter for the text property in XtdText
-    //     final Filter textFilter = new Filter("text", ComparisonOperator.LIKE, regex.get());
-    //     textFilter.setBooleanOperator(BooleanOperator.AND);
-
-    //     // Create the nested path segments
-    //     Filter.NestedPathSegment textsSegment = new Filter.NestedPathSegment("texts", XtdText.class);
-    //     Filter.NestedPathSegment namesSegment = new Filter.NestedPathSegment("names", XtdMultiLanguageText.class);
-
-    //     // Set the nested path for the filter
-    //     NestedPathSegment[] paths = new NestedPathSegment[]{namesSegment, textsSegment};
-    //     textFilter.setNestedPath(paths);
-
-    //     // Add the filter to the list of filters
-    //     this.filters.add(textFilter);
-    //     }
-    //     return self();
-    // }
 
     public B entityTypeIn(final List<CatalogRecordType> recordTypes) {
+        log.info("recordTypes: " + recordTypes);
         final List<String> labels = recordTypes.stream()
                 .map(CatalogRecordType::getLabel)
                 .collect(Collectors.toList());
         final String filter = labels.stream()
                 .map(label -> "n:" + label)
                 .collect(Collectors.joining(" OR "));
+        log.info("filter: " + filter);
         filters.add(filter);
         return self();
     }

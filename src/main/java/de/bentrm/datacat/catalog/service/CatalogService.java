@@ -3,7 +3,6 @@ package de.bentrm.datacat.catalog.service;
 import de.bentrm.datacat.catalog.domain.*;
 import de.bentrm.datacat.catalog.service.value.HierarchyValue;
 import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
-import de.bentrm.datacat.catalog.specification.RootSpecification;
 import de.bentrm.datacat.graphql.dto.CatalogStatistics;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -70,9 +69,6 @@ public interface CatalogService {
 
     @PreAuthorize("hasRole('READONLY')")
     long countCatalogRecords(@NotNull CatalogRecordSpecification specification);
-
-    @PreAuthorize("hasRole('READONLY')")
-    long countRootItems(@NotNull RootSpecification specification);
 
     @PreAuthorize("hasRole('READONLY')")
     HierarchyValue getHierarchy(@NotNull CatalogRecordSpecification rootNodeSpecification, int depth);

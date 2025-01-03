@@ -1,11 +1,11 @@
 package de.bentrm.datacat.catalog.service.impl;
 
+import de.bentrm.datacat.base.specification.QuerySpecification;
 import de.bentrm.datacat.catalog.domain.*;
 import de.bentrm.datacat.catalog.repository.*;
 import de.bentrm.datacat.catalog.service.CatalogService;
 import de.bentrm.datacat.catalog.service.value.HierarchyValue;
 import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
-import de.bentrm.datacat.catalog.specification.RootSpecification;
 import de.bentrm.datacat.graphql.dto.CatalogRecordStatistics;
 import de.bentrm.datacat.graphql.dto.CatalogStatistics;
 import lombok.extern.slf4j.Slf4j;
@@ -198,46 +198,41 @@ public class CatalogServiceImpl implements CatalogService {
         final Optional<Pageable> paged = specification.getPageable();
         if (paged.isPresent()) {
             pageable = paged.get();
-            // final Pagination pagination = new Pagination(pageable.getPageNumber(), pageable.getPageSize());
-
             if (pageable.getSort().isUnsorted()) {
-                // catalogRecords = session.loadAll(CatalogRecord.class, specification.getFilters(), pagination);
-                catalogRecords = neo4jTemplate.findAll(CatalogRecord.class);
+                catalogRecords = neo4jTemplate.findAll(getQuery(specification, pageable), CatalogRecord.class);
             } else {
                 final Sort sort = pageable.getSort();
                 final Sort.Direction direction = sort.get().findFirst().map(Sort.Order::getDirection).get();
                 final String[] properties = sort.get().map(Sort.Order::getProperty).toArray(String[]::new);
-                // final SortOrder sortOrder = new SortOrder(SortOrder.Direction.valueOf(direction.name()), properties);
-                // catalogRecords = session.loadAll(CatalogRecord.class, specification.getFilters(), sortOrder, pagination);
-                catalogRecords = neo4jTemplate.findAll(CatalogRecord.class);
+                catalogRecords = neo4jTemplate.findAll(getQuery(specification, pageable, direction, properties) , CatalogRecord.class);
             }
         } else {
             pageable = PageRequest.of(0, (int) Math.max(count, 10));
-            // catalogRecords = session.loadAll(CatalogRecord.class, specification.getFilters());
-            catalogRecords = neo4jTemplate.findAll(CatalogRecord.class);
+            catalogRecords = neo4jTemplate.findAll(getQuery(specification, pageable), CatalogRecord.class);
         }
 
         return PageableExecutionUtils.getPage(List.copyOf(catalogRecords), pageable, () -> count);
     }
-
+    
     @Override
-    public long countCatalogRecords(CatalogRecordSpecification specification) {
-        // return session.count(CatalogRecord.class, specification.getFilters());
-        return neo4jTemplate.count(CatalogRecord.class);
+    public @NotNull long countCatalogRecords(@NotNull CatalogRecordSpecification specification) {
+        String query;
+        if (specification.getFilters().isEmpty()) {
+            query = "MATCH (n:XtdObject) RETURN count(n)";
+        } else {
+            String whereClause = "WHERE " + String.join(" AND ", specification.getFilters());
+            query = "MATCH (n:XtdObject) " + whereClause + " RETURN count(n)";
+        }
+        return neo4jTemplate.count(query);
     }
 
     @Override
-    public long countRootItems(RootSpecification specification) {
-        // return session.count(XtdRoot.class, specification.getFilters());
-        return neo4jTemplate.count(XtdRoot.class);
-    }
-
-    @Override
-    public HierarchyValue getHierarchy(CatalogRecordSpecification rootNodeSpecification, int depth) {
+    public HierarchyValue getHierarchy(@NotNull CatalogRecordSpecification rootNodeSpecification, int depth) {
         final Page<CatalogRecord> rootNodes = findAllCatalogRecords(rootNodeSpecification);
         final List<String> rootNodeIds = rootNodes.map(CatalogRecord::getId).stream().collect(Collectors.toList());
 
         final List<List<String>> paths = rootRepository.findRelationshipPaths(rootNodeIds);
+
         final Set<String> nodeIds = new HashSet<>();
         paths.forEach(nodeIds::addAll);
 
@@ -247,5 +242,30 @@ public class CatalogServiceImpl implements CatalogService {
                 .collect(Collectors.toList());
 
         return new HierarchyValue(leaves, paths);
+    }
+
+    public String getQuery(QuerySpecification specification, Pageable pageable) {
+        return (getQuery(specification, pageable, null, null));
+    }
+
+    public String getQuery(QuerySpecification specification, Pageable pageable, Sort.Direction direction,
+            String[] properties) {
+        String query;
+        String sort = "";
+        if (direction != null && properties != null) {
+            List<String> prefixedProperties = Arrays.stream(properties).map(property -> "n." + property)
+                    .collect(Collectors.toList());
+            sort = " ORDER BY " + String.join(", ", prefixedProperties) + " " + direction.name();
+        } 
+log.info(specification.getFilters().toString());
+        if (specification.getFilters().isEmpty()) {
+            query = "MATCH (n:XtdObject)" + sort + " RETURN n";
+        } else {
+            String whereClause = "WHERE " + String.join(" AND ", specification.getFilters());
+            query = "MATCH (n:XtdObject) " + whereClause + sort +" RETURN n";
+        }
+        query = query + " SKIP " + pageable.getOffset() + " LIMIT " + pageable.getPageSize();
+        log.info("Query: {}", query);
+        return query;
     }
 }
