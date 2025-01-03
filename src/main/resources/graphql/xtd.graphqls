@@ -113,8 +113,8 @@ input SearchInput {
 }
 
 input HierarchyRootNodeFilterInput {
-  catalogEntryTypeIn: [CatalogRecordType!]
-  catalogEntryTypeNotIn: [CatalogRecordType!]
+  entityTypeIn: [CatalogRecordType!]
+  entityTypeNotIn: [CatalogRecordType!]
   idIn: [ID!]
   idNotIn: [ID!]
   tagged: [ID!]
@@ -125,7 +125,7 @@ input HierarchyFilterInput {
 }
 
 input VerificationNodeTypeFilterInput {
-  catalogEntryTypeIn: [CatalogRecordType!]
+  entityTypeIn: [CatalogRecordType!]
 }
 
 input VerificationFilterInput {

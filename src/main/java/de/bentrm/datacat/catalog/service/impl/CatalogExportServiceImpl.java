@@ -3,7 +3,8 @@ package de.bentrm.datacat.catalog.service.impl;
 import de.bentrm.datacat.catalog.domain.*;
 import de.bentrm.datacat.catalog.repository.*;
 import de.bentrm.datacat.catalog.service.CatalogExportService;
-import de.bentrm.datacat.catalog.service.value.export.*;
+import de.bentrm.datacat.catalog.service.value.ExportCatalogRecordsValue;
+import de.bentrm.datacat.catalog.service.value.ExportRelationshipsValue;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class CatalogExportServiceImpl implements CatalogExportService {
     private CatalogExportQuery catalogExportQuery;
 
     @Override
-    public findExportCatalogRecordsValue getfindExportCatalogRecords() {
+    public ExportCatalogRecordsValue getExportCatalogRecords() {
 
         List<ExportItemResult> leaves = catalogExportQuery.findExportCatalogRecords();
         List<List<String>> paths = new ArrayList<>();
@@ -33,11 +34,11 @@ public class CatalogExportServiceImpl implements CatalogExportService {
             paths.add(list);
         });
 
-        return new findExportCatalogRecordsValue(leaves, paths);
+        return new ExportCatalogRecordsValue(leaves, paths);
     }
 
     @Override
-    public findExportCatalogRecordsRelationshipsValue getfindExportCatalogRecordsRelationships() {
+    public ExportRelationshipsValue getExportCatalogRecordsRelationships() {
 
         List<ExportRelationshipResult> leaves = catalogExportQuery.findExportCatalogRecordsRelationships();
         List<List<String>> paths = new ArrayList<>();
@@ -47,6 +48,6 @@ public class CatalogExportServiceImpl implements CatalogExportService {
             paths.add(list);
         });
 
-        return new findExportCatalogRecordsRelationshipsValue(leaves, paths);
+        return new ExportRelationshipsValue(leaves, paths);
     }
 }

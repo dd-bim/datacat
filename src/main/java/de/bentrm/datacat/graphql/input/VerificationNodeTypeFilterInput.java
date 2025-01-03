@@ -7,6 +7,6 @@ import java.util.List;
 
 @Data
 public class VerificationNodeTypeFilterInput {
-    private List<CatalogRecordType> catalogEntryTypeIn;
+    private List<CatalogRecordType> entityTypeIn;
 }
 
