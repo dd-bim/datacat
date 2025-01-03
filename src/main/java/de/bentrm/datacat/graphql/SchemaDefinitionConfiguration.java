@@ -1,6 +1,5 @@
 package de.bentrm.datacat.graphql;
 
-import de.bentrm.datacat.graphql.fetcher.AttributeFetchers;
 import de.bentrm.datacat.graphql.fetcher.MutationFetchers;
 import de.bentrm.datacat.graphql.fetcher.QueryFetchers;
 import de.bentrm.datacat.graphql.resolver.CustomResolver;
@@ -40,9 +39,6 @@ public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
     private List<CustomResolver> customResolvers;
 
     @Autowired
-    private List<AttributeFetchers> attributeFetchers;
-
-    @Autowired
     private List<QueryFetchers> queryFetchers;
 
     @Autowired
@@ -72,10 +68,6 @@ public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
     }
 
     private RuntimeWiring getRuntimeWiring() {
-        attributeFetchers.forEach(fetcher -> {
-            log.trace("Registering AttributeFetcher {}", fetcher.getClass());
-            builder.type(fetcher.getTypeName(), wiring -> wiring.dataFetchers(fetcher.getAttributeFetchers()));
-        });
 
         builder.type("Query", wiring -> {
             queryFetchers.forEach(fetcher -> {
