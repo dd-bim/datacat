@@ -1,4 +1,4 @@
-package de.bentrm.datacat.graphql.input.verification;
+package de.bentrm.datacat.graphql.input;
 
 import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import lombok.Data;
@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class findMissingEnglishNameNodeTypeFilterInput {
+public class VerificationNodeTypeFilterInput {
     private List<CatalogRecordType> catalogEntryTypeIn;
 }
 

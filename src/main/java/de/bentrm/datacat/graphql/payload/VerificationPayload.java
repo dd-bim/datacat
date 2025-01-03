@@ -1,12 +1,12 @@
-package de.bentrm.datacat.graphql.payload.verification;
+package de.bentrm.datacat.graphql.payload;
+
+import java.util.List;
 
 import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
-public class findMultipleNamesPayload {
+public class VerificationPayload {
     List<CatalogRecord> nodes;
     List<List<String>> paths;
 }

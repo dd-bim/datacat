@@ -3,7 +3,7 @@ package de.bentrm.datacat.catalog.service.impl;
 import de.bentrm.datacat.catalog.domain.*;
 import de.bentrm.datacat.catalog.repository.*;
 import de.bentrm.datacat.catalog.service.CatalogVerificationService;
-import de.bentrm.datacat.catalog.service.value.verification.*;
+import de.bentrm.datacat.catalog.service.value.HierarchyValue;
 import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,7 +30,7 @@ public class CatalogVerificationServiceImpl implements CatalogVerificationServic
 
 
     @Override
-    public findPropGroupWithoutPropValue getfindPropGroupWithoutProp() {
+    public HierarchyValue getfindPropGroupWithoutProp() {
 
         List<List<String>> paths = catalogValidationQuery.findPropGroupWithoutProp();
 
@@ -42,11 +42,11 @@ public class CatalogVerificationServiceImpl implements CatalogVerificationServic
                 .stream(nodes.spliterator(), false)
                 .collect(Collectors.toList());
 
-        return new findPropGroupWithoutPropValue(leaves, paths);
+        return new HierarchyValue(leaves, paths);
     }
 
     @Override
-    public findPropWithoutSubjectOrPropGroupValue getfindPropWithoutSubjectOrPropGroup() {
+    public HierarchyValue getfindPropWithoutSubjectOrPropGroup() {
 
         List<List<String>> paths = catalogValidationQuery.findPropWithoutSubjectOrPropGroup();
 
@@ -58,11 +58,11 @@ public class CatalogVerificationServiceImpl implements CatalogVerificationServic
                 .stream(nodes.spliterator(), false)
                 .collect(Collectors.toList());
 
-        return new findPropWithoutSubjectOrPropGroupValue(leaves, paths);
+        return new HierarchyValue(leaves, paths);
     }
 
     @Override
-    public findModelWithoutGroupValue getfindModelWithoutGroup() {
+    public HierarchyValue getfindModelWithoutGroup() {
 
         List<List<String>> paths = catalogValidationQuery.findModelWithoutGroup();
 
@@ -74,11 +74,11 @@ public class CatalogVerificationServiceImpl implements CatalogVerificationServic
                 .stream(nodes.spliterator(), false)
                 .collect(Collectors.toList());
 
-        return new findModelWithoutGroupValue(leaves, paths);
+        return new HierarchyValue(leaves, paths);
     }
 
     @Override
-    public findGroupWithoutSubjectValue getfindGroupWithoutSubject() {
+    public HierarchyValue getfindGroupWithoutSubject() {
 
         List<List<String>> paths = catalogValidationQuery.findGroupWithoutSubject();
 
@@ -90,11 +90,11 @@ public class CatalogVerificationServiceImpl implements CatalogVerificationServic
                 .stream(nodes.spliterator(), false)
                 .collect(Collectors.toList());
 
-        return new findGroupWithoutSubjectValue(leaves, paths);
+        return new HierarchyValue(leaves, paths);
     }
 
     @Override
-    public findSubjectWithoutPropValue getfindSubjectWithoutProp() {
+    public HierarchyValue getfindSubjectWithoutProp() {
 
         List<List<String>> paths = catalogValidationQuery.findSubjectWithoutProp();
 
@@ -106,11 +106,11 @@ public class CatalogVerificationServiceImpl implements CatalogVerificationServic
                 .stream(nodes.spliterator(), false)
                 .collect(Collectors.toList());
 
-        return new findSubjectWithoutPropValue(leaves, paths);
+        return new HierarchyValue(leaves, paths);
     }
 
     @Override
-    public findMeasureWithoutPropValue getfindMeasureWithoutProp() {
+    public HierarchyValue getfindMeasureWithoutProp() {
 
         List<List<String>> paths = catalogValidationQuery.findMeasureWithoutProp();
 
@@ -122,11 +122,11 @@ public class CatalogVerificationServiceImpl implements CatalogVerificationServic
                 .stream(nodes.spliterator(), false)
                 .collect(Collectors.toList());
 
-        return new findMeasureWithoutPropValue(leaves, paths);
+        return new HierarchyValue(leaves, paths);
     }
 
     @Override
-    public findUnitWithoutMeasureValue getfindUnitWithoutMeasure() {
+    public HierarchyValue getfindUnitWithoutMeasure() {
 
         List<List<String>> paths = catalogValidationQuery.findUnitWithoutMeasure();
 
@@ -138,11 +138,11 @@ public class CatalogVerificationServiceImpl implements CatalogVerificationServic
                 .stream(nodes.spliterator(), false)
                 .collect(Collectors.toList());
 
-        return new findUnitWithoutMeasureValue(leaves, paths);
+        return new HierarchyValue(leaves, paths);
     }
 
     @Override
-    public findValueWithoutMeasureValue getfindValueWithoutMeasure() {
+    public HierarchyValue getfindValueWithoutMeasure() {
 
         List<List<String>> paths = catalogValidationQuery.findValueWithoutMeasure();
 
@@ -154,11 +154,11 @@ public class CatalogVerificationServiceImpl implements CatalogVerificationServic
                 .stream(nodes.spliterator(), false)
                 .collect(Collectors.toList());
 
-        return new findValueWithoutMeasureValue(leaves, paths);
+        return new HierarchyValue(leaves, paths);
     }
 
     @Override
-    public findMissingTagsValue getfindMissingTags(CatalogRecordSpecification rootNodeSpecification) {
+    public HierarchyValue getfindMissingTags(CatalogRecordSpecification rootNodeSpecification) {
         List<List<String>> paths = catalogValidationQuery.findMissingTags();
 
         final Set<String> nodeIds = new HashSet<>();
@@ -169,11 +169,11 @@ public class CatalogVerificationServiceImpl implements CatalogVerificationServic
                 .stream(nodes.spliterator(), false)
                 .collect(Collectors.toList());
 
-        return new findMissingTagsValue(leaves, paths);
+        return new HierarchyValue(leaves, paths);
     }
 
     @Override
-    public findMissingEnglishNameValue getfindMissingEnglishName(CatalogRecordSpecification rootNodeSpecification) {
+    public HierarchyValue getfindMissingEnglishName(CatalogRecordSpecification rootNodeSpecification) {
 
         List<List<String>> paths = catalogValidationQuery.findMissingEnglishName();
 
@@ -185,11 +185,11 @@ public class CatalogVerificationServiceImpl implements CatalogVerificationServic
                 .stream(nodes.spliterator(), false)
                 .collect(Collectors.toList());
 
-        return new findMissingEnglishNameValue(leaves, paths);
+        return new HierarchyValue(leaves, paths);
     }
 
     @Override
-    public findMultipleIDsValue getfindMultipleIDs(CatalogRecordSpecification rootNodeSpecification) {
+    public HierarchyValue getfindMultipleIDs(CatalogRecordSpecification rootNodeSpecification) {
 
         List<List<String>> paths = catalogValidationQuery.findMultipleIDs();
 
@@ -201,11 +201,11 @@ public class CatalogVerificationServiceImpl implements CatalogVerificationServic
                 .stream(nodes.spliterator(), false)
                 .collect(Collectors.toList());
 
-        return new findMultipleIDsValue(leaves, paths);
+        return new HierarchyValue(leaves, paths);
     }
 
     @Override
-    public findMissingDescriptionValue getfindMissingDescription(CatalogRecordSpecification rootNodeSpecification) {
+    public HierarchyValue getfindMissingDescription(CatalogRecordSpecification rootNodeSpecification) {
 
         List<List<String>> paths = catalogValidationQuery.findMissingDescription();
 
@@ -217,11 +217,11 @@ public class CatalogVerificationServiceImpl implements CatalogVerificationServic
                 .stream(nodes.spliterator(), false)
                 .collect(Collectors.toList());
 
-        return new findMissingDescriptionValue(leaves, paths);
+        return new HierarchyValue(leaves, paths);
     }
 
     @Override
-    public findMissingEnglishDescriptionValue getfindMissingEnglishDescription(CatalogRecordSpecification rootNodeSpecification) {
+    public HierarchyValue getfindMissingEnglishDescription(CatalogRecordSpecification rootNodeSpecification) {
 
         List<List<String>> paths = catalogValidationQuery.findMissingEnglishDescription();
 
@@ -233,11 +233,11 @@ public class CatalogVerificationServiceImpl implements CatalogVerificationServic
                 .stream(nodes.spliterator(), false)
                 .collect(Collectors.toList());
 
-        return new findMissingEnglishDescriptionValue(leaves, paths);
+        return new HierarchyValue(leaves, paths);
     }
 
     @Override
-    public findMultipleNamesValue getfindMultipleNames(CatalogRecordSpecification rootNodeSpecification) {
+    public HierarchyValue getfindMultipleNames(CatalogRecordSpecification rootNodeSpecification) {
 
         List<List<String>> paths = catalogValidationQuery.findMultipleNames();
 
@@ -249,11 +249,11 @@ public class CatalogVerificationServiceImpl implements CatalogVerificationServic
                 .stream(nodes.spliterator(), false)
                 .collect(Collectors.toList());
 
-        return new findMultipleNamesValue(leaves, paths);
+        return new HierarchyValue(leaves, paths);
     }
 
     @Override
-    public findMultipleNamesAcrossClassesValue getfindMultipleNamesAcrossClasses(CatalogRecordSpecification rootNodeSpecification) {
+    public HierarchyValue getfindMultipleNamesAcrossClasses(CatalogRecordSpecification rootNodeSpecification) {
 
         List<List<String>> paths = catalogValidationQuery.findMultipleNamesAcrossClasses();
 
@@ -265,6 +265,6 @@ public class CatalogVerificationServiceImpl implements CatalogVerificationServic
                 .stream(nodes.spliterator(), false)
                 .collect(Collectors.toList());
 
-        return new findMultipleNamesAcrossClassesValue(leaves, paths);
+        return new HierarchyValue(leaves, paths);
     }
 }

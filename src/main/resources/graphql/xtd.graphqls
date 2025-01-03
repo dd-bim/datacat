@@ -44,77 +44,7 @@ type HierarchyPayload {
   paths: [[ID!]!]!
 }
 
-type findPropGroupWithoutPropPayload {
-  nodes: [XtdRoot!]!
-  paths: [[ID!]!]!
-}
-
-type findPropWithoutSubjectOrPropGroupPayload {
-  nodes: [XtdRoot!]!
-  paths: [[ID!]!]!
-}
-
-type findModelWithoutGroupPayload {
-  nodes: [XtdRoot!]!
-  paths: [[ID!]!]!
-}
-
-type findGroupWithoutSubjectPayload {
-  nodes: [XtdRoot!]!
-  paths: [[ID!]!]!
-}
-
-type findSubjectWithoutPropPayload {
-  nodes: [XtdRoot!]!
-  paths: [[ID!]!]!
-}
-
-type findMeasureWithoutPropPayload {
-  nodes: [XtdRoot!]!
-  paths: [[ID!]!]!
-}
-
-type findUnitWithoutMeasurePayload {
-  nodes: [XtdRoot!]!
-  paths: [[ID!]!]!
-}
-
-type findValueWithoutMeasurePayload {
-  nodes: [XtdRoot!]!
-  paths: [[ID!]!]!
-}
-
-type findMissingTagsPayload {
-  nodes: [XtdRoot!]!
-  paths: [[ID!]!]!
-}
-
-type findMissingEnglishNamePayload {
-  nodes: [XtdRoot!]!
-  paths: [[ID!]!]!
-}
-
-type findMultipleIDsPayload {
-  nodes: [XtdRoot!]!
-  paths: [[ID!]!]!
-}
-
-type findMissingDescriptionPayload {
-  nodes: [XtdRoot!]!
-  paths: [[ID!]!]!
-}
-
-type findMissingEnglishDescriptionPayload {
-  nodes: [XtdRoot!]!
-  paths: [[ID!]!]!
-}
-
-type findMultipleNamesPayload {
-  nodes: [XtdRoot!]!
-  paths: [[ID!]!]!
-}
-
-type findMultipleNamesAcrossClassesPayload {
+type VerificationPayload {
   nodes: [XtdRoot!]!
   paths: [[ID!]!]!
 }
@@ -194,60 +124,12 @@ input HierarchyFilterInput {
   rootNodeFilter: HierarchyRootNodeFilterInput!
 }
 
-input findMissingTagsNodeTypeFilterInput {
+input VerificationNodeTypeFilterInput {
   catalogEntryTypeIn: [CatalogRecordType!]
 }
 
-input findMissingTagsFilterInput {
-  nodeTypeFilter: findMissingTagsNodeTypeFilterInput!
-}
-
-input findMultipleIDsNodeTypeFilterInput {
-  catalogEntryTypeIn: [CatalogRecordType!]
-}
-
-input findMultipleIDsFilterInput {
-  nodeTypeFilter: findMultipleIDsNodeTypeFilterInput!
-}
-
-input findMissingDescriptionNodeTypeFilterInput {
-  catalogEntryTypeIn: [CatalogRecordType!]
-}
-
-input findMissingDescriptionFilterInput {
-  nodeTypeFilter: findMissingDescriptionNodeTypeFilterInput!
-}
-
-input findMissingEnglishNameNodeTypeFilterInput {
-  catalogEntryTypeIn: [CatalogRecordType!]
-}
-
-input findMissingEnglishNameFilterInput {
-  nodeTypeFilter: findMissingEnglishNameNodeTypeFilterInput!
-}
-
-input findMissingEnglishDescriptionNodeTypeFilterInput {
-  catalogEntryTypeIn: [CatalogRecordType!]
-}
-
-input findMissingEnglishDescriptionFilterInput {
-  nodeTypeFilter: findMissingEnglishDescriptionNodeTypeFilterInput!
-}
-
-input findMultipleNamesNodeTypeFilterInput {
-  catalogEntryTypeIn: [CatalogRecordType!]
-}
-
-input findMultipleNamesFilterInput {
-  nodeTypeFilter: findMultipleNamesNodeTypeFilterInput!
-}
-
-input findMultipleNamesAcrossClassesNodeTypeFilterInput {
-  catalogEntryTypeIn: [CatalogRecordType!]
-}
-
-input findMultipleNamesAcrossClassesFilterInput {
-  nodeTypeFilter: findMultipleNamesAcrossClassesNodeTypeFilterInput!
+input VerificationFilterInput {
+  nodeTypeFilter: VerificationNodeTypeFilterInput!
 }
 
 input FilterInput {
@@ -1054,45 +936,45 @@ type Query {
 
   hierarchy(input: HierarchyFilterInput!): HierarchyPayload!
 
-  findPropGroupWithoutProp: findPropGroupWithoutPropPayload!
+  findPropGroupWithoutProp: VerificationPayload!
 
-  findPropWithoutSubjectOrPropGroup: findPropWithoutSubjectOrPropGroupPayload!
+  findPropWithoutSubjectOrPropGroup: VerificationPayload!
 
-  findModelWithoutGroup: findModelWithoutGroupPayload!
+  findModelWithoutGroup: VerificationPayload!
 
-  findGroupWithoutSubject: findGroupWithoutSubjectPayload!
+  findGroupWithoutSubject: VerificationPayload!
 
-  findSubjectWithoutProp: findSubjectWithoutPropPayload!
+  findSubjectWithoutProp: VerificationPayload!
 
-  findMeasureWithoutProp: findMeasureWithoutPropPayload!
+  findMeasureWithoutProp: VerificationPayload!
 
-  findUnitWithoutMeasure: findUnitWithoutMeasurePayload!
+  findUnitWithoutMeasure: VerificationPayload!
 
-  findValueWithoutMeasure: findValueWithoutMeasurePayload!
+  findValueWithoutMeasure: VerificationPayload!
 
-  findMissingTags(input: findMissingTagsFilterInput!): findMissingTagsPayload!
+  findMissingTags(input: VerificationFilterInput!): VerificationPayload!
 
   findMissingEnglishName(
-    input: findMissingEnglishNameFilterInput!
-  ): findMissingEnglishNamePayload!
+    input: VerificationFilterInput!
+  ): VerificationPayload!
 
-  findMultipleIDs(input: findMultipleIDsFilterInput!): findMultipleIDsPayload!
+  findMultipleIDs(input: VerificationFilterInput!): VerificationPayload!
 
   findMissingDescription(
-    input: findMissingDescriptionFilterInput!
-  ): findMissingDescriptionPayload!
+    input: VerificationFilterInput!
+  ): VerificationPayload!
 
   findMissingEnglishDescription(
-    input: findMissingEnglishDescriptionFilterInput!
-  ): findMissingEnglishDescriptionPayload!
+    input: VerificationFilterInput!
+  ): VerificationPayload!
 
   findMultipleNames(
-    input: findMultipleNamesFilterInput!
-  ): findMultipleNamesPayload!
+    input: VerificationFilterInput!
+  ): VerificationPayload!
 
   findMultipleNamesAcrossClasses(
-    input: findMultipleNamesAcrossClassesFilterInput!
-  ): findMultipleNamesAcrossClassesPayload!
+    input: VerificationFilterInput!
+  ): VerificationPayload!
 
   findExportCatalogRecords: findExportCatalogRecordsPayload!
 
