@@ -37,8 +37,6 @@ public class UserSpecification extends QuerySpecification {
         public Builder query(String query) {
             final Optional<String> regex = sanitizeQueryString(query);
             if (regex.isPresent()) {
-                // final Filter filter = new Filter("username", ComparisonOperator.LIKE, regex.get());
-                // filter.setBooleanOperator(BooleanOperator.AND);
                 final String filter = "n.username =~ '.*" + regex.get() + ".*'";
                 this.filters.add(filter);
             }
@@ -46,24 +44,18 @@ public class UserSpecification extends QuerySpecification {
         }
 
         public Builder expired(final boolean isExpired) {
-            // final Filter filter = new Filter("expired", ComparisonOperator.EQUALS, isExpired);
-            // filter.setBooleanOperator(BooleanOperator.AND);
             final String filter = "n.expired = " + isExpired;
             filters.add(filter);
             return this;
         }
 
         public Builder locked(final boolean isLocked) {
-            // final Filter filter = new Filter("locked", ComparisonOperator.EQUALS, isLocked);
-            // filter.setBooleanOperator(BooleanOperator.AND);
             final String filter = "n.locked = " + isLocked;
             filters.add(filter);
             return this;
         }
 
         public Builder credentialsExpired(final boolean isCredentialsExpired) {
-            // final Filter filter = new Filter("credentialsExpired", ComparisonOperator.EQUALS, isCredentialsExpired);
-            // filter.setBooleanOperator(BooleanOperator.AND);
             final String filter = "n.credentialsExpired = " + isCredentialsExpired;
             filters.add(filter);
             return this;
