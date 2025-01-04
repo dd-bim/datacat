@@ -1010,7 +1010,7 @@ type Query {
   ): XtdRelationshipToSubjectConnection!
 
   getRelationshipToProperty(id: ID!): XtdRelationshipToProperty
-  findRelationshipToProperty(
+  findRelationshipToProperties(
     input: FilterInput
   ): XtdRelationshipToPropertyConnection!
 

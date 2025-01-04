@@ -46,7 +46,7 @@ public class ValueListController {
         return Connection.of(page);
     }
 
-    @SchemaMapping(typeName = "XtdValueList", field = "orderedValues")
+    @SchemaMapping(typeName = "XtdValueList", field = "values")
     public List<XtdOrderedValue> getOrderedValues(XtdValueList valueList) {
         return valueListRecordService.getOrderedValues(valueList);
     }

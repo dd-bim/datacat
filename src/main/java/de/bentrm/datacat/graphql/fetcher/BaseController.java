@@ -29,8 +29,8 @@ public class BaseController {
         return catalogService.getEntryById(id);
     }
 
-    @QueryMapping
-    public Optional<XtdObject> objectById(@Argument String id) {
-        return catalogService.getObject(id);
-    }
+    // @QueryMapping
+    // public Optional<XtdObject> objectById(@Argument String id) {
+    //     return catalogService.getObject(id);
+    // }
 }

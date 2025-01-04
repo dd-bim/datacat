@@ -31,7 +31,7 @@ public class IntervalController {
     }
 
     @QueryMapping
-    public Connection<XtdInterval> getIntervals(@Argument FilterInput input) {
+    public Connection<XtdInterval> findIntervals(@Argument FilterInput input) {
         if (input == null)
             input = new FilterInput();
         final CatalogRecordSpecification specification = specificationMapper.toCatalogRecordSpecification(input);

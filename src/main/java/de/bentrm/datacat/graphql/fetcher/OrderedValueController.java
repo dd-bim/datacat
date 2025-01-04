@@ -5,6 +5,7 @@ import de.bentrm.datacat.catalog.domain.XtdValue;
 import de.bentrm.datacat.catalog.domain.XtdValueList;
 import de.bentrm.datacat.catalog.service.OrderedValueRecordService;
 import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
+import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.dto.FilterInput;
 import de.bentrm.datacat.graphql.dto.SpecificationMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -35,12 +36,12 @@ public class OrderedValueController {
     }
 
     @QueryMapping
-    public List<XtdOrderedValue> findOrderedValues(@Argument FilterInput input) {
+    public Connection<XtdOrderedValue> findOrderedValues(@Argument FilterInput input) {
         if (input == null)
             input = new FilterInput();
         final CatalogRecordSpecification specification = specificationMapper.toCatalogRecordSpecification(input);
         final Page<XtdOrderedValue> page = orderedValueRecordService.findAll(specification);
-        return page.getContent();
+        return Connection.of(page);
     }
 
     @SchemaMapping(typeName = "XtdOrderedValue", field = "orderedValue")
