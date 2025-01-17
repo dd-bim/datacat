@@ -5,8 +5,7 @@ import de.bentrm.datacat.catalog.domain.XtdCountry;
 import de.bentrm.datacat.catalog.domain.XtdExternalDocument;
 import de.bentrm.datacat.catalog.domain.XtdLanguage;
 import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
-
-import jakarta.validation.constraints.NotBlank;
+import de.bentrm.datacat.graphql.input.AddDescriptionInput;
 import jakarta.validation.constraints.NotNull;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,6 +30,6 @@ public interface ConceptRecordService extends SimpleRecordService<XtdConcept> {
     List<XtdMultiLanguageText> getDescriptions(@NotNull XtdConcept concept);
 
     @PreAuthorize("hasRole('USER')")
-    @NotNull XtdConcept addDescription(@NotBlank String id, String descriptionId, @NotBlank String languageTag, @NotBlank String value);
+    @NotNull XtdConcept addDescription(@NotNull AddDescriptionInput input);
 
 }

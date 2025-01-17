@@ -22,6 +22,8 @@ import de.bentrm.datacat.catalog.domain.XtdLanguage;
 import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
 import de.bentrm.datacat.catalog.domain.XtdText;
 import de.bentrm.datacat.catalog.repository.ConceptRepository;
+import de.bentrm.datacat.catalog.repository.MultiLanguageTextRepository;
+import de.bentrm.datacat.catalog.repository.TextRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.ConceptRecordService;
 import de.bentrm.datacat.catalog.service.CountryRecordService;
@@ -29,6 +31,10 @@ import de.bentrm.datacat.catalog.service.ExternalDocumentRecordService;
 import de.bentrm.datacat.catalog.service.LanguageRecordService;
 import de.bentrm.datacat.catalog.service.MultiLanguageTextRecordService;
 import de.bentrm.datacat.catalog.service.ObjectRecordService;
+import de.bentrm.datacat.catalog.service.dto.MultiLanguageTextDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.UpdateConceptDescriptionsDtoProjection;
+import de.bentrm.datacat.graphql.input.AddDescriptionInput;
+import de.bentrm.datacat.graphql.input.TranslationInput;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -61,6 +67,15 @@ public class ConceptRecordServiceImpl
     @Autowired
     @Lazy
     private ObjectRecordService objectRecordService;
+
+    @Autowired
+    @Lazy
+    private TextRepository textRepository;
+
+    @Autowired
+    @Lazy
+    private MultiLanguageTextRepository multiLanguageTextRepository;
+
 
     public ConceptRecordServiceImpl(Neo4jTemplate neo4jTemplate,
             ConceptRepository repository,
@@ -245,24 +260,40 @@ public class ConceptRecordServiceImpl
 
     @Transactional
     @Override
-    public XtdConcept addDescription(String id, String descriptionId, String languageTag, String value) {
-        final XtdConcept item = getRepository().findByIdWithDirectRelations(id).orElseThrow();
-        final XtdLanguage language = languageRecordService.findByCode(languageTag).orElseThrow();
+    public XtdConcept addDescription(AddDescriptionInput input) {
+        final XtdConcept item = getRepository().findByIdWithDirectRelations(input.getCatalogEntryId()).orElseThrow();
+        TranslationInput translation = input.getDescription();
 
-        final XtdText text = new XtdText();
-        text.setText(value);
-        text.setId(descriptionId);
-        text.setLanguage(language);
+        XtdText text = createText(translation);       
 
         XtdMultiLanguageText multiLanguage = item.getDescriptions().stream().findFirst().orElse(null);
         if (multiLanguage == null) {
             multiLanguage = new XtdMultiLanguageText();
+            multiLanguage = multiLanguageTextRepository.save(multiLanguage);
+            item.getDescriptions().add(multiLanguage);
+            neo4jTemplate.saveAs(item, UpdateConceptDescriptionsDtoProjection.class);
+        } else {
+            multiLanguage = multiLanguageTextRecordService.findByIdWithDirectRelations(multiLanguage.getId())
+                    .orElse(null);
         }
         multiLanguage.getTexts().add(text);
 
-        item.getDescriptions().clear();
-        item.getDescriptions().add(multiLanguage);
+        neo4jTemplate.saveAs(multiLanguage, MultiLanguageTextDtoProjection.class);
 
-        return getRepository().save(item);
+        return item;
+    }
+
+    @Transactional
+    public XtdText createText(TranslationInput translation) {
+
+        final XtdLanguage language = languageRecordService.findByCode(translation.getLanguageTag()).orElseThrow();
+
+        XtdText text = new XtdText();
+        text.setText(translation.getValue());
+        text.setId(translation.getId());
+        text.setLanguage(language);
+
+        text = textRepository.save(text);
+        return text;
     }
 }

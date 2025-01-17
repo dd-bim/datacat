@@ -76,20 +76,9 @@ public class ContentController {
         return payloadMapper.toDeleteNamePayload(item);
     }
 
-    // protected DataFetcher<AddDescriptionPayload> addDescription() {
-    //     return environment -> {
-    //         final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
-    //         final AddDescriptionInput input = OBJECT_MAPPER.convertValue(argument, AddDescriptionInput.class);
-    //         final TranslationInput name = input.getDescription();
-    //         final XtdConcept item = conceptRecordService.addDescription(input.getCatalogEntryId(), name.getId(), name.getLanguageTag(), name.getValue());
-    //         return payloadMapper.toAddDescriptionPayload(item);
-    //     };
-    // }
-
     @MutationMapping
     protected AddDescriptionPayload addDescription(@Argument AddDescriptionInput input) {
-        final TranslationInput name = input.getDescription();
-        final XtdConcept item = conceptRecordService.addDescription(input.getCatalogEntryId(), name.getId(), name.getLanguageTag(), name.getValue());
+        final XtdConcept item = conceptRecordService.addDescription(input);
         return payloadMapper.toAddDescriptionPayload(item);
     }
 
