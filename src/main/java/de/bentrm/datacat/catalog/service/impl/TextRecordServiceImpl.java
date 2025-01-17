@@ -8,6 +8,7 @@ import de.bentrm.datacat.catalog.repository.LanguageRepository;
 import de.bentrm.datacat.catalog.repository.TextRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.TextRecordService;
+import de.bentrm.datacat.catalog.service.dto.TextDtoProjection;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
@@ -93,7 +94,8 @@ public class TextRecordServiceImpl
     public XtdText updateText(String textId, String value) {
         final XtdText item = getRepository().findById(textId).orElseThrow();
         item.setText(value.trim());
-        return getRepository().save(item);
+        neo4jTemplate.saveAs(item, TextDtoProjection.class);
+        return item;
     }
 
     @Transactional

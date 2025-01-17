@@ -46,29 +46,11 @@ public class ContentController {
         return payloadMapper.toAddNamePayload(item);
     }
 
-    // protected DataFetcher<UpdateNamePayload> updateName() {
-    //     return environment -> {
-    //         final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
-    //         final UpdateNameInput input = OBJECT_MAPPER.convertValue(argument, UpdateNameInput.class);
-    //         final XtdText item = textRecordService.updateText(input.getNameId(), input.getValue());
-    //         return payloadMapper.toUpdateNamePayload(item);
-    //     };
-    // }
-
     @MutationMapping
     protected UpdateNamePayload updateName(@Argument UpdateNameInput input) {
         final XtdText item = textRecordService.updateText(input.getNameId(), input.getValue());
         return payloadMapper.toUpdateNamePayload(item);
     }
-
-    // protected DataFetcher<DeleteNamePayload> deleteName() {
-    //     return environment -> {
-    //         final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
-    //         final DeleteNameInput input = OBJECT_MAPPER.convertValue(argument, DeleteNameInput.class);
-    //         final XtdText item = textRecordService.deleteText(input.getNameId());
-    //         return payloadMapper.toDeleteNamePayload(item);
-    //     };
-    // }
 
     @MutationMapping
     protected DeleteNamePayload deleteName(@Argument DeleteNameInput input) {
@@ -82,29 +64,11 @@ public class ContentController {
         return payloadMapper.toAddDescriptionPayload(item);
     }
 
-    // protected DataFetcher<UpdateDescriptionPayload> updateDescription() {
-    //     return environment -> {
-    //         final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
-    //         final UpdateDescriptionInput input = OBJECT_MAPPER.convertValue(argument, UpdateDescriptionInput.class);
-    //         final XtdText item = textRecordService.updateText(input.getDescriptionId(), input.getValue());
-    //         return payloadMapper.toUpdateDescriptionPayload(item);
-    //     };
-    // }
-
     @MutationMapping
     protected UpdateDescriptionPayload updateDescription(@Argument UpdateDescriptionInput input) {
         final XtdText item = textRecordService.updateText(input.getDescriptionId(), input.getValue());
         return payloadMapper.toUpdateDescriptionPayload(item);
     }
-
-    // protected DataFetcher<DeleteDescriptionPayload> deleteDescription() {
-    //     return environment -> {
-    //         final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
-    //         final DeleteDescriptionInput input = OBJECT_MAPPER.convertValue(argument, DeleteDescriptionInput.class);
-    //         final XtdText item = textRecordService.deleteText(input.getDescriptionId());
-    //         return payloadMapper.toDeleteDescriptionPayload(item);
-    //     };
-    // }
 
     @MutationMapping
     protected DeleteDescriptionPayload deleteDescription(@Argument DeleteDescriptionInput input) {
@@ -118,29 +82,11 @@ public class ContentController {
         return payloadMapper.toAddCommentPayload(item);
     }
 
-    // protected DataFetcher<UpdateCommentPayload> updateComment() {
-    //     return environment -> {
-    //         final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
-    //         final UpdateCommentInput input = OBJECT_MAPPER.convertValue(argument, UpdateCommentInput.class);
-    //         final XtdText item = textRecordService.updateText(input.getCommentId(), input.getValue());
-    //         return payloadMapper.toUpdateCommentPayload(item);
-    //     };
-    // }
-
     @MutationMapping
     protected UpdateCommentPayload updateComment(@Argument UpdateCommentInput input) {
         final XtdText item = textRecordService.updateText(input.getCommentId(), input.getValue());
         return payloadMapper.toUpdateCommentPayload(item);
     }
-
-    // protected DataFetcher<DeleteCommentPayload> deleteComment() {
-    //     return environment -> {
-    //         final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
-    //         final DeleteCommentInput input = OBJECT_MAPPER.convertValue(argument, DeleteCommentInput.class);
-    //         final XtdText item = textRecordService.deleteText(input.getCommentId());
-    //         return payloadMapper.toDeleteCommentPayload(item);
-    //     };
-    // }
 
     @MutationMapping
     protected DeleteCommentPayload deleteComment(@Argument DeleteCommentInput input) {
