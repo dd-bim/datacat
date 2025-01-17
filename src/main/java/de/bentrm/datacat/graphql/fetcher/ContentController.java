@@ -94,29 +94,11 @@ public class ContentController {
         return payloadMapper.toDeleteCommentPayload(item);
     }
 
-    // private DataFetcher<CreateTagPayload> createTag() {
-    //     return environment -> {
-    //         final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
-    //         final CreateTagInput input = OBJECT_MAPPER.convertValue(argument, CreateTagInput.class);
-    //         final Tag tag = catalogService.createTag(input.getTagId(), input.getName());
-    //         return new CreateTagPayload(tag);
-    //     };
-    // }
-
     @MutationMapping
     protected CreateTagPayload createTag(@Argument CreateTagInput input) {
         final Tag tag = catalogService.createTag(input.getTagId(), input.getName());
         return new CreateTagPayload(tag);
     }
-
-    // private DataFetcher<UpdateTagPayload> updateTag() {
-    //     return environment -> {
-    //         final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
-    //         final UpdateTagInput input = OBJECT_MAPPER.convertValue(argument, UpdateTagInput.class);
-    //         final Tag tag = catalogService.updateTag(input.getTagId(), input.getName());
-    //         return new UpdateTagPayload(tag);
-    //     };
-    // }
 
     @MutationMapping
     protected UpdateTagPayload updateTag(@Argument UpdateTagInput input) {
@@ -124,30 +106,11 @@ public class ContentController {
         return new UpdateTagPayload(tag);
     }
 
-    // private DataFetcher<DeleteTagPayload> deleteTag() {
-    //     return environment -> {
-    //         final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
-    //         final DeleteTagInput input = OBJECT_MAPPER.convertValue(argument, DeleteTagInput.class);
-    //         final Tag tag = catalogService.deleteTag(input.getTagId());
-    //         return new DeleteTagPayload(tag);
-    //     };
-    // }
-
     @MutationMapping
     protected DeleteTagPayload deleteTag(@Argument DeleteTagInput input) {
         final Tag tag = catalogService.deleteTag(input.getTagId());
         return new DeleteTagPayload(tag);
     }
-
-    // private DataFetcher<AddTagPayload> addTag() {
-    //     return environment -> {
-    //         final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
-    //         final AddTagInput input = OBJECT_MAPPER.convertValue(argument, AddTagInput.class);
-    //         final CatalogRecord catalogRecord = catalogService.addTag(input.getCatalogEntryId(), input.getTagId());
-    //         final Tag tag = tagService.findById(input.getTagId()).orElseThrow();
-    //         return new AddTagPayload(catalogRecord, tag);
-    //     };
-    // }
 
     @MutationMapping
     protected AddTagPayload addTag(@Argument AddTagInput input) {
@@ -155,16 +118,6 @@ public class ContentController {
         final Tag tag = tagService.findById(input.getTagId()).orElseThrow();
         return new AddTagPayload(catalogRecord, tag);
     }
-
-    // private DataFetcher<RemoveTagPayload> removeTag() {
-    //     return environment -> {
-    //         final Map<String, Object> argument = environment.getArgument(INPUT_ARGUMENT);
-    //         final RemoveTagInput input = OBJECT_MAPPER.convertValue(argument, RemoveTagInput.class);
-    //         final CatalogRecord catalogRecord = catalogService.removeTag(input.getCatalogEntryId(), input.getTagId());
-    //         final Tag tag = tagService.findById(input.getTagId()).orElseThrow();
-    //         return new RemoveTagPayload(catalogRecord, tag);
-    //     };
-    // }
 
     @MutationMapping
     protected RemoveTagPayload removeTag(@Argument RemoveTagInput input) {

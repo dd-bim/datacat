@@ -4,6 +4,8 @@ import de.bentrm.datacat.base.specification.QuerySpecification;
 import de.bentrm.datacat.catalog.domain.*;
 import de.bentrm.datacat.catalog.repository.*;
 import de.bentrm.datacat.catalog.service.CatalogService;
+import de.bentrm.datacat.catalog.service.dto.CatalogRecordDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.TagDtoProjection;
 import de.bentrm.datacat.catalog.service.value.HierarchyValue;
 import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
 import de.bentrm.datacat.graphql.dto.CatalogRecordStatistics;
@@ -76,7 +78,8 @@ public class CatalogServiceImpl implements CatalogService {
     @Override
     public @NotNull Tag createTag(String id, String name) {
         final Tag tag = new Tag();
-        if (id != null) tag.setId(id);
+        if (id != null)
+            tag.setId(id);
         tag.setName(name);
         return tagRepository.save(tag);
     }
@@ -86,15 +89,16 @@ public class CatalogServiceImpl implements CatalogService {
     public @NotNull Tag updateTag(String id, String name) {
         final Tag tag = tagRepository.findByIdWithDirectRelations(id).orElseThrow();
         tag.setName(name);
-        return tagRepository.save(tag);
+        neo4jTemplate.saveAs(tag, TagDtoProjection.class);
+        return tag;
     }
 
-    @NotNull
+    @Transactional
     @Override
     public @NotNull Tag deleteTag(String id) {
         Assert.notNull(id, "id may not be null.");
-        final Tag tag = tagRepository.findByIdWithDirectRelations(id).orElseThrow();
-        tagRepository.delete(tag);
+        final Tag tag = tagRepository.findById(id).orElseThrow();
+        tagRepository.deleteById(id);
         return tag;
     }
 
@@ -104,7 +108,8 @@ public class CatalogServiceImpl implements CatalogService {
         CatalogRecord item = catalogRecordRepository.findByIdWithDirectRelations(entryId).orElseThrow();
         final Tag tag = tagRepository.findByIdWithDirectRelations(tagId).orElseThrow();
         item.addTag(tag);
-        return catalogRecordRepository.save(item);
+        neo4jTemplate.saveAs(item, CatalogRecordDtoProjection.class);
+        return item;
     }
 
     @Transactional
@@ -113,7 +118,8 @@ public class CatalogServiceImpl implements CatalogService {
         final CatalogRecord item = catalogRecordRepository.findByIdWithDirectRelations(entryId).orElseThrow();
         final Tag tag = tagRepository.findByIdWithDirectRelations(tagId).orElseThrow();
         item.removeTag(tag);
-        return catalogRecordRepository.save(item);
+        neo4jTemplate.saveAs(item, CatalogRecordDtoProjection.class);
+        return item;
     }
 
     @Override
@@ -188,7 +194,7 @@ public class CatalogServiceImpl implements CatalogService {
     public Optional<AbstractRelationship> getRelationship(String id) {
         return relationshipRepository.findByIdWithDirectRelations(id);
     }
-    
+
     @Override
     public Page<CatalogRecord> findAllCatalogRecords(CatalogRecordSpecification specification) {
         Collection<CatalogRecord> catalogRecords;
@@ -204,7 +210,8 @@ public class CatalogServiceImpl implements CatalogService {
                 final Sort sort = pageable.getSort();
                 final Sort.Direction direction = sort.get().findFirst().map(Sort.Order::getDirection).get();
                 final String[] properties = sort.get().map(Sort.Order::getProperty).toArray(String[]::new);
-                catalogRecords = neo4jTemplate.findAll(getQuery(specification, pageable, direction, properties) , CatalogRecord.class);
+                catalogRecords = neo4jTemplate.findAll(getQuery(specification, pageable, direction, properties),
+                        CatalogRecord.class);
             }
         } else {
             pageable = PageRequest.of(0, (int) Math.max(count, 10));
@@ -213,7 +220,7 @@ public class CatalogServiceImpl implements CatalogService {
 
         return PageableExecutionUtils.getPage(List.copyOf(catalogRecords), pageable, () -> count);
     }
-    
+
     @Override
     public @NotNull long countCatalogRecords(@NotNull CatalogRecordSpecification specification) {
         String query;
@@ -237,9 +244,7 @@ public class CatalogServiceImpl implements CatalogService {
         paths.forEach(nodeIds::addAll);
 
         final Iterable<XtdRoot> nodes = rootRepository.findAllEntitiesById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
+        final List<XtdRoot> leaves = StreamSupport.stream(nodes.spliterator(), false).collect(Collectors.toList());
 
         return new HierarchyValue(leaves, paths);
     }
@@ -256,16 +261,16 @@ public class CatalogServiceImpl implements CatalogService {
             List<String> prefixedProperties = Arrays.stream(properties).map(property -> "n." + property)
                     .collect(Collectors.toList());
             sort = " ORDER BY " + String.join(", ", prefixedProperties) + " " + direction.name();
-        } 
-log.info(specification.getFilters().toString());
+        }
+
         if (specification.getFilters().isEmpty()) {
             query = "MATCH (n:XtdObject)" + sort + " RETURN n";
         } else {
             String whereClause = "WHERE " + String.join(" AND ", specification.getFilters());
-            query = "MATCH (n:XtdObject) " + whereClause + sort +" RETURN n";
+            query = "MATCH (n:XtdObject) " + whereClause + sort + " RETURN n";
         }
         query = query + " SKIP " + pageable.getOffset() + " LIMIT " + pageable.getPageSize();
-        log.info("Query: {}", query);
+
         return query;
     }
 }
