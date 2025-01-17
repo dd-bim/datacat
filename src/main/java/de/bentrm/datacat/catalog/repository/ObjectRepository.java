@@ -38,4 +38,5 @@ public interface ObjectRepository extends EntityRepository<XtdObject> {
                         MATCH (n:XtdObject {id: $objectId})-[:COMMENTS]->(p:XtdMultiLanguageText)
                         RETURN p.id""")
         List<String> findCommentsAssignedToObject(String objectId);
+
 }

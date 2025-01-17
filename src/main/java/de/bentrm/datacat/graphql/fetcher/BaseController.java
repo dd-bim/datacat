@@ -1,7 +1,6 @@
 package de.bentrm.datacat.graphql.fetcher;
 
 import de.bentrm.datacat.catalog.domain.CatalogRecord;
-import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.service.CatalogService;
 import de.bentrm.datacat.graphql.dto.CatalogStatistics;
 import lombok.extern.slf4j.Slf4j;

@@ -13,7 +13,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.0</version>
+        <version>3.4.1</version>
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
@@ -194,6 +194,23 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- <plugin>
+                <groupId>org.sonatype.ossindex.maven</groupId>
+                <artifactId>ossindex-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>audit-dependencies</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>audit</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <reportFile>${project.build.directory}/audit-report.json</reportFile>
+                </configuration>
+            </plugin> -->
         </plugins>
     </build>
 </project>

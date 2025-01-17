@@ -8,12 +8,21 @@ import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.domain.XtdText;
 import de.bentrm.datacat.catalog.domain.Enums.XtdStatusOfActivationEnum;
 import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
+import de.bentrm.datacat.catalog.repository.MultiLanguageTextRepository;
 import de.bentrm.datacat.catalog.repository.ObjectRepository;
+import de.bentrm.datacat.catalog.repository.TextRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.DictionaryRecordService;
 import de.bentrm.datacat.catalog.service.LanguageRecordService;
 import de.bentrm.datacat.catalog.service.MultiLanguageTextRecordService;
 import de.bentrm.datacat.catalog.service.ObjectRecordService;
+import de.bentrm.datacat.catalog.service.dto.MultiLanguageTextDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.UpdateObjectCommentsDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.UpdateObjectNamesDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.UpdateObjectPropertiesDtoProjection;
+import de.bentrm.datacat.graphql.input.AddCommentInput;
+import de.bentrm.datacat.graphql.input.AddNameInput;
+import de.bentrm.datacat.graphql.input.TranslationInput;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,22 +45,26 @@ import jakarta.validation.constraints.NotNull;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class ObjectRecordServiceImpl
-        extends AbstractSimpleRecordServiceImpl<XtdObject, ObjectRepository>
+public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<XtdObject, ObjectRepository>
         implements ObjectRecordService {
 
-            @Autowired
-            private DictionaryRecordService dictionaryRecordService;
+    @Autowired
+    private DictionaryRecordService dictionaryRecordService;
 
-            @Autowired
-            private MultiLanguageTextRecordService multiLanguageTextRecordService;
+    @Autowired
+    private MultiLanguageTextRecordService multiLanguageTextRecordService;
 
-            @Autowired
-            private LanguageRecordService languageRecordService;
+    @Autowired
+    private LanguageRecordService languageRecordService;
 
-    public ObjectRecordServiceImpl(Neo4jTemplate neo4jTemplate,
-                                    ObjectRepository repository,
-                                    CatalogCleanupService cleanupService) {
+    @Autowired
+    private TextRepository textRepository;
+
+    @Autowired
+    private MultiLanguageTextRepository multiLanguageTextRepository;
+
+    public ObjectRecordServiceImpl(Neo4jTemplate neo4jTemplate, ObjectRepository repository,
+            CatalogCleanupService cleanupService) {
         super(XtdObject.class, neo4jTemplate, repository, cleanupService);
     }
 
@@ -78,7 +91,8 @@ public class ObjectRecordServiceImpl
         if (deprecationExplanationId == null) {
             return null;
         }
-        final Optional<XtdMultiLanguageText> deprecationExplanation = multiLanguageTextRecordService.findByIdWithDirectRelations(deprecationExplanationId);
+        final Optional<XtdMultiLanguageText> deprecationExplanation = multiLanguageTextRecordService
+                .findByIdWithDirectRelations(deprecationExplanationId);
         return deprecationExplanation;
     }
 
@@ -89,20 +103,17 @@ public class ObjectRecordServiceImpl
         final List<String> replacedObjectIds = getRepository().findAllReplacedObjectIdsAssignedToObject(object.getId());
         final Iterable<XtdObject> replacedObjects = getRepository().findAllEntitiesById(replacedObjectIds);
 
-        return StreamSupport
-                .stream(replacedObjects.spliterator(), false)
-                .collect(Collectors.toList());
+        return StreamSupport.stream(replacedObjects.spliterator(), false).collect(Collectors.toList());
     }
 
     @Override
     public List<XtdObject> getReplacingObjects(XtdObject object) {
         Assert.notNull(object.getId(), "Object must be persistent.");
-        final List<String> replacingObjectIds = getRepository().findAllReplacingObjectIdsAssignedToObject(object.getId());
+        final List<String> replacingObjectIds = getRepository()
+                .findAllReplacingObjectIdsAssignedToObject(object.getId());
         final Iterable<XtdObject> replacingObjects = getRepository().findAllEntitiesById(replacingObjectIds);
 
-        return StreamSupport
-                .stream(replacingObjects.spliterator(), false)
-                .collect(Collectors.toList());
+        return StreamSupport.stream(replacingObjects.spliterator(), false).collect(Collectors.toList());
     }
 
     @Override
@@ -111,9 +122,7 @@ public class ObjectRecordServiceImpl
         final List<String> nameIds = getRepository().findAllNamesAssignedToObject(object.getId());
         final Iterable<XtdMultiLanguageText> names = multiLanguageTextRecordService.findAllEntitiesById(nameIds);
 
-        return StreamSupport
-                .stream(names.spliterator(), false)
-                .collect(Collectors.toList());
+        return StreamSupport.stream(names.spliterator(), false).collect(Collectors.toList());
     }
 
     @Override
@@ -124,99 +133,118 @@ public class ObjectRecordServiceImpl
             return null;
         }
         final Iterable<XtdMultiLanguageText> comments = multiLanguageTextRecordService.findAllEntitiesById(commentsId);
-        
-        return StreamSupport
-                .stream(comments.spliterator(), false)
-                .collect(Collectors.toList());
+
+        return StreamSupport.stream(comments.spliterator(), false).collect(Collectors.toList());
     }
-    
+
     @Transactional
     @Override
     public @NotNull XtdObject setRelatedRecords(@NotBlank String recordId,
-                                                    @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
+            @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
         final XtdObject object = getRepository().findById(recordId).orElseThrow();
 
         switch (relationType) {
-            case Dictionary -> {
-                if (object.getDictionary() != null) {
-                    throw new IllegalArgumentException("Object already has a dictionary assigned.");
-                } else if (relatedRecordIds.size() != 1) {
-                    throw new IllegalArgumentException("Exactly one dictionary must be assigned.");
-                } else {
-                    final XtdDictionary dictionary = dictionaryRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
-                    object.setDictionary(dictionary);
-                }   }
-            case DeprecationExplanation -> {
-                if (object.getDeprecationExplanation() != null) {
-                    throw new IllegalArgumentException("Object already has a deprecation explanation assigned.");
-                } else if (relatedRecordIds.size() != 1) {
-                    throw new IllegalArgumentException("Exactly one deprecation explanation must be assigned.");
-                } else {
-                    final XtdMultiLanguageText deprecationExplanation = multiLanguageTextRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
-                    object.setDeprecationExplanation(deprecationExplanation);
-                }   }
-            case ReplacedObjects -> {
-                final Iterable<XtdObject> replacedObjects = getRepository().findAllEntitiesById(relatedRecordIds);
-                final List<XtdObject> relatedObjects = StreamSupport
-                        .stream(replacedObjects.spliterator(), false)
-                        .collect(Collectors.toList());
+        case Dictionary -> {
+            if (object.getDictionary() != null) {
+                throw new IllegalArgumentException("Object already has a dictionary assigned.");
+            } else if (relatedRecordIds.size() != 1) {
+                throw new IllegalArgumentException("Exactly one dictionary must be assigned.");
+            } else {
+                final XtdDictionary dictionary = dictionaryRecordService
+                        .findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
+                object.setDictionary(dictionary);
+            }
+        }
+        case DeprecationExplanation -> {
+            if (object.getDeprecationExplanation() != null) {
+                throw new IllegalArgumentException("Object already has a deprecation explanation assigned.");
+            } else if (relatedRecordIds.size() != 1) {
+                throw new IllegalArgumentException("Exactly one deprecation explanation must be assigned.");
+            } else {
+                final XtdMultiLanguageText deprecationExplanation = multiLanguageTextRecordService
+                        .findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
+                object.setDeprecationExplanation(deprecationExplanation);
+            }
+        }
+        case ReplacedObjects -> {
+            final Iterable<XtdObject> replacedObjects = getRepository().findAllEntitiesById(relatedRecordIds);
+            final List<XtdObject> relatedObjects = StreamSupport.stream(replacedObjects.spliterator(), false)
+                    .collect(Collectors.toList());
 
-                object.getReplacedObjects().clear();
-                object.getReplacedObjects().addAll(relatedObjects);
-                    }
-            default -> log.error("Unsupported relation type: {}", relationType);
+            object.getReplacedObjects().clear();
+            object.getReplacedObjects().addAll(relatedObjects);
+        }
+        default -> log.error("Unsupported relation type: {}", relationType);
         }
 
         final XtdObject persistentObject = getRepository().save(object);
         log.trace("Updated relationship: {}", persistentObject);
         return persistentObject;
-    } 
-    
-    @Transactional
-    @Override
-    public XtdObject addComment(String id, String commentId, String languageTag, String value) {
-        final XtdObject item = getRepository().findByIdWithDirectRelations(id).orElseThrow();
-        final XtdLanguage language = languageRecordService.findByCode(languageTag).orElseThrow();
-
-        final XtdText text = new XtdText();
-        text.setText(value);
-        text.setId(commentId);
-        text.setLanguage(language);
-
-        XtdMultiLanguageText multiLanguage = item.getComments().stream().findFirst().orElse(null);
-        if (multiLanguage == null) {
-            multiLanguage = new XtdMultiLanguageText();
-        }
-        multiLanguage.getTexts().add(text);
-
-        item.getComments().clear();
-        item.getComments().add(multiLanguage);
-
-        return getRepository().save(item);
     }
 
     @Transactional
     @Override
-    public XtdObject addName(String id, String nameId, String languageTag, String value) {
-        final XtdObject item = getRepository().findByIdWithDirectRelations(id).orElseThrow();
-        final XtdLanguage language = languageRecordService.findByCode(languageTag).orElseThrow();
+    public XtdObject addComment(AddCommentInput input) {
+        final XtdObject item = getRepository().findByIdWithDirectRelations(input.getCatalogEntryId()).orElseThrow();
+        TranslationInput translation = input.getComment();
+        
+        XtdText text = createText(translation);
 
-        final XtdText text = new XtdText();
-        text.setText(value);
-        text.setId(nameId);
-        text.setLanguage(language);
+        XtdMultiLanguageText multiLanguage = item.getComments().stream().findFirst().orElse(null);
+        if (multiLanguage == null) {
+            multiLanguage = new XtdMultiLanguageText();
+            multiLanguage = multiLanguageTextRepository.save(multiLanguage);
+            item.getComments().add(multiLanguage);
+            neo4jTemplate.saveAs(item, UpdateObjectCommentsDtoProjection.class);
+        } else {
+            multiLanguage = multiLanguageTextRecordService.findByIdWithDirectRelations(multiLanguage.getId())
+                    .orElse(null);
+        }
+        multiLanguage.getTexts().add(text);
+
+        neo4jTemplate.saveAs(multiLanguage, MultiLanguageTextDtoProjection.class);
+
+        return item;
+    }
+
+    @Transactional
+    @Override
+    public XtdObject addName(AddNameInput input) {
+        final XtdObject item = getRepository().findByIdWithDirectRelations(input.getCatalogEntryId()).orElseThrow();
+        TranslationInput translation = input.getName();
+
+        XtdText text = createText(translation);
 
         XtdMultiLanguageText multiLanguage = item.getNames().stream().findFirst().orElse(null);
         if (multiLanguage == null) {
             multiLanguage = new XtdMultiLanguageText();
+            multiLanguage = multiLanguageTextRepository.save(multiLanguage);
+            item.getNames().add(multiLanguage);
+            neo4jTemplate.saveAs(item, UpdateObjectNamesDtoProjection.class);
+        } else {
+            multiLanguage = multiLanguageTextRecordService.findByIdWithDirectRelations(multiLanguage.getId())
+                    .orElse(null);
         }
         multiLanguage.getTexts().add(text);
 
-        item.getNames().clear();
-        item.getNames().add(multiLanguage);
+        neo4jTemplate.saveAs(multiLanguage, MultiLanguageTextDtoProjection.class);
 
-        return getRepository().save(item);
+        return item;
+    }
+
+    @Transactional
+    public XtdText createText(TranslationInput translation) {
+
+        final XtdLanguage language = languageRecordService.findByCode(translation.getLanguageTag()).orElseThrow();
+
+        XtdText text = new XtdText();
+        text.setText(translation.getValue());
+        text.setId(translation.getId());
+        text.setLanguage(language);
+
+        text = textRepository.save(text);
+        return text;
     }
 
     @Transactional
@@ -224,7 +252,8 @@ public class ObjectRecordServiceImpl
     public @NotNull XtdObject updateStatus(String id, XtdStatusOfActivationEnum status) {
         final XtdObject item = getRepository().findByIdWithDirectRelations(id).orElseThrow();
         item.setStatus(status);
-        return getRepository().save(item);
+        neo4jTemplate.saveAs(item, UpdateObjectPropertiesDtoProjection.class);
+        return item;
     }
 
     @Transactional
@@ -232,7 +261,8 @@ public class ObjectRecordServiceImpl
     public @NotNull XtdObject updateMajorVersion(String id, Integer majorVersion) {
         final XtdObject item = getRepository().findByIdWithDirectRelations(id).orElseThrow();
         item.setMajorVersion(majorVersion);
-        return getRepository().save(item);
+        neo4jTemplate.saveAs(item, UpdateObjectPropertiesDtoProjection.class);
+        return item;
     }
 
     @Transactional
@@ -240,6 +270,7 @@ public class ObjectRecordServiceImpl
     public @NotNull XtdObject updateMinorVersion(String id, Integer minorVersion) {
         final XtdObject item = getRepository().findByIdWithDirectRelations(id).orElseThrow();
         item.setMinorVersion(minorVersion);
-        return getRepository().save(item);
+        neo4jTemplate.saveAs(item, UpdateObjectPropertiesDtoProjection.class);
+        return item;
     }
 }

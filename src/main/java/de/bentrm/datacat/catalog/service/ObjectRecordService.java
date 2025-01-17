@@ -9,6 +9,8 @@ import de.bentrm.datacat.catalog.domain.XtdDictionary;
 import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
 import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.domain.Enums.XtdStatusOfActivationEnum;
+import de.bentrm.datacat.graphql.input.AddCommentInput;
+import de.bentrm.datacat.graphql.input.AddNameInput;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,10 +30,10 @@ public interface ObjectRecordService extends SimpleRecordService<XtdObject> {
     List<XtdMultiLanguageText> getComments(@NotNull XtdObject object);
     
     @PreAuthorize("hasRole('USER')")
-    @NotNull XtdObject addComment(@NotBlank String id, String commentId, @NotBlank String languageTag, @NotBlank String value);
+    @NotNull XtdObject addComment(@NotNull AddCommentInput input);
 
     @PreAuthorize("hasRole('USER')")
-    @NotNull XtdObject addName(@NotBlank String id, String nameId, @NotBlank String languageTag, @NotBlank String value);
+    @NotNull XtdObject addName(@NotNull AddNameInput input);
 
     @PreAuthorize("hasRole('USER')")
     @NotNull XtdObject updateStatus(@NotBlank String id, @NotNull XtdStatusOfActivationEnum status);
