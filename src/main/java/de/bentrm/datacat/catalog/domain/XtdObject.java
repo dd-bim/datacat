@@ -3,15 +3,14 @@ package de.bentrm.datacat.catalog.domain;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.data.neo4j.core.schema.CompositeProperty;
 import org.springframework.data.neo4j.core.schema.Node;
-import org.springframework.data.neo4j.core.schema.Property;
 import org.springframework.data.neo4j.core.schema.Relationship;
 import org.springframework.util.Assert;
 
 import de.bentrm.datacat.util.LocalizationUtils;
 
 import de.bentrm.datacat.catalog.domain.Enums.XtdStatusOfActivationEnum;
-
 import java.util.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -28,18 +27,20 @@ public abstract class XtdObject extends XtdRoot {
     public static final String DEFAULT_LANGUAGE_TAG = "de";
 
     // Allows tracking of major changes. Experts decide if a new major version number shall be applied.
+    @ToString.Include
     private int majorVersion;
 
     // Allows tracking of minor changes, e.g. new translation, changes of typos: if
     // the major version number changes, the minor version starts again at 1.
     // Experts decide if a new minor version number can be applied or if a new major
     // version is needed.
+    @ToString.Include
     private int minorVersion;
 
     // Primary use case for this property is search and lookup optimization
     // TODO: Add external full text search component to improve on this mechanic
-    @Setter(AccessLevel.NONE)
-    @Property
+    @CompositeProperty(prefix = "labels")
+    @ToString.Include
     private Map<String, String> labels = new HashMap<>();
 
     // // Set of names of the object in different languages. Each object may have multiple names, and this allows for its expression in terms of synonyms. 
@@ -49,25 +50,31 @@ public abstract class XtdObject extends XtdRoot {
     private Set<XtdMultiLanguageText> names = new HashSet<>();
 
     // Data dictionary to which the object belongs to.
+    @ToString.Include
     @Relationship(type = "DICTIONARY")
     private XtdDictionary dictionary;
 
     // Konzept in Metadaten vorhanden
     // Date of creation of the concept.
+    @ToString.Include
     private String dateOfCreation;
 
     // Status of the object during its life cycle.
+    @ToString.Include
     private XtdStatusOfActivationEnum status;
 
     // List of objects replaced by the current object.
+    @ToString.Include
     @Relationship(type = XtdObject.REPLACE_OBJECT_TYPE, direction = Relationship.Direction.OUTGOING)
     private Set<XtdObject> replacedObjects = new HashSet<>();
 
     // Incoming relations of above relation
+    @ToString.Include
     @Relationship(type = XtdObject.REPLACE_OBJECT_TYPE, direction = Relationship.Direction.INCOMING)
     private Set<XtdObject> replacingObjects = new HashSet<>();
 
     // Sentence explaining the reason of the deprecation, which can explain how to convert values to conform to the new object.
+    @ToString.Include
     @Relationship(type = "DEPRECATION_EXPLANATION")
     private XtdMultiLanguageText deprecationExplanation;
 

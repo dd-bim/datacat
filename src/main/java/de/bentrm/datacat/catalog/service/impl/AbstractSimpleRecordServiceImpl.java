@@ -1,6 +1,8 @@
 package de.bentrm.datacat.catalog.service.impl;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
@@ -8,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.repository.LanguageRepository;
+import de.bentrm.datacat.catalog.repository.MultiLanguageTextRepository;
+import de.bentrm.datacat.catalog.repository.TextRepository;
 import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import de.bentrm.datacat.catalog.domain.XtdConcept;
@@ -45,6 +49,12 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
     @Autowired
     private LanguageRepository languageRepository;
 
+    @Autowired
+    private TextRepository textRepository;
+
+    @Autowired
+    private MultiLanguageTextRepository multiLanguageTextRepository;
+
     public AbstractSimpleRecordServiceImpl(Class<T> domainClass,
             Neo4jTemplate neo4jTemplate,
             R repository,
@@ -72,23 +82,15 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
             } else {
                 newRecord.setId(id);
             }
-
         }
 
         if (newRecord instanceof XtdObject xtdObject) {
-            final XtdMultiLanguageText multiLanguage = xtdObject.getNames().stream().findFirst()
-                    .orElse(new XtdMultiLanguageText());
-            properties.getNames().forEach(name -> {
-                xtdObject.getNames().clear();
-                xtdObject.getNames().add(createText(multiLanguage, name));
-            });
+            XtdMultiLanguageText multiLanguage = createMultiLanguageText(properties.getNames());
+            xtdObject.getNames().add(multiLanguage);
+
             if (properties.getComments() != null) {
-                final XtdMultiLanguageText multiLanguageComment = xtdObject.getComments().stream().findFirst()
-                        .orElse(new XtdMultiLanguageText());
-                properties.getComments().forEach(comment -> {
-                    xtdObject.getComments().clear();
-                    xtdObject.getComments().add(createText(multiLanguageComment, comment));
-                });
+                XtdMultiLanguageText multiLanguageComment = createMultiLanguageText(properties.getComments());
+                xtdObject.getComments().add(multiLanguageComment);
             }
             xtdObject.setMajorVersion(properties.getMajorVersion());
             xtdObject.setMinorVersion(properties.getMinorVersion());
@@ -96,12 +98,8 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
         }
         if (newRecord instanceof XtdConcept xtdConcept) {
             if (properties.getDescriptions() != null) {
-                final XtdMultiLanguageText multiLanguage = xtdConcept.getDescriptions().stream().findFirst()
-                        .orElse(new XtdMultiLanguageText());
-                properties.getDescriptions().forEach(description -> {
-                    xtdConcept.getDescriptions().clear();
-                    xtdConcept.getDescriptions().add(createText(multiLanguage, description));
-                });
+                XtdMultiLanguageText multiLanguage = createMultiLanguageText(properties.getDescriptions());
+                xtdConcept.getDescriptions().add(multiLanguage);
             }
         }
         if (newRecord instanceof XtdProperty property) {
@@ -140,7 +138,21 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
         return newRecord;
     }
 
-    public XtdMultiLanguageText createText(XtdMultiLanguageText multiLanguage, TranslationInput translation) {
+    @Transactional
+    public XtdMultiLanguageText createMultiLanguageText(List<TranslationInput> translations) {
+        XtdMultiLanguageText multiLanguage = new XtdMultiLanguageText();
+        Set<XtdText> texts = new HashSet<>();
+        translations.forEach(translation -> {
+            XtdText text = createText(translation);
+            texts.add(text);
+        });
+        multiLanguage.getTexts().addAll(texts);
+        multiLanguage = multiLanguageTextRepository.save(multiLanguage);
+        return multiLanguage;
+    }
+
+    @Transactional
+    public XtdText createText(TranslationInput translation) {
         final XtdLanguage language = languageRepository.findByCode(translation.getLanguageTag()).orElseThrow();
 
         final XtdText text = new XtdText();
@@ -148,12 +160,8 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
         text.setId(translation.getId());
         text.setLanguage(language);
 
-        multiLanguage.getTexts().add(text);
-
-        getNeo4jTemplate().save(multiLanguage);
-        getNeo4jTemplate().save(text);
-
-        return multiLanguage;
+        textRepository.save(text);
+        return text;
     }
 
     @Transactional
