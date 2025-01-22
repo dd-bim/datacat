@@ -26,9 +26,9 @@ public class SecurityConfiguration {
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeRequests(requests -> requests
-                        .requestMatchers("/actuator/**").permitAll()
-                        .requestMatchers("/graphql").permitAll())
+                .authorizeHttpRequests(requests -> requests
+                .requestMatchers("/actuator/**").permitAll()
+                .requestMatchers("/graphql").permitAll())
                         .addFilterBefore(jwtFilter, RequestHeaderAuthenticationFilter.class);
 
         return http.build();
