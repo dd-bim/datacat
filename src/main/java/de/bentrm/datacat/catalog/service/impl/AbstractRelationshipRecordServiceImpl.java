@@ -41,15 +41,17 @@ public abstract class AbstractRelationshipRecordServiceImpl<T extends AbstractRe
             T newRecord = this.getDomainClass().getDeclaredConstructor().newInstance();
 
             newRecord.setId(id);
-
-            log.trace("Setting relating record with id: {}", relatingRecordId);
-            this.setRelatingRecord(newRecord, relatingRecordId);
-
-            log.trace("Setting related records with ids: {}", relatedRecordIds);
-            this.setRelatedRecords(newRecord, relatedRecordIds);
-
             log.trace("Persisting new relationship record...");
             newRecord = this.getRepository().save(newRecord);
+
+            log.trace("Setting relating record with id: {}", relatingRecordId);
+            newRecord = this.setRelatingRecord(newRecord, relatingRecordId);
+            log.info("Set relating record with id: {}", relatingRecordId);
+
+            log.trace("Setting related records with ids: {}", relatedRecordIds);
+            newRecord = this.setRelatedRecords(newRecord, relatedRecordIds);
+            log.info("Set related records with ids: {}", relatedRecordIds);
+
             log.trace("Persisted new relationship record with id: {}", newRecord.getId());
 
             return newRecord;
@@ -63,14 +65,11 @@ public abstract class AbstractRelationshipRecordServiceImpl<T extends AbstractRe
     @Override
     public @NotNull T removeRecord(@NotBlank String id) {
         final T relationshipRecord = this.getRepository()
-                .findById(id)
+                .findByIdWithDirectRelations(id)
                 .orElseThrow();
 
-        log.trace("Purging related data of record {}...", id);
-        cleanupService.purgeRelatedData(id);
-
         log.trace("Deleting record {}...", id);
-        this.getRepository().delete(relationshipRecord);
+        cleanupService.deleteNodeWithRelationships(id);
 
         return relationshipRecord;
     }
@@ -80,14 +79,14 @@ public abstract class AbstractRelationshipRecordServiceImpl<T extends AbstractRe
     public @NotNull T removeRelationship(@NotBlank String recordId, @NotBlank String relatedRecordId, @NotNull SimpleRelationType relationType) {
         log.trace("Deleting relationship from record with id {}...", recordId);
         final T entry = this.getRepository()
-                .findById(recordId)
+                .findByIdWithDirectRelations(recordId)
                 .orElseThrow();
 
         cleanupService.purgeRelationship(recordId, relatedRecordId, relationType);
         return entry;
     }
 
-    protected abstract void setRelatingRecord(@NotNull T relationshipRecord,
+    protected abstract @NotNull T setRelatingRecord(@NotNull T relationshipRecord,
             @NotBlank String relatingRecordId);
 
     @Transactional
@@ -107,7 +106,7 @@ public abstract class AbstractRelationshipRecordServiceImpl<T extends AbstractRe
         return record;
     }
 
-    protected abstract void setRelatedRecords(@NotNull T relationshipRecord,
+    protected abstract @NotNull T setRelatedRecords(@NotNull T relationshipRecord,
             @NotEmpty List<@NotBlank String> relatedRecordIds);
 
     @Transactional

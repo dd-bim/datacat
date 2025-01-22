@@ -3,6 +3,7 @@ package de.bentrm.datacat.catalog.service.impl;
 import de.bentrm.datacat.catalog.domain.*;
 import de.bentrm.datacat.catalog.repository.ValueRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
+import de.bentrm.datacat.catalog.service.ObjectRecordService;
 import de.bentrm.datacat.catalog.service.ValueRecordService;
 
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
 
 @Service
@@ -26,6 +28,9 @@ public class ValueRecordServiceImpl
 
             // private final OrderedValueRepository orderedValueRepository;
 
+            @Autowired
+            private ObjectRecordService objectRecordService;
+            
     public ValueRecordServiceImpl(ValueRepository repository,
                                   Neo4jTemplate neo4jTemplate,
                                 //   OrderedValueRepository orderedValueRepository,
@@ -56,7 +61,7 @@ public class ValueRecordServiceImpl
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
         final XtdValue value = getRepository().findByIdWithDirectRelations(recordId).orElseThrow();
-
+        objectRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
        return value;                                                 
     }
 }

@@ -10,6 +10,10 @@ import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
 import de.bentrm.datacat.catalog.repository.UnitRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.UnitRecordService;
+import de.bentrm.datacat.catalog.service.dto.Relationships.CoefficientDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.DimensionDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.OffsetDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.SymbolDtoProjection;
 import de.bentrm.datacat.catalog.service.ConceptRecordService;
 import de.bentrm.datacat.catalog.service.DimensionRecordService;
 import de.bentrm.datacat.catalog.service.MultiLanguageTextRecordService;
@@ -142,6 +146,7 @@ public class UnitRecordServiceImpl
                             .orElseThrow();
                     unit.setSymbol(symbol);
                 }
+                neo4jTemplate.saveAs(unit, SymbolDtoProjection.class);
             }
             case Offset -> {
                 if (unit.getOffset() != null) {
@@ -152,6 +157,7 @@ public class UnitRecordServiceImpl
                     final XtdRational offset = rationalRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
                     unit.setOffset(offset);
                 }
+                neo4jTemplate.saveAs(unit, OffsetDtoProjection.class);
             }
             case Coefficient -> {
                 if (unit.getCoefficient() != null) {
@@ -162,6 +168,7 @@ public class UnitRecordServiceImpl
                     final XtdRational coefficient = rationalRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
                     unit.setCoefficient(coefficient);
                 }
+                neo4jTemplate.saveAs(unit, CoefficientDtoProjection.class);
             }
             case Dimension -> {
                 if (unit.getDimension() != null) {
@@ -172,12 +179,12 @@ public class UnitRecordServiceImpl
                     final XtdDimension dimension = dimensionRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
                     unit.setDimension(dimension);
                 }
+                neo4jTemplate.saveAs(unit, DimensionDtoProjection.class);
             }
             default -> conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
         }
 
-        final XtdUnit persistentUnit = getRepository().save(unit);
-        log.trace("Updated relationship: {}", persistentUnit);
-        return persistentUnit;
+        log.trace("Updated relationship: {}", unit);
+        return unit;
     }
 }

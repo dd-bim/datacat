@@ -10,6 +10,9 @@ import de.bentrm.datacat.catalog.domain.XtdUnit;
 import de.bentrm.datacat.catalog.repository.ValueListRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.ValueListRecordService;
+import de.bentrm.datacat.catalog.service.dto.Relationships.LanguageDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.UnitDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.ValuesDtoProjection;
 import de.bentrm.datacat.catalog.service.ConceptRecordService;
 import de.bentrm.datacat.catalog.service.LanguageRecordService;
 import de.bentrm.datacat.catalog.service.OrderedValueRecordService;
@@ -126,6 +129,7 @@ public class ValueListRecordServiceImpl extends AbstractSimpleRecordServiceImpl<
                         .orElseThrow();
                 valueList.setUnit(unit);
             }
+            neo4jTemplate.saveAs(valueList, UnitDtoProjection.class);
             break;
         case Values:
             final Iterable<XtdOrderedValue> items = orderedValueRecordService.findAllEntitiesById(relatedRecordIds);
@@ -134,6 +138,7 @@ public class ValueListRecordServiceImpl extends AbstractSimpleRecordServiceImpl<
 
             valueList.getValues().clear();
             valueList.getValues().addAll(related);
+            neo4jTemplate.saveAs(valueList, ValuesDtoProjection.class);
             break;
         case Language:
             if (valueList.getLanguage() != null) {
@@ -145,13 +150,13 @@ public class ValueListRecordServiceImpl extends AbstractSimpleRecordServiceImpl<
                         .orElseThrow();
                 valueList.setLanguage(language);
             }
+            neo4jTemplate.saveAs(valueList, LanguageDtoProjection.class);
         default:
             conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
             break;
         }
 
-        final XtdValueList persistentValueList = getRepository().save(valueList);
-        log.trace("Updated relationship: {}", persistentValueList);
-        return persistentValueList;
+        log.trace("Updated relationship: {}", valueList);
+        return valueList;
     }
 }

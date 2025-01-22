@@ -9,6 +9,7 @@ import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.ConceptRecordService;
 import de.bentrm.datacat.catalog.service.DimensionRecordService;
 import de.bentrm.datacat.catalog.service.RationalRecordService;
+import de.bentrm.datacat.catalog.service.dto.Relationships.DimensionExponentsDtoProjection;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -203,8 +204,8 @@ public class DimensionRecordServiceImpl
             default -> conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
         }
 
-        final XtdDimension persistentDimension = getRepository().save(dimension);
-        log.trace("Updated dimension: {}", persistentDimension);
-        return persistentDimension;
+        neo4jTemplate.saveAs(dimension, DimensionExponentsDtoProjection.class);
+        log.trace("Updated dimension: {}", dimension);
+        return dimension;
     }
 }

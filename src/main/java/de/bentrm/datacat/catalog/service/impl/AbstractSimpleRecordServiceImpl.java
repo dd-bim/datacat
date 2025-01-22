@@ -169,11 +169,10 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
     public @NotNull T removeRecord(@NotBlank String id) {
         log.trace("Deleting simple catalog record with id {}...", id);
         final T entry = this.getRepository()
-                .findById(id)
+                .findByIdWithDirectRelations(id)
                 .orElseThrow();
 
-        cleanupService.purgeRelatedData(id);
-        this.getRepository().deleteById(id);
+        cleanupService.deleteNodeWithRelationships(id);
 
         log.trace("Catalog item deleted: {}", entry);
 
@@ -186,7 +185,7 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
             @NotNull SimpleRelationType relationType) {
         log.trace("Deleting relationship from record with id {}...", recordId);
         final T entry = this.getRepository()
-                .findById(recordId)
+                .findByIdWithDirectRelations(recordId)
                 .orElseThrow();
 
         cleanupService.purgeRelationship(recordId, relatedRecordId, relationType);

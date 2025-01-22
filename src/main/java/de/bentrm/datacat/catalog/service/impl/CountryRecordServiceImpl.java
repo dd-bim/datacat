@@ -7,6 +7,7 @@ import de.bentrm.datacat.catalog.repository.CountryRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.CountryRecordService;
 import de.bentrm.datacat.catalog.service.SubdivisionRecordService;
+import de.bentrm.datacat.catalog.service.dto.Relationships.SubdivisionsDtoProjection;
 import de.bentrm.datacat.catalog.service.ConceptRecordService;
 import lombok.extern.slf4j.Slf4j;
 import de.bentrm.datacat.catalog.domain.XtdSubdivision;
@@ -82,8 +83,8 @@ public class CountryRecordServiceImpl
             default -> conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
         }
 
-        final XtdCountry persistentCountry = getRepository().save(country);
-        log.trace("Updated relationship: {}", persistentCountry);
-        return persistentCountry;
+        neo4jTemplate.saveAs(country, SubdivisionsDtoProjection.class); 
+        log.trace("Updated relationship: {}", country);
+        return country;
     }
 }

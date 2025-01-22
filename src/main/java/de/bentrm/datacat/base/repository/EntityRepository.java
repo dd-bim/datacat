@@ -12,23 +12,30 @@ import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.query.Param;
 
 /**
- * Base repository used throughout the codebase.
- * Preconfigures all entities to use a string (UUID) id.
+ * Base repository used throughout the codebase. Preconfigures all entities to
+ * use a string (UUID) id.
+ * 
  * @param <T> The concrete entity class the repository binds to.
  */
 @NoRepositoryBean
 public interface EntityRepository<T extends Entity> extends Neo4jRepository<T, String> {
 
-    @Query("""
-            MATCH (o {id: $id})
-            OPTIONAL MATCH (o)-[r]->(related)
-            WITH o, collect(coalesce(r, [])) AS relations, collect(coalesce(related, [])) AS relatedNodes
-            RETURN o, relations, relatedNodes""")
-    Optional<T> findByIdWithDirectRelations(@Param("id") String id);
+        @Query("""
+                        MATCH (o {id: $id})
+                        OPTIONAL MATCH (o)-[r]->(related)
+                        WITH o, collect(coalesce(r, [])) AS relations, collect(coalesce(related, [])) AS relatedNodes
+                        RETURN o, relations, relatedNodes""")
+        Optional<T> findByIdWithDirectRelations(@Param("id") String id);
 
-    @Query("""
-            MATCH (o)
-            WHERE o.id IN $ids
-            RETURN o""")
-    List<T> findAllEntitiesById(@Param("ids") Collection<String> ids);
+        @Query("""
+                        MATCH (o)
+                        WHERE o.id IN $ids
+                        RETURN o""")
+        List<T> findAllEntitiesById(@Param("ids") Collection<String> ids);
+
+        @Query("""
+                        MATCH (n:CatalogRecord {id: $id})
+                        DETACH DELETE n
+                        """)
+        void deleteNodeAndRelationships(@Param("id") String id);
 }

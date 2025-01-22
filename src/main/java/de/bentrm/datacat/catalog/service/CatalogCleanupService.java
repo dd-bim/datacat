@@ -28,4 +28,10 @@ public interface CatalogCleanupService {
      */
     void purgeRelationship(@NotBlank String recordId, @NotBlank String relatedRecordId, @NotNull SimpleRelationType relationType);
 
+
+    /**
+     * Deletes the given record and all relationships that are linked to it.
+     * @param recordId The record that will be purged.
+     */
+    void deleteNodeWithRelationships(@NotBlank String recordId);
 }

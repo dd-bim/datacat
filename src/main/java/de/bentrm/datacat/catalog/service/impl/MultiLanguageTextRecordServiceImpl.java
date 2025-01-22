@@ -9,6 +9,7 @@ import de.bentrm.datacat.catalog.repository.MultiLanguageTextRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.MultiLanguageTextRecordService;
 import de.bentrm.datacat.catalog.service.TextRecordService;
+import de.bentrm.datacat.catalog.service.dto.Relationships.TextsDtoProjection;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,8 +85,8 @@ public class MultiLanguageTextRecordServiceImpl
             default -> log.error("Unsupported relation type: {}", relationType);
         }
 
-        final XtdMultiLanguageText persistentMultiLanguageText = getRepository().save(multiLanguageText);
-        log.trace("Updated relationship: {}", persistentMultiLanguageText);
-        return persistentMultiLanguageText;
+        neo4jTemplate.saveAs(multiLanguageText, TextsDtoProjection.class);
+        log.trace("Updated relationship: {}", multiLanguageText);
+        return multiLanguageText;
     }
 }

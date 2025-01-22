@@ -23,6 +23,12 @@ public class CatalogCleanupServiceImpl implements CatalogCleanupService {
     }
 
     @Override
+    public void deleteNodeWithRelationships(@NotBlank String recordId) {
+        Assert.hasText(recordId, "the given record id may not be blank");
+        relationshipRepository.deleteNodeAndRelationships(recordId);
+    }
+
+    @Override
     public void purgeRelatedData(@NotBlank String recordId) {
         Assert.hasText(recordId, "the given record id may not be blank");
         this.purgeRelationships(recordId);

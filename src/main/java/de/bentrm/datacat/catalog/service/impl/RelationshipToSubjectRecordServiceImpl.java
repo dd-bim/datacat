@@ -10,6 +10,10 @@ import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.RelationshipToSubjectRecordService;
 import de.bentrm.datacat.catalog.service.RelationshipTypeRecordService;
 import de.bentrm.datacat.catalog.service.SubjectRecordService;
+import de.bentrm.datacat.catalog.service.dto.Relationships.ConnectingSubjectDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.RelationshipTypeDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.ScopeSubjectsDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.TargetSubjectsDtoProjection;
 import de.bentrm.datacat.catalog.service.ObjectRecordService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -111,22 +115,26 @@ public class RelationshipToSubjectRecordServiceImpl
        relationship.getTargetSubjects().clear();
        relationship.getTargetSubjects().addAll(related);
 
-       final XtdRelationshipToSubject persistentRelationship = getRepository().save(relationship);
-       log.trace("Updated relationship: {}", persistentRelationship);
-       return persistentRelationship;
+       neo4jTemplate.saveAs(relationship, TargetSubjectsDtoProjection.class);
+       log.trace("Updated relationship: {}", relationship);
+       return relationship;
    }
 
+   @Transactional
     @Override
-    protected void setRelatingRecord(@NotNull XtdRelationshipToSubject relationshipRecord,
+    protected XtdRelationshipToSubject setRelatingRecord(@NotNull XtdRelationshipToSubject relationshipRecord,
                                      @NotBlank String relatingRecordId) {
         final XtdSubject relatingCatalogRecord = subjectRecordService
                 .findByIdWithDirectRelations(relatingRecordId)
                 .orElseThrow();
         relationshipRecord.setConnectingSubject(relatingCatalogRecord);
+        neo4jTemplate.saveAs(relationshipRecord, ConnectingSubjectDtoProjection.class);
+        return relationshipRecord;
     }
 
+    @Transactional
     @Override
-    protected void setRelatedRecords(@NotNull XtdRelationshipToSubject relationshipRecord,
+    protected XtdRelationshipToSubject setRelatedRecords(@NotNull XtdRelationshipToSubject relationshipRecord,
                                      @NotEmpty List<@NotBlank String> relatedRecordIds) {
         final Iterable<XtdSubject> items = subjectRecordService.findAllEntitiesById(relatedRecordIds);
         final List<XtdSubject> related = StreamSupport
@@ -134,6 +142,8 @@ public class RelationshipToSubjectRecordServiceImpl
                 .collect(Collectors.toList());
         relationshipRecord.getTargetSubjects().clear();
         relationshipRecord.getTargetSubjects().addAll(related);
+        neo4jTemplate.saveAs(relationshipRecord, TargetSubjectsDtoProjection.class);
+        return relationshipRecord;
     }
 
     @Transactional
@@ -141,7 +151,7 @@ public class RelationshipToSubjectRecordServiceImpl
     public @NotNull XtdRelationshipToSubject setRelatedRecords(@NotBlank String recordId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdRelationshipToSubject relationship = getRepository().findByIdWithDirectRelations(recordId).orElseThrow();
+        XtdRelationshipToSubject relationship = getRepository().findByIdWithDirectRelations(recordId).orElseThrow();
 
         switch (relationType) {
             case RelationshipType -> {
@@ -153,6 +163,7 @@ public class RelationshipToSubjectRecordServiceImpl
                     final XtdRelationshipType relationshipType = relationshipTypeRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
                     relationship.setRelationshipType(relationshipType);
                 }
+                neo4jTemplate.saveAs(relationship, RelationshipTypeDtoProjection.class);
             }
             case ScopeSubjects -> {
                 final Iterable<XtdSubject> subjects = subjectRecordService.findAllEntitiesById(relatedRecordIds);
@@ -162,21 +173,15 @@ public class RelationshipToSubjectRecordServiceImpl
 
                 relationship.getScopeSubjects().clear();
                 relationship.getScopeSubjects().addAll(relatedSubjects);
+                neo4jTemplate.saveAs(relationship, ScopeSubjectsDtoProjection.class);
             }
             case TargetSubjects -> {
-                final Iterable<XtdSubject> targetSubjects = subjectRecordService.findAllEntitiesById(relatedRecordIds);
-                final List<XtdSubject> relatedTargetSubjects = StreamSupport
-                        .stream(targetSubjects.spliterator(), false)
-                        .collect(Collectors.toList());
-
-                relationship.getTargetSubjects().clear();
-                relationship.getTargetSubjects().addAll(relatedTargetSubjects);
+                relationship = setRelatedRecords(relationship, relatedRecordIds);
             }
             default -> objectRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
         }
 
-        final XtdRelationshipToSubject persistentRelationship = getRepository().save(relationship);
-        log.trace("Updated relationship: {}", persistentRelationship);
-        return persistentRelationship;
+        log.trace("Updated relationship: {}", relationship);
+        return relationship;
     }   
 }

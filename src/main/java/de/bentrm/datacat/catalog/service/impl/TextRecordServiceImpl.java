@@ -9,6 +9,7 @@ import de.bentrm.datacat.catalog.repository.TextRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.TextRecordService;
 import de.bentrm.datacat.catalog.service.dto.TextDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.LanguageDtoProjection;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
@@ -84,9 +85,9 @@ public class TextRecordServiceImpl
             default -> log.error("Unsupported relation type: {}", relationType);
         }
 
-        final XtdText persistentText = getRepository().save(text);
-        log.trace("Updated relationship: {}", persistentText);
-        return persistentText;
+        neo4jTemplate.saveAs(text, LanguageDtoProjection.class);
+        log.trace("Updated relationship: {}", text);
+        return text;
     }   
 
     @Transactional

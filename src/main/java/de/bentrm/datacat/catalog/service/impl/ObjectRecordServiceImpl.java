@@ -16,10 +16,13 @@ import de.bentrm.datacat.catalog.service.DictionaryRecordService;
 import de.bentrm.datacat.catalog.service.LanguageRecordService;
 import de.bentrm.datacat.catalog.service.MultiLanguageTextRecordService;
 import de.bentrm.datacat.catalog.service.ObjectRecordService;
-import de.bentrm.datacat.catalog.service.dto.MultiLanguageTextDtoProjection;
-import de.bentrm.datacat.catalog.service.dto.UpdateObjectCommentsDtoProjection;
-import de.bentrm.datacat.catalog.service.dto.UpdateObjectNamesDtoProjection;
-import de.bentrm.datacat.catalog.service.dto.UpdateObjectPropertiesDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.ObjectDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.CommentsDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.DeprecationExplanationDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.DictionaryDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.NamesDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.ReplacedObjectsDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.TextsDtoProjection;
 import de.bentrm.datacat.graphql.input.AddCommentInput;
 import de.bentrm.datacat.graphql.input.AddNameInput;
 import de.bentrm.datacat.graphql.input.TranslationInput;
@@ -155,6 +158,7 @@ public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Xtd
                         .findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
                 object.setDictionary(dictionary);
             }
+            neo4jTemplate.saveAs(object, DictionaryDtoProjection.class);
         }
         case DeprecationExplanation -> {
             if (object.getDeprecationExplanation() != null) {
@@ -166,6 +170,7 @@ public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Xtd
                         .findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
                 object.setDeprecationExplanation(deprecationExplanation);
             }
+            neo4jTemplate.saveAs(object, DeprecationExplanationDtoProjection.class);
         }
         case ReplacedObjects -> {
             final Iterable<XtdObject> replacedObjects = getRepository().findAllEntitiesById(relatedRecordIds);
@@ -174,13 +179,13 @@ public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Xtd
 
             object.getReplacedObjects().clear();
             object.getReplacedObjects().addAll(relatedObjects);
+            neo4jTemplate.saveAs(object, ReplacedObjectsDtoProjection.class);
         }
         default -> log.error("Unsupported relation type: {}", relationType);
         }
 
-        final XtdObject persistentObject = getRepository().save(object);
-        log.trace("Updated relationship: {}", persistentObject);
-        return persistentObject;
+        log.trace("Updated relationship: {}", object);
+        return object;
     }
 
     @Transactional
@@ -196,14 +201,14 @@ public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Xtd
             multiLanguage = new XtdMultiLanguageText();
             multiLanguage = multiLanguageTextRepository.save(multiLanguage);
             item.getComments().add(multiLanguage);
-            neo4jTemplate.saveAs(item, UpdateObjectCommentsDtoProjection.class);
+            neo4jTemplate.saveAs(item, CommentsDtoProjection.class);
         } else {
             multiLanguage = multiLanguageTextRecordService.findByIdWithDirectRelations(multiLanguage.getId())
                     .orElse(null);
         }
         multiLanguage.getTexts().add(text);
 
-        neo4jTemplate.saveAs(multiLanguage, MultiLanguageTextDtoProjection.class);
+        neo4jTemplate.saveAs(multiLanguage, TextsDtoProjection.class);
 
         return item;
     }
@@ -221,14 +226,14 @@ public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Xtd
             multiLanguage = new XtdMultiLanguageText();
             multiLanguage = multiLanguageTextRepository.save(multiLanguage);
             item.getNames().add(multiLanguage);
-            neo4jTemplate.saveAs(item, UpdateObjectNamesDtoProjection.class);
+            neo4jTemplate.saveAs(item, NamesDtoProjection.class);
         } else {
             multiLanguage = multiLanguageTextRecordService.findByIdWithDirectRelations(multiLanguage.getId())
                     .orElse(null);
         }
         multiLanguage.getTexts().add(text);
 
-        neo4jTemplate.saveAs(multiLanguage, MultiLanguageTextDtoProjection.class);
+        neo4jTemplate.saveAs(multiLanguage, TextsDtoProjection.class);
 
         return item;
     }
@@ -252,7 +257,7 @@ public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Xtd
     public @NotNull XtdObject updateStatus(String id, XtdStatusOfActivationEnum status) {
         final XtdObject item = getRepository().findByIdWithDirectRelations(id).orElseThrow();
         item.setStatus(status);
-        neo4jTemplate.saveAs(item, UpdateObjectPropertiesDtoProjection.class);
+        neo4jTemplate.saveAs(item, ObjectDtoProjection.class);
         return item;
     }
 
@@ -261,7 +266,7 @@ public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Xtd
     public @NotNull XtdObject updateMajorVersion(String id, Integer majorVersion) {
         final XtdObject item = getRepository().findByIdWithDirectRelations(id).orElseThrow();
         item.setMajorVersion(majorVersion);
-        neo4jTemplate.saveAs(item, UpdateObjectPropertiesDtoProjection.class);
+        neo4jTemplate.saveAs(item, ObjectDtoProjection.class);
         return item;
     }
 
@@ -270,7 +275,7 @@ public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Xtd
     public @NotNull XtdObject updateMinorVersion(String id, Integer minorVersion) {
         final XtdObject item = getRepository().findByIdWithDirectRelations(id).orElseThrow();
         item.setMinorVersion(minorVersion);
-        neo4jTemplate.saveAs(item, UpdateObjectPropertiesDtoProjection.class);
+        neo4jTemplate.saveAs(item, ObjectDtoProjection.class);
         return item;
     }
 }

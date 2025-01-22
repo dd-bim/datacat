@@ -8,6 +8,7 @@ import de.bentrm.datacat.catalog.repository.DictionaryRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.DictionaryRecordService;
 import de.bentrm.datacat.catalog.service.MultiLanguageTextRecordService;
+import de.bentrm.datacat.catalog.service.dto.Relationships.NameDtoProjection;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
@@ -77,8 +78,8 @@ public class DictionaryRecordServiceImpl
             default -> log.error("Unsupported relation type: {}", relationType);
         }
         
-        final XtdDictionary persistentDictionary = getRepository().save(dictionary);
-        log.trace("Updated relationship: {}", persistentDictionary);
-        return persistentDictionary;
+        neo4jTemplate.saveAs(dictionary, NameDtoProjection.class); 
+        log.trace("Updated relationship: {}", dictionary);
+        return dictionary;
     }
 }

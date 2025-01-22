@@ -3,10 +3,14 @@ package de.bentrm.datacat.catalog.service.impl;
 import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import de.bentrm.datacat.catalog.domain.XtdRelationshipToProperty;
+import de.bentrm.datacat.catalog.domain.Enums.XtdPropertyRelationshipTypeEnum;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.repository.RelationshipToPropertyRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.RelationshipToPropertyRecordService;
+import de.bentrm.datacat.catalog.service.dto.RelationshipToPropertyDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.ConnectingPropertyDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.TargetPropertiesDtoProjection;
 import de.bentrm.datacat.catalog.service.PropertyRecordService;
 import de.bentrm.datacat.catalog.service.ObjectRecordService;
 import lombok.extern.slf4j.Slf4j;
@@ -91,17 +95,21 @@ private ObjectRecordService objectRecordService;
        return persistentRelationship;
    }
 
+    @Transactional
     @Override
-    protected void setRelatingRecord(@NotNull XtdRelationshipToProperty relationshipRecord,
+    protected XtdRelationshipToProperty setRelatingRecord(@NotNull XtdRelationshipToProperty relationshipRecord,
                                      @NotBlank String relatingRecordId) {
         final XtdProperty relatingCatalogRecord = propertyRecordService
                 .findByIdWithDirectRelations(relatingRecordId)
                 .orElseThrow();
         relationshipRecord.setConnectingProperty(relatingCatalogRecord);
+        neo4jTemplate.saveAs(relationshipRecord, ConnectingPropertyDtoProjection.class);
+        return relationshipRecord;
     }
 
+    @Transactional
     @Override
-    protected void setRelatedRecords(@NotNull XtdRelationshipToProperty relationshipRecord,
+    protected XtdRelationshipToProperty setRelatedRecords(@NotNull XtdRelationshipToProperty relationshipRecord,
                                      @NotEmpty List<@NotBlank String> relatedRecordIds) {
         final Iterable<XtdProperty> items = propertyRecordService.findAllEntitiesById(relatedRecordIds);
         final List<XtdProperty> related = StreamSupport
@@ -109,6 +117,8 @@ private ObjectRecordService objectRecordService;
                 .collect(Collectors.toList());
         relationshipRecord.getTargetProperties().clear();
         relationshipRecord.getTargetProperties().addAll(related);
+        neo4jTemplate.saveAs(relationshipRecord, TargetPropertiesDtoProjection.class);
+        return relationshipRecord;
     }
 
     @Transactional
@@ -116,24 +126,26 @@ private ObjectRecordService objectRecordService;
     public @NotNull XtdRelationshipToProperty setRelatedRecords(@NotBlank String recordId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdRelationshipToProperty relationship = getRepository().findByIdWithDirectRelations(recordId).orElseThrow();
+        XtdRelationshipToProperty relationship = getRepository().findByIdWithDirectRelations(recordId).orElseThrow();
 
         switch (relationType) {
 
             case TargetProperties -> {
-                final Iterable<XtdProperty> targetProperties = propertyRecordService.findAllEntitiesById(relatedRecordIds);
-                final List<XtdProperty> relatedTargetProperties = StreamSupport
-                        .stream(targetProperties.spliterator(), false)
-                        .collect(Collectors.toList());
-
-                relationship.getTargetProperties().clear();
-                relationship.getTargetProperties().addAll(relatedTargetProperties);
+                relationship = setRelatedRecords(relationship, relatedRecordIds);
             }
             default -> objectRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
         }
 
-        final XtdRelationshipToProperty persistentRelationship = getRepository().save(relationship);
-        log.trace("Updated relationship: {}", persistentRelationship);
-        return persistentRelationship;
+        log.trace("Updated relationship: {}", relationship);
+        return relationship;
     }  
+
+
+    @Transactional
+    @Override
+    public @NotNull XtdRelationshipToProperty addRelationshipType(@NotNull XtdRelationshipToProperty relationship, @NotNull XtdPropertyRelationshipTypeEnum relationshipType) {
+        relationship.setRelationshipType(relationshipType);
+        neo4jTemplate.saveAs(relationship, RelationshipToPropertyDtoProjection.class);
+        return relationship;
+    }
 }

@@ -1,6 +1,5 @@
 package de.bentrm.datacat.graphql;
 
-import de.bentrm.datacat.graphql.fetcher.MutationFetchers;
 import de.bentrm.datacat.graphql.resolver.CustomResolver;
 import graphql.GraphQLError;
 import graphql.schema.GraphQLSchema;
@@ -37,9 +36,6 @@ public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
     @Autowired
     private List<CustomResolver> customResolvers;
 
-    @Autowired
-    private List<MutationFetchers> mutationFetchers;
-
     final SchemaParser schemaParser = new SchemaParser();
     final SchemaGenerator schemaGenerator = new SchemaGenerator();
     final TypeDefinitionRegistry typeRegistry = new TypeDefinitionRegistry();
@@ -58,22 +54,9 @@ public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
             builder.type(resolver.getTypeName(), wiring -> wiring.typeResolver(resolver));
         });
 
-        RuntimeWiring wiring = getRuntimeWiring();
+        RuntimeWiring wiring = builder.build();
 
         return schemaGenerator.makeExecutableSchema(typeRegistry, wiring);
-    }
-
-    private RuntimeWiring getRuntimeWiring() {
-
-        builder.type("Mutation", wiring -> {
-            mutationFetchers.forEach(fetcher -> {
-                log.trace("Registering MutationFetchers {}", fetcher.getClass());
-                wiring.dataFetchers(fetcher.getMutationFetchers());
-            });
-            return wiring;
-        });
-
-        return builder.build();
     }
 
     private void parseSchema() throws IOException {

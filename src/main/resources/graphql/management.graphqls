@@ -189,7 +189,7 @@ input RelationshipPropertiesInput {
     majorVersion: Int
     minorVersion: Int
     status: XtdStatusOfActivationEnum
-    names: [TranslationInput!]!
+    names: [TranslationInput!]
     descriptions: [TranslationInput!]
     comments: [TranslationInput!]
     relationshipToPropertyProperties: RelationshipToPropertyInput

@@ -31,8 +31,13 @@ import de.bentrm.datacat.catalog.service.ExternalDocumentRecordService;
 import de.bentrm.datacat.catalog.service.LanguageRecordService;
 import de.bentrm.datacat.catalog.service.MultiLanguageTextRecordService;
 import de.bentrm.datacat.catalog.service.ObjectRecordService;
-import de.bentrm.datacat.catalog.service.dto.MultiLanguageTextDtoProjection;
-import de.bentrm.datacat.catalog.service.dto.UpdateConceptDescriptionsDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.DefinitionDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.DescriptionsDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.ExamplesDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.LanguageOfCreatorDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.ReferenceDocumentsDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.SimilarToDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.TextsDtoProjection;
 import de.bentrm.datacat.graphql.input.AddDescriptionInput;
 import de.bentrm.datacat.graphql.input.TranslationInput;
 import jakarta.validation.constraints.NotBlank;
@@ -188,6 +193,7 @@ public class ConceptRecordServiceImpl
                             .findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
                     concept.setDefinition(definition);
                 }
+                neo4jTemplate.saveAs(concept, DefinitionDtoProjection.class);
             }
             case Examples -> {
                 final Iterable<XtdMultiLanguageText> examples = multiLanguageTextRecordService
@@ -198,6 +204,7 @@ public class ConceptRecordServiceImpl
 
                 concept.getExamples().clear();
                 concept.getExamples().addAll(relatedExamples);
+                neo4jTemplate.saveAs(concept, ExamplesDtoProjection.class);
             }
             case LanguageOfCreator -> {
                 if (concept.getLanguageOfCreator() != null) {
@@ -209,6 +216,7 @@ public class ConceptRecordServiceImpl
                             .orElseThrow();
                     concept.setLanguageOfCreator(languageOfCreator);
                 }
+                neo4jTemplate.saveAs(concept, LanguageOfCreatorDtoProjection.class);
             }
             case ReferenceDocuments -> {
                 final Iterable<XtdExternalDocument> referenceDocuments = externalDocumentRecordService
@@ -219,6 +227,7 @@ public class ConceptRecordServiceImpl
 
                 concept.getReferenceDocuments().clear();
                 concept.getReferenceDocuments().addAll(relatedReferenceDocuments);
+                neo4jTemplate.saveAs(concept, ReferenceDocumentsDtoProjection.class);
             }
             case Descriptions -> {
                 final Iterable<XtdMultiLanguageText> descriptions = multiLanguageTextRecordService
@@ -229,6 +238,7 @@ public class ConceptRecordServiceImpl
 
                 concept.getDescriptions().clear();
                 concept.getDescriptions().addAll(relatedDescriptions);
+                neo4jTemplate.saveAs(concept, DescriptionsDtoProjection.class);
             }
             case SimilarTo -> {
                 final Iterable<XtdConcept> similarConcepts = getRepository().findAllEntitiesById(relatedRecordIds);
@@ -238,6 +248,7 @@ public class ConceptRecordServiceImpl
 
                 concept.getSimilarTo().clear();
                 concept.getSimilarTo().addAll(relatedSimilarConcepts);
+                neo4jTemplate.saveAs(concept, SimilarToDtoProjection.class);
             }
             case CountryOfOrigin -> {
                 if (concept.getCountryOfOrigin() != null) {
@@ -249,13 +260,13 @@ public class ConceptRecordServiceImpl
                             .orElseThrow();
                     concept.setCountryOfOrigin(countryOfOrigin);
                 }
+                neo4jTemplate.saveAs(concept, SimilarToDtoProjection.class);
             }
             default -> objectRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
         }
 
-        final XtdConcept persistentConcept = getRepository().save(concept);
-        log.info("Updated relationship: {}", persistentConcept);
-        return persistentConcept;
+        log.info("Updated relationship: {}", concept);
+        return concept;
     }
 
     @Transactional
@@ -271,14 +282,14 @@ public class ConceptRecordServiceImpl
             multiLanguage = new XtdMultiLanguageText();
             multiLanguage = multiLanguageTextRepository.save(multiLanguage);
             item.getDescriptions().add(multiLanguage);
-            neo4jTemplate.saveAs(item, UpdateConceptDescriptionsDtoProjection.class);
+            neo4jTemplate.saveAs(item, DescriptionsDtoProjection.class);
         } else {
             multiLanguage = multiLanguageTextRecordService.findByIdWithDirectRelations(multiLanguage.getId())
                     .orElse(null);
         }
         multiLanguage.getTexts().add(text);
 
-        neo4jTemplate.saveAs(multiLanguage, MultiLanguageTextDtoProjection.class);
+        neo4jTemplate.saveAs(multiLanguage, TextsDtoProjection.class);
 
         return item;
     }

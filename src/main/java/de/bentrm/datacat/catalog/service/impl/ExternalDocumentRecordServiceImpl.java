@@ -9,6 +9,7 @@ import de.bentrm.datacat.catalog.repository.ExternalDocumentRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.ExternalDocumentRecordService;
 import de.bentrm.datacat.catalog.service.LanguageRecordService;
+import de.bentrm.datacat.catalog.service.dto.Relationships.LanguagesDtoProjection;
 import lombok.extern.slf4j.Slf4j;
 import de.bentrm.datacat.catalog.service.ConceptRecordService;
 
@@ -97,8 +98,8 @@ public class ExternalDocumentRecordServiceImpl
                 break;
         }
 
-        final XtdExternalDocument persistentExternalDocument = getRepository().save(externalDocument);
-        log.trace("Updated external document: {}", persistentExternalDocument);
-        return persistentExternalDocument;
+        neo4jTemplate.saveAs(externalDocument, LanguagesDtoProjection.class);
+        log.trace("Updated external document: {}", externalDocument);
+        return externalDocument;
     }
 }

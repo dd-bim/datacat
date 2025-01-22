@@ -8,6 +8,7 @@ import de.bentrm.datacat.catalog.repository.IntervalRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.IntervalRecordService;
 import de.bentrm.datacat.catalog.service.ValueListRecordService;
+import de.bentrm.datacat.catalog.service.dto.Relationships.IntervallMaxMinDtoProjection;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,8 +97,9 @@ public class IntervalRecordServiceImpl
                 }
             default -> log.error("Unsupported relation type: {}", relationType);
         }
-        final XtdInterval persistentInterval = getRepository().save(interval);
-        log.trace("Updated interval: {}", persistentInterval);
-        return persistentInterval;
+        
+        neo4jTemplate.saveAs(interval, IntervallMaxMinDtoProjection.class);
+        log.trace("Updated interval: {}", interval);
+        return interval;
     }
 }

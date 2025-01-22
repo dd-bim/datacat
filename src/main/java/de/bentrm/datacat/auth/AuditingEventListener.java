@@ -27,7 +27,7 @@ public class AuditingEventListener implements BeforeBindCallback<Entity> {
     //     publisher.publishEvent(toAuditEvent(event));
     // }
     @Override
-    public Entity onBeforeBind(@NonNull Entity entity) {
+    public @NonNull Entity onBeforeBind(@NonNull Entity entity) {
         publisher.publishEvent(toAuditEvent("BEFORE_BIND", entity));
         return entity;
     }

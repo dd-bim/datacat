@@ -1,6 +1,6 @@
 package de.bentrm.datacat.catalog.service.dto;
 
-public interface UpdateObjectPropertiesDtoProjection extends EntityDtoProjection {
+public interface ObjectDtoProjection extends EntityDtoProjection {
 
     int getMajorVersion();
     int getMinorVersion();

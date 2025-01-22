@@ -15,7 +15,6 @@ import java.time.Instant;
  */
 @Slf4j
 @Component
-// public class PreSaveEventListener extends EventListenerAdapter {
 public class PreSaveEventListener implements BeforeBindCallback<Entity> {
 
     @Autowired
@@ -23,18 +22,12 @@ public class PreSaveEventListener implements BeforeBindCallback<Entity> {
 
     /**
      * Called before save of any database entity.
-     * @param event The current persistence event.
+     * @param entity The entity to persist.
      */
     @Override
-    // public void onPreSave(Event event) {
-    public Entity onBeforeBind(@NonNull Entity entity) {
+    public @NonNull Entity onBeforeBind(@NonNull Entity entity) {
         final String currentAuditor = auditorAware.getCurrentAuditor().orElse("SYSTEM");
         Instant now = Instant.now();
-
-        // log.info("PreSaveEventListener is called: {}", entity);
-        // Object obj = event.getObject();
-
-        // if (obj instanceof Entity entity) {
 
             if (entity.getCreated() == null) {
                 entity.setCreated(now);
@@ -44,7 +37,7 @@ public class PreSaveEventListener implements BeforeBindCallback<Entity> {
             }
             entity.setLastModified(now);
             entity.setLastModifiedBy(currentAuditor);
-        // }
+
         return entity;
     }
 

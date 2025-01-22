@@ -8,6 +8,7 @@ import de.bentrm.datacat.catalog.domain.XtdSubject;
 import de.bentrm.datacat.catalog.repository.SubjectRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.SubjectRecordService;
+import de.bentrm.datacat.catalog.service.dto.Relationships.PropertiesDtoProjection;
 import de.bentrm.datacat.catalog.service.ConceptRecordService;
 import de.bentrm.datacat.catalog.service.PropertyRecordService;
 import de.bentrm.datacat.catalog.service.RelationshipToSubjectRecordService;
@@ -114,8 +115,8 @@ public class SubjectRecordServiceImpl
             default -> conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
         }
 
-        final XtdSubject persistentSubject = getRepository().save(subject);
-        log.trace("Updated relationship: {}", persistentSubject);
-        return persistentSubject;
+        neo4jTemplate.saveAs(subject, PropertiesDtoProjection.class);
+        log.trace("Updated relationship: {}", subject);
+        return subject;
     }
 }

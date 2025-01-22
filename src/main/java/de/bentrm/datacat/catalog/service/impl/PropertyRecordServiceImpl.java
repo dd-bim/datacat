@@ -20,6 +20,12 @@ import de.bentrm.datacat.catalog.service.SubjectRecordService;
 import de.bentrm.datacat.catalog.service.SymbolRecordService;
 import de.bentrm.datacat.catalog.service.UnitRecordService;
 import de.bentrm.datacat.catalog.service.ValueListRecordService;
+import de.bentrm.datacat.catalog.service.dto.Relationships.BoundaryValuesDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.DimensionDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.PossibleValuesDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.QuantityKindsDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.SymbolsDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.UnitsDtoProjection;
 import de.bentrm.datacat.catalog.service.ConceptRecordService;
 import de.bentrm.datacat.catalog.service.DimensionRecordService;
 import de.bentrm.datacat.catalog.service.IntervalRecordService;
@@ -199,6 +205,7 @@ public class PropertyRecordServiceImpl extends AbstractSimpleRecordServiceImpl<X
 
                         property.getSymbols().clear();
                         property.getSymbols().addAll(relatedSymbols);
+                        neo4jTemplate.saveAs(property, SymbolsDtoProjection.class);
                 }
                 case Units -> {
                         final Iterable<XtdUnit> units = unitRecordService.findAllEntitiesById(relatedRecordIds);
@@ -207,6 +214,7 @@ public class PropertyRecordServiceImpl extends AbstractSimpleRecordServiceImpl<X
 
                         property.getUnits().clear();
                         property.getUnits().addAll(relatedUnits);
+                        neo4jTemplate.saveAs(property, UnitsDtoProjection.class);
                 }
                 case Dimension -> {
                         if (property.getDimension() != null) {
@@ -218,6 +226,7 @@ public class PropertyRecordServiceImpl extends AbstractSimpleRecordServiceImpl<X
                                                 .findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
                                 property.setDimension(dimension);
                         }
+                        neo4jTemplate.saveAs(property, DimensionDtoProjection.class);
                 }
                 case BoundaryValues -> {
                         final Iterable<XtdInterval> intervals = intervalRecordService
@@ -227,6 +236,7 @@ public class PropertyRecordServiceImpl extends AbstractSimpleRecordServiceImpl<X
 
                         property.getBoundaryValues().clear();
                         property.getBoundaryValues().addAll(relatedIntervals);
+                        neo4jTemplate.saveAs(property, BoundaryValuesDtoProjection.class);
                 }
                 case QuantityKinds -> {
                         final Iterable<XtdQuantityKind> quantityKinds = quantityKindRecordService
@@ -236,6 +246,7 @@ public class PropertyRecordServiceImpl extends AbstractSimpleRecordServiceImpl<X
 
                         property.getQuantityKinds().clear();
                         property.getQuantityKinds().addAll(relatedQuantityKinds);
+                        neo4jTemplate.saveAs(property, QuantityKindsDtoProjection.class);
                 }
                 case PossibleValues -> {
                         final Iterable<XtdValueList> valueLists = valueListRecordService
@@ -245,12 +256,12 @@ public class PropertyRecordServiceImpl extends AbstractSimpleRecordServiceImpl<X
 
                         property.getPossibleValues().clear();
                         property.getPossibleValues().addAll(relatedValueLists);
+                        neo4jTemplate.saveAs(property, PossibleValuesDtoProjection.class);
                 }
                 default -> conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
                 }
 
-                final XtdProperty persistentProperty = getRepository().save(property);
-                log.trace("Updated relationship: {}", persistentProperty);
-                return persistentProperty;
+                log.trace("Updated relationship: {}", property);
+                return property;
         }
 }

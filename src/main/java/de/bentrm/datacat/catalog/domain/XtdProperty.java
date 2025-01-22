@@ -65,10 +65,12 @@ public class XtdProperty extends XtdConcept {
 
     // List of properties connected to the current property. The connection can be a
     // specialization or a dependency.
+    @ToString.Include
     @Relationship(type = XtdRelationshipToProperty.RELATIONSHIP_TYPE)
     private Set<XtdRelationshipToProperty> connectedProperties = new HashSet<>();
 
     // Incomming relations
+    @ToString.Include
     @Relationship(type = XtdRelationshipToProperty.RELATIONSHIP_TYPE, direction = Relationship.Direction.INCOMING)
     private Set<XtdRelationshipToProperty> connectingProperties = new HashSet<>();
 

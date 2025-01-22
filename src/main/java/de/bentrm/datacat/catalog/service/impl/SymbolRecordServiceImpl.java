@@ -10,6 +10,8 @@ import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.SubjectRecordService;
 import de.bentrm.datacat.catalog.service.SymbolRecordService;
 import de.bentrm.datacat.catalog.service.TextRecordService;
+import de.bentrm.datacat.catalog.service.dto.Relationships.SubjectDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.SymbolDtoProjection;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,6 +93,7 @@ public class SymbolRecordServiceImpl
                     final XtdSubject subject = subjectRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
                     symbol.setSubject(subject);
                 }
+                neo4jTemplate.saveAs(symbol, SubjectDtoProjection.class);
             }
             case Symbol -> {
                 if (symbol.getSymbol() != null) {
@@ -101,12 +104,12 @@ public class SymbolRecordServiceImpl
                     final XtdText text = textRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
                     symbol.setSymbol(text);
                 }
+                neo4jTemplate.saveAs(symbol, SymbolDtoProjection.class);
             }
             default -> log.error("Unsupported relation type: {}", relationType);
         }
 
-        final XtdSymbol persistentSymbol = getRepository().save(symbol);
-        log.trace("Updated relationship: {}", persistentSymbol);
-        return persistentSymbol;
+        log.trace("Updated relationship: {}", symbol);
+        return symbol;
     }
 }

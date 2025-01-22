@@ -7,9 +7,11 @@ import de.bentrm.datacat.catalog.domain.XtdValueList;
 import de.bentrm.datacat.catalog.domain.XtdValue;
 import de.bentrm.datacat.catalog.repository.OrderedValueRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
+import de.bentrm.datacat.catalog.service.ObjectRecordService;
 import de.bentrm.datacat.catalog.service.OrderedValueRecordService;
 import de.bentrm.datacat.catalog.service.ValueListRecordService;
 import de.bentrm.datacat.catalog.service.ValueRecordService;
+import de.bentrm.datacat.catalog.service.dto.Relationships.OrderedValueDtoProjection;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,20 +34,22 @@ import java.util.stream.StreamSupport;
 @Service
 @Validated
 @Transactional(readOnly = true)
-public class OrderedValueRecordServiceImpl
-        extends AbstractSimpleRecordServiceImpl<XtdOrderedValue, OrderedValueRepository>
-        implements OrderedValueRecordService {
+public class OrderedValueRecordServiceImpl extends
+        AbstractSimpleRecordServiceImpl<XtdOrderedValue, OrderedValueRepository> implements OrderedValueRecordService {
 
-        @Autowired
-        private ValueRecordService valueRecordService;
+    @Autowired
+    private ValueRecordService valueRecordService;
 
-        @Autowired
-        @Lazy
-        private ValueListRecordService valueListRecordService;
+    @Autowired
+    @Lazy
+    private ValueListRecordService valueListRecordService;
 
-    public OrderedValueRecordServiceImpl(Neo4jTemplate neo4jTemplate,
-                                    OrderedValueRepository repository,
-                                    CatalogCleanupService cleanupService) {
+    @Autowired
+    @Lazy
+    private ObjectRecordService objectRecordService;
+
+    public OrderedValueRecordServiceImpl(Neo4jTemplate neo4jTemplate, OrderedValueRepository repository,
+            CatalogCleanupService cleanupService) {
         super(XtdOrderedValue.class, neo4jTemplate, repository, cleanupService);
     }
 
@@ -69,38 +73,38 @@ public class OrderedValueRecordServiceImpl
     @Override
     public List<XtdValueList> getValueLists(@NotNull XtdOrderedValue orderedValue) {
         Assert.notNull(orderedValue.getId(), "OrderedValue must be persistent.");
-        final List<String> valueListIds = getRepository().findAllValueListIdsAssigningOrderedValue(orderedValue.getId());
+        final List<String> valueListIds = getRepository()
+                .findAllValueListIdsAssigningOrderedValue(orderedValue.getId());
         final Iterable<XtdValueList> valueLists = valueListRecordService.findAllEntitiesById(valueListIds);
 
-        return StreamSupport
-                .stream(valueLists.spliterator(), false)
-                .collect(Collectors.toList());
+        return StreamSupport.stream(valueLists.spliterator(), false).collect(Collectors.toList());
     }
 
     @Transactional
     @Override
     public @NotNull XtdOrderedValue setRelatedRecords(@NotBlank String recordId,
-                                                    @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
+            @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
         final XtdOrderedValue orderedValue = getRepository().findById(recordId).orElseThrow();
 
         switch (relationType) {
-            case Value:
-                if (orderedValue.getOrderedValue() != null) {
-                    throw new IllegalArgumentException("OrderedValue already has a Value assigned.");
-                } else if (relatedRecordIds.size() != 1) {
-                    throw new IllegalArgumentException("Exactly one Value must be assigned to an OrderedValue.");
-                } else {
-                    final XtdValue value = valueRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
-                    orderedValue.setOrderedValue(value);
-                }
-            default:
-                log.error("Unsupported relation type: {}", relationType);
-                break;
-        }   
-        
-        final XtdOrderedValue persistentOrderedValue = getRepository().save(orderedValue);
-        log.trace("Updated relationship: {}", persistentOrderedValue);
-        return persistentOrderedValue;
+        case Value:
+            if (orderedValue.getOrderedValue() != null) {
+                throw new IllegalArgumentException("OrderedValue already has a Value assigned.");
+            } else if (relatedRecordIds.size() != 1) {
+                throw new IllegalArgumentException("Exactly one Value must be assigned to an OrderedValue.");
+            } else {
+                final XtdValue value = valueRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0))
+                        .orElseThrow();
+                orderedValue.setOrderedValue(value);
+            }
+        default:
+            objectRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
+            break;
+        }
+
+        neo4jTemplate.saveAs(orderedValue, OrderedValueDtoProjection.class);
+        log.trace("Updated relationship: {}", orderedValue);
+        return orderedValue;
     }
 }
