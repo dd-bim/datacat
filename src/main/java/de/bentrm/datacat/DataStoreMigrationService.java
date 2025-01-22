@@ -23,7 +23,6 @@ import org.springframework.util.Assert;
 
 import de.bentrm.datacat.base.domain.Migration;
 import de.bentrm.datacat.base.repository.MigrationRepository;
-import de.bentrm.datacat.util.UtilMapper;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,7 +42,7 @@ public class DataStoreMigrationService implements ApplicationRunner, ResourceLoa
     private final Neo4jClient neo4jClient;
     private ResourceLoader resourceLoader;
 
-    public DataStoreMigrationService(MigrationRepository migrationRepository, Neo4jClient neo4jClient, UtilMapper utilMapper) {
+    public DataStoreMigrationService(MigrationRepository migrationRepository, Neo4jClient neo4jClient) {
         this.migrationRepository = migrationRepository;
         this.neo4jClient = neo4jClient;
     }
