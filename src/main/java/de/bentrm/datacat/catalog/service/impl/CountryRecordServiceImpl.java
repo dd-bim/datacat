@@ -67,7 +67,7 @@ public class CountryRecordServiceImpl
     public @NotNull XtdCountry setRelatedRecords(@NotBlank String recordId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdCountry country = getRepository().findById(recordId).orElseThrow();
+        final XtdCountry country = getRepository().findById(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
             case Subdivisions -> {

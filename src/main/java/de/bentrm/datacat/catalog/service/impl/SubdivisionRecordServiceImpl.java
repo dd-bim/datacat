@@ -59,7 +59,7 @@ public class SubdivisionRecordServiceImpl extends AbstractSimpleRecordServiceImp
     public @NotNull XtdSubdivision setRelatedRecords(@NotBlank String recordId,
             @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdSubdivision subdivision = getRepository().findById(recordId).orElseThrow();
+        final XtdSubdivision subdivision = getRepository().findById(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
         case Subdivisions -> {

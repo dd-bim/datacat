@@ -41,7 +41,7 @@ public class RationalRecordServiceImpl
     public @NotNull XtdRational setRelatedRecords(@NotBlank String recordId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdRational rational = getRepository().findByIdWithDirectRelations(recordId).orElseThrow();
+        final XtdRational rational = getRepository().findByIdWithDirectRelations(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         return rational;
     }

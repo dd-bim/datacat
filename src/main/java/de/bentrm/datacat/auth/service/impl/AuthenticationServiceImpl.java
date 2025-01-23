@@ -106,7 +106,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void fulfillEmailConfirmationRequest(@NotNull String confirmationToken) {
-        final EmailConfirmationRequest request = emailConfirmationRepository.findByToken(confirmationToken, 1).orElseThrow();
+        final EmailConfirmationRequest request = emailConfirmationRepository.findByToken(confirmationToken, 1).orElseThrow(() -> new EmailConfirmationException("Confirmation Token is invalid."));
 
         if (request.isExpired()) {
             throw new EmailConfirmationException("Confirmation Token is expired.");

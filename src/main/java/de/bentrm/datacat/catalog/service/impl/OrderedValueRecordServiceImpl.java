@@ -65,7 +65,7 @@ public class OrderedValueRecordServiceImpl extends
         if (valueId == null) {
             return null;
         }
-        final XtdValue value = valueRecordService.findById(valueId).orElseThrow();
+        final XtdValue value = valueRecordService.findById(valueId).orElseThrow(() -> new IllegalArgumentException("No record with id " + valueId + " found."));
 
         return value;
     }
@@ -85,7 +85,7 @@ public class OrderedValueRecordServiceImpl extends
     public @NotNull XtdOrderedValue setRelatedRecords(@NotBlank String recordId,
             @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdOrderedValue orderedValue = getRepository().findById(recordId).orElseThrow();
+        final XtdOrderedValue orderedValue = getRepository().findById(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
         case Value:
@@ -95,7 +95,7 @@ public class OrderedValueRecordServiceImpl extends
                 throw new IllegalArgumentException("Exactly one Value must be assigned to an OrderedValue.");
             } else {
                 final XtdValue value = valueRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0))
-                        .orElseThrow();
+                        .orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                 orderedValue.setOrderedValue(value);
             }
         default:

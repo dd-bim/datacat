@@ -45,7 +45,7 @@ public class RelationshipTypeRecordServiceImpl
     public @NotNull XtdRelationshipType setRelatedRecords(@NotBlank String recordId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdRelationshipType relationshipType = getRepository().findByIdWithDirectRelations(recordId).orElseThrow();
+        final XtdRelationshipType relationshipType = getRepository().findByIdWithDirectRelations(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
             default -> conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);

@@ -153,7 +153,7 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
 
     @Transactional
     public XtdText createText(TranslationInput translation) {
-        final XtdLanguage language = languageRepository.findByCode(translation.getLanguageTag()).orElseThrow();
+        final XtdLanguage language = languageRepository.findByCode(translation.getLanguageTag()).orElseThrow(() -> new IllegalArgumentException("No language record with code " + translation.getLanguageTag() + " found."));
 
         final XtdText text = new XtdText();
         text.setText(translation.getValue());
@@ -170,7 +170,7 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
         log.trace("Deleting simple catalog record with id {}...", id);
         final T entry = this.getRepository()
                 .findByIdWithDirectRelations(id)
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException("No record with id " + id + " found."));
 
         cleanupService.deleteNodeWithRelationships(id);
 
@@ -186,7 +186,7 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
         log.trace("Deleting relationship from record with id {}...", recordId);
         final T entry = this.getRepository()
                 .findByIdWithDirectRelations(recordId)
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         cleanupService.purgeRelationship(recordId, relatedRecordId, relationType);
         return entry;
@@ -198,7 +198,7 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
             @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
         T record = this.getRepository()
                 .findById(recordId)
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
         return record;
     }
 }

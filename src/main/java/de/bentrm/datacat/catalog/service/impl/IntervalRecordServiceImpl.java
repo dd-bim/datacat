@@ -72,7 +72,7 @@ public class IntervalRecordServiceImpl
     public @NotNull XtdInterval setRelatedRecords(@NotBlank String recordId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdInterval interval = getRepository().findByIdWithDirectRelations(recordId).orElseThrow();
+        final XtdInterval interval = getRepository().findByIdWithDirectRelations(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
             case Minimum -> {
@@ -81,7 +81,7 @@ public class IntervalRecordServiceImpl
                 } else if (relatedRecordIds.size() > 1) {
                     throw new IllegalArgumentException("Maximum one value list must be provided.");
                 } else {
-                    final XtdValueList valueList = valueListRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
+                    final XtdValueList valueList = valueListRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                     interval.setMinimum(valueList);
                 }
                 }
@@ -91,7 +91,7 @@ public class IntervalRecordServiceImpl
                 } else if (relatedRecordIds.size() > 1) {
                     throw new IllegalArgumentException("Maximum one value list must be provided.");
                 } else {
-                    final XtdValueList valueList = valueListRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
+                    final XtdValueList valueList = valueListRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                     interval.setMaximum(valueList);
                 }
                 }

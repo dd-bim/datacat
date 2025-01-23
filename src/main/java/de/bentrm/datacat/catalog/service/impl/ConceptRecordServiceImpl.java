@@ -180,7 +180,7 @@ public class ConceptRecordServiceImpl
     public @NotNull XtdConcept setRelatedRecords(@NotBlank String recordId,
             @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdConcept concept = getRepository().findById(recordId).orElseThrow();
+        final XtdConcept concept = getRepository().findById(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
             case Definition -> {
@@ -190,7 +190,7 @@ public class ConceptRecordServiceImpl
                     throw new IllegalArgumentException("Exactly one definition must be given.");
                 } else {
                     final XtdMultiLanguageText definition = multiLanguageTextRecordService
-                            .findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
+                            .findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                     concept.setDefinition(definition);
                 }
                 neo4jTemplate.saveAs(concept, DefinitionDtoProjection.class);
@@ -213,7 +213,7 @@ public class ConceptRecordServiceImpl
                     throw new IllegalArgumentException("Exactly one language of creator must be given.");
                 } else {
                     final XtdLanguage languageOfCreator = languageRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0))
-                            .orElseThrow();
+                            .orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                     concept.setLanguageOfCreator(languageOfCreator);
                 }
                 neo4jTemplate.saveAs(concept, LanguageOfCreatorDtoProjection.class);
@@ -257,7 +257,7 @@ public class ConceptRecordServiceImpl
                     throw new IllegalArgumentException("Exactly one country of origin must be given.");
                 } else {
                     final XtdCountry countryOfOrigin = countryRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0))
-                            .orElseThrow();
+                            .orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                     concept.setCountryOfOrigin(countryOfOrigin);
                 }
                 neo4jTemplate.saveAs(concept, SimilarToDtoProjection.class);
@@ -272,7 +272,7 @@ public class ConceptRecordServiceImpl
     @Transactional
     @Override
     public XtdConcept addDescription(AddDescriptionInput input) {
-        final XtdConcept item = getRepository().findByIdWithDirectRelations(input.getCatalogEntryId()).orElseThrow();
+        final XtdConcept item = getRepository().findByIdWithDirectRelations(input.getCatalogEntryId()).orElseThrow(() -> new IllegalArgumentException("No record with id " + input.getCatalogEntryId() + " found."));
         TranslationInput translation = input.getDescription();
 
         XtdText text = createText(translation);       
@@ -297,7 +297,7 @@ public class ConceptRecordServiceImpl
     @Transactional
     public XtdText createText(TranslationInput translation) {
 
-        final XtdLanguage language = languageRecordService.findByCode(translation.getLanguageTag()).orElseThrow();
+        final XtdLanguage language = languageRecordService.findByCode(translation.getLanguageTag()).orElseThrow(() -> new IllegalArgumentException("No language record with id " + translation.getLanguageTag() + " found."));
 
         XtdText text = new XtdText();
         text.setText(translation.getValue());

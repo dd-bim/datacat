@@ -66,7 +66,7 @@ public abstract class AbstractRelationshipRecordServiceImpl<T extends AbstractRe
     public @NotNull T removeRecord(@NotBlank String id) {
         final T relationshipRecord = this.getRepository()
                 .findByIdWithDirectRelations(id)
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException("No record with id " + id + " found."));
 
         log.trace("Deleting record {}...", id);
         cleanupService.deleteNodeWithRelationships(id);
@@ -80,7 +80,7 @@ public abstract class AbstractRelationshipRecordServiceImpl<T extends AbstractRe
         log.trace("Deleting relationship from record with id {}...", recordId);
         final T entry = this.getRepository()
                 .findByIdWithDirectRelations(recordId)
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         cleanupService.purgeRelationship(recordId, relatedRecordId, relationType);
         return entry;
@@ -95,7 +95,7 @@ public abstract class AbstractRelationshipRecordServiceImpl<T extends AbstractRe
             @NotEmpty List<@NotBlank String> relatedRecordIds) {
         T record = this.getRepository()
                 .findById(relationshipId)
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException("No record with id " + relationshipId + " found."));
 
         log.trace("Setting related records with ids: {}", relatedRecordIds);
         this.setRelatedRecords(record, relatedRecordIds);
@@ -115,7 +115,7 @@ public abstract class AbstractRelationshipRecordServiceImpl<T extends AbstractRe
             @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
         T record = this.getRepository()
                 .findById(recordId)
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
         return record;
     }
 }

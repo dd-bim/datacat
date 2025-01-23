@@ -82,7 +82,7 @@ public class QuantityKindRecordServiceImpl extends
     public @NotNull XtdQuantityKind setRelatedRecords(@NotBlank String recordId,
             @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdQuantityKind quantityKind = getRepository().findById(recordId).orElseThrow();
+        final XtdQuantityKind quantityKind = getRepository().findById(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
         case Units -> {
@@ -101,7 +101,7 @@ public class QuantityKindRecordServiceImpl extends
                 throw new IllegalArgumentException("Exactly one dimension must be assigned.");
             } else {
                 final XtdDimension dimension = dimensionRecordService
-                        .findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
+                        .findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                 quantityKind.setDimension(dimension);
             }
             neo4jTemplate.saveAs(quantityKind, DimensionDtoProjection.class);

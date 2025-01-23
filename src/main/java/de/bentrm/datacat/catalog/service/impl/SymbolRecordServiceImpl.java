@@ -72,7 +72,7 @@ public class SymbolRecordServiceImpl
         if (textId == null) {
             return null;
         }
-        final XtdText text = textRecordService.findByIdWithDirectRelations(textId).orElseThrow();
+        final XtdText text = textRecordService.findByIdWithDirectRelations(textId).orElseThrow(() -> new IllegalArgumentException("No record with id " + textId + " found."));
         return text;
     }
 
@@ -81,7 +81,7 @@ public class SymbolRecordServiceImpl
     public @NotNull XtdSymbol setRelatedRecords(@NotBlank String recordId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdSymbol symbol = getRepository().findByIdWithDirectRelations(recordId).orElseThrow();
+        final XtdSymbol symbol = getRepository().findByIdWithDirectRelations(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
             case Subject -> {
@@ -90,7 +90,7 @@ public class SymbolRecordServiceImpl
                 } else if (relatedRecordIds.size() != 1) {
                     throw new IllegalArgumentException("Exactly one subject must be assigned.");
                 } else {
-                    final XtdSubject subject = subjectRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
+                    final XtdSubject subject = subjectRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                     symbol.setSubject(subject);
                 }
                 neo4jTemplate.saveAs(symbol, SubjectDtoProjection.class);
@@ -101,7 +101,7 @@ public class SymbolRecordServiceImpl
                 } else if (relatedRecordIds.size() != 1) {
                     throw new IllegalArgumentException("Exactly one text must be assigned.");
                 } else {
-                    final XtdText text = textRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
+                    final XtdText text = textRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                     symbol.setSymbol(text);
                 }
                 neo4jTemplate.saveAs(symbol, SymbolDtoProjection.class);

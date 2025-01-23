@@ -70,7 +70,7 @@ public class MultiLanguageTextRecordServiceImpl
     public @NotNull XtdMultiLanguageText setRelatedRecords(@NotBlank String recordId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdMultiLanguageText multiLanguageText = getRepository().findById(recordId).orElseThrow();
+        final XtdMultiLanguageText multiLanguageText = getRepository().findById(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
             case Texts -> {

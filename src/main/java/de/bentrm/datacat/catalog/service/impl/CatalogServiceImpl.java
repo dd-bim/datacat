@@ -87,7 +87,7 @@ public class CatalogServiceImpl implements CatalogService {
     @Transactional
     @Override
     public @NotNull Tag updateTag(String id, String name) {
-        final Tag tag = tagRepository.findByIdWithDirectRelations(id).orElseThrow();
+        final Tag tag = tagRepository.findByIdWithDirectRelations(id).orElseThrow(() -> new IllegalArgumentException("No tag with id " + id + " found."));
         tag.setName(name);
         neo4jTemplate.saveAs(tag, TagDtoProjection.class);
         return tag;
@@ -97,7 +97,7 @@ public class CatalogServiceImpl implements CatalogService {
     @Override
     public @NotNull Tag deleteTag(String id) {
         Assert.notNull(id, "id may not be null.");
-        final Tag tag = tagRepository.findById(id).orElseThrow();
+        final Tag tag = tagRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("No tag with id " + id + " found."));
         tagRepository.deleteById(id);
         return tag;
     }
@@ -105,8 +105,8 @@ public class CatalogServiceImpl implements CatalogService {
     @Transactional
     @Override
     public CatalogRecord addTag(String entryId, String tagId) {
-        CatalogRecord item = catalogRecordRepository.findByIdWithDirectRelations(entryId).orElseThrow();
-        final Tag tag = tagRepository.findByIdWithDirectRelations(tagId).orElseThrow();
+        CatalogRecord item = catalogRecordRepository.findByIdWithDirectRelations(entryId).orElseThrow(() -> new IllegalArgumentException("No record with id " + entryId + " found."));
+        final Tag tag = tagRepository.findByIdWithDirectRelations(tagId).orElseThrow(() -> new IllegalArgumentException("No record with tag " + tagId + " found."));
         item.addTag(tag);
         neo4jTemplate.saveAs(item, CatalogRecordDtoProjection.class);
         return item;
@@ -115,8 +115,8 @@ public class CatalogServiceImpl implements CatalogService {
     @Transactional
     @Override
     public CatalogRecord removeTag(String entryId, String tagId) {
-        final CatalogRecord item = catalogRecordRepository.findByIdWithDirectRelations(entryId).orElseThrow();
-        final Tag tag = tagRepository.findByIdWithDirectRelations(tagId).orElseThrow();
+        final CatalogRecord item = catalogRecordRepository.findByIdWithDirectRelations(entryId).orElseThrow(() -> new IllegalArgumentException("No record with id " + entryId + " found."));
+        final Tag tag = tagRepository.findByIdWithDirectRelations(tagId).orElseThrow(() -> new IllegalArgumentException("No record with tag " + tagId + " found."));
         item.removeTag(tag);
         neo4jTemplate.saveAs(item, CatalogRecordDtoProjection.class);
         return item;

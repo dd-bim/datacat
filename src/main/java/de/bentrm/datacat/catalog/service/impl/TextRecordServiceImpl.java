@@ -68,7 +68,7 @@ public class TextRecordServiceImpl
     public @NotNull XtdText setRelatedRecords(@NotBlank String recordId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdText text = getRepository().findById(recordId).orElseThrow();
+        final XtdText text = getRepository().findById(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
             case Language -> {
@@ -77,7 +77,7 @@ public class TextRecordServiceImpl
                 } else if (relatedRecordIds.size() != 1) {
                     throw new IllegalArgumentException("Exactly one language must be assigned to a text.");
                 } else {
-                    final XtdLanguage language = neo4jTemplate.findById(relatedRecordIds.get(0), XtdLanguage.class).orElseThrow();
+                    final XtdLanguage language = neo4jTemplate.findById(relatedRecordIds.get(0), XtdLanguage.class).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
 
                     text.setLanguage(language);
                 }
@@ -93,7 +93,7 @@ public class TextRecordServiceImpl
     @Transactional
     @Override
     public XtdText updateText(String textId, String value) {
-        final XtdText item = getRepository().findById(textId).orElseThrow();
+        final XtdText item = getRepository().findById(textId).orElseThrow(() -> new IllegalArgumentException("No record with id " + textId + " found."));
         item.setText(value.trim());
         neo4jTemplate.saveAs(item, TextDtoProjection.class);
         return item;
@@ -102,7 +102,7 @@ public class TextRecordServiceImpl
     @Transactional
     @Override
     public XtdText deleteText(String textId) {
-        final XtdText item = getRepository().findById(textId).orElseThrow();
+        final XtdText item = getRepository().findById(textId).orElseThrow(() -> new IllegalArgumentException("No record with id " + textId + " found."));
         getRepository().deleteById(textId);
         return item;
     }

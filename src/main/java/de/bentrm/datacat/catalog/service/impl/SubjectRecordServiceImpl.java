@@ -100,7 +100,7 @@ public class SubjectRecordServiceImpl
     public @NotNull XtdSubject setRelatedRecords(@NotBlank String recordId,
             @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdSubject subject = getRepository().findByIdWithDirectRelations(recordId).orElseThrow();
+        final XtdSubject subject = getRepository().findByIdWithDirectRelations(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
             case Properties -> {

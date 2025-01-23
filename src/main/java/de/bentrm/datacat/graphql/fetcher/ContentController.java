@@ -135,14 +135,14 @@ public class ContentController {
     @MutationMapping
     protected AddTagPayload addTag(@Argument AddTagInput input) {
         final CatalogRecord catalogRecord = catalogService.addTag(input.getCatalogEntryId(), input.getTagId());
-        final Tag tag = tagService.findById(input.getTagId()).orElseThrow();
+        final Tag tag = tagService.findById(input.getTagId()).orElseThrow(() -> new IllegalArgumentException("No tag with id " + input.getTagId() + " found."));
         return new AddTagPayload(catalogRecord, tag);
     }
 
     @MutationMapping
     protected RemoveTagPayload removeTag(@Argument RemoveTagInput input) {
         final CatalogRecord catalogRecord = catalogService.removeTag(input.getCatalogEntryId(), input.getTagId());
-        final Tag tag = tagService.findById(input.getTagId()).orElseThrow();
+        final Tag tag = tagService.findById(input.getTagId()).orElseThrow(() -> new IllegalArgumentException("No tag with id " + input.getTagId() + " found."));
         return new RemoveTagPayload(catalogRecord, tag);
     }
 

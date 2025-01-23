@@ -90,7 +90,7 @@ public class UnitRecordServiceImpl
         if (dimensionId == null) {
             return null;
         }
-        final XtdDimension dimension = dimensionRecordService.findByIdWithDirectRelations(dimensionId).orElseThrow();
+        final XtdDimension dimension = dimensionRecordService.findByIdWithDirectRelations(dimensionId).orElseThrow(() -> new IllegalArgumentException("No record with id " + dimensionId + " found."));
 
         return dimension;
     }
@@ -133,7 +133,7 @@ public class UnitRecordServiceImpl
     public @NotNull XtdUnit setRelatedRecords(@NotBlank String recordId,
             @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdUnit unit = getRepository().findByIdWithDirectRelations(recordId).orElseThrow();
+        final XtdUnit unit = getRepository().findByIdWithDirectRelations(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
             case Symbol -> {
@@ -143,7 +143,7 @@ public class UnitRecordServiceImpl
                     throw new IllegalArgumentException("Exactly one symbol must be assigned to a unit.");
                 } else {
                     final XtdMultiLanguageText symbol = multiLanguageTextRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0))
-                            .orElseThrow();
+                            .orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                     unit.setSymbol(symbol);
                 }
                 neo4jTemplate.saveAs(unit, SymbolDtoProjection.class);
@@ -154,7 +154,7 @@ public class UnitRecordServiceImpl
                 } else if (relatedRecordIds.size() != 1) {
                     throw new IllegalArgumentException("Exactly one offset must be assigned to a unit.");
                 } else {
-                    final XtdRational offset = rationalRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
+                    final XtdRational offset = rationalRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                     unit.setOffset(offset);
                 }
                 neo4jTemplate.saveAs(unit, OffsetDtoProjection.class);
@@ -165,7 +165,7 @@ public class UnitRecordServiceImpl
                 } else if (relatedRecordIds.size() != 1) {
                     throw new IllegalArgumentException("Exactly one coefficient must be assigned to a unit.");
                 } else {
-                    final XtdRational coefficient = rationalRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
+                    final XtdRational coefficient = rationalRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                     unit.setCoefficient(coefficient);
                 }
                 neo4jTemplate.saveAs(unit, CoefficientDtoProjection.class);
@@ -176,7 +176,7 @@ public class UnitRecordServiceImpl
                 } else if (relatedRecordIds.size() != 1) {
                     throw new IllegalArgumentException("Exactly one dimension must be assigned to a unit.");
                 } else {
-                    final XtdDimension dimension = dimensionRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
+                    final XtdDimension dimension = dimensionRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                     unit.setDimension(dimension);
                 }
                 neo4jTemplate.saveAs(unit, DimensionDtoProjection.class);

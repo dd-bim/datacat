@@ -33,7 +33,7 @@ public class ProfileServiceImpl implements ProfileService {
         return userRepository
                 .findByUsername(username)
                 .map(user -> valueMapper.toProfileDto(user))
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException("No account with username " + username + " found."));
     }
 
     @Transactional

@@ -145,7 +145,7 @@ public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Xtd
     public @NotNull XtdObject setRelatedRecords(@NotBlank String recordId,
             @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdObject object = getRepository().findById(recordId).orElseThrow();
+        final XtdObject object = getRepository().findById(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
         case Dictionary -> {
@@ -155,7 +155,7 @@ public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Xtd
                 throw new IllegalArgumentException("Exactly one dictionary must be assigned.");
             } else {
                 final XtdDictionary dictionary = dictionaryRecordService
-                        .findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
+                        .findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                 object.setDictionary(dictionary);
             }
             neo4jTemplate.saveAs(object, DictionaryDtoProjection.class);
@@ -167,7 +167,7 @@ public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Xtd
                 throw new IllegalArgumentException("Exactly one deprecation explanation must be assigned.");
             } else {
                 final XtdMultiLanguageText deprecationExplanation = multiLanguageTextRecordService
-                        .findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
+                        .findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                 object.setDeprecationExplanation(deprecationExplanation);
             }
             neo4jTemplate.saveAs(object, DeprecationExplanationDtoProjection.class);
@@ -191,7 +191,7 @@ public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Xtd
     @Transactional
     @Override
     public XtdObject addComment(AddCommentInput input) {
-        final XtdObject item = getRepository().findByIdWithDirectRelations(input.getCatalogEntryId()).orElseThrow();
+        final XtdObject item = getRepository().findByIdWithDirectRelations(input.getCatalogEntryId()).orElseThrow(() -> new IllegalArgumentException("No record with id " + input.getCatalogEntryId() + " found."));
         TranslationInput translation = input.getComment();
         
         XtdText text = createText(translation);
@@ -216,7 +216,7 @@ public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Xtd
     @Transactional
     @Override
     public XtdObject addName(AddNameInput input) {
-        final XtdObject item = getRepository().findByIdWithDirectRelations(input.getCatalogEntryId()).orElseThrow();
+        final XtdObject item = getRepository().findByIdWithDirectRelations(input.getCatalogEntryId()).orElseThrow(() -> new IllegalArgumentException("No record with id " + input.getCatalogEntryId() + " found."));
         TranslationInput translation = input.getName();
 
         XtdText text = createText(translation);
@@ -241,7 +241,7 @@ public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Xtd
     @Transactional
     public XtdText createText(TranslationInput translation) {
 
-        final XtdLanguage language = languageRecordService.findByCode(translation.getLanguageTag()).orElseThrow();
+        final XtdLanguage language = languageRecordService.findByCode(translation.getLanguageTag()).orElseThrow(() -> new IllegalArgumentException("No record with id " + translation.getLanguageTag() + " found."));
 
         XtdText text = new XtdText();
         text.setText(translation.getValue());
@@ -255,7 +255,7 @@ public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Xtd
     @Transactional
     @Override
     public @NotNull XtdObject updateStatus(String id, XtdStatusOfActivationEnum status) {
-        final XtdObject item = getRepository().findByIdWithDirectRelations(id).orElseThrow();
+        final XtdObject item = getRepository().findByIdWithDirectRelations(id).orElseThrow(() -> new IllegalArgumentException("No record with id " + id + " found."));
         item.setStatus(status);
         neo4jTemplate.saveAs(item, ObjectDtoProjection.class);
         return item;
@@ -264,7 +264,7 @@ public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Xtd
     @Transactional
     @Override
     public @NotNull XtdObject updateMajorVersion(String id, Integer majorVersion) {
-        final XtdObject item = getRepository().findByIdWithDirectRelations(id).orElseThrow();
+        final XtdObject item = getRepository().findByIdWithDirectRelations(id).orElseThrow(() -> new IllegalArgumentException("No record with id " + id + " found."));
         item.setMajorVersion(majorVersion);
         neo4jTemplate.saveAs(item, ObjectDtoProjection.class);
         return item;
@@ -273,7 +273,7 @@ public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Xtd
     @Transactional
     @Override
     public @NotNull XtdObject updateMinorVersion(String id, Integer minorVersion) {
-        final XtdObject item = getRepository().findByIdWithDirectRelations(id).orElseThrow();
+        final XtdObject item = getRepository().findByIdWithDirectRelations(id).orElseThrow(() -> new IllegalArgumentException("No record with id " + id + " found."));
         item.setMinorVersion(minorVersion);
         neo4jTemplate.saveAs(item, ObjectDtoProjection.class);
         return item;

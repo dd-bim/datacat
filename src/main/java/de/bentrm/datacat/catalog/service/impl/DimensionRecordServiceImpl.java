@@ -125,7 +125,7 @@ public class DimensionRecordServiceImpl
     public @NotNull XtdDimension setRelatedRecords(@NotBlank String recordId,
             @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdDimension dimension = getRepository().findById(recordId).orElseThrow();
+        final XtdDimension dimension = getRepository().findById(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
             case ThermodynamicTemperatureExponent -> {
@@ -135,7 +135,7 @@ public class DimensionRecordServiceImpl
                     throw new IllegalArgumentException(
                             "ThermodynamicTemperatureExponent requires exactly one related record.");
                 } else {
-                    final XtdRational rational = rationalRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
+                    final XtdRational rational = rationalRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                     dimension.setThermodynamicTemperatureExponent(rational);
                 }
             }
@@ -146,7 +146,7 @@ public class DimensionRecordServiceImpl
                     throw new IllegalArgumentException(
                             "AmountOfSubstanceExponent requires exactly one related record.");
                 } else {
-                    final XtdRational rational = rationalRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
+                    final XtdRational rational = rationalRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                     dimension.setAmountOfSubstanceExponent(rational);
                 }
             }
@@ -156,7 +156,7 @@ public class DimensionRecordServiceImpl
                 } else if (relatedRecordIds.size() != 1) {
                     throw new IllegalArgumentException("LengthExponent requires exactly one related record.");
                 } else {
-                    final XtdRational rational = rationalRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
+                    final XtdRational rational = rationalRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                     dimension.setLengthExponent(rational);
                 }
             }
@@ -166,7 +166,7 @@ public class DimensionRecordServiceImpl
                 } else if (relatedRecordIds.size() != 1) {
                     throw new IllegalArgumentException("MassExponent requires exactly one related record.");
                 } else {
-                    final XtdRational rational = rationalRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
+                    final XtdRational rational = rationalRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                     dimension.setMassExponent(rational);
                 }
             }
@@ -176,7 +176,7 @@ public class DimensionRecordServiceImpl
                 } else if (relatedRecordIds.size() != 1) {
                     throw new IllegalArgumentException("TimeExponent requires exactly one related record.");
                 } else {
-                    final XtdRational rational = rationalRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
+                    final XtdRational rational = rationalRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                     dimension.setTimeExponent(rational);
                 }
             }
@@ -186,7 +186,7 @@ public class DimensionRecordServiceImpl
                 } else if (relatedRecordIds.size() != 1) {
                     throw new IllegalArgumentException("ElectricCurrentExponent requires exactly one related record.");
                 } else {
-                    final XtdRational rational = rationalRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
+                    final XtdRational rational = rationalRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                     dimension.setElectricCurrentExponent(rational);
                 }
             }
@@ -197,7 +197,7 @@ public class DimensionRecordServiceImpl
                     throw new IllegalArgumentException(
                             "LuminousIntensityExponent requires exactly one related record.");
                 } else {
-                    final XtdRational rational = rationalRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
+                    final XtdRational rational = rationalRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                     dimension.setLuminousIntensityExponent(rational);
                 }
             }

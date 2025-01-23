@@ -54,7 +54,7 @@ public class DictionaryRecordServiceImpl
         if (nameId == null) {
             return null;
         }
-        final XtdMultiLanguageText name = multiLanguageTextRecordService.findByIdWithDirectRelations(nameId).orElseThrow();
+        final XtdMultiLanguageText name = multiLanguageTextRecordService.findByIdWithDirectRelations(nameId).orElseThrow(() -> new IllegalArgumentException("No record with id " + nameId + " found."));
         return name;
     }
 
@@ -63,7 +63,7 @@ public class DictionaryRecordServiceImpl
     public @NotNull XtdDictionary setRelatedRecords(@NotBlank String recordId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdDictionary dictionary = getRepository().findById(recordId).orElseThrow();
+        final XtdDictionary dictionary = getRepository().findById(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
             case Name -> {
@@ -72,7 +72,7 @@ public class DictionaryRecordServiceImpl
                 } else if (relatedRecordIds.size() != 1) {
                     throw new IllegalArgumentException("Exactly one name must be assigned to a dictionary.");
                 } else {
-                    final XtdMultiLanguageText name = multiLanguageTextRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
+                    final XtdMultiLanguageText name = multiLanguageTextRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                     dictionary.setName(name);
                 }   }
             default -> log.error("Unsupported relation type: {}", relationType);

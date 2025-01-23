@@ -82,7 +82,7 @@ public class ExternalDocumentRecordServiceImpl
     public @NotNull XtdExternalDocument setRelatedRecords(@NotBlank String recordId,
             @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdExternalDocument externalDocument = getRepository().findByIdWithDirectRelations(recordId).orElseThrow();
+        final XtdExternalDocument externalDocument = getRepository().findByIdWithDirectRelations(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
             case Languages:

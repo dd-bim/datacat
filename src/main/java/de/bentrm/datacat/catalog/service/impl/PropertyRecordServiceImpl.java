@@ -195,7 +195,7 @@ public class PropertyRecordServiceImpl extends AbstractSimpleRecordServiceImpl<X
         public @NotNull XtdProperty setRelatedRecords(@NotBlank String recordId,
                         @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-                final XtdProperty property = getRepository().findByIdWithDirectRelations(recordId).orElseThrow();
+                final XtdProperty property = getRepository().findByIdWithDirectRelations(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
                 switch (relationType) {
                 case Symbols -> {
@@ -223,7 +223,7 @@ public class PropertyRecordServiceImpl extends AbstractSimpleRecordServiceImpl<X
                                 throw new IllegalArgumentException("Exactly one dimension must be assigned.");
                         } else {
                                 final XtdDimension dimension = dimensionRecordService
-                                                .findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
+                                                .findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                                 property.setDimension(dimension);
                         }
                         neo4jTemplate.saveAs(property, DimensionDtoProjection.class);

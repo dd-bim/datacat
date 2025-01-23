@@ -61,7 +61,7 @@ private ObjectRecordService objectRecordService;
     public @NotNull XtdProperty getConnectingProperty(@NotNull XtdRelationshipToProperty relationshipToProperty) {
         Assert.notNull(relationshipToProperty, "RelationshipToProperty must not be null");
         final String propertyId = getRepository().findConnectingPropertyId(relationshipToProperty.getId());
-        return propertyRecordService.findByIdWithDirectRelations(propertyId).orElseThrow();
+        return propertyRecordService.findByIdWithDirectRelations(propertyId).orElseThrow(() -> new IllegalArgumentException("No record with id " + propertyId + " found."));
     }
 
     @Override
@@ -80,7 +80,7 @@ private ObjectRecordService objectRecordService;
    public @NotNull XtdRelationshipToProperty setRelatedRecords(@NotBlank String relationshipId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds) {
 
-       final XtdRelationshipToProperty relationship = getRepository().findByIdWithDirectRelations(relationshipId).orElseThrow();
+       final XtdRelationshipToProperty relationship = getRepository().findByIdWithDirectRelations(relationshipId).orElseThrow(() -> new IllegalArgumentException("No record with id " + relationshipId + " found."));
 
        final Iterable<XtdProperty> items = propertyRecordService.findAllEntitiesById(relatedRecordIds);
        final List<XtdProperty> related = StreamSupport
@@ -101,7 +101,7 @@ private ObjectRecordService objectRecordService;
                                      @NotBlank String relatingRecordId) {
         final XtdProperty relatingCatalogRecord = propertyRecordService
                 .findByIdWithDirectRelations(relatingRecordId)
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException("No record with id " + relatingRecordId + " found."));
         relationshipRecord.setConnectingProperty(relatingCatalogRecord);
         neo4jTemplate.saveAs(relationshipRecord, ConnectingPropertyDtoProjection.class);
         return relationshipRecord;
@@ -126,7 +126,7 @@ private ObjectRecordService objectRecordService;
     public @NotNull XtdRelationshipToProperty setRelatedRecords(@NotBlank String recordId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        XtdRelationshipToProperty relationship = getRepository().findByIdWithDirectRelations(recordId).orElseThrow();
+        XtdRelationshipToProperty relationship = getRepository().findByIdWithDirectRelations(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
 

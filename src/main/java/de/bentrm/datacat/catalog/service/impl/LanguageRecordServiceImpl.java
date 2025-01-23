@@ -47,7 +47,7 @@ public class LanguageRecordServiceImpl
     public @NotNull XtdLanguage setRelatedRecords(@NotBlank String recordId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdLanguage language = getRepository().findById(recordId).orElseThrow();
+        final XtdLanguage language = getRepository().findById(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         return language;
     }

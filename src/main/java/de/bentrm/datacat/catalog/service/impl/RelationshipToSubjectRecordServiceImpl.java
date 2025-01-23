@@ -89,14 +89,14 @@ public class RelationshipToSubjectRecordServiceImpl
     public @NotNull XtdSubject getConnectingSubject(XtdRelationshipToSubject relationshipToSubject) {
         Assert.notNull(relationshipToSubject.getId(), "RelationshipToSubject must be persistent.");
         final String subjectId = getRepository().findConnectingSubjectIdAssignedToRelationshipToSubject(relationshipToSubject.getId());
-        return subjectRecordService.findByIdWithDirectRelations(subjectId).orElseThrow();
+        return subjectRecordService.findByIdWithDirectRelations(subjectId).orElseThrow(() -> new IllegalArgumentException("No record with id " + subjectId + " found."));
     }
 
     @Override
     public @NotNull XtdRelationshipType getRelationshipType(XtdRelationshipToSubject relationshipToSubject) {
         Assert.notNull(relationshipToSubject.getId(), "RelationshipToSubject must be persistent.");
         final String relationshipTypeId = getRepository().findRelationshipTypeIdAssignedToRelationshipToSubject(relationshipToSubject.getId());
-        return relationshipTypeRecordService.findByIdWithDirectRelations(relationshipTypeId).orElseThrow();
+        return relationshipTypeRecordService.findByIdWithDirectRelations(relationshipTypeId).orElseThrow(() -> new IllegalArgumentException("No record with id " + relationshipTypeId + " found."));
     }
 
 
@@ -105,7 +105,7 @@ public class RelationshipToSubjectRecordServiceImpl
    public @NotNull XtdRelationshipToSubject setRelatedRecords(@NotBlank String relationshipId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds) {
 
-       final XtdRelationshipToSubject relationship = getRepository().findByIdWithDirectRelations(relationshipId).orElseThrow();
+       final XtdRelationshipToSubject relationship = getRepository().findByIdWithDirectRelations(relationshipId).orElseThrow(() -> new IllegalArgumentException("No record with id " + relationshipId + " found."));
 
        final Iterable<XtdSubject> items = subjectRecordService.findAllEntitiesById(relatedRecordIds);
        final List<XtdSubject> related = StreamSupport
@@ -126,7 +126,7 @@ public class RelationshipToSubjectRecordServiceImpl
                                      @NotBlank String relatingRecordId) {
         final XtdSubject relatingCatalogRecord = subjectRecordService
                 .findByIdWithDirectRelations(relatingRecordId)
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException("No record with id " + relatingRecordId + " found."));
         relationshipRecord.setConnectingSubject(relatingCatalogRecord);
         neo4jTemplate.saveAs(relationshipRecord, ConnectingSubjectDtoProjection.class);
         return relationshipRecord;
@@ -151,7 +151,7 @@ public class RelationshipToSubjectRecordServiceImpl
     public @NotNull XtdRelationshipToSubject setRelatedRecords(@NotBlank String recordId,
                                                     @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        XtdRelationshipToSubject relationship = getRepository().findByIdWithDirectRelations(recordId).orElseThrow();
+        XtdRelationshipToSubject relationship = getRepository().findByIdWithDirectRelations(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
             case RelationshipType -> {
@@ -160,7 +160,7 @@ public class RelationshipToSubjectRecordServiceImpl
                 } else if (relatedRecordIds.size() != 1) {
                     throw new IllegalArgumentException("Exactly one relationship type must be assigned.");
                 } else {
-                    final XtdRelationshipType relationshipType = relationshipTypeRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow();
+                    final XtdRelationshipType relationshipType = relationshipTypeRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                     relationship.setRelationshipType(relationshipType);
                 }
                 neo4jTemplate.saveAs(relationship, RelationshipTypeDtoProjection.class);

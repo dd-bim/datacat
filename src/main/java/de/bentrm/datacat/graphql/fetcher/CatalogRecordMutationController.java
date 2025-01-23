@@ -55,7 +55,7 @@ public class CatalogRecordMutationController {
     protected DeleteCatalogEntryPayload deleteCatalogEntry(@Argument DeleteCatalogEntryInput input) {
 
             final String recordId = input.getCatalogEntryId();
-            final CatalogRecord entry = catalogService.getEntryById(recordId).orElseThrow();
+            final CatalogRecord entry = catalogService.getEntryById(recordId).orElseThrow(()-> new IllegalArgumentException("Catalog entry not found"));
             final SimpleRecordService<?> catalogRecordService = simpleRecordServiceFactory.getService(CatalogRecordType.getByDomainClass(entry));
         
             
@@ -68,11 +68,11 @@ public class CatalogRecordMutationController {
                     }
 
                     for (XtdMultiLanguageText multiLanguageText : multiLanguageTexts) {
-                        XtdMultiLanguageText multiLanguage = (XtdMultiLanguageText) catalogService.getEntryById(multiLanguageText.getId()).orElseThrow();
+                        XtdMultiLanguageText multiLanguage = (XtdMultiLanguageText) catalogService.getEntryById(multiLanguageText.getId()).orElseThrow(() -> new IllegalArgumentException("No record with id " + multiLanguageText.getId() + " found."));
                         Set<XtdText> texts = multiLanguage.getTexts();
                         for (XtdText text : texts) {
                             // Delete XtdText
-                            final XtdText textEntity = (XtdText) catalogService.getEntryById(text.getId()).orElseThrow();
+                            final XtdText textEntity = (XtdText) catalogService.getEntryById(text.getId()).orElseThrow(() -> new IllegalArgumentException("No record with id " + text.getId() + " found."));
                             final SimpleRecordService<?> textService = simpleRecordServiceFactory.getService(CatalogRecordType.getByDomainClass(textEntity));
                             textService.removeRecord(text.getId());
                         }

@@ -116,7 +116,7 @@ public class ValueListRecordServiceImpl extends AbstractSimpleRecordServiceImpl<
     public @NotNull XtdValueList setRelatedRecords(@NotBlank String recordId,
             @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdValueList valueList = getRepository().findById(recordId).orElseThrow();
+        final XtdValueList valueList = getRepository().findById(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
         case Unit:
@@ -126,7 +126,7 @@ public class ValueListRecordServiceImpl extends AbstractSimpleRecordServiceImpl<
                 throw new IllegalArgumentException("Exactly one Unit must be assigned to a ValueList.");
             } else {
                 final XtdUnit unit = unitRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0))
-                        .orElseThrow();
+                        .orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                 valueList.setUnit(unit);
             }
             neo4jTemplate.saveAs(valueList, UnitDtoProjection.class);
@@ -147,7 +147,7 @@ public class ValueListRecordServiceImpl extends AbstractSimpleRecordServiceImpl<
                 throw new IllegalArgumentException("Exactly one Language must be assigned to a ValueList.");
             } else {
                 final XtdLanguage language = languageRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0))
-                        .orElseThrow();
+                        .orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                 valueList.setLanguage(language);
             }
             neo4jTemplate.saveAs(valueList, LanguageDtoProjection.class);
