@@ -10,6 +10,7 @@ import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.TextRecordService;
 import de.bentrm.datacat.catalog.service.dto.TextDtoProjection;
 import de.bentrm.datacat.catalog.service.dto.Relationships.LanguageDtoProjection;
+import de.bentrm.datacat.graphql.dto.TextCountResult;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
@@ -76,7 +77,6 @@ public class TextRecordServiceImpl
                 } else if (relatedRecordIds.size() != 1) {
                     throw new IllegalArgumentException("Exactly one language must be assigned to a text.");
                 } else {
-                    // final XtdLanguage language = languageRepository.findById(relatedRecordIds.get(0)).orElseThrow();
                     final XtdLanguage language = neo4jTemplate.findById(relatedRecordIds.get(0), XtdLanguage.class).orElseThrow();
 
                     text.setLanguage(language);
@@ -105,5 +105,10 @@ public class TextRecordServiceImpl
         final XtdText item = getRepository().findById(textId).orElseThrow();
         getRepository().deleteById(textId);
         return item;
+    }
+
+    @Override
+    public TextCountResult countTexts(String textId) {
+        return getRepository().countTexts(textId);
     }
 }

@@ -5,19 +5,24 @@ import de.bentrm.datacat.catalog.domain.Tag;
 import de.bentrm.datacat.catalog.domain.XtdConcept;
 import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.domain.XtdText;
+import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.CatalogService;
 import de.bentrm.datacat.catalog.service.ConceptRecordService;
 import de.bentrm.datacat.catalog.service.TagService;
 import de.bentrm.datacat.catalog.service.TextRecordService;
 import de.bentrm.datacat.catalog.service.ObjectRecordService;
+import de.bentrm.datacat.graphql.dto.TextCountResult;
 import de.bentrm.datacat.graphql.input.*;
 import de.bentrm.datacat.graphql.payload.*;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 
+@Slf4j
 @Controller
 @Validated
 public class ContentController {
@@ -40,6 +45,9 @@ public class ContentController {
     @Autowired
     private ConceptRecordService conceptRecordService;
 
+    @Autowired
+    private CatalogCleanupService catalogCleanupService;
+
     @MutationMapping
     protected AddNamePayload addName(@Argument AddNameInput input) {
         final XtdObject item = objectRecordService.addName(input);
@@ -54,7 +62,11 @@ public class ContentController {
 
     @MutationMapping
     protected DeleteNamePayload deleteName(@Argument DeleteNameInput input) {
+        TextCountResult textCount = textRecordService.countTexts(input.getNameId());
         final XtdText item = textRecordService.deleteText(input.getNameId());
+        if (textCount.getTextNumber() == 1) {
+            catalogCleanupService.deleteNodeWithRelationships(textCount.getId());
+        }
         return payloadMapper.toDeleteNamePayload(item);
     }
 
@@ -72,7 +84,11 @@ public class ContentController {
 
     @MutationMapping
     protected DeleteDescriptionPayload deleteDescription(@Argument DeleteDescriptionInput input) {
+        TextCountResult textCount = textRecordService.countTexts(input.getDescriptionId());
         final XtdText item = textRecordService.deleteText(input.getDescriptionId());
+        if (textCount.getTextNumber() == 1) {
+            catalogCleanupService.deleteNodeWithRelationships(textCount.getId());
+        }
         return payloadMapper.toDeleteDescriptionPayload(item);
     }
 
@@ -90,7 +106,11 @@ public class ContentController {
 
     @MutationMapping
     protected DeleteCommentPayload deleteComment(@Argument DeleteCommentInput input) {
+        TextCountResult textCount = textRecordService.countTexts(input.getCommentId());
         final XtdText item = textRecordService.deleteText(input.getCommentId());
+        if (textCount.getTextNumber() == 1) {
+            catalogCleanupService.deleteNodeWithRelationships(textCount.getId());
+        }
         return payloadMapper.toDeleteCommentPayload(item);
     }
 
