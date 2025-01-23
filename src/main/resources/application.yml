@@ -15,29 +15,6 @@ datacat:
         - READONLY
   mail.from: postmaster@localhost
 
-graphql:
-  servlet:
-    enabled: true
-    corsEnabled: true
-    mapping: /graphql
-    tracing-enabled: false
-    # tracing-enabled: true
-    actuator-metrics: true
-    exception-handlers-enabled: true
-  # playground:
-  #   enabled: true
-  #   mapping: /playground
-# voyager:
-#   enabled: true
-logging:
-  level:
-    root: INFO
-    # root: DEBUG
-    # org:
-    #   springframework:
-    #     transaction: DEBUG
-    #     orm:
-    #       jpa: DEBUG
 spring:
   graphql:
     path: /graphql
