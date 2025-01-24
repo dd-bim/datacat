@@ -40,6 +40,8 @@ enum CatalogRecordType {
     QuantityKind
     Country
     Subdivision
+    RelationshipToSubject
+    RelationshipToProperty
 }
 
 enum RelationshipRecordType {

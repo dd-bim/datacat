@@ -1,7 +1,6 @@
 package de.bentrm.datacat.catalog.specification;
 
 import de.bentrm.datacat.base.specification.GenericBuilder;
-// import de.bentrm.datacat.base.specification.HasLabelComparison;
 import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -56,30 +55,5 @@ public abstract class CatalogRecordBuilder<B extends CatalogRecordBuilder<B>> ex
         filters.add(filter);
         return self();
     }
-
-    // public B entityTypeIn(final List<CatalogRecordType> recordTypes) {
-    //     final List<String> labels = recordTypes.stream()
-    //             .map(CatalogRecordType::getLabel)
-    //             .collect(Collectors.toList());
-    //     final Filter filter = new Filter(new HasLabelComparison(labels));
-    //     filter.setBooleanOperator(BooleanOperator.AND);
-    //     filters.add(filter);
-    //     return self();
-    // }
-
-    // public B entityTypeNotIn(final List<CatalogRecordType> recordTypes) {
-    //     final List<String> labels = recordTypes.stream()
-    //             .map(CatalogRecordType::getLabel)
-    //             .collect(Collectors.toList());
-    //     final Filter filter = new Filter(new HasLabelComparison(labels));
-    //     filter.setBooleanOperator(BooleanOperator.AND);
-    //     filter.setNegated(true);
-    //     filters.add(filter);
-    //     return self();
-    // }
-
-    // public B tagged(final List<String> tagIds) {
-    //     return related("id", tagIds, new Filter.NestedPathSegment("tags", Tag.class));
-    // }
 
 }
