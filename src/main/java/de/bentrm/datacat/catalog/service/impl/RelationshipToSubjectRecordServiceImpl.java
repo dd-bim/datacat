@@ -5,7 +5,9 @@ import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import de.bentrm.datacat.catalog.domain.XtdRelationshipToSubject;
 import de.bentrm.datacat.catalog.domain.XtdRelationshipType;
 import de.bentrm.datacat.catalog.domain.XtdSubject;
+import de.bentrm.datacat.catalog.domain.Enums.XtdRelationshipKindEnum;
 import de.bentrm.datacat.catalog.repository.RelationshipToSubjectRepository;
+import de.bentrm.datacat.catalog.repository.RelationshipTypeRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.RelationshipToSubjectRecordService;
 import de.bentrm.datacat.catalog.service.RelationshipTypeRecordService;
@@ -51,6 +53,9 @@ public class RelationshipToSubjectRecordServiceImpl
 
             @Autowired
             private RelationshipTypeRecordService relationshipTypeRecordService;
+
+            @Autowired
+            private RelationshipTypeRepository relationshipTypeRepository;
 
     public RelationshipToSubjectRecordServiceImpl(Neo4jTemplate neo4jTemplate,
                                      RelationshipToSubjectRepository repository,
@@ -99,6 +104,19 @@ public class RelationshipToSubjectRecordServiceImpl
         return relationshipTypeRecordService.findByIdWithDirectRelations(relationshipTypeId).orElseThrow(() -> new IllegalArgumentException("No record with id " + relationshipTypeId + " found."));
     }
 
+    @Transactional
+    @Override
+    public @NotNull XtdRelationshipToSubject addRelationshipType(@NotNull XtdRelationshipToSubject relationshipToSubject,
+                                                    @NotNull XtdRelationshipKindEnum relationshipKind) {
+        Assert.notNull(relationshipToSubject.getId(), "RelationshipToSubject must be persistent.");
+        Assert.notNull(relationshipKind, "RelationshipType must be a valid input.");
+        XtdRelationshipType relationshipType = new XtdRelationshipType();
+        relationshipType.setKind(relationshipKind);
+        relationshipType = relationshipTypeRepository.save(relationshipType);
+        relationshipToSubject.setRelationshipType(relationshipType);
+        neo4jTemplate.saveAs(relationshipToSubject, RelationshipTypeDtoProjection.class);
+        return relationshipToSubject;
+    }
 
    @Transactional
    @Override

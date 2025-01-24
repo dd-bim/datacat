@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import de.bentrm.datacat.catalog.domain.XtdRelationshipToSubject;
 import de.bentrm.datacat.catalog.domain.XtdRelationshipType;
 import de.bentrm.datacat.catalog.domain.XtdSubject;
+import de.bentrm.datacat.catalog.domain.Enums.XtdRelationshipKindEnum;
 
 public interface RelationshipToSubjectRecordService extends RelationshipRecordService<XtdRelationshipToSubject> {
 
@@ -17,4 +18,6 @@ public interface RelationshipToSubjectRecordService extends RelationshipRecordSe
     @NotNull XtdSubject getConnectingSubject(@NotNull XtdRelationshipToSubject relationshipToSubject);
 
     @NotNull XtdRelationshipType getRelationshipType(@NotNull XtdRelationshipToSubject relationshipToSubject);
+
+    XtdRelationshipToSubject addRelationshipType(@NotNull XtdRelationshipToSubject relationshipToSubject, @NotNull XtdRelationshipKindEnum relationshipKind);
 }

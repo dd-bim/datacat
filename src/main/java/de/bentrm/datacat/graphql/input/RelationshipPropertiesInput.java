@@ -21,4 +21,5 @@ public class RelationshipPropertiesInput {
     List<@NotNull @Valid TranslationInput> comments;
 
     @Valid RelationshipToPropertyInput relationshipToPropertyProperties;
+    @Valid RelationshipToSubjectInput relationshipToSubjectProperties;
 }

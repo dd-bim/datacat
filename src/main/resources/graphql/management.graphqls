@@ -166,6 +166,10 @@ input RelationshipToPropertyInput {
     relationshipType: XtdPropertyRelationshipTypeEnum
 }
 
+input RelationshipToSubjectInput {
+    relationshipType: XtdRelationshipKindEnum
+}
+
 input PropertiesInput {
     id: ID
     majorVersion: Int
@@ -195,6 +199,7 @@ input RelationshipPropertiesInput {
     descriptions: [TranslationInput!]
     comments: [TranslationInput!]
     relationshipToPropertyProperties: RelationshipToPropertyInput
+    relationshipToSubjectProperties: RelationshipToSubjectInput
 }
 
 input CreateCatalogEntryInput {
