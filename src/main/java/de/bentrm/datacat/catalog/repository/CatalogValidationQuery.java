@@ -14,74 +14,66 @@ public interface CatalogValidationQuery extends EntityRepository<XtdRoot> {
 
     /* Finde Fachmodell ohne Gruppe */
     @Query("""
-    MATCH (y:Tag)
-    WHERE y.name = "Fachmodell"
-    MATCH (x:XtdBag)
-    WITH x.id AS paths
-    WHERE NOT (x)-[:COLLECTS]-()
-    AND (x)-[:TAGGED]-(y)
-    RETURN paths
+    MATCH (x:XtdSubject)-[:TAGGED]->(y:Tag {name: "Fachmodell"})
+    MATCH (z:Tag {name: "Gruppe"})
+    WHERE NOT (x)-[:CONNECTED_SUBJECTS]->()-[:TARGET_SUBJECTS]->()-[:TAGGED]->(z)
+    RETURN DISTINCT  x.id AS paths
     """)
     List<List<String>> findModelWithoutGroup();
 
     /* Finde Gruppe ohne Klasse */
     @Query("""
-    MATCH (y:Tag)
-    WHERE y.name = "Gruppe"
-    MATCH (x:XtdBag)
-    WITH x.id AS paths
-    WHERE NOT (x)-[:COLLECTS]-()
-    AND (x)-[:TAGGED]-(y)
-    RETURN paths
+    MATCH (x:XtdSubject)-[:TAGGED]->(y:Tag {name: "Gruppe"})
+    MATCH (z:Tag {name: "Klasse"})
+    WHERE NOT (x)-[:CONNECTED_SUBJECTS]->()-[:TARGET_SUBJECTS]->()-[:TAGGED]->(z)
+    RETURN DISTINCT  x.id AS paths
     """)
     List<List<String>> findGroupWithoutSubject();
 
     /* Finde Klasse ohne Merkmale/Merkmalsgruppe */
     @Query("""
-    MATCH (x:XtdSubject)
-    WITH x.id AS paths
-    WHERE NOT (x)-[:ASSIGNS_COLLECTIONS|:ASSIGNS_PROPERTY]-() 
-    RETURN paths
+    MATCH (x:XtdSubject)-[:TAGGED]->(y:Tag {name: "Klasse"})
+    MATCH (z:Tag {name: "Merkmalsgruppe"})
+    WHERE NOT (x)-[:CONNECTED_SUBJECTS]->()-[:TARGET_SUBJECTS]->()-[:TAGGED]->(z) AND NOT (x)-[:PROPERTIES]->()
+    RETURN DISTINCT x.id AS paths
     """)
     List<List<String>> findSubjectWithoutProp();
 
     /* Finde Merkmalsgruppen ohne Merkmal */
     @Query("""
-    MATCH (x:XtdNest)
-    WITH x.id AS paths
-    WHERE NOT (x)-[:COLLECTS]-() 
-    RETURN paths
+    MATCH (x:XtdSubject)-[:TAGGED]->(y:Tag {name: "Merkmalsgruppe"})
+    WHERE NOT (x)-[:PROPERTIES]->()
+    RETURN DISTINCT x.id AS paths
     """)
     List<List<String>> findPropGroupWithoutProp();
 
     /* Finde Merkmale die weder einer Klasse noch einer Merkmalsgruppe zugeordnet sind */
     @Query("""
-    MATCH (x:XtdProperty) 
-    WITH x.id AS paths
-    WHERE NOT (x)-[:COLLECTS|:ASSIGNS_PROPERTY]-()
-    RETURN paths
+    MATCH (x:XtdProperty)
+    MATCH (z:Tag {name: "Merkmalsgruppe"})
+    WHERE NOT (x)<-[:TARGET_SUBJECTS]-()<-[:CONNECTED_SUBJECTS]-()-[:TAGGED]->(z) AND NOT ()-[:PROPERTIES]->(x)
+    RETURN DISTINCT x.id AS paths
     """)
     List<List<String>> findPropWithoutSubjectOrPropGroup();
 
-    /* Finde Größen die keinem Merkmal zugeordnet sind */
+    /* Finde Wertelisten die keinem Merkmal zugeordnet sind */
     @Query("""
-    MATCH (x:XtdMeasureWithUnit)
-    WITH x.id AS paths
-    WHERE NOT (x)-[:ASSIGNS_MEASURE]-() 
-    RETURN paths
+    MATCH (x:XtdValueList)
+    WHERE NOT (x)<-[:POSSIBLE_VALUES]-()
+    RETURN DISTINCT x.id AS paths
     """)
     List<List<String>> findMeasureWithoutProp();
 
-    /* Finde Maßeinheiten die keiner Größe zugeordnet sind */
+    /* Finde Maßeinheiten die keiner Werteliste zugeordnet sind */
     @Query("""
     MATCH (x:XtdUnit)
-    WITH x.id AS paths
-    WHERE NOT (x)-[:ASSIGNS_UNIT]-() 
-    RETURN paths
+    WHERE NOT (x)<-[:UNIT]-()
+    RETURN DISTINCT x.id AS paths
     """)
     List<List<String>> findUnitWithoutMeasure();
 
-    /* Finde Werte die keiner Größe zugeordnet sind */
+    // TODO
+    /* Finde Werte die keiner Werteliste zugeordnet sind */
     @Query("""
     MATCH (x:XtdValue)
     WITH x.id AS paths
