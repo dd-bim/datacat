@@ -27,7 +27,7 @@ public class SubdivisionController {
 
     @QueryMapping
     public Optional<XtdSubdivision> getSubdivision(@Argument String id) {
-        return service.findByIdWithDirectRelations(id);
+        return service.findByIdWithDirectRelations(id, XtdSubdivision.class.getSimpleName());
     }
     
     @QueryMapping

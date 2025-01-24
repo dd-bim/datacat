@@ -25,7 +25,7 @@ public class RationalController {
 
     @QueryMapping
     public Optional<XtdRational> getRational(@Argument String id) {
-        return service.findByIdWithDirectRelations(id);
+        return service.findByIdWithDirectRelations(id, XtdRational.class.getSimpleName());
     }
     
     @QueryMapping

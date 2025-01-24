@@ -34,7 +34,7 @@ public class ValueListController {
 
     @QueryMapping
     public Optional<XtdValueList> getValueList(@Argument String id) {
-        return valueListRecordService.findById(id);
+        return valueListRecordService.findByIdWithDirectRelations(id, XtdValueList.class.getSimpleName());
     }
 
     @QueryMapping

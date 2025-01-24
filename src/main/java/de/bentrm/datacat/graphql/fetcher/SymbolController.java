@@ -30,7 +30,7 @@ public class SymbolController {
 
     @QueryMapping
     public Optional<XtdSymbol> getSymbol(@Argument String id) {
-        return service.findByIdWithDirectRelations(id);
+        return service.findByIdWithDirectRelations(id, XtdSymbol.class.getSimpleName());
     }
     
     @QueryMapping

@@ -29,7 +29,7 @@ public class RelationshipToPropertyController {
 
     @QueryMapping
     public Optional<XtdRelationshipToProperty> getRelationshipToProperty(@Argument String id) {
-        return service.findByIdWithDirectRelations(id);
+        return service.findByIdWithDirectRelations(id, XtdRelationshipToProperty.class.getSimpleName());
     }
 
     @QueryMapping

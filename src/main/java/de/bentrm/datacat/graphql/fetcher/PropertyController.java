@@ -35,7 +35,7 @@ public class PropertyController {
 
     @QueryMapping
     public Optional<XtdProperty> getProperty(@Argument String id) {
-        return service.findByIdWithDirectRelations(id);
+        return service.findByIdWithDirectRelations(id, XtdProperty.class.getSimpleName());
     }
 
     @QueryMapping

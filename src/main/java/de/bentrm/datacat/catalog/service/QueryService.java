@@ -27,5 +27,8 @@ public interface QueryService<T extends Entity> {
     @NotNull Optional<T> findByIdWithDirectRelations(@NotNull String id);
 
     @PreAuthorize("hasRole('READONLY')")
+    @NotNull Optional<T> findByIdWithDirectRelations(@NotNull String id, @NotNull String type);
+
+    @PreAuthorize("hasRole('READONLY')")
     @NotNull List<T> findAllEntitiesById(@NotNull List<String> ids);
 }

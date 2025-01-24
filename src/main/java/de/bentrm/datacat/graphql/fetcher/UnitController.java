@@ -31,7 +31,7 @@ public class UnitController {
 
     @QueryMapping
     public Optional<XtdUnit> getUnit(@Argument String id) {
-        return service.findByIdWithDirectRelations(id);
+        return service.findByIdWithDirectRelations(id, XtdUnit.class.getSimpleName());
 
     }
     

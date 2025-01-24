@@ -27,7 +27,7 @@ public class TextController {
 
     @QueryMapping
     public Optional<XtdText> getText(@Argument String id) {
-        return service.findByIdWithDirectRelations(id);
+        return service.findByIdWithDirectRelations(id, XtdText.class.getSimpleName());
     }
     
     @QueryMapping

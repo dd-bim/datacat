@@ -27,7 +27,7 @@ public class DictionaryController {
 
     @QueryMapping
     public Optional<XtdDictionary> getDictionary(@Argument String id) {
-        return service.findByIdWithDirectRelations(id);
+        return service.findByIdWithDirectRelations(id, XtdDictionary.class.getSimpleName());
     }
 
     @QueryMapping

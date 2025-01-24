@@ -29,7 +29,7 @@ public class SubjectController {
 
     @QueryMapping
     public Optional<XtdSubject> getSubject(@Argument String id) {
-        return service.findByIdWithDirectRelations(id);
+        return service.findByIdWithDirectRelations(id, XtdSubject.class.getSimpleName());
     }
 
     @QueryMapping

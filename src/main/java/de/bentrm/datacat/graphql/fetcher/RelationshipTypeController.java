@@ -25,7 +25,7 @@ public class RelationshipTypeController {
 
     @QueryMapping
     public Optional<XtdRelationshipType> getRelationshipType(@Argument String id) {
-        return service.findByIdWithDirectRelations(id);
+        return service.findByIdWithDirectRelations(id, XtdRelationshipType.class.getSimpleName());
     }
 
     @QueryMapping

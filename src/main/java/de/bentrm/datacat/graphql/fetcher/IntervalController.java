@@ -27,7 +27,7 @@ public class IntervalController {
 
     @QueryMapping
     public Optional<XtdInterval> getInterval(@Argument String id) {
-        return service.findByIdWithDirectRelations(id);
+        return service.findByIdWithDirectRelations(id, XtdInterval.class.getSimpleName());
     }
 
     @QueryMapping

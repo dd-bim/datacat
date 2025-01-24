@@ -28,6 +28,14 @@ public interface EntityRepository<T extends Entity> extends Neo4jRepository<T, S
         Optional<T> findByIdWithDirectRelations(@Param("id") String id);
 
         @Query("""
+                MATCH (o {id: $id}) WHERE $type IN labels(o)
+                OPTIONAL MATCH (o)-[r]->(related)
+                WITH o, collect(coalesce(r, [])) AS relations, collect(coalesce(related, [])) AS relatedNodes
+                RETURN o, relations, relatedNodes""")
+        Optional<T> findByIdWithDirectRelations(@Param("id") String id, @Param("type") String type);
+
+
+        @Query("""
                         MATCH (o)
                         WHERE o.id IN $ids
                         RETURN o""")

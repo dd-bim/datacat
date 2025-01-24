@@ -28,7 +28,7 @@ public class CountryController {
 
     @QueryMapping
     public Optional<XtdCountry> getCountry(@Argument String id) {
-        return service.findByIdWithDirectRelations(id);
+        return service.findByIdWithDirectRelations(id, XtdCountry.class.getSimpleName());
     }
     
     @QueryMapping

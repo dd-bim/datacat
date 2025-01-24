@@ -35,7 +35,7 @@ public class ObjectController {
 
     @QueryMapping
     public Optional<XtdObject> getObject(@Argument String id) {
-        return service.findByIdWithDirectRelations(id);
+        return service.findByIdWithDirectRelations(id, XtdObject.class.getSimpleName());
     }
 
     @QueryMapping

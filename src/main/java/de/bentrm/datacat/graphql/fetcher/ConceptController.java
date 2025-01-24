@@ -37,7 +37,7 @@ public class ConceptController {
 
     @QueryMapping
     public Optional<XtdConcept> getConcept(@Argument String id) {
-        return service.findByIdWithDirectRelations(id);
+        return service.findByIdWithDirectRelations(id, XtdConcept.class.getSimpleName());
     }
 
     @QueryMapping

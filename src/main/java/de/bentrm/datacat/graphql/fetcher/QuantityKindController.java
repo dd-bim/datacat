@@ -29,7 +29,7 @@ public class QuantityKindController {
 
     @QueryMapping
     public Optional<XtdQuantityKind> getQuantityKind(@Argument String id) {
-        return service.findByIdWithDirectRelations(id);
+        return service.findByIdWithDirectRelations(id, XtdQuantityKind.class.getSimpleName());
     }
 
     @QueryMapping

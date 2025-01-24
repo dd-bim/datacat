@@ -28,7 +28,7 @@ public class LanguageController {
 
     @QueryMapping
     public Optional<XtdLanguage> getLanguage(@Argument String id) {
-        return languageRecordService.findByIdWithDirectRelations(id);
+        return languageRecordService.findByIdWithDirectRelations(id, XtdLanguage.class.getSimpleName());
     }
 
     @QueryMapping

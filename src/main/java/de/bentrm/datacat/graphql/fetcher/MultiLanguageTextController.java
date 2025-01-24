@@ -30,7 +30,7 @@ public class MultiLanguageTextController {
 
     @QueryMapping
     public Optional<XtdMultiLanguageText> getMultiLanguageText(@Argument String id) {
-        return service.findByIdWithDirectRelations(id);
+        return service.findByIdWithDirectRelations(id, XtdMultiLanguageText.class.getSimpleName());
     }
     
     @QueryMapping

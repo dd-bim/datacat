@@ -10,18 +10,6 @@ import java.util.List;
 @Repository
 public interface RootRepository extends EntityRepository<XtdRoot> {
 
-    // @Query("""
-    // MATCH (start:XtdRoot)
-    // WHERE start.id IN $startIds
-    // CALL apoc.path.expandConfig(start, {
-    // beginSequenceAtStart: false,
-    // sequence: '>, Relationship, >, >XtdRoot'
-    // }) YIELD path
-    // WITH [x IN nodes(path) WHERE NOT x:Relationship | x.id] AS paths
-    // RETURN paths
-    // """)
-    // List<List<String>> findRelationshipPaths(List<String> startIds);
-
     @Query("""
                     MATCH (start:XtdObject)
             WHERE start.id IN $startIds

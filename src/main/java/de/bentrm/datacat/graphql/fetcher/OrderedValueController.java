@@ -32,7 +32,7 @@ public class OrderedValueController {
 
     @QueryMapping
     public Optional<XtdOrderedValue> getOrderedValue(@Argument String id) {
-        return orderedValueRecordService.findByIdWithDirectRelations(id);
+        return orderedValueRecordService.findByIdWithDirectRelations(id, XtdOrderedValue.class.getSimpleName());
     }
 
     @QueryMapping

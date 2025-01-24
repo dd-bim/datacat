@@ -25,7 +25,7 @@ public class ValueController {
 
     @QueryMapping
     public Optional<XtdValue> getValue(@Argument String id) {
-        return valueRecordService.findByIdWithDirectRelations(id);
+        return valueRecordService.findByIdWithDirectRelations(id, XtdValue.class.getSimpleName());
     }
 
     @QueryMapping

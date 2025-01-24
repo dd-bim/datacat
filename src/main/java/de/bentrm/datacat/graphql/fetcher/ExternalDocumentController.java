@@ -29,7 +29,7 @@ public class ExternalDocumentController {
 
     @QueryMapping
     public Optional<XtdExternalDocument> getExternalDocument(@Argument String id) {
-        return service.findByIdWithDirectRelations(id);
+        return service.findByIdWithDirectRelations(id, XtdExternalDocument.class.getSimpleName());
     }
 
     @QueryMapping

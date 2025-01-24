@@ -27,7 +27,7 @@ public class DimensionController {
 
     @QueryMapping
     public Optional<XtdDimension> getDimension(@Argument String id) {
-        return dimensionRecordService.findByIdWithDirectRelations(id);
+        return dimensionRecordService.findByIdWithDirectRelations(id, XtdDimension.class.getSimpleName());
     }
 
     @QueryMapping
