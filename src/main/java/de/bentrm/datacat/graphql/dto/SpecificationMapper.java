@@ -8,7 +8,6 @@ import de.bentrm.datacat.catalog.specification.LanguageSpecification;
 import de.bentrm.datacat.catalog.specification.TagSpecification;
 import de.bentrm.datacat.graphql.input.HierarchyRootNodeFilterInput;
 import de.bentrm.datacat.graphql.input.SearchInput;
-import de.bentrm.datacat.graphql.input.VerificationNodeTypeFilterInput;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValueCheckStrategy;
@@ -30,8 +29,6 @@ public interface SpecificationMapper {
     CatalogRecordSpecification toCatalogRecordSpecification(@NotNull FilterInput input);
 
     CatalogRecordSpecification toCatalogRecordSpecification(@NotNull HierarchyRootNodeFilterInput input);
-
-    CatalogRecordSpecification toCatalogRecordSpecification(@NotNull VerificationNodeTypeFilterInput input);
 
     LanguageSpecification toLanguageSpecification(@NotNull FilterInput input);
 

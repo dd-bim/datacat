@@ -1,10 +1,10 @@
 package de.bentrm.datacat.catalog.service.impl;
 
-import de.bentrm.datacat.catalog.domain.*;
-import de.bentrm.datacat.catalog.repository.*;
+import de.bentrm.datacat.catalog.domain.XtdObject;
+import de.bentrm.datacat.catalog.repository.CatalogValidationQuery;
+import de.bentrm.datacat.catalog.repository.ObjectRepository;
 import de.bentrm.datacat.catalog.service.CatalogVerificationService;
-import de.bentrm.datacat.catalog.service.value.HierarchyValue;
-import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
+import de.bentrm.datacat.catalog.service.value.VerificationValue;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -26,245 +26,95 @@ public class CatalogVerificationServiceImpl implements CatalogVerificationServic
     private CatalogValidationQuery catalogValidationQuery;
 
     @Autowired
-    private RootRepository rootRepository;
+    private ObjectRepository repository;
 
 
     @Override
-    public HierarchyValue getfindPropGroupWithoutProp() {
-
-        List<List<String>> paths = catalogValidationQuery.findPropGroupWithoutProp();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return new HierarchyValue(leaves, paths);
+    public VerificationValue getfindPropGroupWithoutProp() {
+        return getLeaves(catalogValidationQuery.findPropGroupWithoutProp());
     }
 
     @Override
-    public HierarchyValue getfindPropWithoutSubjectOrPropGroup() {
-
-        List<List<String>> paths = catalogValidationQuery.findPropWithoutSubjectOrPropGroup();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return new HierarchyValue(leaves, paths);
+    public VerificationValue getfindPropWithoutSubjectOrPropGroup() {
+        return getLeaves(catalogValidationQuery.findPropWithoutSubjectOrPropGroup());
     }
 
     @Override
-    public HierarchyValue getfindModelWithoutGroup() {
-
-        List<List<String>> paths = catalogValidationQuery.findModelWithoutGroup();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return new HierarchyValue(leaves, paths);
+    public VerificationValue getfindModelWithoutGroup() {
+        return getLeaves(catalogValidationQuery.findModelWithoutGroup());
     }
 
     @Override
-    public HierarchyValue getfindGroupWithoutSubject() {
-
-        List<List<String>> paths = catalogValidationQuery.findGroupWithoutSubject();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return new HierarchyValue(leaves, paths);
+    public VerificationValue getfindGroupWithoutSubject() {
+        return getLeaves(catalogValidationQuery.findGroupWithoutSubject());
     }
 
     @Override
-    public HierarchyValue getfindSubjectWithoutProp() {
-
-        List<List<String>> paths = catalogValidationQuery.findSubjectWithoutProp();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return new HierarchyValue(leaves, paths);
+    public VerificationValue getfindSubjectWithoutProp() {
+        return getLeaves(catalogValidationQuery.findSubjectWithoutProp());
     }
 
     @Override
-    public HierarchyValue getfindMeasureWithoutProp() {
-
-        List<List<String>> paths = catalogValidationQuery.findMeasureWithoutProp();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return new HierarchyValue(leaves, paths);
+    public VerificationValue getfindValueListWithoutProp() {
+        return getLeaves(catalogValidationQuery.findValueListWithoutProp());
     }
 
     @Override
-    public HierarchyValue getfindUnitWithoutMeasure() {
-
-        List<List<String>> paths = catalogValidationQuery.findUnitWithoutMeasure();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return new HierarchyValue(leaves, paths);
+    public VerificationValue getfindUnitWithoutValueList() {
+        return getLeaves(catalogValidationQuery.findUnitWithoutValueList());
     }
 
     @Override
-    public HierarchyValue getfindValueWithoutMeasure() {
-
-        List<List<String>> paths = catalogValidationQuery.findValueWithoutMeasure();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return new HierarchyValue(leaves, paths);
+    public VerificationValue getfindValueWithoutValueList() {
+        return getLeaves(catalogValidationQuery.findValueWithoutValueList());
     }
 
     @Override
-    public HierarchyValue getfindMissingTags(CatalogRecordSpecification rootNodeSpecification) {
-        List<List<String>> paths = catalogValidationQuery.findMissingTags();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return new HierarchyValue(leaves, paths);
+    public VerificationValue getfindMissingTags() {
+        return getLeaves(catalogValidationQuery.findMissingTags());
     }
 
     @Override
-    public HierarchyValue getfindMissingEnglishName(CatalogRecordSpecification rootNodeSpecification) {
-
-        List<List<String>> paths = catalogValidationQuery.findMissingEnglishName();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return new HierarchyValue(leaves, paths);
+    public VerificationValue getfindMissingEnglishName() {
+        List<String> paths = catalogValidationQuery.findMissingEnglishName();
+        return getLeaves(paths);
     }
 
     @Override
-    public HierarchyValue getfindMultipleIDs(CatalogRecordSpecification rootNodeSpecification) {
-
-        List<List<String>> paths = catalogValidationQuery.findMultipleIDs();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return new HierarchyValue(leaves, paths);
+    public VerificationValue getfindMultipleIDs() {
+        List<String> paths = catalogValidationQuery.findMultipleIDs();
+        return getLeaves(paths);
     }
 
     @Override
-    public HierarchyValue getfindMissingDescription(CatalogRecordSpecification rootNodeSpecification) {
-
-        List<List<String>> paths = catalogValidationQuery.findMissingDescription();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return new HierarchyValue(leaves, paths);
+    public VerificationValue getfindMissingDescription() {
+        List<String> paths = catalogValidationQuery.findMissingDescription();
+        return getLeaves(paths);
     }
 
     @Override
-    public HierarchyValue getfindMissingEnglishDescription(CatalogRecordSpecification rootNodeSpecification) {
-
-        List<List<String>> paths = catalogValidationQuery.findMissingEnglishDescription();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return new HierarchyValue(leaves, paths);
+    public VerificationValue getfindMissingEnglishDescription() {
+        List<String> paths = catalogValidationQuery.findMissingEnglishDescription();
+        return getLeaves(paths);
     }
 
     @Override
-    public HierarchyValue getfindMultipleNames(CatalogRecordSpecification rootNodeSpecification) {
-
-        List<List<String>> paths = catalogValidationQuery.findMultipleNames();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return new HierarchyValue(leaves, paths);
+    public VerificationValue getfindMultipleNames() {
+        List<String> paths = catalogValidationQuery.findMultipleNames();
+        return getLeaves(paths);
     }
 
     @Override
-    public HierarchyValue getfindMultipleNamesAcrossClasses(CatalogRecordSpecification rootNodeSpecification) {
+    public VerificationValue getfindMultipleNamesAcrossClasses() {
+        List<String> paths = catalogValidationQuery.findMultipleNamesAcrossClasses();
+        return getLeaves(paths);
+    }
 
-        List<List<String>> paths = catalogValidationQuery.findMultipleNamesAcrossClasses();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
+    public VerificationValue getLeaves(List<String> paths) {
+        final Iterable<XtdObject> nodes = repository.findAllEntitiesById(paths);
+        final List<XtdObject> leaves = StreamSupport
                 .stream(nodes.spliterator(), false)
                 .collect(Collectors.toList());
-
-        return new HierarchyValue(leaves, paths);
+        return new VerificationValue(leaves, paths);
     }
 }

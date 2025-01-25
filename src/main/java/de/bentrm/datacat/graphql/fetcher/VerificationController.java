@@ -1,16 +1,11 @@
 package de.bentrm.datacat.graphql.fetcher;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
 import de.bentrm.datacat.catalog.service.CatalogVerificationService;
-import de.bentrm.datacat.catalog.service.value.HierarchyValue;
-import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
-import de.bentrm.datacat.graphql.dto.SpecificationMapper;
-import de.bentrm.datacat.graphql.input.VerificationFilterInput;
-import de.bentrm.datacat.graphql.input.VerificationNodeTypeFilterInput;
+import de.bentrm.datacat.catalog.service.value.VerificationValue;
 
 @Controller
 public class VerificationController {
@@ -18,95 +13,78 @@ public class VerificationController {
     @Autowired
     private CatalogVerificationService service;
 
-    @Autowired
-    private SpecificationMapper specificationMapper;
-
     @QueryMapping
-    public HierarchyValue findSubjectWithoutProp() {
+    public VerificationValue findSubjectWithoutProp() {
         return service.getfindSubjectWithoutProp();
     }
 
     @QueryMapping
-    public HierarchyValue findGroupWithoutSubject() {
+    public VerificationValue findGroupWithoutSubject() {
         return service.getfindGroupWithoutSubject();
     }
 
     @QueryMapping
-    public HierarchyValue findPropGroupWithoutProp() {
+    public VerificationValue findPropGroupWithoutProp() {
         return service.getfindPropGroupWithoutProp();
     }
 
     @QueryMapping
-    public HierarchyValue findPropWithoutSubjectOrPropGroup() {
+    public VerificationValue findPropWithoutSubjectOrPropGroup() {
         return service.getfindPropWithoutSubjectOrPropGroup();
     }
 
     @QueryMapping
-    public HierarchyValue findModelWithoutGroup() {
+    public VerificationValue findModelWithoutGroup() {
         return service.getfindModelWithoutGroup();
     }
 
     @QueryMapping
-    public HierarchyValue findMeasureWithoutProp() {
-        return service.getfindMeasureWithoutProp();
+    public VerificationValue findValueListWithoutProp() {
+        return service.getfindValueListWithoutProp();
     }   
 
     @QueryMapping
-    public HierarchyValue findUnitWithoutMeasure() {
-        return service.getfindUnitWithoutMeasure();
+    public VerificationValue findUnitWithoutValueList() {
+        return service.getfindUnitWithoutValueList();
     }
 
     @QueryMapping
-    public HierarchyValue findValueWithoutMeasure() {
-        return service.getfindValueWithoutMeasure();
+    public VerificationValue findValueWithoutValueList() {
+        return service.getfindValueWithoutValueList();
     }   
 
     @QueryMapping
-    public HierarchyValue findMissingTags(@Argument VerificationFilterInput input) {
-        VerificationNodeTypeFilterInput nodeTypeFilter = input.getNodeTypeFilter();
-        CatalogRecordSpecification specification = specificationMapper.toCatalogRecordSpecification(nodeTypeFilter);
-        return service.getfindMissingTags(specification);
+    public VerificationValue findMissingTags() {
+        return service.getfindMissingTags();
     }
 
     @QueryMapping
-    public HierarchyValue findMissingEnglishName(@Argument VerificationFilterInput input) {
-        VerificationNodeTypeFilterInput nodeTypeFilter = input.getNodeTypeFilter();
-        CatalogRecordSpecification specification = specificationMapper.toCatalogRecordSpecification(nodeTypeFilter);
-        return service.getfindMissingEnglishName(specification);
+    public VerificationValue findMissingEnglishName() {
+        return service.getfindMissingEnglishName();
     }
 
     @QueryMapping
-    public HierarchyValue findMultipleIDs(@Argument VerificationFilterInput input) {
-        VerificationNodeTypeFilterInput nodeTypeFilter = input.getNodeTypeFilter();
-        CatalogRecordSpecification specification = specificationMapper.toCatalogRecordSpecification(nodeTypeFilter);
-        return service.getfindMultipleIDs(specification);
+    public VerificationValue findMultipleIDs() {
+        return service.getfindMultipleIDs();
     }
 
     @QueryMapping
-    public HierarchyValue findMissingDescription(@Argument VerificationFilterInput input) {
-        VerificationNodeTypeFilterInput nodeTypeFilter = input.getNodeTypeFilter();
-        CatalogRecordSpecification specification = specificationMapper.toCatalogRecordSpecification(nodeTypeFilter);
-        return service.getfindMissingDescription(specification);
+    public VerificationValue findMissingDescription() {
+        return service.getfindMissingDescription();
     }
 
     @QueryMapping
-    public HierarchyValue findMissingEnglishDescription(@Argument VerificationFilterInput input) {
-        VerificationNodeTypeFilterInput nodeTypeFilter = input.getNodeTypeFilter();
-        CatalogRecordSpecification specification = specificationMapper.toCatalogRecordSpecification(nodeTypeFilter);
-        return service.getfindMissingEnglishDescription(specification);
+    public VerificationValue findMissingEnglishDescription() {
+        return service.getfindMissingEnglishDescription();
     }
 
     @QueryMapping
-    public HierarchyValue findMultipleNames(@Argument VerificationFilterInput input) {
-        VerificationNodeTypeFilterInput nodeTypeFilter = input.getNodeTypeFilter();
-        CatalogRecordSpecification specification = specificationMapper.toCatalogRecordSpecification(nodeTypeFilter);
-        return service.getfindMultipleNames(specification);
+    public VerificationValue findMultipleNames() {
+        return service.getfindMultipleNames();
     }
 
     @QueryMapping
-    public HierarchyValue findMultipleNamesAcrossClasses(@Argument VerificationFilterInput input) {
-        VerificationNodeTypeFilterInput nodeTypeFilter = input.getNodeTypeFilter();
-        CatalogRecordSpecification specification = specificationMapper.toCatalogRecordSpecification(nodeTypeFilter);
-        return service.getfindMultipleNamesAcrossClasses(specification);
+    public VerificationValue findMultipleNamesAcrossClasses() {
+        return service.getfindMultipleNamesAcrossClasses();
     }
 }

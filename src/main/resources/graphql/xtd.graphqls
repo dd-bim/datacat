@@ -45,8 +45,8 @@ type HierarchyPayload {
 }
 
 type VerificationPayload {
-  nodes: [XtdRoot!]!
-  paths: [[ID!]!]!
+  nodes: [XtdObject!]!
+  paths: [ID!]!
 }
 
 type findExportCatalogRecordsPayload {
@@ -946,35 +946,25 @@ type Query {
 
   findSubjectWithoutProp: VerificationPayload!
 
-  findMeasureWithoutProp: VerificationPayload!
+  findValueListWithoutProp: VerificationPayload!
 
-  findUnitWithoutMeasure: VerificationPayload!
+  findUnitWithoutValueList: VerificationPayload!
 
-  findValueWithoutMeasure: VerificationPayload!
+  findValueWithoutValueList: VerificationPayload!
 
-  findMissingTags(input: VerificationFilterInput!): VerificationPayload!
+  findMissingTags: VerificationPayload!
 
-  findMissingEnglishName(
-    input: VerificationFilterInput!
-  ): VerificationPayload!
+  findMissingEnglishName: VerificationPayload!
 
-  findMultipleIDs(input: VerificationFilterInput!): VerificationPayload!
+  findMultipleIDs: VerificationPayload!
 
-  findMissingDescription(
-    input: VerificationFilterInput!
-  ): VerificationPayload!
+  findMissingDescription: VerificationPayload!
 
-  findMissingEnglishDescription(
-    input: VerificationFilterInput!
-  ): VerificationPayload!
+  findMissingEnglishDescription: VerificationPayload!
 
-  findMultipleNames(
-    input: VerificationFilterInput!
-  ): VerificationPayload!
+  findMultipleNames: VerificationPayload!
 
-  findMultipleNamesAcrossClasses(
-    input: VerificationFilterInput!
-  ): VerificationPayload!
+  findMultipleNamesAcrossClasses: VerificationPayload!
 
   findExportCatalogRecords: findExportCatalogRecordsPayload!
 

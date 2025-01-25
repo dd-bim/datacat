@@ -1,54 +1,52 @@
 package de.bentrm.datacat.catalog.service;
 
-import de.bentrm.datacat.catalog.service.value.HierarchyValue;
-import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
+import de.bentrm.datacat.catalog.service.value.VerificationValue;
 import org.springframework.security.access.prepost.PreAuthorize;
-import jakarta.validation.constraints.NotNull;
 
 public interface CatalogVerificationService {
 
     @PreAuthorize("hasRole('READONLY')")
-    HierarchyValue getfindPropGroupWithoutProp();
+    VerificationValue getfindPropGroupWithoutProp();
 
     @PreAuthorize("hasRole('READONLY')")
-    HierarchyValue getfindPropWithoutSubjectOrPropGroup();
+    VerificationValue getfindPropWithoutSubjectOrPropGroup();
 
     @PreAuthorize("hasRole('READONLY')")
-    HierarchyValue getfindModelWithoutGroup();
+    VerificationValue getfindModelWithoutGroup();
 
     @PreAuthorize("hasRole('READONLY')")
-    HierarchyValue getfindGroupWithoutSubject();
+    VerificationValue getfindGroupWithoutSubject();
 
     @PreAuthorize("hasRole('READONLY')")
-    HierarchyValue getfindSubjectWithoutProp();
+    VerificationValue getfindSubjectWithoutProp();
 
     @PreAuthorize("hasRole('READONLY')")
-    HierarchyValue getfindMeasureWithoutProp();
+    VerificationValue getfindValueListWithoutProp();
 
     @PreAuthorize("hasRole('READONLY')")
-    HierarchyValue getfindUnitWithoutMeasure();
+    VerificationValue getfindUnitWithoutValueList();
 
     @PreAuthorize("hasRole('READONLY')")
-    HierarchyValue getfindValueWithoutMeasure();
+    VerificationValue getfindValueWithoutValueList();
 
     @PreAuthorize("hasRole('READONLY')")
-    HierarchyValue getfindMissingTags(@NotNull CatalogRecordSpecification rootNodeSpecification);
+    VerificationValue getfindMissingTags();
 
     @PreAuthorize("hasRole('READONLY')")
-    HierarchyValue getfindMissingEnglishName(@NotNull CatalogRecordSpecification rootNodeSpecification);
+    VerificationValue getfindMissingEnglishName();
 
     @PreAuthorize("hasRole('READONLY')")
-    HierarchyValue getfindMultipleIDs(@NotNull CatalogRecordSpecification rootNodeSpecification);
+    VerificationValue getfindMultipleIDs();
 
     @PreAuthorize("hasRole('READONLY')")
-    HierarchyValue getfindMissingDescription(@NotNull CatalogRecordSpecification rootNodeSpecification);
+    VerificationValue getfindMissingDescription();
 
     @PreAuthorize("hasRole('READONLY')")
-    HierarchyValue getfindMissingEnglishDescription(@NotNull CatalogRecordSpecification rootNodeSpecification);
+    VerificationValue getfindMissingEnglishDescription();
 
     @PreAuthorize("hasRole('READONLY')")
-    HierarchyValue getfindMultipleNames(@NotNull CatalogRecordSpecification rootNodeSpecification);
+    VerificationValue getfindMultipleNames();
 
     @PreAuthorize("hasRole('READONLY')")
-    HierarchyValue getfindMultipleNamesAcrossClasses(@NotNull CatalogRecordSpecification rootNodeSpecification);
+    VerificationValue getfindMultipleNamesAcrossClasses();
 }
