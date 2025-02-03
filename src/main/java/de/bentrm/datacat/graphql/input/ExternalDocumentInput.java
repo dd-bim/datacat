@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class ExternalDocumentInput {
-    String uri;
+    String documentUri;
     String author;
     String isbn;
     String publisher;

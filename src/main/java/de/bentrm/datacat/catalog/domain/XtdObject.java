@@ -63,6 +63,10 @@ public abstract class XtdObject extends XtdRoot {
     @ToString.Include
     private XtdStatusOfActivationEnum status;
 
+    // URI of the object.
+    @ToString.Include
+    private String uri;
+
     // List of objects replaced by the current object.
     @ToString.Include
     @Relationship(type = XtdObject.REPLACE_OBJECT_TYPE, direction = Relationship.Direction.OUTGOING)

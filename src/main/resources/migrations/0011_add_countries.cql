@@ -251,22 +251,24 @@ MERGE (x:XtdCountry:XtdConcept:XtdObject:XtdRoot:CatalogRecord:Entity {id: row[2
 ON CREATE SET 
     x.code = row[1],
     x.`labels.en` = row[0], 
-    x.created = datetime(), 
+    x.created = toString(datetime()), 
     x.createdBy = "SYSTEM", 
-    x.lastModified = datetime(), 
-    x.lastModifiedBy = "SYSTEM"
+    x.lastModified = toString(datetime()), 
+    x.lastModifiedBy = "SYSTEM",
+    x.majorVersion = 1,
+    x.minorVersion = 0
 MERGE (y:XtdText:XtdRoot:CatalogRecord:Entity {id: randomUUID()})
 ON CREATE SET 
     y.text = row[0], 
-    y.created = datetime(), 
+    y.created = toString(datetime()), 
     y.createdBy = "SYSTEM", 
-    y.lastModified = datetime(), 
+    y.lastModified = toString(datetime()), 
     y.lastModifiedBy = "SYSTEM"
 MERGE (z:XtdMultiLanguageText:XtdRoot:CatalogRecord:Entity {id: randomUUID()})
 ON CREATE SET 
-    z.created = datetime(), 
+    z.created = toString(datetime()), 
     z.createdBy = "SYSTEM", 
-    z.lastModified = datetime(), 
+    z.lastModified = toString(datetime()), 
     z.lastModifiedBy = "SYSTEM"
 MERGE (x)-[:NAMES]->(z)
 MERGE (z)-[:TEXTS]->(y)

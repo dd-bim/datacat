@@ -39,4 +39,4 @@ UNWIND [
 ["nl-BE","Dutch (BE)","Belgian Dutch"],
 ["fr-BE","French (BE)","Belgian French"]
 ] AS row
-MERGE (x:XtdLanguage:XtdRoot:CatalogRecord:Entity {id: randomUUID(), code: row[0], englishName: row[1], nativeName: row[2], created: datetime(), createdBy: "SYSTEM", lastModified: datetime(), lastModifiedBy: "SYSTEM"}) RETURN x;
+MERGE (x:XtdLanguage:XtdRoot:CatalogRecord:Entity {id: randomUUID(), code: row[0], englishName: row[1], nativeName: row[2], created: toString(datetime()), createdBy: "SYSTEM", lastModified: toString(datetime()), lastModifiedBy: "SYSTEM"}) RETURN x;

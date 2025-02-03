@@ -83,22 +83,24 @@ MERGE (x:XtdUnit:XtdConcept:XtdObject:XtdRoot:CatalogRecord:Entity {id: randomUU
 ON CREATE SET 
     x.`labels.en` = row[0], 
     x.`labels.de` = row[1], 
-    x.created = datetime(), 
+    x.created = toString(datetime()), 
     x.createdBy = "SYSTEM", 
-    x.lastModified = datetime(), 
-    x.lastModifiedBy = "SYSTEM"
+    x.lastModified = toString(datetime()), 
+    x.lastModifiedBy = "SYSTEM",
+    x.majorVersion = 1,
+    x.minorVersion = 0
 MERGE (y:XtdText:XtdRoot:CatalogRecord:Entity {id: randomUUID()})
 ON CREATE SET 
     y.text = row[2], 
-    y.created = datetime(), 
+    y.created = toString(datetime()), 
     y.createdBy = "SYSTEM", 
-    y.lastModified = datetime(), 
+    y.lastModified = toString(datetime()), 
     y.lastModifiedBy = "SYSTEM"
 MERGE (z:XtdMultiLanguageText:XtdRoot:CatalogRecord:Entity {id: randomUUID()})
 ON CREATE SET 
-    z.created = datetime(), 
+    z.created = toString(datetime()), 
     z.createdBy = "SYSTEM", 
-    z.lastModified = datetime(), 
+    z.lastModified = toString(datetime()), 
     z.lastModifiedBy = "SYSTEM"
 MERGE (x)-[:SYMBOL]->(z)
 MERGE (z)-[:TEXTS]->(y)

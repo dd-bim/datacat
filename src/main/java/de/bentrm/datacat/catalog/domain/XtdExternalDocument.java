@@ -17,7 +17,7 @@ public class XtdExternalDocument extends XtdConcept {
 
     public static final String LABEL = "XtdExternalDocument";
 
-    private String uri;
+    private String documentUri;
 
     private String author;
 

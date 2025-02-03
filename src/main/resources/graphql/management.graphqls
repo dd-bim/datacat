@@ -128,7 +128,7 @@ input PropertyInput {
 }
 
 input ExternalDocumentInput {
-    uri: String
+    documentUri: String
     author: String
     isbn: String
     publisher: String
