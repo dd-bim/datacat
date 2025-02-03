@@ -1,1 +1,1 @@
-MATCH (x:XtdValueList) - [:ASSIGNS_VALUE] -> (y:XtdRelAssignsValues) - [:ASSIGNS_VALUE] -> (z:XtdValue) CREATE (x) - [:VALUES] -> (z) DETACH DELETE y RETURN x,z
+MATCH (x:XtdValueList) - [:ASSIGNS_VALUE] -> (y:XtdRelAssignsValues) - [:ASSIGNS_VALUE] -> (z:XtdValue) CREATE (x) - [:VALUES] -> (z) DETACH DELETE y RETURN x,z;

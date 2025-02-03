@@ -1,1 +1,1 @@
-MATCH (n:Translation) DETACH DELETE n
+MATCH (n:Translation) DETACH DELETE n;

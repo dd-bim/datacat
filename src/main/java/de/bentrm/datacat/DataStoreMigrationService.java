@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -28,8 +28,9 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Custom migration service that checks for CQL-migrations on the classpath.
- * Migrations are run ordered by file name. After successful application of a migration to
- * the current database, the ID is logged as a @{@link Migration} entity.
+ * Migrations are run ordered by file name. After successful application of a
+ * migration to the current database, the ID is logged as a @{@link Migration}
+ * entity.
  */
 @Slf4j
 @Service
@@ -57,8 +58,7 @@ public class DataStoreMigrationService implements ApplicationRunner, ResourceLoa
      * Finds and executes all migrations on the classpath.
      */
     private void importMigrationFixtures() throws IOException {
-        final Resource[] resources = ResourcePatternUtils
-                .getResourcePatternResolver(resourceLoader)
+        final Resource[] resources = ResourcePatternUtils.getResourcePatternResolver(resourceLoader)
                 .getResources(MIGRATIONS_RESOURCE_PATTERN);
 
         log.info("Importing migration resources...");
@@ -66,7 +66,8 @@ public class DataStoreMigrationService implements ApplicationRunner, ResourceLoa
             final String filename = resource.getFilename();
             Assert.notNull(filename, "Filename of migration may not be null");
 
-            @NotNull final Optional<Migration> optionalMigration = migrationRepository.findByIdWithDirectRelations(filename);
+            @NotNull
+            final Optional<Migration> optionalMigration = migrationRepository.findByIdWithDirectRelations(filename);
             if (optionalMigration.isPresent()) {
                 log.info("Skipping already imported migration: {}", filename);
                 continue;
@@ -76,8 +77,22 @@ public class DataStoreMigrationService implements ApplicationRunner, ResourceLoa
             final InputStream inputStream = resource.getInputStream();
             final InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             final BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            final List<String> commands = bufferedReader.lines().collect(Collectors.toList());
 
+            List<String> commands = new ArrayList<>();
+            StringBuilder commandBuilder = new StringBuilder();
+
+            bufferedReader.lines().forEach(line -> {
+                commandBuilder.append(line).append(" ");
+                if (line.trim().endsWith(";")) {
+                    commands.add(commandBuilder.toString().trim());
+                    commandBuilder.setLength(0); // Reset the StringBuilder for the next command
+                }
+            });
+
+            // Add any remaining command that doesn't end with a semicolon
+            if (commandBuilder.length() > 0) {
+                commands.add(commandBuilder.toString().trim());
+            }
             Migration newMigration = new Migration();
             newMigration.setId(filename);
             newMigration.setCommands(commands);
@@ -99,7 +114,7 @@ public class DataStoreMigrationService implements ApplicationRunner, ResourceLoa
                     neo4jClient.query(command).run();
                     migration.setAppliedAt(Instant.now());
                     migrationRepository.save(migration);
-                    
+
                     log.info("Applied migration command: {}", command);
                 }
             } else {

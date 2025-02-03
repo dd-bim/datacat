@@ -1,1 +1,1 @@
-MATCH (x:XtdRelationship) REMOVE x:XtdRelationship RETURN x
+MATCH (x:XtdRelationship) REMOVE x:XtdRelationship RETURN x;
