@@ -58,9 +58,6 @@ public class CatalogServiceImpl implements CatalogService {
     @Autowired
     private ExternalDocumentRepository externalDocumentRepository;
 
-    @Autowired
-    private RelationshipRepository relationshipRepository;
-
     @Override
     public CatalogStatistics getStatistics() {
         final List<CatalogRecordStatistics> labelsStats = catalogRecordRepository.statistics();
@@ -176,23 +173,18 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
-    public Optional<XtdRoot> getRootItem(String id) {
-        return rootRepository.findByIdWithDirectRelations(id);
-    }
-
-    @Override
     public Optional<XtdObject> getObject(String id) {
         return objectRepository.findByIdWithDirectRelations(id);
     }
 
     @Override
-    public Optional<XtdConcept> getConcept(String id) {
-        return conceptRepository.findByIdWithDirectRelations(id);
+    public @NotNull String getRelationshipBetweenObjects(String fromId, String toId) {
+        return objectRepository.findRelationshipBetweenObjects(fromId, toId);
     }
 
     @Override
-    public Optional<AbstractRelationship> getRelationship(String id) {
-        return relationshipRepository.findByIdWithDirectRelations(id);
+    public long countTargetRelationships(String objectId) {
+        return objectRepository.countTargetRelationships(objectId);
     }
 
     @Override

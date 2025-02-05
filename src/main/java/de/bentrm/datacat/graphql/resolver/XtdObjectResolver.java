@@ -18,9 +18,7 @@ public class XtdObjectResolver implements CustomResolver {
 
     @Autowired
     private XtdConceptResolver conceptTypeResolver;
-
-    @Autowired AbstractRelationshipResolver abstractRelationshipResolver;
-
+    
     @Override
     public GraphQLObjectType getType(TypeResolutionEnvironment env) {
         XtdObject obj = env.getObject();
@@ -29,15 +27,9 @@ public class XtdObjectResolver implements CustomResolver {
         if (obj instanceof XtdConcept) {
             return conceptTypeResolver.getType(env);
         }
-        if (obj instanceof AbstractRelationship) {
-            return abstractRelationshipResolver.getType(env);
+        if (obj instanceof XtdRelationshipToSubject) {
+            return schema.getObjectType(XtdRelationshipToSubject.LABEL);
         }
-        // if (obj instanceof XtdRelationshipToSubject) {
-        //     return schema.getObjectType(XtdRelationshipToSubject.LABEL);
-        // }
-        // if (obj instanceof XtdRelationshipToProperty) {
-        //     return schema.getObjectType(XtdRelationshipToProperty.LABEL);
-        // }
         if (obj instanceof XtdValue) {
             return schema.getObjectType(XtdValue.LABEL);
         }

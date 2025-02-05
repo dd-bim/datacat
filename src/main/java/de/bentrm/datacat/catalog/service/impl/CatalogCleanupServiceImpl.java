@@ -1,7 +1,7 @@
 package de.bentrm.datacat.catalog.service.impl;
 
 import de.bentrm.datacat.catalog.domain.SimpleRelationType;
-import de.bentrm.datacat.catalog.repository.RelationshipRepository;
+import de.bentrm.datacat.catalog.repository.RootRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,35 +14,18 @@ import jakarta.validation.constraints.NotNull;
 @Transactional
 public class CatalogCleanupServiceImpl implements CatalogCleanupService {
 
-    private final RelationshipRepository relationshipRepository;
+    private final RootRepository rootRepository;
 
-    public CatalogCleanupServiceImpl(RelationshipRepository relationshipRepository) {
+    public CatalogCleanupServiceImpl(RootRepository rootRepository) {
 
-        this.relationshipRepository = relationshipRepository;
+        this.rootRepository = rootRepository;
 
     }
 
     @Override
     public void deleteNodeWithRelationships(@NotBlank String recordId) {
         Assert.hasText(recordId, "the given record id may not be blank");
-        relationshipRepository.deleteNodeAndRelationships(recordId);
-    }
-
-    @Override
-    public void purgeRelatedData(@NotBlank String recordId) {
-        Assert.hasText(recordId, "the given record id may not be blank");
-        this.purgeRelationships(recordId);
-    }
-
-    @Override
-    public void purgeRelationships(@NotBlank String recordId) {
-        Assert.hasText(recordId, "the given record id may not be blank");
-        relationshipRepository
-                .findAllRelationshipsByRelatingId(recordId)
-                .forEach(relationshipRepository::deleteById);
-        relationshipRepository
-                .findAllSingularRelationshipsByRelatedId(recordId)
-                .forEach(relationshipRepository::deleteById);
+        rootRepository.deleteNodeAndRelationships(recordId);
     }
 
     @Override
@@ -50,7 +33,7 @@ public class CatalogCleanupServiceImpl implements CatalogCleanupService {
         Assert.hasText(recordId, "the given record id may not be blank");
         Assert.hasText(relatedRecordId, "the given related record id may not be blank");
         Assert.notNull(relationType, "the given relation type may not be null");
-        relationshipRepository
+        rootRepository
                 .removeRelationship(recordId, relatedRecordId, relationType.getRelationProperty());
     }
 }

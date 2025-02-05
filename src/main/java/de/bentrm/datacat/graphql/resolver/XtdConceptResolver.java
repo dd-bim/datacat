@@ -32,9 +32,9 @@ public class XtdConceptResolver implements CustomResolver {
         if (obj instanceof XtdUnit) {
             return schema.getObjectType(XtdUnit.LABEL);
         }
-        // if (obj instanceof XtdRelationshipToProperty) {
-        //     return schema.getObjectType(XtdRelationshipToProperty.LABEL);
-        // }
+        if (obj instanceof XtdRelationshipToProperty) {
+            return schema.getObjectType(XtdRelationshipToProperty.LABEL);
+        }
         if (obj instanceof XtdRelationshipType) {
             return schema.getObjectType(XtdRelationshipType.LABEL);
         }

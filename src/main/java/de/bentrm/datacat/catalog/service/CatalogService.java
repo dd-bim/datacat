@@ -53,16 +53,13 @@ public interface CatalogService {
     @NotNull Optional<CatalogRecord> getEntryById(@NotBlank String id);
 
     @PreAuthorize("hasRole('READONLY')")
-    @NotNull Optional<XtdRoot> getRootItem(@NotNull String id);
-
-    @PreAuthorize("hasRole('READONLY')")
     @NotNull Optional<XtdObject> getObject(@NotNull String id);
 
     @PreAuthorize("hasRole('READONLY')")
-    @NotNull Optional<XtdConcept> getConcept(@NotNull String id);
+    @NotNull String getRelationshipBetweenObjects(@NotBlank String fromId, @NotBlank String toId);
 
     @PreAuthorize("hasRole('READONLY')")
-    @NotNull Optional<AbstractRelationship> getRelationship(@NotNull String id);
+    long countTargetRelationships(@NotBlank String objectId);
 
     @PreAuthorize("hasRole('READONLY')")
     @NotNull Page<CatalogRecord> findAllCatalogRecords(@NotNull CatalogRecordSpecification specification);

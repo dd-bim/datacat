@@ -10,15 +10,6 @@ import jakarta.validation.constraints.NotNull;
  */
 public interface CatalogCleanupService {
 
-    void purgeRelatedData(@NotBlank String recordId);
-
-    /**
-     * Deletes all relationships that are linked to the given
-     * record id.
-     * @param recordId The relating record that all relationships will be purged from.
-     */
-    void purgeRelationships(@NotBlank String recordId);
-
         /**
      * Deletes one specific relationship that is linked to the given
      * record id.

@@ -36,7 +36,7 @@ import jakarta.validation.constraints.NotEmpty;
 @Validated
 @Transactional(readOnly = true)
 public class RelationshipToPropertyRecordServiceImpl
-        extends AbstractRelationshipRecordServiceImpl<XtdRelationshipToProperty, RelationshipToPropertyRepository>
+        extends AbstractSimpleRecordServiceImpl<XtdRelationshipToProperty, RelationshipToPropertyRepository>
         implements RelationshipToPropertyRecordService {
 
 @Autowired
@@ -50,6 +50,35 @@ private ObjectRecordService objectRecordService;
                                      RelationshipToPropertyRepository repository,
                                      CatalogCleanupService cleanupService) {
         super(XtdRelationshipToProperty.class, neo4jTemplate, repository, cleanupService);
+    }
+
+    @Transactional
+    @Override
+    public XtdRelationshipToProperty addRecord(@NotBlank String id,
+            @NotBlank String relatingRecordId,
+            @NotEmpty List<@NotBlank String> relatedRecordIds) {
+        try {
+            XtdRelationshipToProperty newRecord = this.getDomainClass().getDeclaredConstructor().newInstance();
+
+            newRecord.setId(id);
+            log.trace("Persisting new relationship record...");
+            newRecord = this.getRepository().save(newRecord);
+
+            log.trace("Setting relating record with id: {}", relatingRecordId);
+            newRecord = this.setRelatingRecord(newRecord, relatingRecordId);
+            log.info("Set relating record with id: {}", relatingRecordId);
+
+            log.trace("Setting related records with ids: {}", relatedRecordIds);
+            newRecord = this.setRelatedRecords(newRecord, relatedRecordIds);
+            log.info("Set related records with ids: {}", relatedRecordIds);
+
+            log.trace("Persisted new relationship record with id: {}", newRecord.getId());
+
+            return newRecord;
+        } catch (ReflectiveOperationException e) {
+            log.warn("Can not instantiate catalog records of type: {}", this.getDomainClass());
+            throw new IllegalArgumentException("unsupported record type");
+        }
     }
 
     @Override
@@ -75,28 +104,7 @@ private ObjectRecordService objectRecordService;
                 .collect(Collectors.toList());
     }
 
-   @Transactional
-   @Override
-   public @NotNull XtdRelationshipToProperty setRelatedRecords(@NotBlank String relationshipId,
-                                                    @NotEmpty List<@NotBlank String> relatedRecordIds) {
-
-       final XtdRelationshipToProperty relationship = getRepository().findByIdWithDirectRelations(relationshipId).orElseThrow(() -> new IllegalArgumentException("No record with id " + relationshipId + " found."));
-
-       final Iterable<XtdProperty> items = propertyRecordService.findAllEntitiesById(relatedRecordIds);
-       final List<XtdProperty> related = StreamSupport
-               .stream(items.spliterator(), false)
-               .collect(Collectors.toList());
-
-       relationship.getTargetProperties().clear();
-       relationship.getTargetProperties().addAll(related);
-
-       final XtdRelationshipToProperty persistentRelationship = getRepository().save(relationship);
-       log.trace("Updated relationship: {}", persistentRelationship);
-       return persistentRelationship;
-   }
-
     @Transactional
-    @Override
     protected XtdRelationshipToProperty setRelatingRecord(@NotNull XtdRelationshipToProperty relationshipRecord,
                                      @NotBlank String relatingRecordId) {
         final XtdProperty relatingCatalogRecord = propertyRecordService
@@ -109,13 +117,13 @@ private ObjectRecordService objectRecordService;
 
     @Transactional
     @Override
-    protected XtdRelationshipToProperty setRelatedRecords(@NotNull XtdRelationshipToProperty relationshipRecord,
+    public @NotNull XtdRelationshipToProperty setRelatedRecords(@NotNull XtdRelationshipToProperty relationshipRecord,
                                      @NotEmpty List<@NotBlank String> relatedRecordIds) {
         final Iterable<XtdProperty> items = propertyRecordService.findAllEntitiesById(relatedRecordIds);
         final List<XtdProperty> related = StreamSupport
                 .stream(items.spliterator(), false)
                 .collect(Collectors.toList());
-        relationshipRecord.getTargetProperties().clear();
+
         relationshipRecord.getTargetProperties().addAll(related);
         neo4jTemplate.saveAs(relationshipRecord, TargetPropertiesDtoProjection.class);
         return relationshipRecord;

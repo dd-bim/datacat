@@ -39,4 +39,14 @@ public interface ObjectRepository extends EntityRepository<XtdObject> {
                         RETURN p.id""")
         List<String> findCommentsAssignedToObject(String objectId);
 
+        @Query("""
+                        MATCH(x:XtdObject {id: $fromId})-[]->(y:XtdRelationshipToSubject|XtdRelationshipToProperty)-[]->(z:XtdObject {id: $toId}) 
+                        RETURN y.id""")
+        String findRelationshipBetweenObjects(String fromId, String toId);
+
+        @Query("""
+                        MATCH(x:XtdObject {id: $objectId})-[n:TARGET_PROPERTIES|TARGET_SUBJECTS]->() 
+                        RETURN count(n)
+                        """)
+        long countTargetRelationships(String objectId);
 }

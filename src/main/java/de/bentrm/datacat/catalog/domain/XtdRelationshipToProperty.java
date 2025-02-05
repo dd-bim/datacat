@@ -15,7 +15,7 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
 @Node(XtdRelationshipToProperty.LABEL)
-public class XtdRelationshipToProperty extends AbstractRelationship {
+public class XtdRelationshipToProperty extends XtdConcept {
 
     public static final String LABEL = "XtdRelationshipToProperty";
     public static final String RELATIONSHIP_TYPE = "CONNECTED_PROPERTIES";

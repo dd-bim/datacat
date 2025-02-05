@@ -13,7 +13,7 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
 @Node(XtdRelationshipToSubject.LABEL)
-public class XtdRelationshipToSubject extends AbstractRelationship {
+public class XtdRelationshipToSubject extends XtdObject {
 
     public static final String LABEL = "XtdRelationshipToSubject";
     public static final String RELATIONSHIP_TYPE = "CONNECTED_SUBJECTS";

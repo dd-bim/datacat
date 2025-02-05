@@ -19,4 +19,15 @@ public interface RootRepository extends EntityRepository<XtdRoot> {
                 """)
     List<List<String>> findRelationshipPaths(List<String> startIds);
 
+        /**
+     * Removes a relationship between two catalog records.
+     * @param recordId of the first catalog record.
+     * @param relatedRecordId of the second catalog record.
+     * @param relationType of the relationship.
+     */
+    @Query("""
+        MATCH (n:CatalogRecord) - [x] -> (m:CatalogRecord) 
+        WHERE n.id = $recordId AND m.id = $relatedRecordId AND type(x) = $relationType DELETE x
+    """)
+    void removeRelationship(String recordId, String relatedRecordId, String relationType);
 }

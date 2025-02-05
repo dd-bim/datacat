@@ -1,26 +1,3 @@
-enum SimpleRecordType {
-    ExternalDocument
-    Property
-    Subject
-    Unit
-    Value
-    OrderedValue
-    ValueList
-    Language
-    Dimension
-    Rational
-    MultiLanguageText
-    Text
-    Symbol
-    Interval
-    Dictionary
-    QuantityKind
-    Country
-    Subdivision
-    # RelationshipToSubject
-    # RelationshipToProperty
-}
-
 enum CatalogRecordType {
     ExternalDocument
     Property
@@ -203,7 +180,7 @@ input RelationshipPropertiesInput {
 }
 
 input CreateCatalogEntryInput {
-    catalogEntryType: SimpleRecordType!
+    catalogEntryType: CatalogRecordType!
     properties: PropertiesInput!
     tags: [ID!]
 }
@@ -239,14 +216,6 @@ input DeleteRelationshipInput {
 
 type DeleteRelationshipPayload {
     catalogEntry: SimpleRecord
-}
-
-input DeleteObjectRelationshipInput {
-    relationshipId: ID!
-}
-
-type DeleteObjectRelationshipPayload {
-    relationship: SimpleRecord
 }
 
 input TranslationInput {
@@ -460,9 +429,6 @@ type Mutation {
     # Creates a relationship originating from the given catalog entry.
     # The related entries must be added with subsequent requests.
     createRelationship(input: CreateRelationshipInput!): CreateRelationshipPayload
-
-    # Deletes a relationship between catalog entries.
-    deleteObjectRelationship(input: DeleteObjectRelationshipInput!): DeleteObjectRelationshipPayload
 
     # Deletes a relationship between catalog entries.
     deleteRelationship(input: DeleteRelationshipInput!): DeleteRelationshipPayload

@@ -1,6 +1,5 @@
 package de.bentrm.datacat.graphql.payload;
 
-import de.bentrm.datacat.catalog.domain.AbstractRelationship;
 import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.domain.XtdConcept;
 import de.bentrm.datacat.catalog.domain.XtdObject;
@@ -29,9 +28,6 @@ public interface PayloadMapper {
 
     @Mapping(source = "item", target = "catalogEntry")
     DeleteRelationshipPayload toDeleteRelationshipPayload(CatalogRecord item);
-
-    @Mapping(source = "relationship", target = "relationship")
-    DeleteObjectRelationshipPayload toDeleteObjectRelationshipPayload(AbstractRelationship relationship);
 
     @Mapping(source = "item", target = "catalogEntry")
     AddNamePayload toAddNamePayload(XtdObject item);

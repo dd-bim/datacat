@@ -486,8 +486,7 @@ type XtdRelationshipToSubject implements XtdRoot & XtdObject {
   relationshipType: XtdRelationshipType # Should be changed to required
 }
 
-# type XtdRelationshipToProperty implements XtdRoot & XtdObject & XtdConcept {
-type XtdRelationshipToProperty implements XtdRoot & XtdObject {
+type XtdRelationshipToProperty implements XtdRoot & XtdObject & XtdConcept {
   id: ID!
   recordType: CatalogRecordType!
   created: String!
@@ -502,21 +501,21 @@ type XtdRelationshipToProperty implements XtdRoot & XtdObject {
   replacedObjects: [XtdObject!]!
   replacingObjects: [XtdObject!]!
   deprecationExplanation: XtdMultiLanguageText
-  # definition: XtdMultiLanguageText # required
-  # examples: [XtdMultiLanguageText]
-  # languageOfCreator: XtdLanguage # required
-  # similarTo: [XtdConcept!]!
-  # # visualRepresenation: [XtdVisualRepresenation]
-  # countryOfOrigin: XtdCountry
+  definition: XtdMultiLanguageText # required
+  examples: [XtdMultiLanguageText]
+  languageOfCreator: XtdLanguage # required
+  similarTo: [XtdConcept!]!
+  # visualRepresenation: [XtdVisualRepresenation]
+  countryOfOrigin: XtdCountry
   name(input: LocalizationInput): String
   names: [XtdMultiLanguageText!]!
-  # description(input: LocalizationInput): String
-  # descriptions: [XtdMultiLanguageText!]!
+  description(input: LocalizationInput): String
+  descriptions: [XtdMultiLanguageText!]!
   comment(input: LocalizationInput): String
   comments: [XtdMultiLanguageText!]!
   tags: [Tag!]!
   uri: String
-  # documentedBy: [XtdExternalDocument!]!
+  referenceDocuments: [XtdExternalDocument!]!
   connectingProperty: XtdProperty!
   targetProperties: [XtdProperty!]!
   relationshipType: XtdPropertyRelationshipTypeEnum!

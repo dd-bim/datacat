@@ -41,7 +41,7 @@ import jakarta.validation.constraints.NotEmpty;
 @Validated
 @Transactional(readOnly = true)
 public class RelationshipToSubjectRecordServiceImpl
-        extends AbstractRelationshipRecordServiceImpl<XtdRelationshipToSubject, RelationshipToSubjectRepository>
+        extends AbstractSimpleRecordServiceImpl<XtdRelationshipToSubject, RelationshipToSubjectRepository>
         implements RelationshipToSubjectRecordService {
 
             @Autowired
@@ -61,6 +61,35 @@ public class RelationshipToSubjectRecordServiceImpl
                                      RelationshipToSubjectRepository repository,
                                      CatalogCleanupService cleanupService) {
         super(XtdRelationshipToSubject.class, neo4jTemplate, repository, cleanupService);
+    }
+
+    @Transactional
+    @Override
+    public XtdRelationshipToSubject addRecord(@NotBlank String id,
+            @NotBlank String relatingRecordId,
+            @NotEmpty List<@NotBlank String> relatedRecordIds) {
+        try {
+            XtdRelationshipToSubject newRecord = this.getDomainClass().getDeclaredConstructor().newInstance();
+
+            newRecord.setId(id);
+            log.trace("Persisting new relationship record...");
+            newRecord = this.getRepository().save(newRecord);
+
+            log.trace("Setting relating record with id: {}", relatingRecordId);
+            newRecord = this.setRelatingRecord(newRecord, relatingRecordId);
+            log.info("Set relating record with id: {}", relatingRecordId);
+
+            log.trace("Setting related records with ids: {}", relatedRecordIds);
+            newRecord = this.setRelatedRecords(newRecord, relatedRecordIds);
+            log.info("Set related records with ids: {}", relatedRecordIds);
+
+            log.trace("Persisted new relationship record with id: {}", newRecord.getId());
+
+            return newRecord;
+        } catch (ReflectiveOperationException e) {
+            log.warn("Can not instantiate catalog records of type: {}", this.getDomainClass());
+            throw new IllegalArgumentException("unsupported record type");
+        }
     }
 
     @Override
@@ -118,28 +147,7 @@ public class RelationshipToSubjectRecordServiceImpl
         return relationshipToSubject;
     }
 
-   @Transactional
-   @Override
-   public @NotNull XtdRelationshipToSubject setRelatedRecords(@NotBlank String relationshipId,
-                                                    @NotEmpty List<@NotBlank String> relatedRecordIds) {
-
-       final XtdRelationshipToSubject relationship = getRepository().findByIdWithDirectRelations(relationshipId).orElseThrow(() -> new IllegalArgumentException("No record with id " + relationshipId + " found."));
-
-       final Iterable<XtdSubject> items = subjectRecordService.findAllEntitiesById(relatedRecordIds);
-       final List<XtdSubject> related = StreamSupport
-               .stream(items.spliterator(), false)
-               .collect(Collectors.toList());
-
-       relationship.getTargetSubjects().clear();
-       relationship.getTargetSubjects().addAll(related);
-
-       neo4jTemplate.saveAs(relationship, TargetSubjectsDtoProjection.class);
-       log.trace("Updated relationship: {}", relationship);
-       return relationship;
-   }
-
-   @Transactional
-    @Override
+    @Transactional
     protected XtdRelationshipToSubject setRelatingRecord(@NotNull XtdRelationshipToSubject relationshipRecord,
                                      @NotBlank String relatingRecordId) {
         final XtdSubject relatingCatalogRecord = subjectRecordService
@@ -152,13 +160,13 @@ public class RelationshipToSubjectRecordServiceImpl
 
     @Transactional
     @Override
-    protected XtdRelationshipToSubject setRelatedRecords(@NotNull XtdRelationshipToSubject relationshipRecord,
+    public XtdRelationshipToSubject setRelatedRecords(@NotNull XtdRelationshipToSubject relationshipRecord,
                                      @NotEmpty List<@NotBlank String> relatedRecordIds) {
         final Iterable<XtdSubject> items = subjectRecordService.findAllEntitiesById(relatedRecordIds);
         final List<XtdSubject> related = StreamSupport
                 .stream(items.spliterator(), false)
                 .collect(Collectors.toList());
-        relationshipRecord.getTargetSubjects().clear();
+
         relationshipRecord.getTargetSubjects().addAll(related);
         neo4jTemplate.saveAs(relationshipRecord, TargetSubjectsDtoProjection.class);
         return relationshipRecord;
