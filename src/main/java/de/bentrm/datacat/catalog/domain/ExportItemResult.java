@@ -1,7 +1,9 @@
 package de.bentrm.datacat.catalog.domain;
 
 import org.springframework.data.neo4j.core.schema.Id;
-import java.util.List;
+
+import java.time.Instant;
+import java.util.LinkedHashSet;
 
 import lombok.Data;
 
@@ -10,16 +12,19 @@ public class ExportItemResult {
     
     @Id
     public String id;
-    public String typ;
-    public List<String> tags;
+    public String type;
+    public LinkedHashSet<String> tags;
     public String name;
     public String name_en;
     public String description;
-    public String versionId;
+    public String description_en;
+    public String definition;
+    public String definition_en;
     public String createdBy;
-    public String created;
-    public String lastModified;
+    public Instant created;
+    public Instant lastModified;
     public String lastModifiedBy;
-    // public Integer majorVersion;
-    // public Integer minorVersion;
+    public Integer majorVersion;
+    public Integer minorVersion;
+    public String status;
 }

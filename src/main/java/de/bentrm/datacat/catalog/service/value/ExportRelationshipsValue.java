@@ -9,5 +9,4 @@ import java.util.List;
 @Value
 public class ExportRelationshipsValue {
     @NotNull List<ExportRelationshipResult> nodes;
-    @NotNull List<List<String>> paths;
 }

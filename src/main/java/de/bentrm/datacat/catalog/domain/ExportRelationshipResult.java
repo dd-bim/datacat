@@ -6,9 +6,6 @@ import lombok.Data;
 public class ExportRelationshipResult {
     
     public String entity1;
-    public String entity1Type;
-    public String relationId;
-    public String relationshipType; 
+    public String relationship; 
     public String entity2;
-    public String entity2Type;
 }

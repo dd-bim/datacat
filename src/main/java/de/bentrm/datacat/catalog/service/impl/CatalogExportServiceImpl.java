@@ -1,7 +1,8 @@
 package de.bentrm.datacat.catalog.service.impl;
 
-import de.bentrm.datacat.catalog.domain.*;
-import de.bentrm.datacat.catalog.repository.*;
+import de.bentrm.datacat.catalog.domain.ExportItemResult;
+import de.bentrm.datacat.catalog.domain.ExportRelationshipResult;
+import de.bentrm.datacat.catalog.repository.CatalogExportQuery;
 import de.bentrm.datacat.catalog.service.CatalogExportService;
 import de.bentrm.datacat.catalog.service.value.ExportCatalogRecordsValue;
 import de.bentrm.datacat.catalog.service.value.ExportRelationshipsValue;
@@ -25,29 +26,14 @@ public class CatalogExportServiceImpl implements CatalogExportService {
 
     @Override
     public ExportCatalogRecordsValue getExportCatalogRecords() {
-
         List<ExportItemResult> leaves = catalogExportQuery.findExportCatalogRecords();
-        List<List<String>> paths = new ArrayList<>();
-        leaves.forEach(p -> {
-            ArrayList<String> list = new ArrayList<>();
-            list.add(p.id);
-            paths.add(list);
-        });
-
-        return new ExportCatalogRecordsValue(leaves, paths);
+        return new ExportCatalogRecordsValue(leaves);
     }
 
     @Override
     public ExportRelationshipsValue getExportCatalogRecordsRelationships() {
-
         List<ExportRelationshipResult> leaves = catalogExportQuery.findExportCatalogRecordsRelationships();
-        List<List<String>> paths = new ArrayList<>();
-        leaves.forEach(p -> {
-            ArrayList<String> list = new ArrayList<>();
-            list.add(p.entity1);
-            paths.add(list);
-        });
-
-        return new ExportRelationshipsValue(leaves, paths);
+        return new ExportRelationshipsValue(leaves);
     }
+    
 }

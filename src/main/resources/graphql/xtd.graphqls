@@ -50,36 +50,36 @@ type VerificationPayload {
 }
 
 type findExportCatalogRecordsPayload {
-  nodes: [ExportResult!]
-  paths: [[ID!]!]!
+  nodes: [ExportResult!]!
 }
 
 type findExportCatalogRecordsRelationshipsPayload {
-  nodes: [ExportRelationshipResult!]
-  paths: [[ID!]!]!
+  nodes: [ExportRelationshipResult!]!
 }
 
 type ExportResult {
   id: ID!
-  typ: String
+  type: String
   tags: [String]
   name: String
   name_en: String
   description: String
-
+  description_en: String
+  definition: String
+  definition_en: String
   created: String
   createdBy: String
   lastModified: String
   lastModifiedBy: String
+  majorVersion: Int
+  minorVersion: Int
+  status: String
 }
 
 type ExportRelationshipResult {
   entity1: ID!
-  entity1Type: String!
-  relationId: ID!
-  relationshipType: String!
+  relationship: String!
   entity2: ID!
-  entity2Type: String!
 }
 
 # inputs
