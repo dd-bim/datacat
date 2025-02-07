@@ -62,7 +62,7 @@ public interface CatalogService {
     long countTargetRelationships(@NotBlank String objectId);
 
     @PreAuthorize("hasRole('READONLY')")
-    @NotNull Page<CatalogRecord> findAllCatalogRecords(@NotNull CatalogRecordSpecification specification);
+    @NotNull Page<XtdObject> findAllCatalogRecords(@NotNull CatalogRecordSpecification specification);
 
     @PreAuthorize("hasRole('READONLY')")
     long countCatalogRecords(@NotNull CatalogRecordSpecification specification);

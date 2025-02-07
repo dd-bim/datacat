@@ -11,11 +11,13 @@ import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
 import de.bentrm.datacat.graphql.dto.CatalogRecordStatistics;
 import de.bentrm.datacat.graphql.dto.CatalogStatistics;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
@@ -36,6 +38,9 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Autowired
     Neo4jTemplate neo4jTemplate;
+
+    @Autowired
+    Neo4jClient neo4jClient;
 
     @Autowired
     private TagRepository tagRepository;
@@ -188,8 +193,8 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
-    public Page<CatalogRecord> findAllCatalogRecords(CatalogRecordSpecification specification) {
-        Collection<CatalogRecord> catalogRecords;
+    public Page<XtdObject> findAllCatalogRecords(CatalogRecordSpecification specification) {
+        Collection<XtdObject> catalogRecords;
         Pageable pageable;
         final long count = countCatalogRecords(specification);
 
@@ -197,17 +202,17 @@ public class CatalogServiceImpl implements CatalogService {
         if (paged.isPresent()) {
             pageable = paged.get();
             if (pageable.getSort().isUnsorted()) {
-                catalogRecords = neo4jTemplate.findAll(getQuery(specification, pageable), CatalogRecord.class);
+                catalogRecords = neo4jTemplate.findAll(getQuery(specification, pageable), XtdObject.class);
             } else {
                 final Sort sort = pageable.getSort();
                 final Sort.Direction direction = sort.get().findFirst().map(Sort.Order::getDirection).get();
                 final String[] properties = sort.get().map(Sort.Order::getProperty).toArray(String[]::new);
                 catalogRecords = neo4jTemplate.findAll(getQuery(specification, pageable, direction, properties),
-                        CatalogRecord.class);
+                XtdObject.class);
             }
         } else {
             pageable = PageRequest.of(0, (int) Math.max(count, 10));
-            catalogRecords = neo4jTemplate.findAll(getQuery(specification, pageable), CatalogRecord.class);
+            catalogRecords = neo4jTemplate.findAll(getQuery(specification, pageable), XtdObject.class);
         }
 
         return PageableExecutionUtils.getPage(List.copyOf(catalogRecords), pageable, () -> count);
@@ -227,10 +232,10 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public HierarchyValue getHierarchy(@NotNull CatalogRecordSpecification rootNodeSpecification, int depth) {
-        final Page<CatalogRecord> rootNodes = findAllCatalogRecords(rootNodeSpecification);
-        final List<String> rootNodeIds = rootNodes.map(CatalogRecord::getId).stream().collect(Collectors.toList());
+        final Page<XtdObject> rootNodes = findAllCatalogRecords(rootNodeSpecification);
+        final List<String> rootNodeIds = rootNodes.map(XtdObject::getId).stream().collect(Collectors.toList());
 
-        final List<List<String>> paths = rootRepository.findRelationshipPaths(rootNodeIds);
+        final List<List<String>> paths = findRelationshipPaths(rootNodeIds);
 
         final Set<String> nodeIds = new HashSet<>();
         paths.forEach(nodeIds::addAll);
@@ -264,5 +269,28 @@ public class CatalogServiceImpl implements CatalogService {
         query = query + " SKIP " + pageable.getOffset() + " LIMIT " + pageable.getPageSize();
 
         return query;
+    }
+
+    public List<List<String>> findRelationshipPaths(List<String> startIds) {
+        return neo4jClient.query("""
+                MATCH (start:XtdObject)
+                WHERE start.id IN $startIds
+                MATCH path = (start)-[*]->(end:XtdObject)
+                WITH [x IN nodes(path) WHERE x:XtdObject | x.id] AS paths
+                RETURN paths
+            """)
+            .bind(startIds).to("startIds")
+            .fetch()
+            .all()
+            .stream()
+            .map(record -> Optional.ofNullable(record.get("paths"))
+                               .filter(List.class::isInstance)
+                               .map(List.class::cast)
+                               .orElse(List.of()))
+        .map(list -> ((List<?>) list).stream()
+                                     .filter(String.class::isInstance)
+                                     .map(String.class::cast)
+                                     .toList())
+            .toList();
     }
 }

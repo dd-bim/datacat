@@ -27,14 +27,12 @@ public abstract class CatalogRecordBuilder<B extends CatalogRecordBuilder<B>> ex
     }
 
     public B entityTypeIn(final List<CatalogRecordType> recordTypes) {
-        log.info("recordTypes: " + recordTypes);
         final List<String> labels = recordTypes.stream()
                 .map(CatalogRecordType::getLabel)
                 .collect(Collectors.toList());
         final String filter = labels.stream()
                 .map(label -> "n:" + label)
                 .collect(Collectors.joining(" OR "));
-        log.info("filter: " + filter);
         filters.add(filter);
         return self();
     }
