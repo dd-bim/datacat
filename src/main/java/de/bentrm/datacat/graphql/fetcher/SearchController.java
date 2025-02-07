@@ -23,8 +23,6 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class SearchController {
 
-    final int DEFAULT_HIERARCHY_DEPTH = 10;
-
     @Autowired
     private SpecificationMapper specificationMapper;
 
@@ -56,6 +54,6 @@ public class SearchController {
     public HierarchyValue hierarchy(@Argument HierarchyFilterInput input) {
         final HierarchyRootNodeFilterInput rootNodeFilter = input.getRootNodeFilter();
         final CatalogRecordSpecification rootNodeSpecification = specificationMapper.toCatalogRecordSpecification(rootNodeFilter);
-        return catalogService.getHierarchy(rootNodeSpecification, DEFAULT_HIERARCHY_DEPTH);
+        return catalogService.getHierarchy(rootNodeSpecification);
     }
 }

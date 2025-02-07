@@ -231,7 +231,7 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
-    public HierarchyValue getHierarchy(@NotNull CatalogRecordSpecification rootNodeSpecification, int depth) {
+    public HierarchyValue getHierarchy(@NotNull CatalogRecordSpecification rootNodeSpecification) {
         final Page<XtdObject> rootNodes = findAllCatalogRecords(rootNodeSpecification);
         final List<String> rootNodeIds = rootNodes.map(XtdObject::getId).stream().collect(Collectors.toList());
 

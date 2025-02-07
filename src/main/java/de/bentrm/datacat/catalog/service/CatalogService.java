@@ -68,6 +68,6 @@ public interface CatalogService {
     long countCatalogRecords(@NotNull CatalogRecordSpecification specification);
 
     @PreAuthorize("hasRole('READONLY')")
-    HierarchyValue getHierarchy(@NotNull CatalogRecordSpecification rootNodeSpecification, int depth);
+    HierarchyValue getHierarchy(@NotNull CatalogRecordSpecification rootNodeSpecification);
 
 }

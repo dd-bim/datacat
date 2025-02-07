@@ -1,1 +1,0 @@
-MATCH (t:Translation)<-[:NAMED]-(i:CatalogRecord) WITH t, i, "labels." + t.languageCode AS key CALL apoc.create.setProperty(i, key, t.label) YIELD node RETURN COUNT(*);

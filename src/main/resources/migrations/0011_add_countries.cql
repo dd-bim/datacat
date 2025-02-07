@@ -256,7 +256,8 @@ ON CREATE SET
     x.lastModified = toString(datetime()), 
     x.lastModifiedBy = "SYSTEM",
     x.majorVersion = 1,
-    x.minorVersion = 0
+    x.minorVersion = 0,
+    x.status = "XTD_ACTIVE"
 MERGE (y:XtdText:XtdRoot:CatalogRecord:Entity {id: randomUUID()})
 ON CREATE SET 
     y.text = row[0], 
