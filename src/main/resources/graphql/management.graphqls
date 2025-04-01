@@ -17,8 +17,8 @@ enum CatalogRecordType {
     QuantityKind
     Country
     Subdivision
-    RelationshipToSubject
-    RelationshipToProperty
+    # RelationshipToSubject
+    # RelationshipToProperty
     RelationshipType
 }
 
@@ -140,6 +140,11 @@ input TextInput {
     text: String
 }
 
+input RationalInput {
+    numerator: Int
+    denominator: Int
+}
+
 input RelationshipToPropertyInput {
     relationshipType: XtdPropertyRelationshipTypeEnum
 }
@@ -167,6 +172,7 @@ input PropertiesInput {
     intervalProperties: IntervalInput
     languageProperties: LanguageInput
     textProperties: TextInput
+    rationalProperties: RationalInput
 }
 
 input RelationshipPropertiesInput {

@@ -23,6 +23,7 @@ import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
 import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.domain.XtdOrderedValue;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
+import de.bentrm.datacat.catalog.domain.XtdRational;
 import de.bentrm.datacat.catalog.domain.XtdRelationshipType;
 import de.bentrm.datacat.catalog.domain.XtdSubdivision;
 import de.bentrm.datacat.catalog.domain.XtdText;
@@ -136,6 +137,9 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
         }
         if (newRecord instanceof XtdRelationshipType relationshipType) {
             VALUE_MAPPER.setProperties(properties.getRelationshipTypeProperties(), relationshipType);
+        }
+        if (newRecord instanceof XtdRational rational) {
+            VALUE_MAPPER.setProperties(properties.getRationalProperties(), rational);
         }
 
         newRecord = this.getRepository().save(newRecord);
