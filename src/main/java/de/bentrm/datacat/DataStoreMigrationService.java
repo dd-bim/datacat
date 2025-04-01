@@ -69,11 +69,11 @@ public class DataStoreMigrationService implements ApplicationRunner, ResourceLoa
             @NotNull
             final Optional<Migration> optionalMigration = migrationRepository.findByIdWithDirectRelations(filename);
             if (optionalMigration.isPresent()) {
-                log.info("Skipping already imported migration: {}", filename);
+                // log.info("Skipping already imported migration: {}", filename);
                 continue;
             }
 
-            log.info("Importing new migration resource...");
+            // log.info("Importing new migration resource...");
             final InputStream inputStream = resource.getInputStream();
             final InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             final BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
@@ -110,7 +110,7 @@ public class DataStoreMigrationService implements ApplicationRunner, ResourceLoa
             if (migration.getAppliedAt() == null) {
                 log.info("Applying migration with id {}", migration.getId());
                 for (String command : migration.getCommands()) {
-                    log.info("Running migration command: {}", command);
+                    // log.info("Running migration command: {}", command);
                     neo4jClient.query(command).run();
                     migration.setAppliedAt(Instant.now());
                     migrationRepository.save(migration);
@@ -118,7 +118,7 @@ public class DataStoreMigrationService implements ApplicationRunner, ResourceLoa
                     log.info("Applied migration command: {}", command);
                 }
             } else {
-                log.info("Skipping already applied migration with id {}", migration.getId());
+                // log.info("Skipping already applied migration with id {}", migration.getId());
             }
         }
         log.info("Finished execution of graph schema migration.");

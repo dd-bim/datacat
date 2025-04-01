@@ -23,6 +23,7 @@ import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
 import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.domain.XtdOrderedValue;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
+import de.bentrm.datacat.catalog.domain.XtdRelationshipType;
 import de.bentrm.datacat.catalog.domain.XtdSubdivision;
 import de.bentrm.datacat.catalog.domain.XtdText;
 import de.bentrm.datacat.catalog.domain.XtdUnit;
@@ -94,6 +95,7 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
             }
             xtdObject.setMajorVersion(properties.getMajorVersion());
             xtdObject.setMinorVersion(properties.getMinorVersion());
+            xtdObject.setDateOfCreation(properties.getDateOfCreation());
             xtdObject.setStatus(properties.getStatus());
         }
         if (newRecord instanceof XtdConcept xtdConcept) {
@@ -115,7 +117,7 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
             VALUE_MAPPER.setProperties(properties.getCountryProperties(), country);
         }
         if (newRecord instanceof XtdSubdivision subdivision) {
-            VALUE_MAPPER.setProperties(properties.getCountryProperties(), subdivision);
+            VALUE_MAPPER.setProperties(properties.getSubdivisionProperties(), subdivision);
         }
         if (newRecord instanceof XtdValue value) {
             VALUE_MAPPER.setProperties(properties.getValueProperties(), value);
@@ -131,6 +133,9 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
         }
         if (newRecord instanceof XtdText text) {
             VALUE_MAPPER.setProperties(properties.getTextProperties(), text);
+        }
+        if (newRecord instanceof XtdRelationshipType relationshipType) {
+            VALUE_MAPPER.setProperties(properties.getRelationshipTypeProperties(), relationshipType);
         }
 
         newRecord = this.getRepository().save(newRecord);

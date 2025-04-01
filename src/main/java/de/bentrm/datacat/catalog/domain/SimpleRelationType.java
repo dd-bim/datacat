@@ -8,8 +8,6 @@ public enum SimpleRelationType {
     BoundaryValues("BOUNDARY_VALUES"),
     Coefficient("COEFFICIENT"),
     CountryOfOrigin("COUNTRY_OF_ORIGIN"),
-    DateOfCreation("DATE_OF_CREATION"),
-    DateOfPublication("DATE_OF_PUBLICATION"),
     Definition("DEFINITION"),
     DeprecationExplanation("DEPRECATION_EXPLANATION"),
     Descriptions("DESCRIPTIONS"),
@@ -28,7 +26,7 @@ public enum SimpleRelationType {
     Name("NAME"),
     Names("NAMES"),
     Offset("OFFSET"),
-    OrderedValues("ORDERED_VALUES"),
+    OrderedValue("ORDERED_VALUE"),
     PossibleValues("POSSIBLE_VALUES"),
     Properties("PROPERTIES"),
     QuantityKinds("QUANTITY_KINDS"),
@@ -50,8 +48,7 @@ public enum SimpleRelationType {
     TimeExponent("TIME_EXPONENT"),
     Units("UNITS"),
     Unit("UNIT"),
-    Values("VALUES"),
-    Value("VALUE");
+    Values("VALUES");
     
     private final String relationProperty;
 

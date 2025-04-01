@@ -88,7 +88,7 @@ public class OrderedValueRecordServiceImpl extends
         final XtdOrderedValue orderedValue = getRepository().findById(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
-        case Value:
+        case OrderedValue:
             if (orderedValue.getOrderedValue() != null) {
                 throw new IllegalArgumentException("OrderedValue already has a Value assigned.");
             } else if (relatedRecordIds.size() != 1) {

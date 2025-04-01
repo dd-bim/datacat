@@ -8,4 +8,5 @@ public class ExternalDocumentInput {
     String author;
     String isbn;
     String publisher;
+    String dateOfPublication;
 }

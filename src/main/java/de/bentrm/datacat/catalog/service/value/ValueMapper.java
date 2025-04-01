@@ -60,5 +60,5 @@ public interface ValueMapper {
 
     void setProperties(TextInput properties, @MappingTarget XtdText catalogEntry);
 
-
+    void setProperties(RelationshipTypeInput properties, @MappingTarget XtdRelationshipType catalogEntry);
 }

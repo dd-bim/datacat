@@ -19,6 +19,7 @@ enum CatalogRecordType {
     Subdivision
     RelationshipToSubject
     RelationshipToProperty
+    RelationshipType
 }
 
 enum RelationshipRecordType {
@@ -26,8 +27,6 @@ enum RelationshipRecordType {
     BoundaryValues
     Coefficient
     CountryOfOrigin
-    DateOfCreation
-    DateOfPublication
     Definition
     DeprecationExplanation
     Descriptions
@@ -46,7 +45,7 @@ enum RelationshipRecordType {
     Name
     Names
     Offset
-    OrderedValues
+    OrderedValue
     PossibleValues
     Properties
     QuantityKinds
@@ -93,6 +92,7 @@ union SimpleRecord =
     | XtdSubdivision
     | XtdRelationshipToSubject
     | XtdRelationshipToProperty
+    | XtdRelationshipType
 
 input UnitInput {
     scale: XtdUnitScaleEnum
@@ -109,6 +109,7 @@ input ExternalDocumentInput {
     author: String
     isbn: String
     publisher: String
+    dateOfPublication: String
 }
 
 input CountryInput {
@@ -151,6 +152,7 @@ input PropertiesInput {
     id: ID
     majorVersion: Int
     minorVersion: Int
+    dateOfCreation: String
     status: XtdStatusOfActivationEnum
     names: [TranslationInput!]
     descriptions: [TranslationInput!]

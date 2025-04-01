@@ -651,7 +651,7 @@ type XtdSymbol implements XtdRoot {
   lastModifiedBy: String!
   tags: [Tag!]!
   subject: XtdSubject
-  symbol: XtdText!
+  symbol: XtdText #required
 }
 
 type XtdInterval implements XtdRoot {

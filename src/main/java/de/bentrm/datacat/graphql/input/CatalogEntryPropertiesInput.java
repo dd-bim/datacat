@@ -14,6 +14,7 @@ public class CatalogEntryPropertiesInput {
     String id;
     int majorVersion = 1;
     int minorVersion = 0;
+    String dateOfCreation;
     XtdStatusOfActivationEnum status = XtdStatusOfActivationEnum.XTD_ACTIVE;
     List<@NotNull @Valid TranslationInput> names;
     List<@NotNull @Valid TranslationInput> descriptions;
@@ -38,5 +39,7 @@ public class CatalogEntryPropertiesInput {
     @Valid LanguageInput languageProperties;
 
     @Valid TextInput textProperties;
+
+    @Valid RelationshipTypeInput relationshipTypeProperties;
 
 }
