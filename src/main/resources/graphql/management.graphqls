@@ -31,8 +31,6 @@ enum RelationshipRecordType {
     Dimension
     ElectricCurrentExponent
     Examples
-    Languages
-    Language
     LanguageOfCreator
     LengthExponent
     LuminousIntensityExponent
@@ -40,7 +38,6 @@ enum RelationshipRecordType {
     Maximum
     Minimum
     Name
-    # Names
     Offset
     OrderedValue
     PossibleValues
@@ -58,7 +55,6 @@ enum RelationshipRecordType {
     Symbol
     TargetProperties
     TargetSubjects
-    Texts
     ThermodynamicTemperatureExponent
     TimeExponent
     Units
@@ -106,6 +102,7 @@ input ExternalDocumentInput {
     isbn: String
     publisher: String
     dateOfPublication: String
+    languageTag: [ID!]
 }
 
 input CountryInput {
@@ -136,6 +133,14 @@ input TextInput {
     text: String
 }
 
+input ValueListInput {
+    languageTag: ID
+}
+
+input SymbolInput {
+    symbol: TranslationInput!
+}
+
 input RationalInput {
     numerator: Int
     denominator: Int
@@ -158,6 +163,7 @@ input PropertiesInput {
     names: [TranslationInput!]
     descriptions: [TranslationInput!]
     comments: [TranslationInput!]
+    deprecationExplanation: [TranslationInput!]
     propertyProperties: PropertyInput
     unitProperties: UnitInput
     externalDocumentProperties: ExternalDocumentInput
@@ -169,6 +175,8 @@ input PropertiesInput {
     languageProperties: LanguageInput
     textProperties: TextInput
     rationalProperties: RationalInput
+    valueListProperties: ValueListInput
+    symbolProperties: SymbolInput
 }
 
 input RelationshipPropertiesInput {

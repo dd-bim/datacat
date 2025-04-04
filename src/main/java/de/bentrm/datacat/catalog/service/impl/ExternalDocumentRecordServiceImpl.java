@@ -85,15 +85,6 @@ public class ExternalDocumentRecordServiceImpl
         final XtdExternalDocument externalDocument = getRepository().findByIdWithDirectRelations(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
-            case Languages -> {
-                final Iterable<XtdLanguage> items = languageRecordService.findAllByIds(relatedRecordIds);
-                final List<XtdLanguage> related = StreamSupport
-                        .stream(items.spliterator(), false)
-                        .collect(Collectors.toList());
-
-                externalDocument.getLanguages().clear();
-                externalDocument.getLanguages().addAll(related);
-            }
             default -> conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
         }
 

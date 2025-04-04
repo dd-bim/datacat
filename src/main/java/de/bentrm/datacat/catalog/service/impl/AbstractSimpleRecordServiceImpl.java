@@ -16,6 +16,7 @@ import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import de.bentrm.datacat.catalog.domain.XtdConcept;
 import de.bentrm.datacat.catalog.domain.XtdCountry;
+import de.bentrm.datacat.catalog.domain.XtdDictionary;
 import de.bentrm.datacat.catalog.domain.XtdExternalDocument;
 import de.bentrm.datacat.catalog.domain.XtdInterval;
 import de.bentrm.datacat.catalog.domain.XtdLanguage;
@@ -25,9 +26,11 @@ import de.bentrm.datacat.catalog.domain.XtdOrderedValue;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.domain.XtdRational;
 import de.bentrm.datacat.catalog.domain.XtdSubdivision;
+import de.bentrm.datacat.catalog.domain.XtdSymbol;
 import de.bentrm.datacat.catalog.domain.XtdText;
 import de.bentrm.datacat.catalog.domain.XtdUnit;
 import de.bentrm.datacat.catalog.domain.XtdValue;
+import de.bentrm.datacat.catalog.domain.XtdValueList;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.SimpleRecordService;
 import de.bentrm.datacat.catalog.service.value.ValueMapper;
@@ -41,8 +44,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R extends EntityRepository<T>>
-        extends AbstractQueryServiceImpl<T, R>
-        implements SimpleRecordService<T> {
+        extends AbstractQueryServiceImpl<T, R> implements SimpleRecordService<T> {
 
     protected final ValueMapper VALUE_MAPPER = ValueMapper.INSTANCE;
     private final CatalogCleanupService cleanupService;
@@ -56,9 +58,7 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
     @Autowired
     private MultiLanguageTextRepository multiLanguageTextRepository;
 
-    public AbstractSimpleRecordServiceImpl(Class<T> domainClass,
-            Neo4jTemplate neo4jTemplate,
-            R repository,
+    public AbstractSimpleRecordServiceImpl(Class<T> domainClass, Neo4jTemplate neo4jTemplate, R repository,
             CatalogCleanupService cleanupService) {
         super(domainClass, neo4jTemplate, repository);
         this.cleanupService = cleanupService;
@@ -95,6 +95,11 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
                 XtdMultiLanguageText multiLanguageComment = createMultiLanguageText(properties.getComments());
                 xtdObject.getComments().add(multiLanguageComment);
             }
+
+            if (properties.getDeprecationExplanation() != null) {
+                XtdMultiLanguageText multiLanguageDeprecation = createMultiLanguageText(properties.getDeprecationExplanation());
+                xtdObject.setDeprecationExplanation(multiLanguageDeprecation);
+            }
             xtdObject.setMajorVersion(properties.getMajorVersion());
             xtdObject.setMinorVersion(properties.getMinorVersion());
             xtdObject.setDateOfCreation(properties.getDateOfCreation());
@@ -114,6 +119,14 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
         }
         if (newRecord instanceof XtdExternalDocument externalDocument) {
             VALUE_MAPPER.setProperties(properties.getExternalDocumentProperties(), externalDocument);
+            List<String> langTag = properties.getExternalDocumentProperties().getLanguageTag();
+            if (langTag != null) {
+                for (String tag : langTag) {
+                    XtdLanguage language = languageRepository.findByCode(tag).orElseThrow(
+                            () -> new IllegalArgumentException("No language record with code " + langTag + " found."));
+                    externalDocument.getLanguages().add(language);
+                }
+            }
         }
         if (newRecord instanceof XtdCountry country) {
             VALUE_MAPPER.setProperties(properties.getCountryProperties(), country);
@@ -139,6 +152,28 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
         if (newRecord instanceof XtdRational rational) {
             VALUE_MAPPER.setProperties(properties.getRationalProperties(), rational);
         }
+        if (newRecord instanceof XtdValueList valueList) {
+            if(properties.getValueListProperties() != null) {
+                String langTag = properties.getValueListProperties().getLanguageTag();
+                if (langTag != null) {
+                    XtdLanguage language = languageRepository.findByCode(langTag).orElseThrow(
+                            () -> new IllegalArgumentException("No language record with code " + langTag + " found."));
+                    valueList.setLanguage(language);
+                }
+            }
+        }
+        if (newRecord instanceof XtdSymbol symbol) {
+            if (properties.getSymbolProperties() != null) {
+            XtdText symbolText = createText(properties.getSymbolProperties().getSymbol());
+                symbol.setSymbol(symbolText);
+            } else {
+                throw new IllegalArgumentException("Symbol properties are required.");
+            }
+        }
+        if (newRecord instanceof XtdDictionary dictionary) {
+            XtdMultiLanguageText multiLanguage = createMultiLanguageText(properties.getNames());
+                dictionary.setName(multiLanguage);
+        }
 
         newRecord = this.getRepository().save(newRecord);
         log.trace("Persisted new catalog entry: {}", newRecord);
@@ -160,7 +195,9 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
 
     @Transactional
     public XtdText createText(TranslationInput translation) {
-        final XtdLanguage language = languageRepository.findByCode(translation.getLanguageTag()).orElseThrow(() -> new IllegalArgumentException("No language record with code " + translation.getLanguageTag() + " found."));
+        final XtdLanguage language = languageRepository.findByCode(translation.getLanguageTag())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "No language record with code " + translation.getLanguageTag() + " found."));
 
         final XtdText text = new XtdText();
         text.setText(translation.getValue());
@@ -175,8 +212,7 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
     @Override
     public @NotNull T removeRecord(@NotBlank String id) {
         log.trace("Deleting simple catalog record with id {}...", id);
-        final T entry = this.getRepository()
-                .findByIdWithDirectRelations(id)
+        final T entry = this.getRepository().findByIdWithDirectRelations(id)
                 .orElseThrow(() -> new IllegalArgumentException("No record with id " + id + " found."));
 
         cleanupService.deleteNodeWithRelationships(id);
@@ -191,8 +227,7 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
     public @NotNull T removeRelationship(@NotBlank String recordId, @NotBlank String relatedRecordId,
             @NotNull SimpleRelationType relationType) {
         log.trace("Deleting relationship from record with id {}...", recordId);
-        final T entry = this.getRepository()
-                .findByIdWithDirectRelations(recordId)
+        final T entry = this.getRepository().findByIdWithDirectRelations(recordId)
                 .orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         cleanupService.purgeRelationship(recordId, relatedRecordId, relationType);
@@ -201,10 +236,9 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
 
     @Transactional
     @Override
-    public @NotNull T setRelatedRecords(@NotBlank String recordId,
-            @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
-        T record = this.getRepository()
-                .findById(recordId)
+    public @NotNull T setRelatedRecords(@NotBlank String recordId, @NotEmpty List<@NotBlank String> relatedRecordIds,
+            @NotNull SimpleRelationType relationType) {
+        T record = this.getRepository().findById(recordId)
                 .orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
         return record;
     }

@@ -3,8 +3,10 @@ package de.bentrm.datacat.graphql.fetcher;
 import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import de.bentrm.datacat.catalog.domain.XtdConcept;
+import de.bentrm.datacat.catalog.domain.XtdDictionary;
 import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
 import de.bentrm.datacat.catalog.domain.XtdObject;
+import de.bentrm.datacat.catalog.domain.XtdSymbol;
 import de.bentrm.datacat.catalog.domain.XtdText;
 import de.bentrm.datacat.catalog.service.CatalogService;
 import de.bentrm.datacat.catalog.service.SimpleRecordService;
@@ -36,12 +38,12 @@ public class CatalogRecordMutationController {
     @Autowired
     private SimpleRecordServiceFactory simpleRecordServiceFactory;
 
-
     @MutationMapping
     public CreateEntryPayload createCatalogEntry(@Argument CreateEntryInput input) {
         CatalogEntryPropertiesInput properties = input.getProperties();
 
-        final SimpleRecordService<?> catalogRecordService = simpleRecordServiceFactory.getService(input.getCatalogEntryType());
+        final SimpleRecordService<?> catalogRecordService = simpleRecordServiceFactory
+                .getService(input.getCatalogEntryType());
         final CatalogRecord newRecord = catalogRecordService.addRecord(properties);
 
         if (input.getTags() != null) {
@@ -54,35 +56,69 @@ public class CatalogRecordMutationController {
     @MutationMapping
     protected DeleteCatalogEntryPayload deleteCatalogEntry(@Argument DeleteCatalogEntryInput input) {
 
-            final String recordId = input.getCatalogEntryId();
-            final CatalogRecord entry = catalogService.getEntryById(recordId).orElseThrow(()-> new IllegalArgumentException("Catalog entry not found"));
-            final SimpleRecordService<?> catalogRecordService = simpleRecordServiceFactory.getService(CatalogRecordType.getByDomainClass(entry));
-        
-            
-            if (entry instanceof XtdObject xtdObject) {
+        final String recordId = input.getCatalogEntryId();
+        final CatalogRecord entry = catalogService.getEntryById(recordId)
+                .orElseThrow(() -> new IllegalArgumentException("Catalog entry not found"));
+        final SimpleRecordService<?> catalogRecordService = simpleRecordServiceFactory
+                .getService(CatalogRecordType.getByDomainClass(entry));
 
-                    Set<XtdMultiLanguageText> multiLanguageTexts = xtdObject.getNames();
-                    multiLanguageTexts.addAll(xtdObject.getComments());
-                    if (entry instanceof XtdConcept xtdConcept) {
-                        multiLanguageTexts.addAll(xtdConcept.getDescriptions());
-                    }
+        if (entry instanceof XtdObject xtdObject) {
 
-                    for (XtdMultiLanguageText multiLanguageText : multiLanguageTexts) {
-                        XtdMultiLanguageText multiLanguage = (XtdMultiLanguageText) catalogService.getEntryById(multiLanguageText.getId()).orElseThrow(() -> new IllegalArgumentException("No record with id " + multiLanguageText.getId() + " found."));
-                        Set<XtdText> texts = multiLanguage.getTexts();
-                        for (XtdText text : texts) {
-                            // Delete XtdText
-                            final XtdText textEntity = (XtdText) catalogService.getEntryById(text.getId()).orElseThrow(() -> new IllegalArgumentException("No record with id " + text.getId() + " found."));
-                            final SimpleRecordService<?> textService = simpleRecordServiceFactory.getService(CatalogRecordType.getByDomainClass(textEntity));
-                            textService.removeRecord(text.getId());
-                        }
-                         // Delete XtdMultiLanguageText
-                        final SimpleRecordService<?> languageTextService = simpleRecordServiceFactory.getService(CatalogRecordType.getByDomainClass(multiLanguage));
-                        languageTextService.removeRecord(multiLanguage.getId());
-                    }
+            Set<XtdMultiLanguageText> multiLanguageTexts = xtdObject.getNames();
+            multiLanguageTexts.addAll(xtdObject.getComments());
+            multiLanguageTexts.add(xtdObject.getDeprecationExplanation());
+            if (entry instanceof XtdConcept xtdConcept) {
+                multiLanguageTexts.addAll(xtdConcept.getDescriptions());
+            }
+
+            for (XtdMultiLanguageText multiLanguageText : multiLanguageTexts) {
+                XtdMultiLanguageText multiLanguage = (XtdMultiLanguageText) catalogService
+                        .getEntryById(multiLanguageText.getId()).orElseThrow(() -> new IllegalArgumentException(
+                                "No record with id " + multiLanguageText.getId() + " found."));
+                Set<XtdText> texts = multiLanguage.getTexts();
+                for (XtdText text : texts) {
+                    // Delete XtdText
+                    final XtdText textEntity = (XtdText) catalogService.getEntryById(text.getId()).orElseThrow(
+                            () -> new IllegalArgumentException("No record with id " + text.getId() + " found."));
+                    final SimpleRecordService<?> textService = simpleRecordServiceFactory
+                            .getService(CatalogRecordType.getByDomainClass(textEntity));
+                    textService.removeRecord(text.getId());
                 }
+                // Delete XtdMultiLanguageText
+                final SimpleRecordService<?> languageTextService = simpleRecordServiceFactory
+                        .getService(CatalogRecordType.getByDomainClass(multiLanguage));
+                languageTextService.removeRecord(multiLanguage.getId());
+            }
+        } else if (entry instanceof XtdSymbol xtdSymbol) {
+            XtdText text = xtdSymbol.getSymbol();
+            // Delete XtdText
+            final XtdText textEntity = (XtdText) catalogService.getEntryById(text.getId()).orElseThrow(
+                () -> new IllegalArgumentException("No record with id " + text.getId() + " found."));
+            final SimpleRecordService<?> textService = simpleRecordServiceFactory
+                .getService(CatalogRecordType.getByDomainClass(textEntity));
+            textService.removeRecord(text.getId());
+        } else if (entry instanceof XtdDictionary xtdDictionary) {
+            XtdMultiLanguageText multiLanguageText = xtdDictionary.getName();
+            // Delete XtdMultiLanguageText
+            final XtdMultiLanguageText multiLanguage = (XtdMultiLanguageText) catalogService
+                    .getEntryById(multiLanguageText.getId()).orElseThrow(() -> new IllegalArgumentException(
+                            "No record with id " + multiLanguageText.getId() + " found."));
+            Set<XtdText> texts = multiLanguage.getTexts();
+            for (XtdText text : texts) {
+                // Delete XtdText
+                final XtdText textEntity = (XtdText) catalogService.getEntryById(text.getId()).orElseThrow(
+                        () -> new IllegalArgumentException("No record with id " + text.getId() + " found."));
+                final SimpleRecordService<?> textService = simpleRecordServiceFactory
+                        .getService(CatalogRecordType.getByDomainClass(textEntity));
+                textService.removeRecord(text.getId());
+            }
+            // Delete XtdMultiLanguageText
+            final SimpleRecordService<?> languageTextService = simpleRecordServiceFactory
+                    .getService(CatalogRecordType.getByDomainClass(multiLanguage));
+            languageTextService.removeRecord(multiLanguage.getId());
+        }
 
-            final CatalogRecord deletedRecord = catalogRecordService.removeRecord(recordId);
+        final CatalogRecord deletedRecord = catalogRecordService.removeRecord(recordId);
 
         return PAYLOAD_MAPPER.toDeleteEntryPayload(deletedRecord);
     }

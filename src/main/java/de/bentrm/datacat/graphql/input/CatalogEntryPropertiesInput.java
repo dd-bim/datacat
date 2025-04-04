@@ -19,6 +19,7 @@ public class CatalogEntryPropertiesInput {
     List<@NotNull @Valid TranslationInput> names;
     List<@NotNull @Valid TranslationInput> descriptions;
     List<@NotNull @Valid TranslationInput> comments;
+    List<@NotNull@Valid TranslationInput> deprecationExplanation;
 
     @Valid PropertyInput propertyProperties;
 
@@ -41,5 +42,9 @@ public class CatalogEntryPropertiesInput {
     @Valid TextInput textProperties;
 
     @Valid RationalInput rationalProperties;
+
+    @Valid ValueListInput valueListProperties;
+
+    @Valid SymbolInput symbolProperties;
 
 }

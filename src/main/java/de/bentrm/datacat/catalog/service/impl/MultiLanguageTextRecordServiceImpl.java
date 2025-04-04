@@ -73,15 +73,15 @@ public class MultiLanguageTextRecordServiceImpl
         final XtdMultiLanguageText multiLanguageText = getRepository().findById(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
-            case Texts -> {
-                final Iterable<XtdText> items = textRepository.findAllById(relatedRecordIds);
-                final List<XtdText> related = StreamSupport
-                        .stream(items.spliterator(), false)
-                        .collect(Collectors.toList());
+            // case Texts -> {
+            //     final Iterable<XtdText> items = textRepository.findAllById(relatedRecordIds);
+            //     final List<XtdText> related = StreamSupport
+            //             .stream(items.spliterator(), false)
+            //             .collect(Collectors.toList());
 
-                multiLanguageText.getTexts().clear();
-                multiLanguageText.getTexts().addAll(related);
-            }
+            //     multiLanguageText.getTexts().clear();
+            //     multiLanguageText.getTexts().addAll(related);
+            // }
             default -> log.error("Unsupported relation type: {}", relationType);
         }
 

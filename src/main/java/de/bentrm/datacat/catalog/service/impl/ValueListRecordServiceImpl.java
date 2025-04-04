@@ -10,7 +10,6 @@ import de.bentrm.datacat.catalog.domain.XtdUnit;
 import de.bentrm.datacat.catalog.repository.ValueListRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.ValueListRecordService;
-import de.bentrm.datacat.catalog.service.dto.Relationships.LanguageDtoProjection;
 import de.bentrm.datacat.catalog.service.dto.Relationships.UnitDtoProjection;
 import de.bentrm.datacat.catalog.service.dto.Relationships.ValuesDtoProjection;
 import de.bentrm.datacat.catalog.service.ConceptRecordService;
@@ -139,18 +138,6 @@ public class ValueListRecordServiceImpl extends AbstractSimpleRecordServiceImpl<
             valueList.getValues().clear();
             valueList.getValues().addAll(related);
             neo4jTemplate.saveAs(valueList, ValuesDtoProjection.class);
-        }
-        case Language -> {
-            if (valueList.getLanguage() != null) {
-                throw new IllegalArgumentException("ValueList already has a Language assigned.");
-            } else if (relatedRecordIds.size() != 1) {
-                throw new IllegalArgumentException("Exactly one Language must be assigned to a ValueList.");
-            } else {
-                final XtdLanguage language = languageRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0))
-                        .orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
-                valueList.setLanguage(language);
-            }
-            neo4jTemplate.saveAs(valueList, LanguageDtoProjection.class);
         }
         default -> conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
         }

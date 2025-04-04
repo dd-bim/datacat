@@ -9,7 +9,6 @@ import de.bentrm.datacat.catalog.repository.TextRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.TextRecordService;
 import de.bentrm.datacat.catalog.service.dto.TextDtoProjection;
-import de.bentrm.datacat.catalog.service.dto.Relationships.LanguageDtoProjection;
 import de.bentrm.datacat.graphql.dto.TextCountResult;
 import lombok.extern.slf4j.Slf4j;
 
@@ -70,23 +69,6 @@ public class TextRecordServiceImpl
 
         final XtdText text = getRepository().findById(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
-        switch (relationType) {
-            case Language -> {
-                if (text.getLanguage() != null) {
-                    throw new IllegalArgumentException("Text already has a language assigned.");
-                } else if (relatedRecordIds.size() != 1) {
-                    throw new IllegalArgumentException("Exactly one language must be assigned to a text.");
-                } else {
-                    final XtdLanguage language = neo4jTemplate.findById(relatedRecordIds.get(0), XtdLanguage.class).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
-
-                    text.setLanguage(language);
-                }
-                    }
-            default -> log.error("Unsupported relation type: {}", relationType);
-        }
-
-        neo4jTemplate.saveAs(text, LanguageDtoProjection.class);
-        log.trace("Updated relationship: {}", text);
         return text;
     }   
 
