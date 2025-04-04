@@ -39,7 +39,7 @@ public class CatalogSearchServiceImpl implements CatalogSearchService {
     public Page<XtdObject> search(@NotNull CatalogRecordSpecification specification) {
         Collection<XtdObject> catalogRecords;
         Pageable pageable;
-        final long count = count(specification);
+        final Long count = count(specification);
 
         final Optional<Pageable> paged = specification.getPageable();
         if (paged.isPresent()) {
@@ -62,7 +62,7 @@ public class CatalogSearchServiceImpl implements CatalogSearchService {
     }
 
     @Override
-    public long count(@NotNull CatalogRecordSpecification specification) {
+    public Long count(@NotNull CatalogRecordSpecification specification) {
         String query;
         if (specification.getFilters().isEmpty()) {
             query = "MATCH (n:XtdObject) RETURN count(n)";

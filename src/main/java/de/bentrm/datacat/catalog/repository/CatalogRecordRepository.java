@@ -30,6 +30,6 @@ public interface CatalogRecordRepository extends EntityRepository<CatalogRecord>
         WHERE t.text CONTAINS $regex AND l.code STARTS WITH $languageTag
         RETURN COUNT(n.id)
     """)
-    long count(String regex, String languageTag);
+    Long count(String regex, String languageTag);
 
 }

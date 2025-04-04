@@ -598,13 +598,13 @@ type XtdDimension implements XtdRoot & XtdObject & XtdConcept {
   tags: [Tag!]!
   uri: String
   referenceDocuments: [XtdExternalDocument!]!
-  thermodynamicTemperatureExponent: XtdRational!
-  electricCurrentExponent: XtdRational!
-  timeExponent: XtdRational!
-  massExponent: XtdRational!
-  lengthExponent: XtdRational!
-  luminousIntensityExponent: XtdRational!
-  amountOfSubstanceExponent: XtdRational!
+  thermodynamicTemperatureExponent: XtdRational # required
+  electricCurrentExponent: XtdRational # required
+  timeExponent: XtdRational # required
+  massExponent: XtdRational # required
+  lengthExponent: XtdRational # required
+  luminousIntensityExponent: XtdRational # required
+  amountOfSubstanceExponent: XtdRational # required
 }
 
 type XtdRational implements XtdRoot {
@@ -866,12 +866,6 @@ type XtdRelationshipToPropertyConnection {
   totalElements: Int!
 }
 
-type XtdRelationshipTypeConnection {
-  nodes: [XtdRelationshipType!]!
-  pageInfo: PageInfo!
-  totalElements: Int!
-}
-
 type XtdLanguageConnection {
   nodes: [XtdLanguage!]!
   pageInfo: PageInfo!
@@ -1018,9 +1012,6 @@ type Query {
   findRelationshipToProperties(
     input: FilterInput
   ): XtdRelationshipToPropertyConnection!
-
-  getRelationshipType(id: ID!): XtdRelationshipType
-  findRelationshipTypes(input: FilterInput): XtdRelationshipTypeConnection!
 
   getLanguage(id: ID!): XtdLanguage
   findLanguages(input: FilterInput): XtdLanguageConnection!

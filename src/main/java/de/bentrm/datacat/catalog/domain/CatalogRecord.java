@@ -12,7 +12,7 @@ import java.util.*;
 @Slf4j
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-@ToString(callSuper = true, onlyExplicitlyIncluded = true)
+@ToString(callSuper = false, onlyExplicitlyIncluded = true)
 @Node("CatalogRecord")
 public abstract class CatalogRecord extends Entity {
 

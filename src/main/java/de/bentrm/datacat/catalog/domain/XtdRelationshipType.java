@@ -9,7 +9,7 @@ import de.bentrm.datacat.catalog.domain.Enums.XtdRelationshipKindEnum;
 
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-@ToString(callSuper = true, onlyExplicitlyIncluded = true)
+@ToString(callSuper = false, onlyExplicitlyIncluded = true)
 @Node(XtdRelationshipType.LABEL)
 public class XtdRelationshipType extends XtdConcept {
 

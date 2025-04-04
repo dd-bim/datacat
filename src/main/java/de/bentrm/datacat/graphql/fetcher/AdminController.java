@@ -40,7 +40,7 @@ public class AdminController {
             Page<AccountDto> page = adminService.findAccounts(specification);
             return Connection.of(page);
         } else {
-            long count = adminService.countAccounts(specification);
+            Long count = adminService.countAccounts(specification);
             return Connection.empty(count);
         }
     }

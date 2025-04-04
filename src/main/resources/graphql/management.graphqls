@@ -17,9 +17,6 @@ enum CatalogRecordType {
     QuantityKind
     Country
     Subdivision
-    # RelationshipToSubject
-    # RelationshipToProperty
-    RelationshipType
 }
 
 enum RelationshipRecordType {
@@ -43,7 +40,7 @@ enum RelationshipRecordType {
     Maximum
     Minimum
     Name
-    Names
+    # Names
     Offset
     OrderedValue
     PossibleValues
@@ -52,7 +49,6 @@ enum RelationshipRecordType {
     ReferenceDocuments
     RelationshipToProperty
     RelationshipToSubject
-    RelationshipType
     ReplacedObjects
     ScopeSubjects
     SimilarTo

@@ -10,7 +10,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-@ToString(callSuper = true, onlyExplicitlyIncluded = true)
+@ToString(callSuper = false, onlyExplicitlyIncluded = true)
 @Node(XtdQuantityKind.LABEL)
 public class XtdQuantityKind extends XtdConcept {
 

@@ -12,5 +12,5 @@ public interface TagService extends QueryService<Tag> {
     @PreAuthorize("hasRole('USER')")
     @NotNull Page<Tag> findAll(@NotNull TagSpecification specification);
 
-    @NotNull long count(@NotNull TagSpecification specification);
+    @NotNull Long count(@NotNull TagSpecification specification);
 }

@@ -13,6 +13,6 @@ public interface CatalogSearchService {
     Page<XtdObject> search(@NotNull CatalogRecordSpecification specification);
 
     @PreAuthorize("hasRole('READONLY')")
-    public long count(@NotNull CatalogRecordSpecification specification);
+    public Long count(@NotNull CatalogRecordSpecification specification);
 
 }

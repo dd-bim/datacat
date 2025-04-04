@@ -49,7 +49,7 @@ public class UnitController {
     }
 
     @SchemaMapping(typeName = "XtdUnit", field = "dimension")
-    public XtdDimension getDimension(XtdUnit unit) {
+    public Optional<XtdDimension> getDimension(XtdUnit unit) {
         return service.getDimension(unit);
     }
 

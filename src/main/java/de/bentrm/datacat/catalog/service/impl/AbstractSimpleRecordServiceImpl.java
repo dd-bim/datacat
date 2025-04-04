@@ -24,7 +24,6 @@ import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.domain.XtdOrderedValue;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.domain.XtdRational;
-import de.bentrm.datacat.catalog.domain.XtdRelationshipType;
 import de.bentrm.datacat.catalog.domain.XtdSubdivision;
 import de.bentrm.datacat.catalog.domain.XtdText;
 import de.bentrm.datacat.catalog.domain.XtdUnit;
@@ -78,7 +77,7 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
         }
 
         if (id != null) {
-            final boolean idIsTaken = this.getRepository().existsById(id.trim());
+            final Boolean idIsTaken = this.getRepository().existsById(id.trim());
             if (idIsTaken) {
                 throw new IllegalArgumentException("Id is already in use.");
             } else {
@@ -87,8 +86,10 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
         }
 
         if (newRecord instanceof XtdObject xtdObject) {
-            XtdMultiLanguageText multiLanguage = createMultiLanguageText(properties.getNames());
-            xtdObject.getNames().add(multiLanguage);
+            if (properties.getNames() != null) {
+                XtdMultiLanguageText multiLanguage = createMultiLanguageText(properties.getNames());
+                xtdObject.getNames().add(multiLanguage);
+            }
 
             if (properties.getComments() != null) {
                 XtdMultiLanguageText multiLanguageComment = createMultiLanguageText(properties.getComments());
@@ -134,9 +135,6 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
         }
         if (newRecord instanceof XtdText text) {
             VALUE_MAPPER.setProperties(properties.getTextProperties(), text);
-        }
-        if (newRecord instanceof XtdRelationshipType relationshipType) {
-            VALUE_MAPPER.setProperties(properties.getRelationshipTypeProperties(), relationshipType);
         }
         if (newRecord instanceof XtdRational rational) {
             VALUE_MAPPER.setProperties(properties.getRationalProperties(), rational);

@@ -45,7 +45,7 @@ public interface AdminService {
     Optional<AccountDto> findAccount(@NotBlank String username);
 
     @PreAuthorize("hasRole('ADMIN')")
-    long countAccounts(@NotNull UserSpecification specification);
+    Long countAccounts(@NotNull UserSpecification specification);
 
     @PreAuthorize("hasRole('ADMIN')")
     Page<AccountDto> findAccounts(@NotNull UserSpecification specification);

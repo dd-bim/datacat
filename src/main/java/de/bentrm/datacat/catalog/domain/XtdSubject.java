@@ -9,10 +9,9 @@ import java.util.Set;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-// @Getter
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-@ToString(callSuper = true, onlyExplicitlyIncluded = true)
+@ToString(callSuper = false, onlyExplicitlyIncluded = true)
 @Node(XtdSubject.LABEL)
 public class XtdSubject extends XtdConcept {
     public static final String LABEL = "XtdSubject";

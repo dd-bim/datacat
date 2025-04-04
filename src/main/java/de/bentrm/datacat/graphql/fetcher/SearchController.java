@@ -45,7 +45,7 @@ public class SearchController {
                 Page<XtdObject> page = catalogSearchService.search(spec);
                 return Connection.of(page);
             } else {
-                long totalElements = catalogSearchService.count(spec);
+                Long totalElements = catalogSearchService.count(spec);
                 return Connection.empty(totalElements);
             }
     }

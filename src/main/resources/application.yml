@@ -32,3 +32,8 @@ spring:
     graphiql:
       enabled: true
       path: /graphiql
+
+logging:
+  level: 
+    org.springframework.data.neo4j.cypher.unrecognized: ERROR
+#    org.springframework: DEBUG

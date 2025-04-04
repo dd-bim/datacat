@@ -22,7 +22,7 @@ public class TagServiceImpl extends AbstractQueryServiceImpl<Tag, TagRepository>
     }
 
     @Override
-    public long count(@NotNull TagSpecification specification) {
+    public Long count(@NotNull TagSpecification specification) {
         return super.count(specification);
     }
 }

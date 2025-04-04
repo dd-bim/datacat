@@ -66,13 +66,13 @@ public class SymbolRecordServiceImpl
     }
 
     @Override
-    public @NotNull XtdText getSymbolText(XtdSymbol symbol) {
+    public Optional<XtdText> getSymbolText(XtdSymbol symbol) {
         Assert.notNull(symbol.getId(), "Symbol must be persistent.");
         final String textId = getRepository().findSymbolText(symbol.getId());
         if (textId == null) {
             return null;
         }
-        final XtdText text = textRecordService.findByIdWithDirectRelations(textId).orElseThrow(() -> new IllegalArgumentException("No record with id " + textId + " found."));
+        final Optional<XtdText> text = textRecordService.findByIdWithDirectRelations(textId);
         return text;
     }
 

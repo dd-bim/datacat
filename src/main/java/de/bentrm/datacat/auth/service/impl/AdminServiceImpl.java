@@ -117,7 +117,7 @@ public class AdminServiceImpl extends AbstractQueryServiceImpl<User, UserReposit
         return setAccountLock(username, false);
     }
 
-    private Optional<AccountDto> setAccountLock(String username, boolean locked) {
+    private Optional<AccountDto> setAccountLock(String username, Boolean locked) {
         User user = findByUsername(username);
         user.setLocked(locked);
         user = getRepository().save(user);
@@ -153,7 +153,7 @@ public class AdminServiceImpl extends AbstractQueryServiceImpl<User, UserReposit
     }
 
     @Override
-    public long countAccounts(@NotNull UserSpecification specification) {
+    public Long countAccounts(@NotNull UserSpecification specification) {
         String query;
         if (specification.getFilters().isEmpty()) {
             query = "MATCH (n:User) RETURN count(n)";
@@ -168,7 +168,7 @@ public class AdminServiceImpl extends AbstractQueryServiceImpl<User, UserReposit
     public Page<AccountDto> findAccounts(@NotNull UserSpecification specification) {
         Collection<User> users;
         Pageable pageable;
-        final long count = countAccounts(specification);
+        final Long count = countAccounts(specification);
 
         final Optional<Pageable> paged = specification.getPageable();
         if (paged.isPresent()) {

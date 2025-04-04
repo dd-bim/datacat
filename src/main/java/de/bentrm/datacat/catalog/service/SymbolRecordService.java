@@ -11,5 +11,5 @@ public interface SymbolRecordService extends SimpleRecordService<XtdSymbol> {
 
     Optional<XtdSubject> getSubject(@NotNull XtdSymbol symbol);
 
-    @NotNull XtdText getSymbolText(@NotNull XtdSymbol symbol);
+    Optional<XtdText> getSymbolText(@NotNull XtdSymbol symbol);
 }

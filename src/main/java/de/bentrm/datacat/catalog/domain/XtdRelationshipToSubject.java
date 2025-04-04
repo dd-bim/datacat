@@ -11,7 +11,7 @@ import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-@ToString(callSuper = true, onlyExplicitlyIncluded = true)
+@ToString(callSuper = false, onlyExplicitlyIncluded = true)
 @Node(XtdRelationshipToSubject.LABEL)
 public class XtdRelationshipToSubject extends XtdObject {
 
@@ -19,19 +19,19 @@ public class XtdRelationshipToSubject extends XtdObject {
     public static final String RELATIONSHIP_TYPE = "CONNECTED_SUBJECTS";
     public static final String RELATIONSHIP_TYPE_OUT = "TARGET_SUBJECTS";
 
-    @ToString.Include
+    // @ToString.Include
     @Relationship(type = "RELATIONSHIP_TYPE")
     private XtdRelationshipType relationshipType;
 
-    @ToString.Include
+    // @ToString.Include
     @Relationship(type = "SCOPE_SUBJECTS")
     private Set<XtdSubject> scopeSubjects = new HashSet<>();
 
-    @ToString.Include
+    // @ToString.Include
     @Relationship(type = XtdRelationshipToSubject.RELATIONSHIP_TYPE_OUT)
     private Set<XtdSubject> targetSubjects = new HashSet<>();
 
-    @ToString.Include
+    // @ToString.Include
     @Relationship(type = XtdRelationshipToSubject.RELATIONSHIP_TYPE, direction = Relationship.Direction.INCOMING)
     private XtdSubject connectingSubject;
 

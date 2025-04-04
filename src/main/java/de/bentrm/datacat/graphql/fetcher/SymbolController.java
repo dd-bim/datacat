@@ -8,7 +8,6 @@ import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.dto.FilterInput;
 import de.bentrm.datacat.graphql.dto.SpecificationMapper;
-import jakarta.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -47,7 +46,7 @@ public class SymbolController {
     }
 
     @SchemaMapping(typeName = "XtdSymbol", field = "symbol")
-    public @NotNull XtdText getSymbolText(XtdSymbol symbol) {
+    public Optional<XtdText> getSymbolText(XtdSymbol symbol) {
         return service.getSymbolText(symbol);
     }
 }

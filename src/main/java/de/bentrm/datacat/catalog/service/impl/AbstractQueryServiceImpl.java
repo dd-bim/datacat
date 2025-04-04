@@ -69,7 +69,7 @@ public abstract class AbstractQueryServiceImpl<T extends Entity, R extends Entit
     public @NotNull Page<T> findAll(@NotNull QuerySpecification specification) {
         Collection<T> users;
         Pageable pageable;
-        final long count = count(specification);
+        final Long count = count(specification);
 
         final Optional<Pageable> paged = specification.getPageable();
         if (paged.isPresent()) {
@@ -91,7 +91,7 @@ public abstract class AbstractQueryServiceImpl<T extends Entity, R extends Entit
     }
 
     @Override
-    public @NotNull long count(@NotNull QuerySpecification specification) {
+    public @NotNull Long count(@NotNull QuerySpecification specification) {
         String query;
         if (specification.getFilters().isEmpty()) {
             query = "MATCH (n:" + domainClass.getSimpleName() + ") RETURN count(n)";

@@ -6,7 +6,7 @@ UNWIND [
 ["en-NZ","English (NZ)","NZ English"],
 ["sr-SP","Serbian","српски језик"],
 ["zh-CN","Chinese","中文"],
-["t-IT","Italian","Italiano"],
+["it-IT","Italian","Italiano"],
 ["ru-RU","Russian","Русско"],
 ["vi-VN","Vietnamese","Tiếng Việt"],
 ["bg-BG","Bulgarian","български език"],

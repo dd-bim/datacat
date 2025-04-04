@@ -21,7 +21,7 @@ public interface QueryService<T extends Entity> {
     @NotNull Page<T> findAll(@NotNull QuerySpecification specification);
 
     @PreAuthorize("hasRole('READONLY')")
-    @NotNull long count(@NotNull QuerySpecification specification);
+    @NotNull Long count(@NotNull QuerySpecification specification);
 
     @PreAuthorize("hasRole('READONLY')")
     @NotNull Optional<T> findByIdWithDirectRelations(@NotNull String id);

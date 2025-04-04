@@ -116,10 +116,10 @@ public class ValueListRecordServiceImpl extends AbstractSimpleRecordServiceImpl<
     public @NotNull XtdValueList setRelatedRecords(@NotBlank String recordId,
             @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdValueList valueList = getRepository().findById(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
+        final XtdValueList valueList = getRepository().findByIdWithDirectRelations(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
-        case Unit:
+        case Unit -> {
             if (valueList.getUnit() != null) {
                 throw new IllegalArgumentException("ValueList already has a Unit assigned.");
             } else if (relatedRecordIds.size() != 1) {
@@ -130,8 +130,8 @@ public class ValueListRecordServiceImpl extends AbstractSimpleRecordServiceImpl<
                 valueList.setUnit(unit);
             }
             neo4jTemplate.saveAs(valueList, UnitDtoProjection.class);
-            break;
-        case Values:
+        }
+        case Values -> {
             final Iterable<XtdOrderedValue> items = orderedValueRecordService.findAllEntitiesById(relatedRecordIds);
             final List<XtdOrderedValue> related = StreamSupport.stream(items.spliterator(), false)
                     .collect(Collectors.toList());
@@ -139,8 +139,8 @@ public class ValueListRecordServiceImpl extends AbstractSimpleRecordServiceImpl<
             valueList.getValues().clear();
             valueList.getValues().addAll(related);
             neo4jTemplate.saveAs(valueList, ValuesDtoProjection.class);
-            break;
-        case Language:
+        }
+        case Language -> {
             if (valueList.getLanguage() != null) {
                 throw new IllegalArgumentException("ValueList already has a Language assigned.");
             } else if (relatedRecordIds.size() != 1) {
@@ -151,9 +151,8 @@ public class ValueListRecordServiceImpl extends AbstractSimpleRecordServiceImpl<
                 valueList.setLanguage(language);
             }
             neo4jTemplate.saveAs(valueList, LanguageDtoProjection.class);
-        default:
-            conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
-            break;
+        }
+        default -> conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
         }
 
         log.trace("Updated relationship: {}", valueList);

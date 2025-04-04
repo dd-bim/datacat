@@ -101,7 +101,6 @@ public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Xtd
 
     @Override
     public List<XtdObject> getReplacedObjects(XtdObject object) {
-        log.info("Fetching replaced objects for object {}", object.getId());
         Assert.notNull(object.getId(), "Object must be persistent.");
         final List<String> replacedObjectIds = getRepository().findAllReplacedObjectIdsAssignedToObject(object.getId());
         final Iterable<XtdObject> replacedObjects = getRepository().findAllEntitiesById(replacedObjectIds);

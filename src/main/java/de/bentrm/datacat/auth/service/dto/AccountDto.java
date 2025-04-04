@@ -12,11 +12,11 @@ public class AccountDto {
     String username;
     Instant created;
     Instant lastModified;
-    boolean expired;
-    boolean locked;
-    boolean credentialsExpired;
-    boolean emailConfirmed;
-    boolean enabled;
+    Boolean expired;
+    Boolean locked;
+    Boolean credentialsExpired;
+    Boolean emailConfirmed;
+    Boolean enabled;
     AccountStatus status;
     ProfileDto profile;
 }

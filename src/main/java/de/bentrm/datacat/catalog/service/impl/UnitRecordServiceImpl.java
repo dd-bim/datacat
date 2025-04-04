@@ -84,13 +84,13 @@ public class UnitRecordServiceImpl
     }
 
     @Override
-    public @NotNull XtdDimension getDimension(XtdUnit unit) {
+    public Optional<XtdDimension> getDimension(XtdUnit unit) {
         Assert.notNull(unit.getId(), "Unit must be persistent.");
         final String dimensionId = getRepository().findDimensionIdAssignedToUnit(unit.getId());
         if (dimensionId == null) {
             return null;
         }
-        final XtdDimension dimension = dimensionRecordService.findByIdWithDirectRelations(dimensionId).orElseThrow(() -> new IllegalArgumentException("No record with id " + dimensionId + " found."));
+        final Optional<XtdDimension> dimension = dimensionRecordService.findByIdWithDirectRelations(dimensionId);
 
         return dimension;
     }

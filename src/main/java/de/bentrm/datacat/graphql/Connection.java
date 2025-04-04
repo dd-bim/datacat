@@ -22,7 +22,7 @@ public class Connection<T> {
         return new Connection<T>(list, PageInfo.of(list), (long) list.size());
     }
 
-    public static <T> Connection<T> empty(long sized) {
+    public static <T> Connection<T> empty(Long sized) {
         final List<T> emptyList = List.of();
         return new Connection<>(emptyList, PageInfo.of(emptyList), sized);
     }
@@ -41,7 +41,7 @@ public class Connection<T> {
         return pageInfo;
     }
 
-    public long getTotalElements() {
+    public Long getTotalElements() {
         return totalElements;
     }
 }

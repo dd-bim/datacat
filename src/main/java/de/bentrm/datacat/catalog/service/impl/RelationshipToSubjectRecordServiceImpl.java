@@ -77,11 +77,11 @@ public class RelationshipToSubjectRecordServiceImpl
 
             log.trace("Setting relating record with id: {}", relatingRecordId);
             newRecord = this.setRelatingRecord(newRecord, relatingRecordId);
-            log.info("Set relating record with id: {}", relatingRecordId);
+            log.trace("Set relating record with id: {}", relatingRecordId);
 
             log.trace("Setting related records with ids: {}", relatedRecordIds);
             newRecord = this.setRelatedRecords(newRecord, relatedRecordIds);
-            log.info("Set related records with ids: {}", relatedRecordIds);
+            log.trace("Set related records with ids: {}", relatedRecordIds);
 
             log.trace("Persisted new relationship record with id: {}", newRecord.getId());
 
@@ -180,17 +180,6 @@ public class RelationshipToSubjectRecordServiceImpl
         XtdRelationshipToSubject relationship = getRepository().findByIdWithDirectRelations(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
-            case RelationshipType -> {
-                if (relationship.getRelationshipType() != null) {
-                    throw new IllegalArgumentException("Object already has a relationship type assigned.");
-                } else if (relatedRecordIds.size() != 1) {
-                    throw new IllegalArgumentException("Exactly one relationship type must be assigned.");
-                } else {
-                    final XtdRelationshipType relationshipType = relationshipTypeRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
-                    relationship.setRelationshipType(relationshipType);
-                }
-                neo4jTemplate.saveAs(relationship, RelationshipTypeDtoProjection.class);
-            }
             case ScopeSubjects -> {
                 final Iterable<XtdSubject> subjects = subjectRecordService.findAllEntitiesById(relatedRecordIds);
                 final List<XtdSubject> relatedSubjects = StreamSupport

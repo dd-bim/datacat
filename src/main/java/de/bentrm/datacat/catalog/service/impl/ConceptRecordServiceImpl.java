@@ -31,6 +31,7 @@ import de.bentrm.datacat.catalog.service.ExternalDocumentRecordService;
 import de.bentrm.datacat.catalog.service.LanguageRecordService;
 import de.bentrm.datacat.catalog.service.MultiLanguageTextRecordService;
 import de.bentrm.datacat.catalog.service.ObjectRecordService;
+import de.bentrm.datacat.catalog.service.dto.Relationships.CountryOfOriginDtoProjection;
 import de.bentrm.datacat.catalog.service.dto.Relationships.DefinitionDtoProjection;
 import de.bentrm.datacat.catalog.service.dto.Relationships.DescriptionsDtoProjection;
 import de.bentrm.datacat.catalog.service.dto.Relationships.ExamplesDtoProjection;
@@ -180,7 +181,7 @@ public class ConceptRecordServiceImpl
     public @NotNull XtdConcept setRelatedRecords(@NotBlank String recordId,
             @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdConcept concept = getRepository().findById(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
+        final XtdConcept concept = getRepository().findByIdWithDirectRelations(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
             case Definition -> {
@@ -260,12 +261,12 @@ public class ConceptRecordServiceImpl
                             .orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                     concept.setCountryOfOrigin(countryOfOrigin);
                 }
-                neo4jTemplate.saveAs(concept, SimilarToDtoProjection.class);
+                neo4jTemplate.saveAs(concept, CountryOfOriginDtoProjection.class);
             }
             default -> objectRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
         }
 
-        log.info("Updated relationship: {}", concept);
+        log.trace("Updated relationship: {}", concept);
         return concept;
     }
 

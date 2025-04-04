@@ -88,7 +88,7 @@ public class OrderedValueRecordServiceImpl extends
         final XtdOrderedValue orderedValue = getRepository().findById(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
-        case OrderedValue:
+        case OrderedValue -> {
             if (orderedValue.getOrderedValue() != null) {
                 throw new IllegalArgumentException("OrderedValue already has a Value assigned.");
             } else if (relatedRecordIds.size() != 1) {
@@ -98,9 +98,8 @@ public class OrderedValueRecordServiceImpl extends
                         .orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
                 orderedValue.setOrderedValue(value);
             }
-        default:
-            objectRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
-            break;
+        }
+        default -> objectRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
         }
 
         neo4jTemplate.saveAs(orderedValue, OrderedValueDtoProjection.class);

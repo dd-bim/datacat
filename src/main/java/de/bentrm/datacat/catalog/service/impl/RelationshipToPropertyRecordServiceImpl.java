@@ -66,11 +66,11 @@ private ObjectRecordService objectRecordService;
 
             log.trace("Setting relating record with id: {}", relatingRecordId);
             newRecord = this.setRelatingRecord(newRecord, relatingRecordId);
-            log.info("Set relating record with id: {}", relatingRecordId);
+            log.trace("Set relating record with id: {}", relatingRecordId);
 
             log.trace("Setting related records with ids: {}", relatedRecordIds);
             newRecord = this.setRelatedRecords(newRecord, relatedRecordIds);
-            log.info("Set related records with ids: {}", relatedRecordIds);
+            log.trace("Set related records with ids: {}", relatedRecordIds);
 
             log.trace("Persisted new relationship record with id: {}", newRecord.getId());
 

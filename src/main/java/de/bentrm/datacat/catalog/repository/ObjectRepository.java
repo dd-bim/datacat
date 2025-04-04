@@ -48,5 +48,5 @@ public interface ObjectRepository extends EntityRepository<XtdObject> {
                         MATCH(x:XtdObject {id: $objectId})-[n:TARGET_PROPERTIES|TARGET_SUBJECTS]->() 
                         RETURN count(n)
                         """)
-        long countTargetRelationships(String objectId);
+        Long countTargetRelationships(String objectId);
 }

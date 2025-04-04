@@ -13,7 +13,7 @@ public interface UnitRecordService extends SimpleRecordService<XtdUnit> {
 
     List<XtdProperty> getProperties(@NotNull XtdUnit unit);
 
-    @NotNull XtdDimension getDimension(@NotNull XtdUnit unit);
+    Optional<XtdDimension> getDimension(@NotNull XtdUnit unit);
 
     Optional<XtdMultiLanguageText> getSymbol(@NotNull XtdUnit unit);
 

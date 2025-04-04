@@ -14,7 +14,7 @@ import jakarta.validation.constraints.NotBlank;
  */
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-@ToString(callSuper = true)
+@ToString(callSuper = false)
 @Node("Tag")
 public class Tag extends Entity {
     @NotBlank

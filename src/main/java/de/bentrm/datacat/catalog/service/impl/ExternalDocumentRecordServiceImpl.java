@@ -85,7 +85,7 @@ public class ExternalDocumentRecordServiceImpl
         final XtdExternalDocument externalDocument = getRepository().findByIdWithDirectRelations(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
-            case Languages:
+            case Languages -> {
                 final Iterable<XtdLanguage> items = languageRecordService.findAllByIds(relatedRecordIds);
                 final List<XtdLanguage> related = StreamSupport
                         .stream(items.spliterator(), false)
@@ -93,9 +93,8 @@ public class ExternalDocumentRecordServiceImpl
 
                 externalDocument.getLanguages().clear();
                 externalDocument.getLanguages().addAll(related);
-            default:
-                conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
-                break;
+            }
+            default -> conceptRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
         }
 
         neo4jTemplate.saveAs(externalDocument, LanguagesDtoProjection.class);

@@ -34,7 +34,7 @@ public class EmailConfirmationRequest extends Entity {
 
     private EmailConfirmationRequest() {}
 
-    public boolean isExpired() {
+    public Boolean isExpired() {
         return this.fulfilledAt != null || !Instant.now().isBefore(expiredAt);
     }
 

@@ -11,7 +11,7 @@ import java.util.HashSet;
 
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-@ToString(callSuper = true, onlyExplicitlyIncluded = true)
+@ToString(callSuper = false, onlyExplicitlyIncluded = true)
 @Node(XtdSubdivision.LABEL)
 public class XtdSubdivision extends XtdConcept {
 

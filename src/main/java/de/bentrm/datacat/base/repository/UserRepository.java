@@ -10,9 +10,9 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends EntityRepository<User> {
 
-    boolean existsByUsername(String username);
+    Boolean existsByUsername(String username);
 
-    boolean existsByEmail(String email);
+    Boolean existsByEmail(String email);
 
     @Query("""
             MATCH (n:User {username: $username})

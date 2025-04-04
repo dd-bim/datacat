@@ -17,7 +17,7 @@ import jakarta.validation.constraints.NotNull;
 @Slf4j
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-@ToString(callSuper = true, onlyExplicitlyIncluded = true)
+@ToString(callSuper = false, onlyExplicitlyIncluded = true)
 @Node(XtdObject.LABEL)
 public abstract class XtdObject extends XtdRoot {
 

@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class IntervalInput {
-    boolean minimumIncluded;
-    boolean maximumIncluded;
+    Boolean minimumIncluded;
+    Boolean maximumIncluded;
 }

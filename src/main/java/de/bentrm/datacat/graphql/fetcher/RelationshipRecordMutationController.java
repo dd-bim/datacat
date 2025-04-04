@@ -132,7 +132,7 @@ public class RelationshipRecordMutationController {
                 target = SimpleRelationType.TargetProperties;
             }
             record = simpleRecordService.removeRelationship(relationshipId, input.getToId(), target);
-            long count = catalogService.countTargetRelationships(relationshipId);
+            Long count = catalogService.countTargetRelationships(relationshipId);
             if (count == 0) {
                 deleteObjectRelationship(relationshipId);
             }

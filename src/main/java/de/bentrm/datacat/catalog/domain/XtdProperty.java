@@ -13,7 +13,7 @@ import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-@ToString(callSuper = true, onlyExplicitlyIncluded = true)
+@ToString(callSuper = false, onlyExplicitlyIncluded = true)
 @Node(XtdProperty.LABEL)
 public class XtdProperty extends XtdConcept {
 
@@ -52,7 +52,7 @@ public class XtdProperty extends XtdConcept {
     // List of the possible values that can be provided for the property. Several
     // sets of possible values can be provided to allow providing them in different
     // languages.
-    @ToString.Include
+    // @ToString.Include
     @Relationship(type = "POSSIBLE_VALUES")
     private Set<XtdValueList> possibleValues = new HashSet<>();
 
@@ -65,17 +65,17 @@ public class XtdProperty extends XtdConcept {
 
     // List of properties connected to the current property. The connection can be a
     // specialization or a dependency.
-    @ToString.Include
+    // @ToString.Include
     @Relationship(type = XtdRelationshipToProperty.RELATIONSHIP_TYPE)
     private Set<XtdRelationshipToProperty> connectedProperties = new HashSet<>();
 
     // Incomming relations
-    @ToString.Include
+    // @ToString.Include
     @Relationship(type = XtdRelationshipToProperty.RELATIONSHIP_TYPE, direction = Relationship.Direction.INCOMING)
     private Set<XtdRelationshipToProperty> connectingProperties = new HashSet<>();
 
     // List of the properties attached to the subject.
-    @ToString.Include
+    // @ToString.Include
     @Relationship(type = "PROPERTIES", direction = Relationship.Direction.INCOMING)
     private Set<XtdSubject> subjects = new HashSet<>();
 }

@@ -15,7 +15,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 @Slf4j
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-@ToString(callSuper = true, onlyExplicitlyIncluded = true)
+@ToString(callSuper = false, onlyExplicitlyIncluded = true)
 @Node(XtdConcept.LABEL)
 public abstract class XtdConcept extends XtdObject {
 

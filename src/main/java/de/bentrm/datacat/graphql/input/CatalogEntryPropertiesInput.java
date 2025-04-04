@@ -40,8 +40,6 @@ public class CatalogEntryPropertiesInput {
 
     @Valid TextInput textProperties;
 
-    @Valid RelationshipTypeInput relationshipTypeProperties;
-
     @Valid RationalInput rationalProperties;
 
 }

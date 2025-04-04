@@ -13,7 +13,7 @@ import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-@ToString(callSuper = true, onlyExplicitlyIncluded = true)
+@ToString(callSuper = false, onlyExplicitlyIncluded = true)
 @Node(XtdRelationshipToProperty.LABEL)
 public class XtdRelationshipToProperty extends XtdConcept {
 
@@ -21,14 +21,14 @@ public class XtdRelationshipToProperty extends XtdConcept {
     public static final String RELATIONSHIP_TYPE = "CONNECTED_PROPERTIES";
     public static final String RELATIONSHIP_TYPE_OUT = "TARGET_PROPERTIES";
 
-    @ToString.Include
+    // @ToString.Include
     private XtdPropertyRelationshipTypeEnum relationshipType;
 
-    @ToString.Include
+    // @ToString.Include
     @Relationship(type = XtdRelationshipToProperty.RELATIONSHIP_TYPE_OUT)
     private Set<XtdProperty> targetProperties = new HashSet<>();
 
-    @ToString.Include
+    // @ToString.Include
     @Relationship(type = XtdRelationshipToProperty.RELATIONSHIP_TYPE, direction = Relationship.Direction.INCOMING)
     private XtdProperty connectingProperty;
 

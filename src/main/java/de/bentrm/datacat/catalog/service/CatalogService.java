@@ -59,13 +59,13 @@ public interface CatalogService {
     @NotNull String getRelationshipBetweenObjects(@NotBlank String fromId, @NotBlank String toId);
 
     @PreAuthorize("hasRole('READONLY')")
-    long countTargetRelationships(@NotBlank String objectId);
+    Long countTargetRelationships(@NotBlank String objectId);
 
     @PreAuthorize("hasRole('READONLY')")
     @NotNull Page<XtdObject> findAllCatalogRecords(@NotNull CatalogRecordSpecification specification);
 
     @PreAuthorize("hasRole('READONLY')")
-    long countCatalogRecords(@NotNull CatalogRecordSpecification specification);
+    Long countCatalogRecords(@NotNull CatalogRecordSpecification specification);
 
     @PreAuthorize("hasRole('READONLY')")
     HierarchyValue getHierarchy(@NotNull CatalogRecordSpecification rootNodeSpecification);

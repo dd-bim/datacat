@@ -4,5 +4,5 @@ import de.bentrm.datacat.catalog.service.dto.EntityDtoProjection;
 
 public interface CountryOfOriginDtoProjection extends EntityDtoProjection {
     
-    EntityDtoProjection getDefinition();
+    EntityDtoProjection getCountryOfOrigin();
 }

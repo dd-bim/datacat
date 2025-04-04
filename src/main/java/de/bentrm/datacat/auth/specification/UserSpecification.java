@@ -43,19 +43,19 @@ public class UserSpecification extends QuerySpecification {
             return self();
         }
 
-        public Builder expired(final boolean isExpired) {
+        public Builder expired(final Boolean isExpired) {
             final String filter = "n.expired = " + isExpired;
             filters.add(filter);
             return this;
         }
 
-        public Builder locked(final boolean isLocked) {
+        public Builder locked(final Boolean isLocked) {
             final String filter = "n.locked = " + isLocked;
             filters.add(filter);
             return this;
         }
 
-        public Builder credentialsExpired(final boolean isCredentialsExpired) {
+        public Builder credentialsExpired(final Boolean isCredentialsExpired) {
             final String filter = "n.credentialsExpired = " + isCredentialsExpired;
             filters.add(filter);
             return this;

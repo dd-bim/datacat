@@ -2,9 +2,9 @@ package de.bentrm.datacat.graphql.dto;
 
 public class CatalogRecordStatistics {
     private String id;
-    private long count;
+    private Long count;
 
-    public CatalogRecordStatistics(String id, long count) {
+    public CatalogRecordStatistics(String id, Long count) {
         this.id = id;
         this.count = count;
     }
@@ -17,11 +17,11 @@ public class CatalogRecordStatistics {
         this.id = id;
     }
 
-    public long getCount() {
+    public Long getCount() {
         return count;
     }
 
-    public void setCount(long count) {
+    public void setCount(Long count) {
         this.count = count;
     }
 }

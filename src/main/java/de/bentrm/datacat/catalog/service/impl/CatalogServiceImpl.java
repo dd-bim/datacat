@@ -184,11 +184,17 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public @NotNull String getRelationshipBetweenObjects(String fromId, String toId) {
-        return objectRepository.findRelationshipBetweenObjects(fromId, toId);
+        // return objectRepository.findRelationshipBetweenObjects(fromId, toId);
+        String relationship = objectRepository.findRelationshipBetweenObjects(fromId, toId);
+        if (relationship == null) {
+            throw new NoSuchElementException("Relationship not found between the given objects:" + fromId
+                        + " and " + toId);
+        }
+        return relationship;
     }
 
     @Override
-    public long countTargetRelationships(String objectId) {
+    public Long countTargetRelationships(String objectId) {
         return objectRepository.countTargetRelationships(objectId);
     }
 
@@ -196,7 +202,7 @@ public class CatalogServiceImpl implements CatalogService {
     public Page<XtdObject> findAllCatalogRecords(CatalogRecordSpecification specification) {
         Collection<XtdObject> catalogRecords;
         Pageable pageable;
-        final long count = countCatalogRecords(specification);
+        final Long count = countCatalogRecords(specification);
 
         final Optional<Pageable> paged = specification.getPageable();
         if (paged.isPresent()) {
@@ -219,7 +225,7 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
-    public @NotNull long countCatalogRecords(@NotNull CatalogRecordSpecification specification) {
+    public @NotNull Long countCatalogRecords(@NotNull CatalogRecordSpecification specification) {
         String query;
         if (specification.getFilters().isEmpty()) {
             query = "MATCH (n:XtdObject) RETURN count(n)";
