@@ -4,12 +4,10 @@ import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
 import de.bentrm.datacat.catalog.domain.XtdText;
-import de.bentrm.datacat.catalog.repository.TextRepository;
 import de.bentrm.datacat.catalog.repository.MultiLanguageTextRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.MultiLanguageTextRecordService;
 import de.bentrm.datacat.catalog.service.TextRecordService;
-import de.bentrm.datacat.catalog.service.dto.Relationships.TextsDtoProjection;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,17 +33,13 @@ public class MultiLanguageTextRecordServiceImpl
         extends AbstractSimpleRecordServiceImpl<XtdMultiLanguageText, MultiLanguageTextRepository>
         implements MultiLanguageTextRecordService {
 
-    private final TextRepository textRepository;
-
     @Autowired
     private TextRecordService textRecordService;
 
     public MultiLanguageTextRecordServiceImpl(Neo4jTemplate neo4jTemplate,
             MultiLanguageTextRepository repository,
-            TextRepository textRepository,
             CatalogCleanupService cleanupService) {
         super(XtdMultiLanguageText.class, neo4jTemplate, repository, cleanupService);
-        this.textRepository = textRepository;
     }
 
     @Override
@@ -72,21 +66,6 @@ public class MultiLanguageTextRecordServiceImpl
 
         final XtdMultiLanguageText multiLanguageText = getRepository().findById(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
-        switch (relationType) {
-            // case Texts -> {
-            //     final Iterable<XtdText> items = textRepository.findAllById(relatedRecordIds);
-            //     final List<XtdText> related = StreamSupport
-            //             .stream(items.spliterator(), false)
-            //             .collect(Collectors.toList());
-
-            //     multiLanguageText.getTexts().clear();
-            //     multiLanguageText.getTexts().addAll(related);
-            // }
-            default -> log.error("Unsupported relation type: {}", relationType);
-        }
-
-        neo4jTemplate.saveAs(multiLanguageText, TextsDtoProjection.class);
-        log.trace("Updated relationship: {}", multiLanguageText);
         return multiLanguageText;
     }
 }

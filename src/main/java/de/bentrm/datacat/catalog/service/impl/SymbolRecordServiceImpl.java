@@ -11,7 +11,6 @@ import de.bentrm.datacat.catalog.service.SubjectRecordService;
 import de.bentrm.datacat.catalog.service.SymbolRecordService;
 import de.bentrm.datacat.catalog.service.TextRecordService;
 import de.bentrm.datacat.catalog.service.dto.Relationships.SubjectDtoProjection;
-import de.bentrm.datacat.catalog.service.dto.Relationships.SymbolDtoProjection;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,17 +93,6 @@ public class SymbolRecordServiceImpl
                     symbol.setSubject(subject);
                 }
                 neo4jTemplate.saveAs(symbol, SubjectDtoProjection.class);
-            }
-            case Symbol -> {
-                if (symbol.getSymbol() != null) {
-                    throw new IllegalArgumentException("Symbol already has a text assigned.");
-                } else if (relatedRecordIds.size() != 1) {
-                    throw new IllegalArgumentException("Exactly one text must be assigned.");
-                } else {
-                    final XtdText text = textRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
-                    symbol.setSymbol(text);
-                }
-                neo4jTemplate.saveAs(symbol, SymbolDtoProjection.class);
             }
             default -> log.error("Unsupported relation type: {}", relationType);
         }

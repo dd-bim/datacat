@@ -8,7 +8,6 @@ import de.bentrm.datacat.catalog.repository.DictionaryRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.DictionaryRecordService;
 import de.bentrm.datacat.catalog.service.MultiLanguageTextRecordService;
-import de.bentrm.datacat.catalog.service.dto.Relationships.NameDtoProjection;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
@@ -65,21 +64,6 @@ public class DictionaryRecordServiceImpl
 
         final XtdDictionary dictionary = getRepository().findById(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
-        switch (relationType) {
-            case Name -> {
-                if (dictionary.getName() != null) {
-                    throw new IllegalArgumentException("Dictionary already has a name assigned.");
-                } else if (relatedRecordIds.size() != 1) {
-                    throw new IllegalArgumentException("Exactly one name must be assigned to a dictionary.");
-                } else {
-                    final XtdMultiLanguageText name = multiLanguageTextRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
-                    dictionary.setName(name);
-                }   }
-            default -> log.error("Unsupported relation type: {}", relationType);
-        }
-        
-        neo4jTemplate.saveAs(dictionary, NameDtoProjection.class); 
-        log.trace("Updated relationship: {}", dictionary);
         return dictionary;
     }
 }

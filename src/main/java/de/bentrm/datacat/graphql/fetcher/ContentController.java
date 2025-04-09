@@ -49,69 +49,69 @@ public class ContentController {
     private CatalogCleanupService catalogCleanupService;
 
     @MutationMapping
-    protected AddNamePayload addName(@Argument AddNameInput input) {
+    protected AddTextPayload addName(@Argument AddTextInput input) {
         final XtdObject item = objectRecordService.addName(input);
-        return payloadMapper.toAddNamePayload(item);
+        return payloadMapper.toAddTextPayload(item);
     }
 
     @MutationMapping
-    protected UpdateNamePayload updateName(@Argument UpdateNameInput input) {
-        final XtdText item = textRecordService.updateText(input.getNameId(), input.getValue());
-        return payloadMapper.toUpdateNamePayload(item);
+    protected UpdateTextPayload updateName(@Argument UpdateTextInput input) {
+        final XtdText item = textRecordService.updateText(input.getTextId(), input.getValue());
+        return payloadMapper.toUpdateTextPayload(item);
     }
 
     @MutationMapping
-    protected DeleteNamePayload deleteName(@Argument DeleteNameInput input) {
-        TextCountResult textCount = textRecordService.countTexts(input.getNameId());
-        final XtdText item = textRecordService.deleteText(input.getNameId());
+    protected DeleteTextPayload deleteName(@Argument DeleteTextInput input) {
+        TextCountResult textCount = textRecordService.countTexts(input.getTextId());
+        final XtdText item = textRecordService.deleteText(input.getTextId());
         if (textCount.getTextNumber() == 1) {
             catalogCleanupService.deleteNodeWithRelationships(textCount.getId());
         }
-        return payloadMapper.toDeleteNamePayload(item);
+        return payloadMapper.toDeleteTextPayload(item);
     }
 
     @MutationMapping
-    protected AddDescriptionPayload addDescription(@Argument AddDescriptionInput input) {
+    protected AddTextPayload addDescription(@Argument AddTextInput input) {
         final XtdConcept item = conceptRecordService.addDescription(input);
-        return payloadMapper.toAddDescriptionPayload(item);
+        return payloadMapper.toAddTextPayload(item);
     }
 
     @MutationMapping
-    protected UpdateDescriptionPayload updateDescription(@Argument UpdateDescriptionInput input) {
-        final XtdText item = textRecordService.updateText(input.getDescriptionId(), input.getValue());
-        return payloadMapper.toUpdateDescriptionPayload(item);
+    protected UpdateTextPayload updateDescription(@Argument UpdateTextInput input) {
+        final XtdText item = textRecordService.updateText(input.getTextId(), input.getValue());
+        return payloadMapper.toUpdateTextPayload(item);
     }
 
     @MutationMapping
-    protected DeleteDescriptionPayload deleteDescription(@Argument DeleteDescriptionInput input) {
-        TextCountResult textCount = textRecordService.countTexts(input.getDescriptionId());
-        final XtdText item = textRecordService.deleteText(input.getDescriptionId());
+    protected DeleteTextPayload deleteDescription(@Argument DeleteTextInput input) {
+        TextCountResult textCount = textRecordService.countTexts(input.getTextId());
+        final XtdText item = textRecordService.deleteText(input.getTextId());
         if (textCount.getTextNumber() == 1) {
             catalogCleanupService.deleteNodeWithRelationships(textCount.getId());
         }
-        return payloadMapper.toDeleteDescriptionPayload(item);
+        return payloadMapper.toDeleteTextPayload(item);
     }
 
     @MutationMapping
-    protected AddCommentPayload addComment(@Argument AddCommentInput input) {
+    protected AddTextPayload addComment(@Argument AddTextInput input) {
         final XtdObject item = objectRecordService.addComment(input);
-        return payloadMapper.toAddCommentPayload(item);
+        return payloadMapper.toAddTextPayload(item);
     }
 
     @MutationMapping
-    protected UpdateCommentPayload updateComment(@Argument UpdateCommentInput input) {
-        final XtdText item = textRecordService.updateText(input.getCommentId(), input.getValue());
-        return payloadMapper.toUpdateCommentPayload(item);
+    protected UpdateTextPayload updateComment(@Argument UpdateTextInput input) {
+        final XtdText item = textRecordService.updateText(input.getTextId(), input.getValue());
+        return payloadMapper.toUpdateTextPayload(item);
     }
 
     @MutationMapping
-    protected DeleteCommentPayload deleteComment(@Argument DeleteCommentInput input) {
-        TextCountResult textCount = textRecordService.countTexts(input.getCommentId());
-        final XtdText item = textRecordService.deleteText(input.getCommentId());
+    protected DeleteTextPayload deleteComment(@Argument DeleteTextInput input) {
+        TextCountResult textCount = textRecordService.countTexts(input.getTextId());
+        final XtdText item = textRecordService.deleteText(input.getTextId());
         if (textCount.getTextNumber() == 1) {
             catalogCleanupService.deleteNodeWithRelationships(textCount.getId());
         }
-        return payloadMapper.toDeleteCommentPayload(item);
+        return payloadMapper.toDeleteTextPayload(item);
     }
 
     @MutationMapping
@@ -162,5 +162,83 @@ public class ContentController {
     protected UpdateMinorVersionPayload updateMinorVersion(@Argument UpdateMinorVersionInput input) {
         final XtdObject item = objectRecordService.updateMinorVersion(input.getCatalogEntryId(), input.getMinorVersion());
         return payloadMapper.toUpdateMinorVersionPayload(item);
+    }
+
+    @MutationMapping
+    protected AddTextPayload addDeprecationExplanation(@Argument AddTextInput input) {
+        final XtdObject item = objectRecordService.addDeprecationExplanation(input);
+        return payloadMapper.toAddTextPayload(item);
+    }
+
+    @MutationMapping
+    protected UpdateTextPayload updateDeprecationExplanation(@Argument UpdateTextInput input) {
+        final XtdText item = textRecordService.updateText(input.getTextId(), input.getValue());
+        return payloadMapper.toUpdateTextPayload(item);
+    }
+
+    @MutationMapping
+    protected DeleteTextPayload deleteDeprecationExplanation(@Argument DeleteTextInput input) {
+        TextCountResult textCount = textRecordService.countTexts(input.getTextId());
+        final XtdText item = textRecordService.deleteText(input.getTextId());
+        if (textCount.getTextNumber() == 1) {
+            catalogCleanupService.deleteNodeWithRelationships(textCount.getId());
+        }
+        return payloadMapper.toDeleteTextPayload(item);
+    }
+
+    @MutationMapping
+    protected AddTextPayload addExample(@Argument AddTextInput input) {
+        final XtdObject item = conceptRecordService.addExample(input);
+        return payloadMapper.toAddTextPayload(item);
+    }
+
+    @MutationMapping
+    protected UpdateTextPayload updateExample(@Argument UpdateTextInput input) {
+        final XtdText item = textRecordService.updateText(input.getTextId(), input.getValue());
+        return payloadMapper.toUpdateTextPayload(item);
+    }
+
+    @MutationMapping
+    protected DeleteTextPayload deleteExample(@Argument DeleteTextInput input) {
+        TextCountResult textCount = textRecordService.countTexts(input.getTextId());
+        final XtdText item = textRecordService.deleteText(input.getTextId());
+        if (textCount.getTextNumber() == 1) {
+            catalogCleanupService.deleteNodeWithRelationships(textCount.getId());
+        }
+        return payloadMapper.toDeleteTextPayload(item);
+    }
+
+    @MutationMapping
+    protected AddTextPayload addDefinition(@Argument AddTextInput input) {
+        final XtdObject item = conceptRecordService.addDefinition(input);
+        return payloadMapper.toAddTextPayload(item);
+    }
+
+    @MutationMapping
+    protected UpdateTextPayload updateDefinition(@Argument UpdateTextInput input) {
+        final XtdText item = textRecordService.updateText(input.getTextId(), input.getValue());
+        return payloadMapper.toUpdateTextPayload(item);
+    }
+
+    @MutationMapping
+    protected DeleteTextPayload deleteDefinition(@Argument DeleteTextInput input) {
+        TextCountResult textCount = textRecordService.countTexts(input.getTextId());
+        final XtdText item = textRecordService.deleteText(input.getTextId());
+        if (textCount.getTextNumber() == 1) {
+            catalogCleanupService.deleteNodeWithRelationships(textCount.getId());
+        }
+        return payloadMapper.toDeleteTextPayload(item);
+    }
+
+    @MutationMapping
+    protected AddTextPayload addCountryOfOrigin(@Argument AddCountryInput input) {
+        final XtdConcept item = conceptRecordService.addCountryOfOrigin(input);
+        return payloadMapper.toAddTextPayload(item);
+    }
+
+    @MutationMapping
+    protected DeleteRelationshipPayload deleteCountryOfOrigin(@Argument DeleteCountryOfOriginInput input) {
+        final XtdConcept item = conceptRecordService.deleteCountryOfOrigin(input);
+        return payloadMapper.toDeleteRelationshipPayload(item);
     }
 }

@@ -9,8 +9,7 @@ import de.bentrm.datacat.catalog.domain.XtdDictionary;
 import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
 import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.domain.Enums.XtdStatusOfActivationEnum;
-import de.bentrm.datacat.graphql.input.AddCommentInput;
-import de.bentrm.datacat.graphql.input.AddNameInput;
+import de.bentrm.datacat.graphql.input.AddTextInput;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,10 +29,10 @@ public interface ObjectRecordService extends SimpleRecordService<XtdObject> {
     List<XtdMultiLanguageText> getComments(@NotNull XtdObject object);
     
     @PreAuthorize("hasRole('USER')")
-    @NotNull XtdObject addComment(@NotNull AddCommentInput input);
+    @NotNull XtdObject addComment(@NotNull AddTextInput input);
 
     @PreAuthorize("hasRole('USER')")
-    @NotNull XtdObject addName(@NotNull AddNameInput input);
+    @NotNull XtdObject addName(@NotNull AddTextInput input);
 
     @PreAuthorize("hasRole('USER')")
     @NotNull XtdObject updateStatus(@NotBlank String id, @NotNull XtdStatusOfActivationEnum status);
@@ -44,4 +43,6 @@ public interface ObjectRecordService extends SimpleRecordService<XtdObject> {
     @PreAuthorize("hasRole('USER')")
     @NotNull XtdObject updateMinorVersion(@NotBlank String id, @NotNull Integer minorVersion);
 
+    @PreAuthorize("hasRole('USER')")
+    @NotNull XtdObject addDeprecationExplanation(@NotNull AddTextInput input);
 }

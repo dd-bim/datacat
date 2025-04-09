@@ -10,10 +10,7 @@ import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
 import de.bentrm.datacat.catalog.repository.UnitRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.UnitRecordService;
-import de.bentrm.datacat.catalog.service.dto.Relationships.CoefficientDtoProjection;
 import de.bentrm.datacat.catalog.service.dto.Relationships.DimensionDtoProjection;
-import de.bentrm.datacat.catalog.service.dto.Relationships.OffsetDtoProjection;
-import de.bentrm.datacat.catalog.service.dto.Relationships.SymbolDtoProjection;
 import de.bentrm.datacat.catalog.service.ConceptRecordService;
 import de.bentrm.datacat.catalog.service.DimensionRecordService;
 import de.bentrm.datacat.catalog.service.MultiLanguageTextRecordService;
@@ -136,40 +133,6 @@ public class UnitRecordServiceImpl
         final XtdUnit unit = getRepository().findByIdWithDirectRelations(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
-            case Symbol -> {
-                if (unit.getSymbol() != null) {
-                    throw new IllegalArgumentException("Unit already has a symbol.");
-                } else if (relatedRecordIds.size() != 1) {
-                    throw new IllegalArgumentException("Exactly one symbol must be assigned to a unit.");
-                } else {
-                    final XtdMultiLanguageText symbol = multiLanguageTextRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0))
-                            .orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
-                    unit.setSymbol(symbol);
-                }
-                neo4jTemplate.saveAs(unit, SymbolDtoProjection.class);
-            }
-            case Offset -> {
-                if (unit.getOffset() != null) {
-                    throw new IllegalArgumentException("Unit already has an offset.");
-                } else if (relatedRecordIds.size() != 1) {
-                    throw new IllegalArgumentException("Exactly one offset must be assigned to a unit.");
-                } else {
-                    final XtdRational offset = rationalRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
-                    unit.setOffset(offset);
-                }
-                neo4jTemplate.saveAs(unit, OffsetDtoProjection.class);
-            }
-            case Coefficient -> {
-                if (unit.getCoefficient() != null) {
-                    throw new IllegalArgumentException("Unit already has a coefficient.");
-                } else if (relatedRecordIds.size() != 1) {
-                    throw new IllegalArgumentException("Exactly one coefficient must be assigned to a unit.");
-                } else {
-                    final XtdRational coefficient = rationalRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
-                    unit.setCoefficient(coefficient);
-                }
-                neo4jTemplate.saveAs(unit, CoefficientDtoProjection.class);
-            }
             case Dimension -> {
                 if (unit.getDimension() != null) {
                     throw new IllegalArgumentException("Unit already has a dimension.");

@@ -4,6 +4,6 @@ import de.bentrm.datacat.catalog.domain.XtdText;
 import lombok.Data;
 
 @Data
-public class DeleteDescriptionPayload {
+public class UpdateTextPayload {
     XtdText catalogEntry;
 }

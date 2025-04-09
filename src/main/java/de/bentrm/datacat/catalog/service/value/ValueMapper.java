@@ -42,6 +42,9 @@ public interface ValueMapper {
 
     void setProperties(PropertyInput properties, @MappingTarget XtdProperty catalogEntry);
 
+    @Mapping(target = "symbol", ignore = true)
+    @Mapping(target = "coefficient", ignore = true)
+    @Mapping(target = "offset", ignore = true)
     void setProperties(UnitInput properties, @MappingTarget XtdUnit catalogEntry);
 
     void setProperties(ExternalDocumentInput properties, @MappingTarget XtdExternalDocument catalogEntry);

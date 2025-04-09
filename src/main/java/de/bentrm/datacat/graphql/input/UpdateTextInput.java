@@ -5,7 +5,7 @@ import lombok.Data;
 import jakarta.validation.constraints.NotNull;
 
 @Data
-public class UpdateNameInput {
-    @NotNull String nameId;
+public class UpdateTextInput {
+    @NotNull String textId;
     @NotNull String value;
 }

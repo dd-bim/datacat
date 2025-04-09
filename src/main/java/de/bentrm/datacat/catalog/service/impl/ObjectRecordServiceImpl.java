@@ -23,8 +23,7 @@ import de.bentrm.datacat.catalog.service.dto.Relationships.DictionaryDtoProjecti
 import de.bentrm.datacat.catalog.service.dto.Relationships.NamesDtoProjection;
 import de.bentrm.datacat.catalog.service.dto.Relationships.ReplacedObjectsDtoProjection;
 import de.bentrm.datacat.catalog.service.dto.Relationships.TextsDtoProjection;
-import de.bentrm.datacat.graphql.input.AddCommentInput;
-import de.bentrm.datacat.graphql.input.AddNameInput;
+import de.bentrm.datacat.graphql.input.AddTextInput;
 import de.bentrm.datacat.graphql.input.TranslationInput;
 import lombok.extern.slf4j.Slf4j;
 
@@ -144,7 +143,8 @@ public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Xtd
     public @NotNull XtdObject setRelatedRecords(@NotBlank String recordId,
             @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-        final XtdObject object = getRepository().findById(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
+        final XtdObject object = getRepository().findById(recordId)
+                .orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         switch (relationType) {
         case Dictionary -> {
@@ -154,22 +154,12 @@ public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Xtd
                 throw new IllegalArgumentException("Exactly one dictionary must be assigned.");
             } else {
                 final XtdDictionary dictionary = dictionaryRecordService
-                        .findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
+                        .findByIdWithDirectRelations(relatedRecordIds.get(0))
+                        .orElseThrow(() -> new IllegalArgumentException(
+                                "No record with id " + relatedRecordIds.get(0) + " found."));
                 object.setDictionary(dictionary);
             }
             neo4jTemplate.saveAs(object, DictionaryDtoProjection.class);
-        }
-        case DeprecationExplanation -> {
-            if (object.getDeprecationExplanation() != null) {
-                throw new IllegalArgumentException("Object already has a deprecation explanation assigned.");
-            } else if (relatedRecordIds.size() != 1) {
-                throw new IllegalArgumentException("Exactly one deprecation explanation must be assigned.");
-            } else {
-                final XtdMultiLanguageText deprecationExplanation = multiLanguageTextRecordService
-                        .findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
-                object.setDeprecationExplanation(deprecationExplanation);
-            }
-            neo4jTemplate.saveAs(object, DeprecationExplanationDtoProjection.class);
         }
         case ReplacedObjects -> {
             final Iterable<XtdObject> replacedObjects = getRepository().findAllEntitiesById(relatedRecordIds);
@@ -189,10 +179,11 @@ public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Xtd
 
     @Transactional
     @Override
-    public XtdObject addComment(AddCommentInput input) {
-        final XtdObject item = getRepository().findByIdWithDirectRelations(input.getCatalogEntryId()).orElseThrow(() -> new IllegalArgumentException("No record with id " + input.getCatalogEntryId() + " found."));
-        TranslationInput translation = input.getComment();
-        
+    public XtdObject addComment(AddTextInput input) {
+        final XtdObject item = getRepository().findByIdWithDirectRelations(input.getCatalogEntryId()).orElseThrow(
+                () -> new IllegalArgumentException("No record with id " + input.getCatalogEntryId() + " found."));
+        TranslationInput translation = input.getText();
+
         XtdText text = createText(translation);
 
         XtdMultiLanguageText multiLanguage = item.getComments().stream().findFirst().orElse(null);
@@ -214,9 +205,10 @@ public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Xtd
 
     @Transactional
     @Override
-    public XtdObject addName(AddNameInput input) {
-        final XtdObject item = getRepository().findByIdWithDirectRelations(input.getCatalogEntryId()).orElseThrow(() -> new IllegalArgumentException("No record with id " + input.getCatalogEntryId() + " found."));
-        TranslationInput translation = input.getName();
+    public XtdObject addName(AddTextInput input) {
+        final XtdObject item = getRepository().findByIdWithDirectRelations(input.getCatalogEntryId()).orElseThrow(
+                () -> new IllegalArgumentException("No record with id " + input.getCatalogEntryId() + " found."));
+        TranslationInput translation = input.getText();
 
         XtdText text = createText(translation);
 
@@ -240,7 +232,8 @@ public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Xtd
     @Transactional
     public XtdText createText(TranslationInput translation) {
 
-        final XtdLanguage language = languageRecordService.findByCode(translation.getLanguageTag()).orElseThrow(() -> new IllegalArgumentException("No record with id " + translation.getLanguageTag() + " found."));
+        final XtdLanguage language = languageRecordService.findByCode(translation.getLanguageTag()).orElseThrow(
+                () -> new IllegalArgumentException("No record with id " + translation.getLanguageTag() + " found."));
 
         XtdText text = new XtdText();
         text.setText(translation.getValue());
@@ -254,7 +247,8 @@ public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Xtd
     @Transactional
     @Override
     public @NotNull XtdObject updateStatus(String id, XtdStatusOfActivationEnum status) {
-        final XtdObject item = getRepository().findByIdWithDirectRelations(id).orElseThrow(() -> new IllegalArgumentException("No record with id " + id + " found."));
+        final XtdObject item = getRepository().findByIdWithDirectRelations(id)
+                .orElseThrow(() -> new IllegalArgumentException("No record with id " + id + " found."));
         item.setStatus(status);
         neo4jTemplate.saveAs(item, ObjectDtoProjection.class);
         return item;
@@ -263,7 +257,8 @@ public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Xtd
     @Transactional
     @Override
     public @NotNull XtdObject updateMajorVersion(String id, Integer majorVersion) {
-        final XtdObject item = getRepository().findByIdWithDirectRelations(id).orElseThrow(() -> new IllegalArgumentException("No record with id " + id + " found."));
+        final XtdObject item = getRepository().findByIdWithDirectRelations(id)
+                .orElseThrow(() -> new IllegalArgumentException("No record with id " + id + " found."));
         item.setMajorVersion(majorVersion);
         neo4jTemplate.saveAs(item, ObjectDtoProjection.class);
         return item;
@@ -272,9 +267,35 @@ public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Xtd
     @Transactional
     @Override
     public @NotNull XtdObject updateMinorVersion(String id, Integer minorVersion) {
-        final XtdObject item = getRepository().findByIdWithDirectRelations(id).orElseThrow(() -> new IllegalArgumentException("No record with id " + id + " found."));
+        final XtdObject item = getRepository().findByIdWithDirectRelations(id)
+                .orElseThrow(() -> new IllegalArgumentException("No record with id " + id + " found."));
         item.setMinorVersion(minorVersion);
         neo4jTemplate.saveAs(item, ObjectDtoProjection.class);
         return item;
     }
+
+    @Transactional
+    @Override
+    public @NotNull XtdObject addDeprecationExplanation(AddTextInput input) {
+        final XtdObject item = getRepository().findByIdWithDirectRelations(input.getCatalogEntryId())
+                .orElseThrow(() -> new IllegalArgumentException("No record with id " + input.getCatalogEntryId() + " found."));
+        TranslationInput translation = input.getText();
+
+        if (item.getDeprecationExplanation() != null) {
+            throw new IllegalArgumentException("Object already has a deprecation explanation assigned.");
+        } else {
+            XtdText text = createText(translation);
+
+            XtdMultiLanguageText multiLanguage = new XtdMultiLanguageText();
+            multiLanguage = multiLanguageTextRepository.save(multiLanguage);
+            item.setDeprecationExplanation(multiLanguage);
+            neo4jTemplate.saveAs(item, DeprecationExplanationDtoProjection.class);
+
+            multiLanguage.getTexts().add(text);
+
+            neo4jTemplate.saveAs(multiLanguage, TextsDtoProjection.class);
+        }
+        return item;
+    }
+
 }

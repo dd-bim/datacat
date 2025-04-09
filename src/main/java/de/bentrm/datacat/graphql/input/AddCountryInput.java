@@ -5,7 +5,8 @@ import lombok.Data;
 import jakarta.validation.constraints.NotNull;
 
 @Data
-public class DeleteCommentInput {
+public class AddCountryInput {
+    
     @NotNull String catalogEntryId;
-    @NotNull String commentId;
+    @NotNull String countryCode;
 }

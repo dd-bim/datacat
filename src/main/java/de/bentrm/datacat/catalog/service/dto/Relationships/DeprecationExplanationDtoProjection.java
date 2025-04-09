@@ -4,5 +4,5 @@ import de.bentrm.datacat.catalog.service.dto.EntityDtoProjection;
 
 public interface DeprecationExplanationDtoProjection extends EntityDtoProjection {
     
-    EntityDtoProjection getDeprecationExplanation();
+    TextsDtoProjection getDeprecationExplanation();
 }

@@ -20,6 +20,10 @@ public class CatalogEntryPropertiesInput {
     List<@NotNull @Valid TranslationInput> descriptions;
     List<@NotNull @Valid TranslationInput> comments;
     List<@NotNull@Valid TranslationInput> deprecationExplanation;
+    List<@NotNull @Valid TranslationInput> definition;
+    List<@NotNull @Valid TranslationInput> examples;
+    String languageOfCreator;
+    String countryOfOrigin;
 
     @Valid PropertyInput propertyProperties;
 
@@ -46,5 +50,7 @@ public class CatalogEntryPropertiesInput {
     @Valid ValueListInput valueListProperties;
 
     @Valid SymbolInput symbolProperties;
+
+    @Valid DimensionInput dimensionProperties;
 
 }

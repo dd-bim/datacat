@@ -6,7 +6,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 @Data
-public class AddCommentInput {
+public class AddTextInput {
     @NotNull String catalogEntryId;
-    @NotNull @Valid TranslationInput comment;
+    @NotNull @Valid TranslationInput text;
 }

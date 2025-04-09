@@ -20,25 +20,12 @@ enum CatalogRecordType {
 }
 
 enum RelationshipRecordType {
-    AmountOfSubstanceExponent
     BoundaryValues
-    Coefficient
     CountryOfOrigin
-    Definition
-    DeprecationExplanation
-    Descriptions
     Dictionary
     Dimension
-    ElectricCurrentExponent
-    Examples
-    LanguageOfCreator
-    LengthExponent
-    LuminousIntensityExponent
-    MassExponent
     Maximum
     Minimum
-    Name
-    Offset
     OrderedValue
     PossibleValues
     Properties
@@ -52,11 +39,8 @@ enum RelationshipRecordType {
     Subject
     Subdivisions
     Symbols
-    Symbol
     TargetProperties
     TargetSubjects
-    ThermodynamicTemperatureExponent
-    TimeExponent
     Units
     Unit
     Values
@@ -84,11 +68,14 @@ union SimpleRecord =
     | XtdSubdivision
     | XtdRelationshipToSubject
     | XtdRelationshipToProperty
-    | XtdRelationshipType
+    # | XtdRelationshipType
 
 input UnitInput {
     scale: XtdUnitScaleEnum
     base: XtdUnitBaseEnum
+    symbol: [TranslationInput!]
+    offset: RationalInput
+    coefficient: RationalInput
 }
 
 input PropertyInput {
@@ -146,6 +133,16 @@ input RationalInput {
     denominator: Int
 }
 
+input DimensionInput {
+    lengthExponent: RationalInput!
+    massExponent: RationalInput!
+    timeExponent: RationalInput!
+    electricCurrentExponent: RationalInput!
+    thermodynamicTemperatureExponent: RationalInput!
+    amountOfSubstanceExponent: RationalInput!
+    luminousIntensityExponent: RationalInput!
+}
+
 input RelationshipToPropertyInput {
     relationshipType: XtdPropertyRelationshipTypeEnum
 }
@@ -164,6 +161,14 @@ input PropertiesInput {
     descriptions: [TranslationInput!]
     comments: [TranslationInput!]
     deprecationExplanation: [TranslationInput!]
+    definition: [TranslationInput!]
+    """ 
+    LanguageCode 
+    """
+    languageOfCreator: ID
+    # CountryCode
+    CountryOfOrigin: ID
+    examples: [TranslationInput!]
     propertyProperties: PropertyInput
     unitProperties: UnitInput
     externalDocumentProperties: ExternalDocumentInput
@@ -177,6 +182,7 @@ input PropertiesInput {
     rationalProperties: RationalInput
     valueListProperties: ValueListInput
     symbolProperties: SymbolInput
+    dimensionProperties: DimensionInput
 }
 
 input RelationshipPropertiesInput {
@@ -241,82 +247,22 @@ input TranslationUpdateInput {
     value: String!
 }
 
-input AddNameInput {
-    catalogEntryId: ID!
-    name: TranslationInput!
+type TextPayload {
+    catalogEntry: SimpleRecord
 }
 
-input UpdateNameInput {
-    nameId: ID!
+input AddTextInput {
+    catalogEntryId: ID!
+    text: TranslationInput!
+}
+
+input UpdateTextInput {
+    textId: ID!
     value: String!
 }
 
-input DeleteNameInput {
-    nameId: ID!
-}
-
-type AddNamePayload {
-    catalogEntry: SimpleRecord
-}
-
-type UpdateNamePayload {
-    catalogEntry: SimpleRecord
-}
-
-type DeleteNamePayload {
-    catalogEntry: SimpleRecord
-}
-
-input AddDescriptionInput {
-    catalogEntryId: ID!
-    description: TranslationInput!
-}
-
-input UpdateDescriptionInput {
-    descriptionId: ID!
-    value: String!
-}
-
-input DeleteDescriptionInput {
-    descriptionId: ID!
-}
-
-type AddDescriptionPayload {
-    catalogEntry: SimpleRecord
-}
-
-type UpdateDescriptionPayload {
-    catalogEntry: SimpleRecord
-}
-
-type DeleteDescriptionPayload {
-    catalogEntry: SimpleRecord
-}
-
-input AddCommentInput {
-    catalogEntryId: ID!
-    comment: TranslationInput!
-}
-
-input UpdateCommentInput {
-    commentId: ID!
-    value: String!
-}
-
-input DeleteCommentInput {
-    commentId: ID!
-}
-
-type AddCommentPayload {
-    catalogEntry: SimpleRecord
-}
-
-type UpdateCommentPayload {
-    catalogEntry: SimpleRecord
-}
-
-type DeleteCommentPayload {
-    catalogEntry: SimpleRecord
+input DeleteTextInput {
+    textId: ID!
 }
 
 input CreateTagInput {
@@ -392,6 +338,15 @@ type updateMinorVersionPayload {
     catalogEntry: SimpleRecord
 }
 
+input AddCountryOfOriginInput {
+    catalogEntryId: ID!
+    countryCode: String!
+}
+
+input DeleteCountryOfOriginInput {
+    catalogEntryId: ID!
+}
+
 enum XtdDataTypeEnum {
     XTD_BOOLEAN
     XTD_INTEGER
@@ -446,32 +401,32 @@ type Mutation {
     deleteRelationship(input: DeleteRelationshipInput!): DeleteRelationshipPayload
 
     # Adds a localized name to the given catalog entry.
-    addName(input: AddNameInput!): AddNamePayload
+    addName(input: AddTextInput!): TextPayload
 
     # Updates the localized name of the given catalog entry.
-    updateName(input: UpdateNameInput!): UpdateNamePayload
+    updateName(input: UpdateTextInput!): TextPayload
 
     # Delete the localized name of the given catalog entry.
     # Throws an error if the entry would end up unnamed.
-    deleteName(input: DeleteNameInput!): DeleteNamePayload
+    deleteName(input: DeleteTextInput!): TextPayload
 
     # Adds a localized description to the given catalog entry.
-    addDescription(input: AddDescriptionInput!): AddDescriptionPayload
+    addDescription(input: AddTextInput!): TextPayload
 
     # Updates a localized description of the given catalog entry.
-    updateDescription(input: UpdateDescriptionInput!): UpdateDescriptionPayload
+    updateDescription(input: UpdateTextInput!): TextPayload
 
     # Deletes a localized description from the catalog entry.
-    deleteDescription(input: DeleteDescriptionInput!): DeleteDescriptionPayload
+    deleteDescription(input: DeleteTextInput!): TextPayload
 
     # Adds a localized comment to the given catalog entry.
-    addComment(input: AddCommentInput!): AddCommentPayload
+    addComment(input: AddTextInput!): TextPayload
 
     # Updates a localized comment of the given catalog entry.
-    updateComment(input: UpdateCommentInput!): UpdateCommentPayload
+    updateComment(input: UpdateTextInput!): TextPayload
 
     # Deletes a localized comment from the catalog entry.
-    deleteComment(input: DeleteCommentInput!): DeleteCommentPayload
+    deleteComment(input: DeleteTextInput!): TextPayload
 
     # Creates a new user defined tag.
     createTag(input: CreateTagInput!): CreateTagPayload
@@ -496,4 +451,37 @@ type Mutation {
 
     # Updates the minor version of the given catalog entry.
     updateMinorVersion(input: updateMinorVersionInput!): updateMinorVersionPayload
+
+    # Adds a deprecation explanation to the given catalog entry.
+    addDeprecationExplanation(input: AddTextInput!): TextPayload
+
+    # Updates a deprecation explanation of the given catalog entry.
+    updateDeprecationExplanation(input: UpdateTextInput!): TextPayload
+
+    # Deletes a deprecation explanation from the catalog entry.
+    deleteDeprecationExplanation(input: DeleteTextInput!): TextPayload
+
+    # Adds a definition to the given catalog entry.
+    addDefinition(input: AddTextInput!): TextPayload
+
+    # Updates a definition of the given catalog entry.
+    updateDefinition(input: UpdateTextInput!): TextPayload
+
+    # Deletes a definition from the catalog entry.
+    deleteDefinition(input: DeleteTextInput!): TextPayload
+
+    # Adds an example to the given catalog entry.
+    addExample(input: AddTextInput!): TextPayload
+
+    # Updates an example of the given catalog entry.
+    updateExample(input: UpdateTextInput!): TextPayload
+
+    # Deletes an example from the catalog entry.
+    deleteExample(input: DeleteTextInput!): TextPayload
+
+    # Adds a country of origin to the given catalog entry.
+    addCountryOfOrigin(input: AddCountryOfOriginInput!): TextPayload
+
+    # Deletes a country of origin from the catalog entry.
+    deleteCountryOfOrigin(input: DeleteCountryOfOriginInput!): TextPayload
 }

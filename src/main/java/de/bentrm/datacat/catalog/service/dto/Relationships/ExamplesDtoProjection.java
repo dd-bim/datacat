@@ -6,5 +6,5 @@ import de.bentrm.datacat.catalog.service.dto.EntityDtoProjection;
 
 public interface ExamplesDtoProjection extends EntityDtoProjection {
     
-    Set<EntityDtoProjection> getExamples();
+    Set<TextsDtoProjection> getExamples();
 }

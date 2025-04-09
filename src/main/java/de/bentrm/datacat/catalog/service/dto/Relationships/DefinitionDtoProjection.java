@@ -4,5 +4,5 @@ import de.bentrm.datacat.catalog.service.dto.EntityDtoProjection;
 
 public interface DefinitionDtoProjection extends EntityDtoProjection {
     
-    EntityDtoProjection getDefinition();
+    TextsDtoProjection getDefinition();
 }

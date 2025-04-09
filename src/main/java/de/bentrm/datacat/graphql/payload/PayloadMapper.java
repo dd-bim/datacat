@@ -1,7 +1,6 @@
 package de.bentrm.datacat.graphql.payload;
 
 import de.bentrm.datacat.catalog.domain.CatalogRecord;
-import de.bentrm.datacat.catalog.domain.XtdConcept;
 import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.domain.XtdText;
 import org.mapstruct.Mapper;
@@ -30,31 +29,13 @@ public interface PayloadMapper {
     DeleteRelationshipPayload toDeleteRelationshipPayload(CatalogRecord item);
 
     @Mapping(source = "item", target = "catalogEntry")
-    AddNamePayload toAddNamePayload(XtdObject item);
+    AddTextPayload toAddTextPayload(XtdObject item);
 
     @Mapping(source = "item", target = "catalogEntry")
-    UpdateNamePayload toUpdateNamePayload(XtdText item);
+    UpdateTextPayload toUpdateTextPayload(XtdText item);
 
     @Mapping(source = "item", target = "catalogEntry")
-    DeleteNamePayload toDeleteNamePayload(XtdText item);
-
-    @Mapping(source = "item", target = "catalogEntry")
-    AddDescriptionPayload toAddDescriptionPayload(XtdConcept item);
-
-    @Mapping(source = "item", target = "catalogEntry")
-    UpdateDescriptionPayload toUpdateDescriptionPayload(XtdText item);
-
-    @Mapping(source = "item", target = "catalogEntry")
-    DeleteDescriptionPayload toDeleteDescriptionPayload(XtdText item);
-
-    @Mapping(source = "item", target = "catalogEntry")
-    AddCommentPayload toAddCommentPayload(XtdObject item);
-
-    @Mapping(source = "item", target = "catalogEntry")
-    UpdateCommentPayload toUpdateCommentPayload(XtdText item);
-
-    @Mapping(source = "item", target = "catalogEntry")
-    DeleteCommentPayload toDeleteCommentPayload(XtdText item);
+    DeleteTextPayload toDeleteTextPayload(XtdText item);
 
     @Mapping(source = "item", target = "catalogEntry")
     UpdateStatusPayload toUpdateStatusPayload(XtdObject item);

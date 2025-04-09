@@ -5,7 +5,9 @@ import de.bentrm.datacat.catalog.domain.XtdCountry;
 import de.bentrm.datacat.catalog.domain.XtdExternalDocument;
 import de.bentrm.datacat.catalog.domain.XtdLanguage;
 import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
-import de.bentrm.datacat.graphql.input.AddDescriptionInput;
+import de.bentrm.datacat.graphql.input.AddCountryInput;
+import de.bentrm.datacat.graphql.input.AddTextInput;
+import de.bentrm.datacat.graphql.input.DeleteCountryOfOriginInput;
 import jakarta.validation.constraints.NotNull;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,6 +32,17 @@ public interface ConceptRecordService extends SimpleRecordService<XtdConcept> {
     List<XtdMultiLanguageText> getDescriptions(@NotNull XtdConcept concept);
 
     @PreAuthorize("hasRole('USER')")
-    @NotNull XtdConcept addDescription(@NotNull AddDescriptionInput input);
+    @NotNull XtdConcept addDescription(@NotNull AddTextInput input);
 
+    @PreAuthorize("hasRole('USER')")
+    @NotNull XtdConcept addExample(@NotNull AddTextInput input);
+
+    @PreAuthorize("hasRole('USER')")
+    @NotNull XtdConcept addDefinition(@NotNull AddTextInput input);
+
+    @PreAuthorize("hasRole('USER')")
+    @NotNull XtdConcept addCountryOfOrigin(@NotNull AddCountryInput input);
+
+    @PreAuthorize("hasRole('USER')")
+    @NotNull XtdConcept deleteCountryOfOrigin(@NotNull DeleteCountryOfOriginInput input);
 }
