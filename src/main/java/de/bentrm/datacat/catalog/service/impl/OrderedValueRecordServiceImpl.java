@@ -11,7 +11,6 @@ import de.bentrm.datacat.catalog.service.ObjectRecordService;
 import de.bentrm.datacat.catalog.service.OrderedValueRecordService;
 import de.bentrm.datacat.catalog.service.ValueListRecordService;
 import de.bentrm.datacat.catalog.service.ValueRecordService;
-import de.bentrm.datacat.catalog.service.dto.Relationships.OrderedValueDtoProjection;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,23 +86,8 @@ public class OrderedValueRecordServiceImpl extends
 
         final XtdOrderedValue orderedValue = getRepository().findById(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
-        switch (relationType) {
-        case OrderedValue -> {
-            if (orderedValue.getOrderedValue() != null) {
-                throw new IllegalArgumentException("OrderedValue already has a Value assigned.");
-            } else if (relatedRecordIds.size() != 1) {
-                throw new IllegalArgumentException("Exactly one Value must be assigned to an OrderedValue.");
-            } else {
-                final XtdValue value = valueRecordService.findByIdWithDirectRelations(relatedRecordIds.get(0))
-                        .orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
-                orderedValue.setOrderedValue(value);
-            }
-        }
-        default -> objectRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
-        }
-
-        neo4jTemplate.saveAs(orderedValue, OrderedValueDtoProjection.class);
-        log.trace("Updated relationship: {}", orderedValue);
+        objectRecordService.setRelatedRecords(recordId, relatedRecordIds, relationType);
+    
         return orderedValue;
     }
 }

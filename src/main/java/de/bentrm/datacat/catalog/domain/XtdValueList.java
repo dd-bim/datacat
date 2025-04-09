@@ -17,19 +17,19 @@ public class XtdValueList extends XtdConcept {
 
     public static final String LABEL = "XtdValueList";
 
-    @ToString.Include
+    // @ToString.Include
     @Relationship(type = "UNIT")
     private XtdUnit unit;
 
-    @ToString.Include
+    // @ToString.Include
     @Relationship(type = "LANGUAGE")
     private XtdLanguage language;
 
-    @ToString.Include
+    // @ToString.Include
     @Relationship(type = "VALUES")
     private Set<XtdOrderedValue> values = new HashSet<>();
 
-    @ToString.Include
+    // @ToString.Include
     @Relationship(type = "POSSIBLE_VALUES", direction = Relationship.Direction.INCOMING)
     private Set<XtdProperty> properties = new HashSet<>();
 }

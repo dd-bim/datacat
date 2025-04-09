@@ -22,4 +22,5 @@ public class RelationshipPropertiesInput {
 
     @Valid RelationshipToPropertyInput relationshipToPropertyProperties;
     @Valid RelationshipToSubjectInput relationshipToSubjectProperties;
+    @Valid OrderedValueInput valueListProperties;
 }

@@ -28,14 +28,14 @@ public abstract class XtdObject extends XtdRoot {
 
     // Allows tracking of major changes. Experts decide if a new major version number shall be applied.
     @ToString.Include
-    private int majorVersion;
+    private int majorVersion = 1;
 
     // Allows tracking of minor changes, e.g. new translation, changes of typos: if
     // the major version number changes, the minor version starts again at 1.
     // Experts decide if a new minor version number can be applied or if a new major
     // version is needed.
     @ToString.Include
-    private int minorVersion;
+    private int minorVersion = 0;
 
     // Primary use case for this property is search and lookup optimization
     // TODO: Add external full text search component to improve on this mechanic

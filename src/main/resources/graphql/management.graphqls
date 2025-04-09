@@ -4,7 +4,7 @@ enum CatalogRecordType {
     Subject
     Unit
     Value
-    OrderedValue
+    # OrderedValue
     ValueList
     Language
     Dimension
@@ -26,7 +26,7 @@ enum RelationshipRecordType {
     Dimension
     Maximum
     Minimum
-    OrderedValue
+    # OrderedValue
     PossibleValues
     Properties
     QuantityKinds
@@ -54,7 +54,7 @@ union SimpleRecord =
     | XtdUnit
     | XtdValue
     | XtdValueList
-    | XtdOrderedValue
+    # | XtdOrderedValue
     | XtdLanguage
     | XtdDimension
     | XtdRational
@@ -195,6 +195,7 @@ input RelationshipPropertiesInput {
     comments: [TranslationInput!]
     relationshipToPropertyProperties: RelationshipToPropertyInput
     relationshipToSubjectProperties: RelationshipToSubjectInput
+    valueListProperties: OrderedValueInput
 }
 
 input CreateCatalogEntryInput {

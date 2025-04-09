@@ -19,11 +19,11 @@ public class XtdOrderedValue extends XtdObject {
 
     private int order;
 
-    @ToString.Include
+    // @ToString.Include
     @Relationship(type = "ORDERED_VALUE")
     private XtdValue orderedValue;
 
-    @ToString.Include
+    // @ToString.Include
     @Relationship(type = "VALUES", direction = Relationship.Direction.INCOMING)
     private Set<XtdValueList> valueLists = new HashSet<>();
 

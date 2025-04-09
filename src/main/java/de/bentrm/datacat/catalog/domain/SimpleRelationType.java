@@ -10,7 +10,7 @@ public enum SimpleRelationType {
     Dimension("DIMENSION"),
     Maximum("MAXIMUM"),
     Minimum("MINIMUM"),
-    OrderedValue("ORDERED_VALUE"),
+    // OrderedValue("ORDERED_VALUE"),
     PossibleValues("POSSIBLE_VALUES"),
     Properties("PROPERTIES"),
     QuantityKinds("QUANTITY_KINDS"),

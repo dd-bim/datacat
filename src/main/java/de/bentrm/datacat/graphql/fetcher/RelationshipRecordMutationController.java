@@ -9,6 +9,7 @@ import de.bentrm.datacat.catalog.service.RelationshipToPropertyRecordService;
 import de.bentrm.datacat.catalog.service.RelationshipToSubjectRecordService;
 import de.bentrm.datacat.catalog.service.SimpleRecordService;
 import de.bentrm.datacat.catalog.service.SimpleRecordServiceFactory;
+import de.bentrm.datacat.catalog.service.ValueListRecordService;
 import de.bentrm.datacat.catalog.domain.XtdRelationshipToProperty;
 import de.bentrm.datacat.catalog.domain.XtdRelationshipToSubject;
 import de.bentrm.datacat.graphql.input.CreateRelationshipInput;
@@ -93,6 +94,15 @@ public class RelationshipRecordMutationController {
         if (relType == SimpleRelationType.RelationshipToSubject
                 || relType == SimpleRelationType.RelationshipToProperty) {
             record = createObjectRelationship(input);
+        } else if (relType == SimpleRelationType.Values) {
+            if (simpleRecordService instanceof ValueListRecordService) {
+                Integer order = (input.getProperties() != null && input.getProperties().getValueListProperties() != null)
+        ? input.getProperties().getValueListProperties().getOrder()
+        : null;
+            record = ((ValueListRecordService) simpleRecordService).setOrderedValues(input.getFromId(), input.getToIds(), relType, order);
+            } else {
+                throw new IllegalArgumentException("Invalid service for ordered values: " + simpleRecordService.getClass().getName());
+            }
         } else {
             record = simpleRecordService.setRelatedRecords(input.getFromId(), input.getToIds(), relType);
         }
