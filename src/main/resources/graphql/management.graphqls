@@ -4,7 +4,7 @@ enum CatalogRecordType {
     Subject
     Unit
     Value
-    # OrderedValue
+    OrderedValue
     ValueList
     Language
     Dimension
@@ -54,7 +54,7 @@ union SimpleRecord =
     | XtdUnit
     | XtdValue
     | XtdValueList
-    # | XtdOrderedValue
+    | XtdOrderedValue
     | XtdLanguage
     | XtdDimension
     | XtdRational

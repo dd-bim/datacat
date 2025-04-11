@@ -103,9 +103,35 @@ ON CREATE SET
     z.createdBy = "SYSTEM", 
     z.lastModified = toString(datetime()), 
     z.lastModifiedBy = "SYSTEM"
+MERGE (a:XtdText:XtdRoot:CatalogRecord:Entity {id: randomUUID()})
+ON CREATE SET 
+    a.text = row[1], 
+    a.created = toString(datetime()), 
+    a.createdBy = "SYSTEM", 
+    a.lastModified = toString(datetime()), 
+    a.lastModifiedBy = "SYSTEM"
+MERGE (b:XtdMultiLanguageText:XtdRoot:CatalogRecord:Entity {id: randomUUID()})
+ON CREATE SET 
+    b.created = toString(datetime()), 
+    b.createdBy = "SYSTEM", 
+    b.lastModified = toString(datetime()), 
+    b.lastModifiedBy = "SYSTEM"
+MERGE (c:XtdText:XtdRoot:CatalogRecord:Entity {id: randomUUID()})
+ON CREATE SET 
+    c.text = row[0], 
+    c.created = toString(datetime()), 
+    c.createdBy = "SYSTEM", 
+    c.lastModified = toString(datetime()), 
+    c.lastModifiedBy = "SYSTEM"
 MERGE (x)-[:SYMBOL]->(z)
 MERGE (z)-[:TEXTS]->(y)
-WITH x, y
+MERGE (x)-[:NAMES]->(b)
+MERGE (b)-[:TEXTS]->(a)
+MERGE (b)-[:TEXTS]->(c)
+WITH x, y, a, c
 MATCH (l:XtdLanguage {code: "en"})
+MATCH (ll:XtdLanguage {code: "de"})
 MERGE (y)-[:LANGUAGE]->(l)
+MERGE (c)-[:LANGUAGE]->(l)
+MERGE (a)-[:LANGUAGE]->(ll)
 RETURN x;
