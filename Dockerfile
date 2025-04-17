@@ -1,4 +1,4 @@
-FROM maven:3.9.6-eclipse-temurin-17 AS builder
+FROM maven:3.9.6-eclipse-temurin-21 AS builder
 WORKDIR /application
 
 COPY pom.xml .
@@ -8,7 +8,7 @@ COPY src/ ./src
 RUN mvn package && cp target/*.jar application.jar
 RUN java -Djarmode=layertools -jar application.jar extract
 
-FROM eclipse-temurin:17-jre
+FROM eclipse-temurin:21-jre
 
 RUN apt-get update && \
     apt-get -y --no-install-recommends install wait-for-it jq && \
