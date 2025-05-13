@@ -13,20 +13,14 @@ import java.util.*;
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = false, onlyExplicitlyIncluded = true)
-@Node("CatalogRecord")
+@Node(CatalogRecord.LABEL)
 public abstract class CatalogRecord extends Entity {
 
-    // public static final String DEFAULT_LANGUAGE_TAG = "de";
+    public static final String LABEL = "CatalogRecord";
 
+    @ToString.Include
     @Relationship(type = "TAGGED")
     protected Set<Tag> tags = new HashSet<>();
-    
-    /**
-     * @return An immutable set of tags.
-     */
-    public Set<Tag> getTags() {
-        return Set.copyOf(this.tags);
-    }
 
     /**
      * Adds a tag to the collection.

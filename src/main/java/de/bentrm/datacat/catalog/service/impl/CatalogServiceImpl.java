@@ -299,4 +299,11 @@ public class CatalogServiceImpl implements CatalogService {
                                      .toList())
             .toList();
     }
+
+    @Override
+    public List<Tag> getTags(String entryId) {
+        List<Tag> t = catalogRecordRepository.findTagsByCatalogRecordId(entryId);
+        return t;
+
+    }
 }

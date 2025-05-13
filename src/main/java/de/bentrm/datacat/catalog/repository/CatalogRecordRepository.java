@@ -2,6 +2,7 @@ package de.bentrm.datacat.catalog.repository;
 
 import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.CatalogRecord;
+import de.bentrm.datacat.catalog.domain.Tag;
 import de.bentrm.datacat.graphql.dto.CatalogRecordStatistics;
 
 import org.springframework.data.neo4j.repository.query.Query;
@@ -32,4 +33,6 @@ public interface CatalogRecordRepository extends EntityRepository<CatalogRecord>
     """)
     Long count(String regex, String languageTag);
 
+    @Query("MATCH (cr:CatalogRecord{id: $id})-[:TAGGED]->(t:Tag) RETURN t.id as id, t.name as name, t.createdBy as createdBy, t.created as created, t.lastModified as lastModified, t.lastModifiedBy as lastModifiedBy")
+    List<Tag> findTagsByCatalogRecordId(String id);
 }

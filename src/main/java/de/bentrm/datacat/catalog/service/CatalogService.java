@@ -70,4 +70,6 @@ public interface CatalogService {
     @PreAuthorize("hasRole('READONLY')")
     HierarchyValue getHierarchy(@NotNull CatalogRecordSpecification rootNodeSpecification);
 
+    @PreAuthorize("hasRole('READONLY')")
+    @NotNull List<Tag> getTags(@NotNull String record);
 }

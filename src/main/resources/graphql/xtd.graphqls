@@ -154,8 +154,6 @@ interface XtdRoot {
   createdBy: String!
   lastModified: String!
   lastModifiedBy: String!
-
-
   tags: [Tag!]!
 }
 
