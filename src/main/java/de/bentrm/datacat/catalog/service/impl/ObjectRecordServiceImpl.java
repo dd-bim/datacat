@@ -237,7 +237,7 @@ public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Xtd
 
         XtdText text = new XtdText();
         text.setText(translation.getValue());
-        text.setId(translation.getId());
+        if(translation.getId() != null && !translation.getId().isBlank()) text.setId(translation.getId());
         text.setLanguage(language);
 
         text = textRepository.save(text);

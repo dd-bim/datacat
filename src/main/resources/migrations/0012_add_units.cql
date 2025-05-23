@@ -131,7 +131,9 @@ MERGE (b)-[:TEXTS]->(c)
 WITH x, y, a, c
 MATCH (l:XtdLanguage {code: "en"})
 MATCH (ll:XtdLanguage {code: "de"})
+MATCH (t:Tag {id:"09da1ebb-8641-47fa-b82e-8588c7fef09e"})
 MERGE (y)-[:LANGUAGE]->(l)
 MERGE (c)-[:LANGUAGE]->(l)
 MERGE (a)-[:LANGUAGE]->(ll)
+MERGE (x)-[:TAGGED]->(t)
 RETURN x;

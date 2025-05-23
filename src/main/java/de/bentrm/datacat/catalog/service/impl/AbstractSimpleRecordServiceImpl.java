@@ -234,7 +234,7 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
 
         final XtdText text = new XtdText();
         text.setText(translation.getValue());
-        text.setId(translation.getId());
+        if(translation.getId() != null && !translation.getId().isBlank()) text.setId(translation.getId());
         text.setLanguage(language);
 
         textRepository.save(text);
