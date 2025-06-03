@@ -14,6 +14,7 @@ import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.ValueListRecordService;
 import de.bentrm.datacat.catalog.service.ValueRecordService;
 import de.bentrm.datacat.catalog.service.dto.Relationships.UnitDtoProjection;
+import de.bentrm.datacat.catalog.service.dto.Relationships.ValueDtoProjection;
 import de.bentrm.datacat.catalog.service.dto.Relationships.ValuesDtoProjection;
 import de.bentrm.datacat.catalog.service.ConceptRecordService;
 import de.bentrm.datacat.catalog.service.LanguageRecordService;
@@ -173,10 +174,13 @@ public class ValueListRecordServiceImpl extends AbstractSimpleRecordServiceImpl<
         for (XtdValue value : related) {
             orderNumber += 1;
             XtdOrderedValue orderedValue = new XtdOrderedValue();
-            orderedValue.setOrderedValue(value);
+            // orderedValue.setOrderedValue(value);
             orderedValue.setOrder(orderNumber);
             orderedValueRepository.save(orderedValue);
             orderedValues.add(orderedValue);
+
+            orderedValue.setOrderedValue(value);
+            neo4jTemplate.saveAs(orderedValue, ValueDtoProjection.class);
         }
 
         valueList.getValues().addAll(orderedValues);

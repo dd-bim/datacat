@@ -36,4 +36,9 @@ public interface UnitRepository extends EntityRepository<XtdUnit> {
                 RETURN p.id""")
         String findOffsetIdAssignedToUnit(String unitId);
 
+        @Query("""
+                MATCH (n:XtdUnit {id: $unitId})<-[:UNIT]-(v:XtdValueList)
+                RETURN v.id
+                        """)
+        List<String> findValueListIdsAssigningUnit(String unitId);
 }

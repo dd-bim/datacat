@@ -5,7 +5,7 @@ import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.domain.XtdRational;
 import de.bentrm.datacat.catalog.domain.XtdUnit;
-
+import de.bentrm.datacat.catalog.domain.XtdValueList;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
@@ -20,4 +20,6 @@ public interface UnitRecordService extends SimpleRecordService<XtdUnit> {
     Optional<XtdRational> getCoefficient(@NotNull XtdUnit unit);
 
     Optional<XtdRational> getOffset(@NotNull XtdUnit unit);
+
+    Optional<List<XtdValueList>> getValueLists(@NotNull XtdUnit unit);
 }

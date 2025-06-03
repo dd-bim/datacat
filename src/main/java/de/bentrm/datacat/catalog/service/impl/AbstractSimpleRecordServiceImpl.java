@@ -36,6 +36,7 @@ import de.bentrm.datacat.catalog.domain.XtdValue;
 import de.bentrm.datacat.catalog.domain.XtdValueList;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.SimpleRecordService;
+import de.bentrm.datacat.catalog.service.dto.Relationships.CountryOfOriginDtoProjection;
 import de.bentrm.datacat.catalog.service.value.ValueMapper;
 import de.bentrm.datacat.graphql.input.CatalogEntryPropertiesInput;
 import de.bentrm.datacat.graphql.input.DimensionInput;
@@ -76,7 +77,10 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
     @Override
     public @NotNull CatalogRecord addRecord(@Valid CatalogEntryPropertiesInput properties) {
         T newRecord;
-        String id = properties.getId();
+        String id = null;
+        if (properties.getId() != null && !properties.getId().isBlank())
+            id = properties.getId();
+
         try {
             newRecord = this.getDomainClass().getDeclaredConstructor().newInstance();
         } catch (ReflectiveOperationException e) {
@@ -108,12 +112,6 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
             setMultiLanguageText(properties.getDefinition(), xtdConcept::setDefinition);
             setMultiLanguageText(properties.getExamples(), xtdConcept.getExamples()::add);
             setLanguage(properties.getLanguageOfCreator(), xtdConcept::setLanguageOfCreator);
-
-            if (properties.getCountryOfOrigin() != null) {
-                XtdCountry country = countryRepository.findByCode(properties.getCountryOfOrigin()).orElseThrow(
-                        () -> new IllegalArgumentException("No country record with code " + properties.getCountryOfOrigin() + " found."));
-                xtdConcept.setCountryOfOrigin(country);
-            }
         }
         if (newRecord instanceof XtdProperty property) {
             VALUE_MAPPER.setProperties(properties.getPropertyProperties(), property);
@@ -163,13 +161,13 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
             VALUE_MAPPER.setProperties(properties.getRationalProperties(), rational);
         }
         if (newRecord instanceof XtdValueList valueList) {
-            if(properties.getValueListProperties() != null) {
+            if (properties.getValueListProperties() != null) {
                 setLanguage(properties.getValueListProperties().getLanguageTag(), valueList::setLanguage);
             }
         }
         if (newRecord instanceof XtdSymbol symbol) {
             if (properties.getSymbolProperties() != null) {
-            XtdText symbolText = createText(properties.getSymbolProperties().getSymbol());
+                XtdText symbolText = createText(properties.getSymbolProperties().getSymbol());
                 symbol.setSymbol(symbolText);
             } else {
                 throw new IllegalArgumentException("Symbol properties are required.");
@@ -177,22 +175,31 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
         }
         if (newRecord instanceof XtdDictionary dictionary) {
             XtdMultiLanguageText multiLanguage = createMultiLanguageText(properties.getNames());
-                dictionary.setName(multiLanguage);
+            dictionary.setName(multiLanguage);
         }
         if (newRecord instanceof XtdDimension dimension) {
             DimensionInput dimensionProperties = properties.getDimensionProperties();
-          if (dimensionProperties != null) {
-                dimension.setAmountOfSubstanceExponent(createRational(dimensionProperties.getAmountOfSubstanceExponent()));
+            if (dimensionProperties != null) {
+                dimension.setAmountOfSubstanceExponent(
+                        createRational(dimensionProperties.getAmountOfSubstanceExponent()));
                 dimension.setElectricCurrentExponent(createRational(dimensionProperties.getElectricCurrentExponent()));
                 dimension.setLengthExponent(createRational(dimensionProperties.getLengthExponent()));
-                dimension.setLuminousIntensityExponent(createRational(dimensionProperties.getLuminousIntensityExponent()));
+                dimension.setLuminousIntensityExponent(
+                        createRational(dimensionProperties.getLuminousIntensityExponent()));
                 dimension.setMassExponent(createRational(dimensionProperties.getMassExponent()));
-                dimension.setThermodynamicTemperatureExponent(createRational(dimensionProperties.getThermodynamicTemperatureExponent()));
+                dimension.setThermodynamicTemperatureExponent(
+                        createRational(dimensionProperties.getThermodynamicTemperatureExponent()));
                 dimension.setTimeExponent(createRational(dimensionProperties.getTimeExponent()));
-          }
+            }
         }
 
         newRecord = this.getRepository().save(newRecord);
+
+        if (newRecord instanceof XtdConcept concept) {
+            setCountry(properties.getCountryOfOrigin(), concept::setCountryOfOrigin);
+            neo4jTemplate.saveAs(concept, CountryOfOriginDtoProjection.class);
+        }
+        
         log.trace("Persisted new catalog entry: {}", newRecord);
         return newRecord;
     }
@@ -219,12 +226,20 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
 
     private void setLanguage(String languageCode, Consumer<XtdLanguage> setter) {
         if (languageCode != null) {
-            XtdLanguage language = languageRepository.findByCode(languageCode)
-                    .orElseThrow(() -> new IllegalArgumentException("No language record with code " + languageCode + " found."));
+            XtdLanguage language = languageRepository.findByCode(languageCode).orElseThrow(
+                    () -> new IllegalArgumentException("No language record with code " + languageCode + " found."));
             setter.accept(language);
         }
     }
-    
+
+    private void setCountry(String countryCode, Consumer<XtdCountry> setter) {
+        if (countryCode != null) {
+            XtdCountry country = countryRepository.findByCode(countryCode)
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "No country record with code " + countryCode + " found."));
+            setter.accept(country);
+        }
+    }
 
     @Transactional
     public XtdText createText(TranslationInput translation) {
@@ -234,7 +249,8 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
 
         final XtdText text = new XtdText();
         text.setText(translation.getValue());
-        if(translation.getId() != null && !translation.getId().isBlank()) text.setId(translation.getId());
+        if (translation.getId() != null && !translation.getId().isBlank())
+            text.setId(translation.getId());
         text.setLanguage(language);
 
         textRepository.save(text);

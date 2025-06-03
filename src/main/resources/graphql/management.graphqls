@@ -167,7 +167,7 @@ input PropertiesInput {
     """
     languageOfCreator: ID
     # CountryCode
-    CountryOfOrigin: ID
+    countryOfOrigin: ID
     examples: [TranslationInput!]
     propertyProperties: PropertyInput
     unitProperties: UnitInput
@@ -312,30 +312,30 @@ type RemoveTagPayload {
     tag: Tag
 }
 
-input updateStatusInput {
+input UpdateStatusInput {
     catalogEntryId: ID!
     status: XtdStatusOfActivationEnum!
 }
 
-type updateStatusPayload {
+type UpdateStatusPayload {
     catalogEntry: SimpleRecord
 }
 
-input updateMajorVersionInput {
+input UpdateMajorVersionInput {
     catalogEntryId: ID!
     majorVersion: Int!
 }
 
-type updateMajorVersionPayload {
+type UpdateMajorVersionPayload {
     catalogEntry: SimpleRecord
 }
 
-input updateMinorVersionInput {
+input UpdateMinorVersionInput {
     catalogEntryId: ID!
     minorVersion: Int!
 }
 
-type updateMinorVersionPayload {
+type UpdateMinorVersionPayload {
     catalogEntry: SimpleRecord
 }
 
@@ -445,13 +445,13 @@ type Mutation {
     removeTag(input: RemoveTagInput!): RemoveTagPayload
 
     # Updates the status of the given catalog entry.
-    updateStatus(input: updateStatusInput!): updateStatusPayload
+    updateStatus(input: UpdateStatusInput!): UpdateStatusPayload
 
     # Updates the major version of the given catalog entry.
-    updateMajorVersion(input: updateMajorVersionInput!): updateMajorVersionPayload
+    updateMajorVersion(input: UpdateMajorVersionInput!): UpdateMajorVersionPayload
 
     # Updates the minor version of the given catalog entry.
-    updateMinorVersion(input: updateMinorVersionInput!): updateMinorVersionPayload
+    updateMinorVersion(input: UpdateMinorVersionInput!): UpdateMinorVersionPayload
 
     # Adds a deprecation explanation to the given catalog entry.
     addDeprecationExplanation(input: AddTextInput!): TextPayload

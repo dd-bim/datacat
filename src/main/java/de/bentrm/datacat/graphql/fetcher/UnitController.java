@@ -5,6 +5,7 @@ import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.domain.XtdRational;
 import de.bentrm.datacat.catalog.domain.XtdUnit;
+import de.bentrm.datacat.catalog.domain.XtdValueList;
 import de.bentrm.datacat.catalog.service.UnitRecordService;
 import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
 import de.bentrm.datacat.graphql.Connection;
@@ -66,5 +67,10 @@ public class UnitController {
     @SchemaMapping(typeName = "XtdUnit", field = "offset")
     public Optional<XtdRational> getOffset(XtdUnit unit) {
         return service.getOffset(unit);
+    }
+
+    @SchemaMapping(typeName = "XtdUnit", field = "valueLists")
+    public Optional<List<XtdValueList>> getValueLists(XtdUnit unit) {
+        return service.getValueLists(unit);
     }
 }

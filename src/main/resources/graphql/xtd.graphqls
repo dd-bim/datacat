@@ -403,6 +403,7 @@ type XtdUnit implements XtdRoot & XtdObject & XtdConcept {
   uri: String
   referenceDocuments: [XtdExternalDocument!]!
   properties: [XtdProperty!]
+  valueLists: [XtdValueList!]
 }
 
 type XtdOrderedValue implements XtdRoot & XtdObject {
@@ -429,7 +430,6 @@ type XtdOrderedValue implements XtdRoot & XtdObject {
   orderedValue: XtdValue! # should be exact one
   valueLists: [XtdValueList!]!
   order: Int!
-
 }
 
 type XtdValue implements XtdRoot & XtdObject {
@@ -453,7 +453,7 @@ type XtdValue implements XtdRoot & XtdObject {
   comments: [XtdMultiLanguageText!]!
   tags: [Tag!]!
   uri: String
-  # orderedValues: [XtdOrderedValue!]!
+  orderedValues: [XtdOrderedValue!]
   nominalValue: String
 }
 
