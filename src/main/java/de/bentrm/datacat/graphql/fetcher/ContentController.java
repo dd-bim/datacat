@@ -4,13 +4,17 @@ import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.domain.Tag;
 import de.bentrm.datacat.catalog.domain.XtdConcept;
 import de.bentrm.datacat.catalog.domain.XtdObject;
+import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.domain.XtdText;
+import de.bentrm.datacat.catalog.domain.XtdValue;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.CatalogService;
 import de.bentrm.datacat.catalog.service.ConceptRecordService;
 import de.bentrm.datacat.catalog.service.TagService;
 import de.bentrm.datacat.catalog.service.TextRecordService;
+import de.bentrm.datacat.catalog.service.ValueRecordService;
 import de.bentrm.datacat.catalog.service.ObjectRecordService;
+import de.bentrm.datacat.catalog.service.PropertyRecordService;
 import de.bentrm.datacat.graphql.dto.TextCountResult;
 import de.bentrm.datacat.graphql.input.*;
 import de.bentrm.datacat.graphql.payload.*;
@@ -47,6 +51,12 @@ public class ContentController {
 
     @Autowired
     private CatalogCleanupService catalogCleanupService;
+
+    @Autowired
+    private PropertyRecordService propertyRecordService;
+
+    @Autowired
+    private ValueRecordService valueRecordService;
 
     @MutationMapping
     protected AddTextPayload addName(@Argument AddTextInput input) {
@@ -240,5 +250,17 @@ public class ContentController {
     protected DeleteRelationshipPayload deleteCountryOfOrigin(@Argument DeleteCountryOfOriginInput input) {
         final XtdConcept item = conceptRecordService.deleteCountryOfOrigin(input);
         return payloadMapper.toDeleteRelationshipPayload(item);
+    }
+
+    @MutationMapping
+    protected UpdateDataTypePayload updateDataType(@Argument UpdateDataTypeInput input) {
+        final XtdProperty item = propertyRecordService.updateDataType(input.getCatalogEntryId(), input.getDataType());
+        return payloadMapper.toUpdateDataTypePayload(item);
+    }
+
+    @MutationMapping
+    protected UpdateNominalValuePayload updateNominalValue(@Argument UpdateNominalValueInput input) {
+        final XtdValue item = valueRecordService.updateNominalValue(input.getCatalogEntryId(), input.getNominalValue());
+        return payloadMapper.toUpdateNominalValuePayload(item);
     }
 }

@@ -10,4 +10,6 @@ import jakarta.validation.constraints.NotNull;
 public interface ValueRecordService extends SimpleRecordService<XtdValue> {
 
     Optional<List<XtdOrderedValue>> getOrderedValues(@NotNull XtdValue value);
+
+    @NotNull XtdValue updateNominalValue(@NotNull String id, @NotNull String nominalValue);
 }

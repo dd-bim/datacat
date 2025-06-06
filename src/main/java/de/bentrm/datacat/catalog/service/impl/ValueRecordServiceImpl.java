@@ -6,6 +6,7 @@ import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.ObjectRecordService;
 import de.bentrm.datacat.catalog.service.OrderedValueRecordService;
 import de.bentrm.datacat.catalog.service.ValueRecordService;
+import de.bentrm.datacat.catalog.service.dto.ValueDtoProjection;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,6 +60,19 @@ public class ValueRecordServiceImpl extends AbstractSimpleRecordServiceImpl<XtdV
 
             return Optional.of(StreamSupport.stream(orderedValues.spliterator(), false).collect(Collectors.toList()));
         }
+    }
+
+    @Transactional
+    @Override
+    public @NotNull XtdValue updateNominalValue(@NotNull String id, @NotNull String nominalValue) {
+        Assert.hasText(id, "Id must not be empty.");
+        Assert.hasText(nominalValue, "Nominal value must not be empty.");
+
+        final XtdValue value = getRepository().findByIdWithDirectRelations(id)
+                .orElseThrow(() -> new IllegalArgumentException("No record with id " + id + " found."));
+        value.setNominalValue(nominalValue);
+        neo4jTemplate.saveAs(value, ValueDtoProjection.class);
+        return value;
     }
 
     @Transactional

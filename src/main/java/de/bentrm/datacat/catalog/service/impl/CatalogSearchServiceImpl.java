@@ -82,9 +82,9 @@ public class CatalogSearchServiceImpl implements CatalogSearchService {
         String query;
         String sort = "";
         if (direction != null && properties != null) {
-            List<String> prefixedProperties = Arrays.stream(properties).map(property -> "n." + property)
-                    .collect(Collectors.toList());
-            sort = " ORDER BY " + String.join(", ", prefixedProperties) + " " + direction.name();
+            List<String> prefixedProperties = Arrays.stream(properties)
+                    .map(property -> "n.`" + property + "` " + direction.name()).collect(Collectors.toList());
+            sort = " ORDER BY " + String.join(", ", prefixedProperties);
         }
 
         if (specification.getFilters().isEmpty()) {

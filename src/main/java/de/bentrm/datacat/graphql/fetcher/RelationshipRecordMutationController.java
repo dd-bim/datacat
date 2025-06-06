@@ -26,6 +26,7 @@ import org.springframework.stereotype.Controller;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Controller
@@ -50,7 +51,15 @@ public class RelationshipRecordMutationController {
 
     public CatalogRecord createObjectRelationship(CreateRelationshipInput input) {
         final RelationshipPropertiesInput inputProperties = input.getProperties();
-        Optional<CatalogRecord> s = catalogService.getEntryById(inputProperties.getId());
+        Optional<CatalogRecord> s = Optional.empty();
+        String relId = null;
+        if (inputProperties.getId() != null && !inputProperties.getId().isEmpty()) {
+            relId = inputProperties.getId();
+            s = catalogService.getEntryById(relId);
+        } else {
+            relId = UUID.randomUUID().toString();
+        }
+        
 
         if (input.getRelationshipType().getRelationProperty().equals("RelationshipToSubject")) {
             XtdRelationshipToSubject catalogEntry;
@@ -59,7 +68,7 @@ public class RelationshipRecordMutationController {
                 catalogEntry = relationshipToSubjectRecordService.setRelatedRecords(catalogEntry,
                         input.getToIds());
             } else {
-                catalogEntry = relationshipToSubjectRecordService.addRecord(inputProperties.getId(), input.getFromId(),
+                catalogEntry = relationshipToSubjectRecordService.addRecord(relId, input.getFromId(),
                         input.getToIds());
                 catalogEntry = relationshipToSubjectRecordService.addRelationshipType(catalogEntry,
                         inputProperties.getRelationshipToSubjectProperties().getRelationshipType());
@@ -74,7 +83,7 @@ public class RelationshipRecordMutationController {
                 
             } else {
                 catalogEntry = relationshipToPropertyRecordService
-                    .addRecord(inputProperties.getId(), input.getFromId(), input.getToIds());
+                    .addRecord(relId, input.getFromId(), input.getToIds());
             catalogEntry = relationshipToPropertyRecordService.addRelationshipType(catalogEntry,
                     inputProperties.getRelationshipToPropertyProperties().getRelationshipType());
             }

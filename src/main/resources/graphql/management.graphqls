@@ -348,6 +348,24 @@ input DeleteCountryOfOriginInput {
     catalogEntryId: ID!
 }
 
+input UpdateDataTypeInput {
+    catalogEntryId: ID!
+    dataType: XtdDataTypeEnum!
+}
+
+type UpdateDataTypePayload {
+    catalogEntry: SimpleRecord
+}
+
+input UpdateNominalValueInput {
+    catalogEntryId: ID!
+    nominalValue: String!
+}
+
+type UpdateNominalValuePayload {
+    catalogEntry: SimpleRecord
+}
+
 enum XtdDataTypeEnum {
     XTD_BOOLEAN
     XTD_INTEGER
@@ -485,4 +503,10 @@ type Mutation {
 
     # Deletes a country of origin from the catalog entry.
     deleteCountryOfOrigin(input: DeleteCountryOfOriginInput!): TextPayload
+
+    # Updates the data type of the given catalog entry.
+    updateDataType(input: UpdateDataTypeInput!): UpdateDataTypePayload
+
+    # Updates the nominal value of the given catalog entry.
+    updateNominalValue(input: UpdateNominalValueInput!): UpdateNominalValuePayload
 }

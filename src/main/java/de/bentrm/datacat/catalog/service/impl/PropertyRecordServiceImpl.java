@@ -7,6 +7,7 @@ import de.bentrm.datacat.catalog.domain.XtdRelationshipToProperty;
 import de.bentrm.datacat.catalog.domain.XtdSubject;
 import de.bentrm.datacat.catalog.domain.XtdUnit;
 import de.bentrm.datacat.catalog.domain.XtdValueList;
+import de.bentrm.datacat.catalog.domain.Enums.XtdDataTypeEnum;
 import de.bentrm.datacat.catalog.domain.XtdDimension;
 import de.bentrm.datacat.catalog.domain.XtdInterval;
 import de.bentrm.datacat.catalog.domain.XtdSymbol;
@@ -20,6 +21,7 @@ import de.bentrm.datacat.catalog.service.SubjectRecordService;
 import de.bentrm.datacat.catalog.service.SymbolRecordService;
 import de.bentrm.datacat.catalog.service.UnitRecordService;
 import de.bentrm.datacat.catalog.service.ValueListRecordService;
+import de.bentrm.datacat.catalog.service.dto.PropertyDtoProjection;
 import de.bentrm.datacat.catalog.service.dto.Relationships.BoundaryValuesDtoProjection;
 import de.bentrm.datacat.catalog.service.dto.Relationships.DimensionDtoProjection;
 import de.bentrm.datacat.catalog.service.dto.Relationships.PossibleValuesDtoProjection;
@@ -188,6 +190,20 @@ public class PropertyRecordServiceImpl extends AbstractSimpleRecordServiceImpl<X
                                 .findAllEntitiesById(quantityKindIds);
 
                 return StreamSupport.stream(quantityKinds.spliterator(), false).collect(Collectors.toList());
+        }
+
+        @Transactional
+        @Override
+        public @NotNull XtdProperty updateDataType(@NotNull String id, @NotNull XtdDataTypeEnum dataType) {
+                Assert.hasText(id, "Id must not be empty.");
+                Assert.notNull(dataType, "Data type must not be null.");
+
+                final XtdProperty property = getRepository().findByIdWithDirectRelations(id)
+                                .orElseThrow(() -> new IllegalArgumentException("No record with id " + id + " found."));
+
+                property.setDataType(dataType);
+                neo4jTemplate.saveAs(property, PropertyDtoProjection.class);
+                return property;
         }
 
         @Transactional

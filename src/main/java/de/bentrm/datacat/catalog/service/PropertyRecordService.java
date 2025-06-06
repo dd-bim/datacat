@@ -8,6 +8,7 @@ import de.bentrm.datacat.catalog.domain.XtdSubject;
 import de.bentrm.datacat.catalog.domain.XtdSymbol;
 import de.bentrm.datacat.catalog.domain.XtdUnit;
 import de.bentrm.datacat.catalog.domain.XtdValueList;
+import de.bentrm.datacat.catalog.domain.Enums.XtdDataTypeEnum;
 import de.bentrm.datacat.catalog.domain.XtdQuantityKind;
 
 import jakarta.validation.constraints.NotNull;
@@ -33,4 +34,6 @@ public interface PropertyRecordService extends SimpleRecordService<XtdProperty> 
     List<XtdInterval> getIntervals(@NotNull XtdProperty property);
 
     List<XtdQuantityKind> getQuantityKinds(@NotNull XtdProperty property);
+
+    @NotNull XtdProperty updateDataType(@NotNull String id, @NotNull XtdDataTypeEnum dataTypeId);
 }

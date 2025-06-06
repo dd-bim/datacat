@@ -2,6 +2,7 @@ package de.bentrm.datacat.graphql.payload;
 
 import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.domain.XtdObject;
+import de.bentrm.datacat.catalog.domain.XtdProperty;
 import de.bentrm.datacat.catalog.domain.XtdText;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -45,4 +46,10 @@ public interface PayloadMapper {
 
     @Mapping(source = "item", target = "catalogEntry")
     UpdateMinorVersionPayload toUpdateMinorVersionPayload(XtdObject item);
+
+    @Mapping(source = "item", target = "catalogEntry")
+    UpdateDataTypePayload toUpdateDataTypePayload(XtdProperty item);
+
+    @Mapping(source = "item", target = "catalogEntry")
+    UpdateNominalValuePayload toUpdateNominalValuePayload(XtdObject item);
 }
