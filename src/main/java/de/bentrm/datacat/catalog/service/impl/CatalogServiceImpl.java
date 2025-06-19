@@ -282,7 +282,9 @@ public class CatalogServiceImpl implements CatalogService {
                 MATCH (start:XtdObject)
                 WHERE start.id IN $startIds
                 MATCH path = (start)-[*]->(end:XtdObject)
-                WITH [x IN nodes(path) WHERE x:XtdObject | x.id] AS paths
+                WHERE NONE(n IN nodes(path)[1..] WHERE (n:XtdInterval OR n:XtdExternalDocument))
+                WITH nodes(path) AS nodelist
+                WITH [n IN nodelist WHERE NOT (n:XtdRelationshipToSubject OR n:XtdOrderedValue OR n:XtdRelationshipType OR n:XtdRelationshipToProperty OR n:XtdQuantityKind OR n:XtdCountry OR n:XtdDimension OR n:XtdSubdivision) | n.id] AS paths
                 RETURN paths
             """)
             .bind(startIds).to("startIds")

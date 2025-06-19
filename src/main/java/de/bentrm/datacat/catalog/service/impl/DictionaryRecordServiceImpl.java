@@ -4,10 +4,12 @@ import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import de.bentrm.datacat.catalog.domain.XtdDictionary;
 import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
+import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.repository.DictionaryRepository;
 import de.bentrm.datacat.catalog.service.CatalogCleanupService;
 import de.bentrm.datacat.catalog.service.DictionaryRecordService;
 import de.bentrm.datacat.catalog.service.MultiLanguageTextRecordService;
+import de.bentrm.datacat.catalog.service.ObjectRecordService;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
@@ -16,8 +18,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.util.Assert;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
 
 import jakarta.validation.constraints.NotBlank;
@@ -34,6 +39,10 @@ public class DictionaryRecordServiceImpl
 
     @Autowired
     private MultiLanguageTextRecordService multiLanguageTextRecordService;
+
+    @Autowired 
+    @Lazy
+    private ObjectRecordService objectRecordService;
 
     public DictionaryRecordServiceImpl(Neo4jTemplate neo4jTemplate,
                                      DictionaryRepository repository,
@@ -65,5 +74,13 @@ public class DictionaryRecordServiceImpl
         final XtdDictionary dictionary = getRepository().findById(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
         return dictionary;
+    }
+
+    @Override
+    public @NotNull List<XtdObject> getConcepts(@NotNull XtdDictionary dictionary) {
+        Assert.notNull(dictionary.getId(), "Dictionary must be persistent.");
+        final List<String> conceptIds = getRepository().findConceptsByDictionaryId(dictionary.getId());
+        final Iterable<XtdObject> concepts = objectRecordService.findAllEntitiesById(conceptIds);
+        return StreamSupport.stream(concepts.spliterator(), false).collect(Collectors.toList());
     }
 }

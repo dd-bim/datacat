@@ -138,8 +138,9 @@ public interface CatalogValidationQuery extends EntityRepository<XtdRoot> {
 
     /* Finde Elemente ohne Beschreibung */
     @Query("""
-            MATCH (x:XtdConcept)
-            WHERE NOT (x)-[:DESCRIPTIONS]->()
+            MATCH (x)
+            WHERE ANY(l IN LABELS(x) WHERE l IN ["XtdSubject", "XtdProperty", "XtdUnit", "XtdValueList", "XtdExternalDocument"])
+            AND NOT (x)-[:DESCRIPTIONS]->()
             RETURN x.id AS paths
             """)
     List<String> findMissingDescription();

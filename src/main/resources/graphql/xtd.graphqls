@@ -73,7 +73,21 @@ type ExportResult {
   lastModifiedBy: String
   majorVersion: Int
   minorVersion: Int
-  status: String
+  status: XtdStatusOfActivationEnum
+  languageOfCreator: String
+  countryOfOrigin: String
+  examples: String
+  languages: [String]
+  deprecationExplanation: String
+  dataType: String
+  dataFormat: String
+  uri: String
+  author: String
+  isbn: String
+  publisher: String
+  dateOfPublication: String
+  scale: XtdUnitScaleEnum
+  base: XtdUnitBaseEnum
 }
 
 type ExportRelationshipResult {
@@ -675,6 +689,7 @@ type XtdDictionary implements XtdRoot {
   lastModifiedBy: String!
   tags: [Tag!]!
   name: XtdMultiLanguageText # required
+  concepts: [XtdObject!]
 }
 
 type XtdSubdivision implements XtdRoot & XtdObject & XtdConcept {

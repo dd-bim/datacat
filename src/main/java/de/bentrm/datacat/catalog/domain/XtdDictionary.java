@@ -3,6 +3,10 @@ package de.bentrm.datacat.catalog.domain;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
@@ -16,4 +20,7 @@ public class XtdDictionary extends XtdRoot {
 
     @Relationship(type = "NAME")
     private XtdMultiLanguageText name;
+
+    @Relationship(type = "DICTIONARY", direction = Relationship.Direction.INCOMING)
+    private Set<XtdObject> concepts = new HashSet<>();
 }

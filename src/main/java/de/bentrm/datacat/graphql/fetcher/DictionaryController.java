@@ -2,6 +2,7 @@ package de.bentrm.datacat.graphql.fetcher;
 
 import de.bentrm.datacat.catalog.domain.XtdDictionary;
 import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
+import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.service.DictionaryRecordService;
 import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
 import de.bentrm.datacat.graphql.Connection;
@@ -14,6 +15,7 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -42,5 +44,10 @@ public class DictionaryController {
     @SchemaMapping(typeName = "XtdDictionary", field = "name")
     public XtdMultiLanguageText getName(XtdDictionary dictionary) {
         return service.getName(dictionary);
+    }
+
+    @SchemaMapping(typeName = "XtdDictionary", field = "concepts")
+    public List<XtdObject> getConcepts(XtdDictionary dictionary) {
+        return service.getConcepts(dictionary);
     }
 }
