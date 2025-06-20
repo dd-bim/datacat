@@ -1,6 +1,7 @@
 package de.bentrm.datacat.graphql.fetcher;
 
 import de.bentrm.datacat.catalog.domain.XtdObject;
+import de.bentrm.datacat.catalog.domain.XtdRoot;
 import de.bentrm.datacat.catalog.service.CatalogSearchService;
 import de.bentrm.datacat.catalog.service.CatalogService;
 import de.bentrm.datacat.catalog.service.value.HierarchyValue;
@@ -33,7 +34,7 @@ public class SearchController {
     private CatalogSearchService catalogSearchService;
 
     @QueryMapping
-    public Connection<XtdObject> search(@Argument SearchInput input, @Argument Integer pageSize, @Argument Integer pageNumber, DataFetchingFieldSelectionSet selectionSet) {
+    public Connection<XtdRoot> search(@Argument SearchInput input, @Argument Integer pageSize, @Argument Integer pageNumber, DataFetchingFieldSelectionSet selectionSet) {
 
         if (input == null) input = new SearchInput();
         if (pageSize != null) input.setPageSize(pageSize);
@@ -42,7 +43,7 @@ public class SearchController {
         CatalogRecordSpecification spec = specificationMapper.toCatalogRecordSpecification(input);
 
         if (selectionSet.containsAnyOf("nodes/*", "pageInfo/*")) {
-                Page<XtdObject> page = catalogSearchService.search(spec);
+                Page<XtdRoot> page = catalogSearchService.search(spec);
                 return Connection.of(page);
             } else {
                 Long totalElements = catalogSearchService.count(spec);

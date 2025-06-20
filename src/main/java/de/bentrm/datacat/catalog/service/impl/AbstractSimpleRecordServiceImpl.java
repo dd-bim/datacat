@@ -118,13 +118,16 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
         }
         if (newRecord instanceof XtdUnit unit) {
             VALUE_MAPPER.setProperties(properties.getUnitProperties(), unit);
-            setMultiLanguageText(properties.getUnitProperties().getSymbol(), unit::setSymbol);
-
-            if (properties.getUnitProperties().getCoefficient() != null) {
-                unit.setCoefficient(createRational(properties.getUnitProperties().getCoefficient()));
-            }
-            if (properties.getUnitProperties().getOffset() != null) {
-                unit.setOffset(createRational(properties.getUnitProperties().getOffset()));
+            if (properties.getUnitProperties() != null) {
+                if (properties.getUnitProperties().getSymbol() != null) {
+                    setMultiLanguageText(properties.getUnitProperties().getSymbol(), unit::setSymbol);
+                }
+                if (properties.getUnitProperties().getCoefficient() != null) {
+                    unit.setCoefficient(createRational(properties.getUnitProperties().getCoefficient()));
+                }
+                if (properties.getUnitProperties().getOffset() != null) {
+                    unit.setOffset(createRational(properties.getUnitProperties().getOffset()));
+                }
             }
         }
         if (newRecord instanceof XtdExternalDocument externalDocument) {
@@ -199,7 +202,7 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
             setCountry(properties.getCountryOfOrigin(), concept::setCountryOfOrigin);
             neo4jTemplate.saveAs(concept, CountryOfOriginDtoProjection.class);
         }
-        
+
         log.trace("Persisted new catalog entry: {}", newRecord);
         return newRecord;
     }
@@ -234,9 +237,8 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
 
     private void setCountry(String countryCode, Consumer<XtdCountry> setter) {
         if (countryCode != null) {
-            XtdCountry country = countryRepository.findByCode(countryCode)
-                    .orElseThrow(() -> new IllegalArgumentException(
-                            "No country record with code " + countryCode + " found."));
+            XtdCountry country = countryRepository.findByCode(countryCode).orElseThrow(
+                    () -> new IllegalArgumentException("No country record with code " + countryCode + " found."));
             setter.accept(country);
         }
     }

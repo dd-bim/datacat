@@ -8,7 +8,7 @@ type CatalogStatistics {
 }
 
 type SearchResultConnection {
-  nodes: [XtdObject!]!
+  nodes: [XtdRoot!]!
   pageInfo: PageInfo!
   totalElements: Int!
 }

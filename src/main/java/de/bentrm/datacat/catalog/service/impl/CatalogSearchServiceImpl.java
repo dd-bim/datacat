@@ -2,6 +2,7 @@ package de.bentrm.datacat.catalog.service.impl;
 
 import de.bentrm.datacat.base.specification.QuerySpecification;
 import de.bentrm.datacat.catalog.domain.XtdObject;
+import de.bentrm.datacat.catalog.domain.XtdRoot;
 import de.bentrm.datacat.catalog.service.CatalogSearchService;
 import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
 import jakarta.validation.constraints.NotNull;
@@ -36,8 +37,8 @@ public class CatalogSearchServiceImpl implements CatalogSearchService {
     }
 
     @Override
-    public Page<XtdObject> search(@NotNull CatalogRecordSpecification specification) {
-        Collection<XtdObject> catalogRecords;
+    public Page<XtdRoot> search(@NotNull CatalogRecordSpecification specification) {
+        Collection<XtdRoot> catalogRecords;
         Pageable pageable;
         final Long count = count(specification);
 
@@ -45,17 +46,17 @@ public class CatalogSearchServiceImpl implements CatalogSearchService {
         if (paged.isPresent()) {
             pageable = paged.get();
             if (pageable.getSort().isUnsorted()) {
-                catalogRecords = neo4jTemplate.findAll(getQuery(specification, pageable), XtdObject.class);
+                catalogRecords = neo4jTemplate.findAll(getQuery(specification, pageable), XtdRoot.class);
             } else {
                 final Sort sort = pageable.getSort();
                 final Sort.Direction direction = sort.get().findFirst().map(Sort.Order::getDirection).get();
                 final String[] properties = sort.get().map(Sort.Order::getProperty).toArray(String[]::new);
                 catalogRecords = neo4jTemplate.findAll(getQuery(specification, pageable, direction, properties),
-                        XtdObject.class);
+                        XtdRoot.class);
             }
         } else {
             pageable = PageRequest.of(0, (int) Math.max(count, 10));
-            catalogRecords = neo4jTemplate.findAll(getQuery(specification, pageable), XtdObject.class);
+            catalogRecords = neo4jTemplate.findAll(getQuery(specification, pageable), XtdRoot.class);
         }
 
         return PageableExecutionUtils.getPage(List.copyOf(catalogRecords), pageable, () -> count);
@@ -65,10 +66,10 @@ public class CatalogSearchServiceImpl implements CatalogSearchService {
     public Long count(@NotNull CatalogRecordSpecification specification) {
         String query;
         if (specification.getFilters().isEmpty()) {
-            query = "MATCH (n:XtdObject) RETURN count(n)";
+            query = "MATCH (n:XtdRoot RETURN count(n)";
         } else {
             String whereClause = "WHERE " + String.join(" AND ", specification.getFilters());
-            query = "MATCH (n:XtdObject) " + whereClause + " RETURN count(n)";
+            query = "MATCH (n:XtdRoot) " + whereClause + " RETURN count(n)";
         }
         return neo4jTemplate.count(query);
     }
@@ -88,10 +89,10 @@ public class CatalogSearchServiceImpl implements CatalogSearchService {
         }
 
         if (specification.getFilters().isEmpty()) {
-            query = "MATCH (n:XtdObject)" + sort + " RETURN n";
+            query = "MATCH (n:XtdRoot)" + sort + " RETURN n";
         } else {
             String whereClause = "WHERE " + String.join(" AND ", specification.getFilters());
-            query = "MATCH (n:XtdObject) " + whereClause + sort + " RETURN n";
+            query = "MATCH (n:XtdRoot) " + whereClause + sort + " RETURN n";
         }
         query = query + " SKIP " + pageable.getOffset() + " LIMIT " + pageable.getPageSize();
         return query;
