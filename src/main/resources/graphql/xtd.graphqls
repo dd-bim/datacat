@@ -945,6 +945,13 @@ type XtdQuantityKindConnection {
   totalElements: Int!
 }
 
+type VerificationConnection {
+  nodes: [XtdObject!]!
+  paths: [ID!]!
+  pageInfo: PageInfo!
+  totalElements: Int!
+}
+
 type Query {
   statistics: CatalogStatistics!
 
@@ -958,35 +965,23 @@ type Query {
 
   hierarchy(input: HierarchyFilterInput!): HierarchyPayload!
 
-  findPropGroupWithoutProp: VerificationPayload!
-
-  findPropWithoutSubjectOrPropGroup: VerificationPayload!
-
-  findModelWithoutGroup: VerificationPayload!
-
-  findGroupWithoutSubject: VerificationPayload!
-
-  findSubjectWithoutProp: VerificationPayload!
-
-  findValueListWithoutProp: VerificationPayload!
-
-  findUnitWithoutValueList: VerificationPayload!
-
-  findValueWithoutValueList: VerificationPayload!
-
-  findMissingTags: VerificationPayload!
-
-  findMissingEnglishName: VerificationPayload!
-
-  findMultipleIDs: VerificationPayload!
-
-  findMissingDescription: VerificationPayload!
-
-  findMissingEnglishDescription: VerificationPayload!
-
-  findMultipleNames: VerificationPayload!
-
-  findMultipleNamesAcrossClasses: VerificationPayload!
+  findPropGroupWithoutProp(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findPropWithoutSubjectOrPropGroup(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findThemeWithoutSubject(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findSubjectWithoutProp(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findValueListWithoutProp(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findUnitWithoutValueList(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findValueWithoutValueList(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findMissingTags(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findMissingEnglishName(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findMultipleIDs(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findMissingDescription(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findMissingEnglishDescription(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findMultipleNames(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findMultipleNamesAcrossClasses(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findMissingDictionary(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findMissingReferenceDocument(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findInactiveConcepts(pageNumber: Int!, pageSize: Int!): VerificationConnection!
 
   findExportCatalogRecords: findExportCatalogRecordsPayload!
 

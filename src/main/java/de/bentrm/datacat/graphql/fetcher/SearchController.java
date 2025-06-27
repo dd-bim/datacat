@@ -1,6 +1,5 @@
 package de.bentrm.datacat.graphql.fetcher;
 
-import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.domain.XtdRoot;
 import de.bentrm.datacat.catalog.service.CatalogSearchService;
 import de.bentrm.datacat.catalog.service.CatalogService;

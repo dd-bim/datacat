@@ -1,7 +1,6 @@
 package de.bentrm.datacat.catalog.service.impl;
 
 import de.bentrm.datacat.base.specification.QuerySpecification;
-import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.domain.XtdRoot;
 import de.bentrm.datacat.catalog.service.CatalogSearchService;
 import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;

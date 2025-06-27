@@ -131,11 +131,13 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
             }
         }
         if (newRecord instanceof XtdExternalDocument externalDocument) {
-            VALUE_MAPPER.setProperties(properties.getExternalDocumentProperties(), externalDocument);
-            List<String> langTag = properties.getExternalDocumentProperties().getLanguageTag();
-            if (langTag != null) {
-                for (String tag : langTag) {
-                    setLanguage(tag, externalDocument.getLanguages()::add);
+            if (properties.getExternalDocumentProperties() != null) {
+                VALUE_MAPPER.setProperties(properties.getExternalDocumentProperties(), externalDocument);
+                List<String> langTag = properties.getExternalDocumentProperties().getLanguageTag();
+                if (langTag != null) {
+                    for (String tag : langTag) {
+                        setLanguage(tag, externalDocument.getLanguages()::add);
+                    }
                 }
             }
         }

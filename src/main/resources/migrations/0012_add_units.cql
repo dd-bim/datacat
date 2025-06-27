@@ -12,7 +12,7 @@ UNWIND [
 ["Revolution","Umdrehung","r"],
 ["Degree","Grad","o"],
 ["Bit","Bit","bit"],
-["Byte"," Octet","Byte"," Oktett","B"],
+["Byte","Octet","Byte"," Oktett","B"],
 ["Gram","Gramm","g"],
 ["Ton","Tonne","t"],
 ["Unified Atomic Mass Unit","Einheitliche Atomare Masseneinheit","u"],

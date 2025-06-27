@@ -57,7 +57,7 @@ public class XtdProperty extends XtdConcept {
     private Set<XtdValueList> possibleValues = new HashSet<>();
 
     // List of units that can be attached to a value.
-    @ToString.Include
+    // @ToString.Include
     @Relationship(type = "UNITS")
     private Set<XtdUnit> units = new HashSet<>();
 

@@ -4,10 +4,11 @@ import de.bentrm.datacat.catalog.domain.XtdObject;
 import de.bentrm.datacat.catalog.repository.CatalogValidationQuery;
 import de.bentrm.datacat.catalog.repository.ObjectRepository;
 import de.bentrm.datacat.catalog.service.CatalogVerificationService;
-import de.bentrm.datacat.catalog.service.value.VerificationValue;
+import de.bentrm.datacat.catalog.service.value.VerificationConnection;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -30,91 +31,116 @@ public class CatalogVerificationServiceImpl implements CatalogVerificationServic
 
 
     @Override
-    public VerificationValue getfindPropGroupWithoutProp() {
-        return getLeaves(catalogValidationQuery.findPropGroupWithoutProp());
+    public VerificationConnection getSubjectWithoutProp(Pageable pageable) {
+        List<String> paths = catalogValidationQuery.findSubjectWithoutProp();
+        return getPagedLeaves(paths, pageable);
     }
 
     @Override
-    public VerificationValue getfindPropWithoutSubjectOrPropGroup() {
-        return getLeaves(catalogValidationQuery.findPropWithoutSubjectOrPropGroup());
+    public VerificationConnection getThemeWithoutSubject(Pageable pageable) {
+        List<String> paths = catalogValidationQuery.findThemeWithoutSubject();
+        return getPagedLeaves(paths, pageable);
     }
 
     @Override
-    public VerificationValue getfindModelWithoutGroup() {
-        return getLeaves(catalogValidationQuery.findModelWithoutGroup());
+    public VerificationConnection getPropGroupWithoutProp(Pageable pageable) {
+        List<String> paths = catalogValidationQuery.findPropGroupWithoutProp();
+        return getPagedLeaves(paths, pageable);
     }
 
     @Override
-    public VerificationValue getfindGroupWithoutSubject() {
-        return getLeaves(catalogValidationQuery.findGroupWithoutSubject());
+    public VerificationConnection getPropWithoutSubjectOrPropGroup(Pageable pageable) {
+        List<String> paths = catalogValidationQuery.findPropWithoutSubjectOrPropGroup();
+        return getPagedLeaves(paths, pageable);
     }
 
     @Override
-    public VerificationValue getfindSubjectWithoutProp() {
-        return getLeaves(catalogValidationQuery.findSubjectWithoutProp());
+    public VerificationConnection getValueListWithoutProp(Pageable pageable) {
+        List<String> paths = catalogValidationQuery.findValueListWithoutProp();
+        return getPagedLeaves(paths, pageable);
     }
 
     @Override
-    public VerificationValue getfindValueListWithoutProp() {
-        return getLeaves(catalogValidationQuery.findValueListWithoutProp());
+    public VerificationConnection getUnitWithoutValueList(Pageable pageable) {
+        List<String> paths = catalogValidationQuery.findUnitWithoutValueList();
+        return getPagedLeaves(paths, pageable);
     }
 
     @Override
-    public VerificationValue getfindUnitWithoutValueList() {
-        return getLeaves(catalogValidationQuery.findUnitWithoutValueList());
+    public VerificationConnection getValueWithoutValueList(Pageable pageable) {
+        List<String> paths = catalogValidationQuery.findValueWithoutValueList();
+        return getPagedLeaves(paths, pageable);
     }
 
     @Override
-    public VerificationValue getfindValueWithoutValueList() {
-        return getLeaves(catalogValidationQuery.findValueWithoutValueList());
+    public VerificationConnection getMissingTags(Pageable pageable) {
+        List<String> paths = catalogValidationQuery.findMissingTags();
+        return getPagedLeaves(paths, pageable);
     }
 
     @Override
-    public VerificationValue getfindMissingTags() {
-        return getLeaves(catalogValidationQuery.findMissingTags());
-    }
-
-    @Override
-    public VerificationValue getfindMissingEnglishName() {
+    public VerificationConnection getMissingEnglishName(Pageable pageable) {
         List<String> paths = catalogValidationQuery.findMissingEnglishName();
-        return getLeaves(paths);
+        return getPagedLeaves(paths, pageable);
     }
 
     @Override
-    public VerificationValue getfindMultipleIDs() {
+    public VerificationConnection getMultipleIDs(Pageable pageable) {
         List<String> paths = catalogValidationQuery.findMultipleIDs();
-        return getLeaves(paths);
+        return getPagedLeaves(paths, pageable);
     }
 
     @Override
-    public VerificationValue getfindMissingDescription() {
+    public VerificationConnection getMissingDescription(Pageable pageable) {
         List<String> paths = catalogValidationQuery.findMissingDescription();
-        return getLeaves(paths);
+        return getPagedLeaves(paths, pageable);
     }
 
     @Override
-    public VerificationValue getfindMissingEnglishDescription() {
+    public VerificationConnection getMissingEnglishDescription(Pageable pageable) {
         List<String> paths = catalogValidationQuery.findMissingEnglishDescription();
-        return getLeaves(paths);
+        return getPagedLeaves(paths, pageable);
     }
 
     @Override
-    public VerificationValue getfindMultipleNames() {
+    public VerificationConnection getMultipleNames(Pageable pageable) {
         List<String> paths = catalogValidationQuery.findMultipleNames();
-        return getLeaves(paths);
+        return getPagedLeaves(paths, pageable);
     }
 
     @Override
-    public VerificationValue getfindMultipleNamesAcrossClasses() {
+    public VerificationConnection getMultipleNamesAcrossClasses(Pageable pageable) {
         List<String> paths = catalogValidationQuery.findMultipleNamesAcrossClasses();
-        return getLeaves(paths);
+        return getPagedLeaves(paths, pageable);
     }
 
-    public VerificationValue getLeaves(List<String> paths) {
-        final Iterable<XtdObject> nodes = repository.findAllEntitiesById(paths);
+    @Override
+    public VerificationConnection getMissingDictionary(Pageable pageable) {
+        List<String> paths = catalogValidationQuery.findMissingDictionary();
+        return getPagedLeaves(paths, pageable);
+    }
+
+    @Override
+    public VerificationConnection getMissingReferenceDocument(Pageable pageable) {
+        List<String> paths = catalogValidationQuery.findMissingReferenceDocument();
+        return getPagedLeaves(paths, pageable);
+    }
+
+    @Override
+    public VerificationConnection getInactiveConcepts(Pageable pageable) {
+        List<String> paths = catalogValidationQuery.findInactiveConcepts();
+        return getPagedLeaves(paths, pageable);
+    }
+
+    private VerificationConnection getPagedLeaves(List<String> paths, Pageable pageable) {
+        int total = paths.size();
+        int from = (int) pageable.getOffset();
+        int to = Math.min(from + pageable.getPageSize(), total);
+        List<String> pagedPaths = paths.subList(Math.min(from, total), Math.min(to, total));
+        final Iterable<XtdObject> nodes = repository.findAllEntitiesById(pagedPaths);
         final List<XtdObject> leaves = StreamSupport
                 .stream(nodes.spliterator(), false)
                 .collect(Collectors.toList());
-        return new VerificationValue(leaves, paths);
+        return new VerificationConnection(leaves, pagedPaths, new de.bentrm.datacat.graphql.PageInfo(pageable.getPageNumber(), pageable.getPageSize(), pagedPaths.size(), (long) Math.ceil((double) total / pageable.getPageSize())), (long) total);
     }
 }

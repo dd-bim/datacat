@@ -42,11 +42,11 @@ public class XtdUnit extends XtdConcept {
     @Relationship(type = "DIMENSION")
     private XtdDimension dimension; 
 
-    @ToString.Include
+    // @ToString.Include
     @Relationship(type = "UNITS", direction = Relationship.Direction.INCOMING)
     private Set<XtdProperty> properties = new HashSet<>();
 
-    @ToString.Include
+    // @ToString.Include
     @Relationship(type = "UNIT", direction = Relationship.Direction.INCOMING)
     private Set<XtdValueList> valueLists = new HashSet<>();
 }

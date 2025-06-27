@@ -10,148 +10,182 @@ import java.util.List;
 @Repository
 public interface CatalogValidationQuery extends EntityRepository<XtdRoot> {
 
-    /* ---- Prüfen von Vollständigkeit ---- */
+        /* ---- Prüfen von Vollständigkeit ---- */
 
-    /* Finde Fachmodell ohne Gruppe */
-    @Query("""
-            MATCH (x:XtdSubject)-[:TAGGED]->(y:Tag {name: "Fachmodell"})
-            MATCH (z:Tag {name: "Gruppe"})
-            WHERE NOT (x)-[:CONNECTED_SUBJECTS]->()-[:TARGET_SUBJECTS]->()-[:TAGGED]->(z)
-            RETURN DISTINCT  x.id AS paths
-            """)
-    List<String> findModelWithoutGroup();
+        /* Finde Thema ohne Klasse */
+        @Query("""
+                        MATCH (x:XtdSubject)-[:TAGGED]->(y:Tag {name: "Thema"})
+                        MATCH (z:Tag {name: "Klasse"})
+                        WHERE NOT (x)-[:CONNECTED_SUBJECTS]->()-[:TARGET_SUBJECTS]->()-[:TAGGED]->(z)
+                        ORDER BY x.`labels.de`
+                        RETURN DISTINCT  x.id AS paths
+                        """)
+        List<String> findThemeWithoutSubject();
 
-    /* Finde Gruppe ohne Klasse */
-    @Query("""
-            MATCH (x:XtdSubject)-[:TAGGED]->(y:Tag {name: "Gruppe"})
-            MATCH (z:Tag {name: "Klasse"})
-            WHERE NOT (x)-[:CONNECTED_SUBJECTS]->()-[:TARGET_SUBJECTS]->()-[:TAGGED]->(z)
-            RETURN DISTINCT  x.id AS paths
-            """)
-    List<String> findGroupWithoutSubject();
+        /* Finde Klasse ohne Merkmale/Merkmalsgruppe */
+        @Query("""
+                        MATCH (x:XtdSubject)-[:TAGGED]->(y:Tag {name: "Klasse"})
+                        MATCH (z:Tag {name: "Merkmalsgruppe"})
+                        WHERE NOT (x)-[:CONNECTED_SUBJECTS]->()-[:TARGET_SUBJECTS]->()-[:TAGGED]->(z) AND NOT (x)-[:PROPERTIES]->()
+                        ORDER BY x.`labels.de`
+                        RETURN DISTINCT x.id AS paths
+                        """)
+        List<String> findSubjectWithoutProp();
 
-    /* Finde Klasse ohne Merkmale/Merkmalsgruppe */
-    @Query("""
-            MATCH (x:XtdSubject)-[:TAGGED]->(y:Tag {name: "Klasse"})
-            MATCH (z:Tag {name: "Merkmalsgruppe"})
-            WHERE NOT (x)-[:CONNECTED_SUBJECTS]->()-[:TARGET_SUBJECTS]->()-[:TAGGED]->(z) AND NOT (x)-[:PROPERTIES]->()
-            RETURN DISTINCT x.id AS paths
-            """)
-    List<String> findSubjectWithoutProp();
+        /* Finde Merkmalsgruppen ohne Merkmal */
+        @Query("""
+                        MATCH (x:XtdSubject)-[:TAGGED]->(y:Tag {name: "Merkmalsgruppe"})
+                        WHERE NOT (x)-[:PROPERTIES]->()
+                        ORDER BY x.`labels.de`
+                        RETURN DISTINCT x.id AS paths
+                        """)
+        List<String> findPropGroupWithoutProp();
 
-    /* Finde Merkmalsgruppen ohne Merkmal */
-    @Query("""
-            MATCH (x:XtdSubject)-[:TAGGED]->(y:Tag {name: "Merkmalsgruppe"})
-            WHERE NOT (x)-[:PROPERTIES]->()
-            RETURN DISTINCT x.id AS paths
-            """)
-    List<String> findPropGroupWithoutProp();
+        /*
+         * Finde Merkmale die weder einer Klasse noch einer Merkmalsgruppe zugeordnet
+         * sind
+         */
+        @Query("""
+                        MATCH (x:XtdProperty)
+                        MATCH (z:Tag {name: "Merkmalsgruppe"})
+                        WHERE NOT (x)<-[:TARGET_SUBJECTS]-()<-[:CONNECTED_SUBJECTS]-()-[:TAGGED]->(z) AND NOT ()-[:PROPERTIES]->(x)
+                        ORDER BY x.`labels.de`
+                        RETURN DISTINCT x.id AS paths
+                        """)
+        List<String> findPropWithoutSubjectOrPropGroup();
 
-    /*
-     * Finde Merkmale die weder einer Klasse noch einer Merkmalsgruppe zugeordnet
-     * sind
-     */
-    @Query("""
-            MATCH (x:XtdProperty)
-            MATCH (z:Tag {name: "Merkmalsgruppe"})
-            WHERE NOT (x)<-[:TARGET_SUBJECTS]-()<-[:CONNECTED_SUBJECTS]-()-[:TAGGED]->(z) AND NOT ()-[:PROPERTIES]->(x)
-            RETURN DISTINCT x.id AS paths
-            """)
-    List<String> findPropWithoutSubjectOrPropGroup();
+        /* Finde Wertelisten die keinem Merkmal zugeordnet sind */
+        @Query("""
+                        MATCH (x:XtdValueList)
+                        WHERE NOT (x)<-[:POSSIBLE_VALUES]-()
+                        ORDER BY x.`labels.de`
+                        RETURN DISTINCT x.id AS paths
+                        """)
+        List<String> findValueListWithoutProp();
 
-    /* Finde Wertelisten die keinem Merkmal zugeordnet sind */
-    @Query("""
-            MATCH (x:XtdValueList)
-            WHERE NOT (x)<-[:POSSIBLE_VALUES]-()
-            RETURN DISTINCT x.id AS paths
-            """)
-    List<String> findValueListWithoutProp();
+        /*
+         * Finde Maßeinheiten die keiner Werteliste und keinem Merkmal zugeordnet sind
+         */
+        @Query("""
+                        MATCH (x:XtdUnit)
+                        WHERE NOT (x)<-[:UNIT|UNITS]-()
+                        ORDER BY x.`labels.de`
+                        RETURN DISTINCT x.id AS paths
+                        """)
+        List<String> findUnitWithoutValueList();
 
-    /* Finde Maßeinheiten die keiner Werteliste zugeordnet sind */
-    @Query("""
-            MATCH (x:XtdUnit)
-            WHERE NOT (x)<-[:UNIT]-()
-            RETURN DISTINCT x.id AS paths
-            """)
-    List<String> findUnitWithoutValueList();
+        /* Finde Werte die keiner Werteliste zugeordnet sind */
+        @Query("""
+                        MATCH (x:XtdValue)
+                        WHERE NOT (x)<-[:ORDERED_VALUE]-()<-[:VALUES]-()
+                        ORDER BY x.`labels.de`
+                        RETURN DISTINCT x.id AS paths
+                        """)
+        List<String> findValueWithoutValueList();
 
-    /* Finde Werte die keiner Werteliste zugeordnet sind */
-    @Query("""
-            MATCH (x:XtdValue)
-            WHERE NOT (x)<-[:ORDERED_VALUE]-()<-[:VALUES]-()
-            RETURN DISTINCT x.id AS paths
-            """)
-    List<String> findValueWithoutValueList();
+        /* Finde Elemente ohne Wörterbuch */
+        @Query("""
+                        MATCH(x:XtdObject)
+                        WHERE NOT (x)-[:DICTIONARY]->()
+                        AND ANY(label IN labels(x) WHERE label IN ["XtdSubject", "XtdProperty", "XtdValueList", "XtdValue", "XtdExternalDocument"])
+                        ORDER BY x.`labels.de`
+                        RETURN x.id as paths
+                            """)
+        List<String> findMissingDictionary();
 
-    /* ---- Prüfen auf Inkonsistenz ---- */
+        /* Finde Elemente ohne Referenzdokument */
+        @Query("""
+                        MATCH(x:XtdConcept) 
+                        WHERE NOT (x)-[:REFERENCE_DOCUMENTS]->() 
+                        AND ANY(label IN labels(x) WHERE label IN ["XtdSubject", "XtdProperty", "XtdValueList", "XtdValue"]) 
+                        ORDER BY x.`labels.de` 
+                        RETURN x.id as paths
+                                """)
+        List<String> findMissingReferenceDocument();
 
-    /* Finde Elemente ohne Tag */
-    @Query("""
-            MATCH (x)
-            WHERE ANY(label IN labels(x) WHERE label IN ["XtdSubject", "XtdProperty", "XtdUnit", "XtdValue"])
-            AND NOT (x)-[:TAGGED]-()
-            RETURN x.id AS paths
-            """)
-    List<String> findMissingTags();
+        /* Finde inaktive Konzepte */
+        @Query("""
+                        MATCH(x:XtdObject) 
+                        WHERE x.status="XTD_INACTIVE" 
+                        AND ANY(label IN labels(x) WHERE label IN ["XtdSubject", "XtdProperty", "XtdValueList", "XtdValue", "XtdExternalDocument", "XtdUnit"]) 
+                        ORDER BY x.`labels.de` 
+                        RETURN x.id as paths
+                                """)
+        List<String> findInactiveConcepts();
+        
+        /* ---- Prüfen auf Inkonsistenz ---- */
 
-    /* ---- Prüfen auf Eindeutigkeit ---- */
+        /* Finde Elemente ohne Tag */
+        @Query("""
+                        MATCH (x)
+                        WHERE ANY(label IN labels(x) WHERE label IN ["XtdSubject", "XtdProperty", "XtdUnit", "XtdValue"])
+                        AND NOT (x)-[:TAGGED]-()
+                        ORDER BY x.`labels.de`
+                        RETURN x.id AS paths
+                        """)
+        List<String> findMissingTags();
 
-    /* Finde Elemente mit identischer GUID */
-    @Query("""
-            MATCH (x)
-            WITH x.id AS paths, count(*) AS IDCount
-            WHERE IDCount > 1
-            RETURN paths
-            """)
-    List<String> findMultipleIDs();
+        /* ---- Prüfen auf Eindeutigkeit ---- */
 
-    /* Finde Elemente mit identischer Bezeichnung innerhalb eines Types */
-    @Query("""
-            MATCH (x)-[:TAGGED]->()<-[:TAGGED]-(y)
-            WHERE x.`labels.de` = y.`labels.de`
-            OR x.`labels.en` = y.`labels.en`
-            WITH x.id AS paths ORDER BY x.`labels.de` ASC
-            RETURN paths;
-            """)
-    List<String> findMultipleNames();
+        /* Finde Elemente mit identischer GUID */
+        @Query("""
+                        MATCH (x)
+                        WITH x.id AS paths, count(*) AS IDCount
+                        WHERE IDCount > 1
+                        RETURN paths
+                        """)
+        List<String> findMultipleIDs();
 
-    /* Finde Elemente mit identischer Bezeichnung im gesamten Datenbestand */
-    @Query("""
-            MATCH (x)-[:TAGGED]->(),()<-[:TAGGED]-(y)
-            WHERE (x.`labels.de` = y.`labels.de`
-            OR x.`labels.en` = y.`labels.en`) AND x.id <> y.id
-            WITH x.id AS paths ORDER BY x.`labels.de` ASC
-            RETURN paths;
-                """)
-    List<String> findMultipleNamesAcrossClasses();
+        /* Finde Elemente mit identischer Bezeichnung innerhalb eines Types */
+        @Query("""
+                        MATCH (x)-[:TAGGED]->()<-[:TAGGED]-(y)
+                        WHERE x.`labels.de` = y.`labels.de`
+                        OR x.`labels.en` = y.`labels.en`
+                        WITH x.id AS paths ORDER BY x.`labels.de` ASC
+                        RETURN paths;
+                        """)
+        List<String> findMultipleNames();
 
-    /* ---- Prüfen auf Verständlichkeit ---- */
+        /* Finde Elemente mit identischer Bezeichnung im gesamten Datenbestand */
+        @Query("""
+                        MATCH (x)-[:TAGGED]->(),()<-[:TAGGED]-(y)
+                        WHERE (x.`labels.de` = y.`labels.de`
+                        OR x.`labels.en` = y.`labels.en`) AND x.id <> y.id
+                        WITH x.id AS paths ORDER BY x.`labels.de` ASC
+                        RETURN paths;
+                            """)
+        List<String> findMultipleNamesAcrossClasses();
 
-    /* Finde Elemente ohne englische Namens-Übersetzung */
-    @Query("""
-            MATCH (x:XtdObject)
-            WHERE x.`labels.de` IS NOT NULL
-            AND x.`labels.en` IS NULL
-            RETURN DISTINCT x.id AS paths
-            """)
-    List<String> findMissingEnglishName();
+        /* ---- Prüfen auf Verständlichkeit ---- */
 
-    /* Finde Elemente ohne Beschreibung */
-    @Query("""
-            MATCH (x)
-            WHERE ANY(l IN LABELS(x) WHERE l IN ["XtdSubject", "XtdProperty", "XtdUnit", "XtdValueList", "XtdExternalDocument"])
-            AND NOT (x)-[:DESCRIPTIONS]->()
-            RETURN x.id AS paths
-            """)
-    List<String> findMissingDescription();
+        /* Finde Elemente ohne englische Namens-Übersetzung */
+        @Query("""
+                        MATCH (x:XtdObject)
+                        WHERE x.`labels.de` IS NOT NULL
+                        AND x.`labels.en` IS NULL
+                        ORDER BY x.`labels.de`
+                        RETURN DISTINCT x.id AS paths
+                        """)
+        List<String> findMissingEnglishName();
 
-    /* Finde Elemente ohne englische Beschreibung */
-    @Query("""
-            MATCH (x:XtdConcept)-[:DESCRIPTIONS]->()-[:TEXTS]->()-[:LANGUAGE]->(z )
-            WITH x.id AS paths, collect(z.code) AS sum
-            WHERE ("de" IN(sum) OR "de-DE" IN(sum) OR "de-CH" IN(sum) OR "de-AT" IN(sum))
-            AND NOT "en" IN(sum)
-            RETURN paths
-            """)
-    List<String> findMissingEnglishDescription();
+        /* Finde Elemente ohne Beschreibung */
+        @Query("""
+                        MATCH (x)
+                        WHERE ANY(l IN LABELS(x) WHERE l IN ["XtdSubject", "XtdProperty", "XtdUnit", "XtdValueList", "XtdExternalDocument"])
+                        AND NOT (x)-[:DESCRIPTIONS]->()
+                        ORDER BY x.`labels.de`
+                        RETURN x.id AS paths
+                        """)
+        List<String> findMissingDescription();
+
+        /* Finde Elemente ohne englische Beschreibung */
+        @Query("""
+                        MATCH (x:XtdConcept)-[:DESCRIPTIONS]->()-[:TEXTS]->()-[:LANGUAGE]->(z )
+                        WITH x.id AS paths, collect(z.code) AS sum, x.`labels.de` AS name
+                        WHERE ("de" IN(sum) OR "de-DE" IN(sum) OR "de-CH" IN(sum) OR "de-AT" IN(sum))
+                        AND NOT "en" IN(sum)
+                        ORDER BY name
+                        RETURN paths
+                        """)
+        List<String> findMissingEnglishDescription();
 }

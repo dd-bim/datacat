@@ -1,52 +1,59 @@
 package de.bentrm.datacat.catalog.service;
 
-import de.bentrm.datacat.catalog.service.value.VerificationValue;
+import de.bentrm.datacat.catalog.service.value.VerificationConnection;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 public interface CatalogVerificationService {
 
     @PreAuthorize("hasRole('READONLY')")
-    VerificationValue getfindPropGroupWithoutProp();
+    VerificationConnection getPropGroupWithoutProp(Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    VerificationValue getfindPropWithoutSubjectOrPropGroup();
+    VerificationConnection getPropWithoutSubjectOrPropGroup(Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    VerificationValue getfindModelWithoutGroup();
+    VerificationConnection getThemeWithoutSubject(Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    VerificationValue getfindGroupWithoutSubject();
+    VerificationConnection getSubjectWithoutProp(Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    VerificationValue getfindSubjectWithoutProp();
+    VerificationConnection getValueListWithoutProp(Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    VerificationValue getfindValueListWithoutProp();
+    VerificationConnection getUnitWithoutValueList(Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    VerificationValue getfindUnitWithoutValueList();
+    VerificationConnection getValueWithoutValueList(Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    VerificationValue getfindValueWithoutValueList();
+    VerificationConnection getMissingTags(Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    VerificationValue getfindMissingTags();
+    VerificationConnection getMissingEnglishName(Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    VerificationValue getfindMissingEnglishName();
+    VerificationConnection getMultipleIDs(Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    VerificationValue getfindMultipleIDs();
+    VerificationConnection getMissingDescription(Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    VerificationValue getfindMissingDescription();
+    VerificationConnection getMissingEnglishDescription(Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    VerificationValue getfindMissingEnglishDescription();
+    VerificationConnection getMultipleNames(Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    VerificationValue getfindMultipleNames();
+    VerificationConnection getMultipleNamesAcrossClasses(Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    VerificationValue getfindMultipleNamesAcrossClasses();
+    VerificationConnection getMissingDictionary(Pageable pageable);
+
+    @PreAuthorize("hasRole('READONLY')")
+    VerificationConnection getMissingReferenceDocument(Pageable pageable);
+
+    @PreAuthorize("hasRole('READONLY')")
+    VerificationConnection getInactiveConcepts(Pageable pageable);
 }

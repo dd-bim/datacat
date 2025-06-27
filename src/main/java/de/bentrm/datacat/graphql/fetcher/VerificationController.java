@@ -1,11 +1,13 @@
 package de.bentrm.datacat.graphql.fetcher;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
 import de.bentrm.datacat.catalog.service.CatalogVerificationService;
-import de.bentrm.datacat.catalog.service.value.VerificationValue;
+import de.bentrm.datacat.catalog.service.value.VerificationConnection;
 
 @Controller
 public class VerificationController {
@@ -14,77 +16,75 @@ public class VerificationController {
     private CatalogVerificationService service;
 
     @QueryMapping
-    public VerificationValue findSubjectWithoutProp() {
-        return service.getfindSubjectWithoutProp();
+    public VerificationConnection findSubjectWithoutProp(@Argument int pageNumber, @Argument int pageSize) {
+        return service.getSubjectWithoutProp(PageRequest.of(pageNumber, pageSize));
     }
 
     @QueryMapping
-    public VerificationValue findGroupWithoutSubject() {
-        return service.getfindGroupWithoutSubject();
+    public VerificationConnection findThemeWithoutSubject(@Argument int pageNumber, @Argument int pageSize) {
+        return service.getThemeWithoutSubject(PageRequest.of(pageNumber, pageSize));
     }
 
     @QueryMapping
-    public VerificationValue findPropGroupWithoutProp() {
-        return service.getfindPropGroupWithoutProp();
+    public VerificationConnection findPropGroupWithoutProp(@Argument int pageNumber, @Argument int pageSize) {
+        return service.getPropGroupWithoutProp(PageRequest.of(pageNumber, pageSize));
     }
 
     @QueryMapping
-    public VerificationValue findPropWithoutSubjectOrPropGroup() {
-        return service.getfindPropWithoutSubjectOrPropGroup();
+    public VerificationConnection findPropWithoutSubjectOrPropGroup(@Argument int pageNumber, @Argument int pageSize) {
+        return service.getPropWithoutSubjectOrPropGroup(PageRequest.of(pageNumber, pageSize));
     }
 
     @QueryMapping
-    public VerificationValue findModelWithoutGroup() {
-        return service.getfindModelWithoutGroup();
+    public VerificationConnection findValueListWithoutProp(@Argument int pageNumber, @Argument int pageSize) {
+        return service.getValueListWithoutProp(PageRequest.of(pageNumber, pageSize));
     }
-
     @QueryMapping
-    public VerificationValue findValueListWithoutProp() {
-        return service.getfindValueListWithoutProp();
-    }   
-
-    @QueryMapping
-    public VerificationValue findUnitWithoutValueList() {
-        return service.getfindUnitWithoutValueList();
+    public VerificationConnection findUnitWithoutValueList(@Argument int pageNumber, @Argument int pageSize) {
+        return service.getUnitWithoutValueList(PageRequest.of(pageNumber, pageSize));
     }
-
     @QueryMapping
-    public VerificationValue findValueWithoutValueList() {
-        return service.getfindValueWithoutValueList();
-    }   
-
-    @QueryMapping
-    public VerificationValue findMissingTags() {
-        return service.getfindMissingTags();
+    public VerificationConnection findValueWithoutValueList(@Argument int pageNumber, @Argument int pageSize) {
+        return service.getValueWithoutValueList(PageRequest.of(pageNumber, pageSize));
     }
-
     @QueryMapping
-    public VerificationValue findMissingEnglishName() {
-        return service.getfindMissingEnglishName();
+    public VerificationConnection findMissingTags(@Argument int pageNumber, @Argument int pageSize) {
+        return service.getMissingTags(PageRequest.of(pageNumber, pageSize));
     }
-
     @QueryMapping
-    public VerificationValue findMultipleIDs() {
-        return service.getfindMultipleIDs();
+    public VerificationConnection findMissingEnglishName(@Argument int pageNumber, @Argument int pageSize) {
+        return service.getMissingEnglishName(PageRequest.of(pageNumber, pageSize));
     }
-
     @QueryMapping
-    public VerificationValue findMissingDescription() {
-        return service.getfindMissingDescription();
+    public VerificationConnection findMultipleIDs(@Argument int pageNumber, @Argument int pageSize) {
+        return service.getMultipleIDs(PageRequest.of(pageNumber, pageSize));
     }
-
     @QueryMapping
-    public VerificationValue findMissingEnglishDescription() {
-        return service.getfindMissingEnglishDescription();
+    public VerificationConnection findMissingDescription(@Argument int pageNumber, @Argument int pageSize) {
+        return service.getMissingDescription(PageRequest.of(pageNumber, pageSize));
     }
-
     @QueryMapping
-    public VerificationValue findMultipleNames() {
-        return service.getfindMultipleNames();
+    public VerificationConnection findMissingEnglishDescription(@Argument int pageNumber, @Argument int pageSize) {
+        return service.getMissingEnglishDescription(PageRequest.of(pageNumber, pageSize));
     }
-
     @QueryMapping
-    public VerificationValue findMultipleNamesAcrossClasses() {
-        return service.getfindMultipleNamesAcrossClasses();
+    public VerificationConnection findMultipleNames(@Argument int pageNumber, @Argument int pageSize) {
+        return service.getMultipleNames(PageRequest.of(pageNumber, pageSize));
+    }
+    @QueryMapping
+    public VerificationConnection findMultipleNamesAcrossClasses(@Argument int pageNumber, @Argument int pageSize) {
+        return service.getMultipleNamesAcrossClasses(PageRequest.of(pageNumber, pageSize));
+    }
+    @QueryMapping
+    public VerificationConnection findMissingDictionary(@Argument int pageNumber, @Argument int pageSize) {
+        return service.getMissingDictionary(PageRequest.of(pageNumber, pageSize));
+    }
+    @QueryMapping
+    public VerificationConnection findMissingReferenceDocument(@Argument int pageNumber, @Argument int pageSize) {
+        return service.getMissingReferenceDocument(PageRequest.of(pageNumber, pageSize));
+    }
+    @QueryMapping
+    public VerificationConnection findInactiveConcepts(@Argument int pageNumber, @Argument int pageSize) {
+        return service.getInactiveConcepts(PageRequest.of(pageNumber, pageSize));
     }
 }
