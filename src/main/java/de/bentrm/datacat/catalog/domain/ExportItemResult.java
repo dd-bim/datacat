@@ -6,7 +6,6 @@ import de.bentrm.datacat.catalog.domain.Enums.XtdUnitBaseEnum;
 import de.bentrm.datacat.catalog.domain.Enums.XtdUnitScaleEnum;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Set;
 
 import lombok.Data;

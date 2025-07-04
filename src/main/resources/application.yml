@@ -17,7 +17,8 @@ datacat:
 
 spring:
   graphql:
-    path: /graphql
+    http:
+      path: /graphql
     cors:
       allow-credentials: true
       allowed-methods: POST
@@ -37,3 +38,4 @@ logging:
   level: 
     org.springframework.data.neo4j.cypher.unrecognized: ERROR
     # org.springframework: DEBUG
+    # org.springframework.data.neo4j: DEBUG
