@@ -1,1373 +1,1063 @@
-type CatalogItemStatistics {
-    id: ID!
-    count: Int!
+type CatalogRecordStatistics {
+  id: ID!
+  count: Int!
 }
 
 type CatalogStatistics {
-    items: [CatalogItemStatistics!]!
-}
-
-type SearchResult {
-    id: ID!
-    recordType: CatalogRecordType!
-    tags: [Tag!]!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
+  items: [CatalogRecordStatistics!]!
 }
 
 type SearchResultConnection {
-    nodes: [SearchResult!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
+  nodes: [XtdRoot!]!
+  pageInfo: PageInfo!
+  totalElements: Int!
 }
 
 input LocaleInput {
-    languageTag: ID!
+  languageTag: ID!
 }
 
 type Language {
-    id: String!
-    languageTag: String!
-    displayCountry(input: LocaleInput): String!
-    displayLanguage(input: LocaleInput): String!
-}
-
-type LocalizedText {
-    language: Language!
-    text: String!
+  id: String!
+  languageTag: String!
+  displayCountry(input: LocaleInput): String!
+  displayLanguage(input: LocaleInput): String!
 }
 
 type Tag {
-    id: ID!
-    name: String!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
+  id: ID!
+  name: String!
+  created: String!
+  createdBy: String!
+  lastModified: String!
+  lastModifiedBy: String!
 }
 
 type TagConnection {
-    nodes: [Tag!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
+  nodes: [Tag!]!
+  pageInfo: PageInfo!
+  totalElements: Int!
 }
 
 type HierarchyPayload {
-    nodes: [Concept!]!
-    paths: [[ID!]!]!
+  nodes: [XtdObject!]!
+  paths: [[ID!]!]!
 }
 
-type findPropGroupWithoutPropPayload {
-    nodes: [Concept!]!
-    paths: [[ID!]!]!
+type VerificationPayload {
+  nodes: [XtdObject!]!
+  paths: [ID!]!
 }
 
-type findPropWithoutSubjectOrPropGroupPayload {
-    nodes: [Concept!]!
-    paths: [[ID!]!]!
+type findExportCatalogRecordsPayload {
+  nodes: [ExportResult!]!
 }
 
-type findModelWithoutGroupPayload {
-    nodes: [Concept!]!
-    paths: [[ID!]!]!
-}
-
-type findGroupWithoutSubjectPayload {
-    nodes: [Concept!]!
-    paths: [[ID!]!]!
-}
-
-type findSubjectWithoutPropPayload {
-    nodes: [Concept!]!
-    paths: [[ID!]!]!
-}
-
-type findMeasureWithoutPropPayload {
-    nodes: [Concept!]!
-    paths: [[ID!]!]!
-}
-
-type findUnitWithoutMeasurePayload {
-    nodes: [Concept!]!
-    paths: [[ID!]!]!
-}
-
-type findValueWithoutMeasurePayload {
-    nodes: [Concept!]!
-    paths: [[ID!]!]!
-}
-
-type findMissingTagsPayload {
-    nodes: [Concept!]!
-    paths: [[ID!]!]!
-}
-
-type findMissingEnglishNamePayload {
-    nodes: [Concept!]!
-    paths: [[ID!]!]!
-}
-
-type findMultipleIDsPayload {
-    nodes: [Concept!]!
-    paths: [[ID!]!]!
-}
-
-type findMissingDescriptionPayload {
-    nodes: [Concept!]!
-    paths: [[ID!]!]!
-}
-
-type findMissingEnglishDescriptionPayload {
-    nodes: [Concept!]!
-    paths: [[ID!]!]!
-}
-
-type findMultipleNamesPayload {
-    nodes: [Concept!]!
-    paths: [[ID!]!]!
-}
-
-type findMultipleNamesAcrossClassesPayload {
-    nodes: [Concept!]!
-    paths: [[ID!]!]!
-}
-
-type findExportCatalogItemsPayload {
-    nodes: [ExportResult!]
-    paths: [[ID!]!]!
-}
-
-type findExportCatalogItemsRelationshipsPayload {
-    nodes: [ExportRelationshipResult!]
-    paths: [[ID!]!]!
+type findExportCatalogRecordsRelationshipsPayload {
+  nodes: [ExportRelationshipResult!]!
 }
 
 type ExportResult {
-    id: ID!
-    typ: String
-    schlagworte: String
-    name: String
-    name_en: String
-    description: String
-    versionId: String
-    created: String
-    createdBy: String
-    lastModified: String
-    lastModifiedBy: String
-
+  id: ID!
+  type: String
+  tags: [String]
+  name: String
+  name_en: String
+  description: String
+  description_en: String
+  definition: String
+  definition_en: String
+  created: String
+  createdBy: String
+  lastModified: String
+  lastModifiedBy: String
+  majorVersion: Int
+  minorVersion: Int
+  status: XtdStatusOfActivationEnum
+  languageOfCreator: String
+  countryOfOrigin: String
+  examples: String
+  languages: [String]
+  deprecationExplanation: String
+  dataType: String
+  dataFormat: String
+  uri: String
+  author: String
+  isbn: String
+  publisher: String
+  dateOfPublication: String
+  scale: XtdUnitScaleEnum
+  base: XtdUnitBaseEnum
 }
 
 type ExportRelationshipResult {
-    Entity1: ID!
-    Entity1Type: String!
-    RelationId: ID!
-    RelationshipType: String!
-    Entity2: ID!
-    Entity2Type: String!
-}
-
-# Xtd misc
-
-extend type Translation {
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
+  entity1: ID!
+  relationship: String!
+  entity2: ID!
 }
 
 # inputs
 
 input CatalogEntryTypeFilterInput {
-    in: [CatalogRecordType!]
+  in: [CatalogRecordType!]
 }
 
 input TagFilterInput {
-    in: [ID!]
+  in: [ID!]
 }
 
 input CatalogEntryFilterInput {
-    catalogEntryType: CatalogEntryTypeFilterInput
-    tags: TagFilterInput
+  catalogEntryType: CatalogEntryTypeFilterInput
+  tags: TagFilterInput
 }
 
 input SearchInput {
-    query: String
-    filters: [CatalogEntryFilterInput!]
-    entityTypeIn: [CatalogRecordType!]
-    entityTypeNotIn: [CatalogRecordType!]
-    idIn: [ID!]
-    idNotIn: [ID!]
-    tagged: [ID!]
-    pageNumber: Int
-    pageSize: Int
+  query: String
+  filters: [CatalogEntryFilterInput!]
+  entityTypeIn: [CatalogRecordType!]
+  entityTypeNotIn: [CatalogRecordType!]
+  idIn: [ID!]
+  idNotIn: [ID!]
+  tagged: [ID!]
+  """
+  Default: 0
+  """
+  pageNumber: Int
+  pageSize: Int
 }
 
 input HierarchyRootNodeFilterInput {
-    catalogEntryTypeIn: [CatalogRecordType!]
-    catalogEntryTypeNotIn: [CatalogRecordType!]
-    idIn: [ID!]
-    idNotIn: [ID!]
-    tagged: [ID!]
+  entityTypeIn: [CatalogRecordType!]
+  entityTypeNotIn: [CatalogRecordType!]
+  idIn: [ID!]
+  idNotIn: [ID!]
+  tagged: [ID!]
 }
 
 input HierarchyFilterInput {
-    rootNodeFilter: HierarchyRootNodeFilterInput!
+  rootNodeFilter: HierarchyRootNodeFilterInput!
 }
 
+input VerificationNodeTypeFilterInput {
+  entityTypeIn: [CatalogRecordType!]
+}
 
-input findMissingTagsNodeTypeFilterInput {catalogEntryTypeIn: [CatalogRecordType!]}
-
-input findMissingTagsFilterInput {nodeTypeFilter: findMissingTagsNodeTypeFilterInput!}
-
-
-input findMultipleIDsNodeTypeFilterInput {catalogEntryTypeIn: [CatalogRecordType!]}
-
-input findMultipleIDsFilterInput {nodeTypeFilter: findMultipleIDsNodeTypeFilterInput!}
-
-
-input findMissingDescriptionNodeTypeFilterInput {catalogEntryTypeIn: [CatalogRecordType!]}
-
-input findMissingDescriptionFilterInput {nodeTypeFilter: findMissingDescriptionNodeTypeFilterInput!}
-
-
-input findMissingEnglishNameNodeTypeFilterInput {catalogEntryTypeIn: [CatalogRecordType!]}
-
-input findMissingEnglishNameFilterInput {nodeTypeFilter: findMissingEnglishNameNodeTypeFilterInput!}
-
-
-input findMissingEnglishDescriptionNodeTypeFilterInput {catalogEntryTypeIn: [CatalogRecordType!]}
-
-input findMissingEnglishDescriptionFilterInput {nodeTypeFilter: findMissingEnglishDescriptionNodeTypeFilterInput!}
-
-
-input findMultipleNamesNodeTypeFilterInput {catalogEntryTypeIn: [CatalogRecordType!]}
-
-input findMultipleNamesFilterInput {nodeTypeFilter: findMultipleNamesNodeTypeFilterInput!}
-
-input findMultipleNamesAcrossClassesNodeTypeFilterInput {catalogEntryTypeIn: [CatalogRecordType!]}
-
-input findMultipleNamesAcrossClassesFilterInput {nodeTypeFilter: findMultipleNamesAcrossClassesNodeTypeFilterInput!}
-
+input VerificationFilterInput {
+  nodeTypeFilter: VerificationNodeTypeFilterInput!
+}
 
 input FilterInput {
-    query: String
-    idIn: [ID!]
-    idNotIn: [ID!]
-    tagged: [ID!]
-    pageNumber: Int
-    pageSize: Int
+  query: String
+  idIn: [ID!]
+  idNotIn: [ID!]
+  tagged: [ID!]
+  pageNumber: Int
+  pageSize: Int
 }
 
 # Query type
 
-input LanguageFilterInput {
-    query: String
-    excludeLanguageTags: [String!]
-}
-
-type LanguageConnection {
-    nodes: [Language!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
-}
-
-type Translation {
-    id: ID!
-    value: String!
-    language: Language!
-}
-
 input LocalizationInput {
-    languageTags: [String!]
+  languageTags: [String!]
 }
 
-interface Concept {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
+interface XtdRoot {
+  id: ID!
+  recordType: CatalogRecordType!
+  created: String!
+  createdBy: String!
+  lastModified: String!
+  lastModifiedBy: String!
+  tags: [Tag!]!
 }
 
-type XtdExternalDocument implements Concept {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    documents: XtdRelDocumentsConnection!
+interface XtdObject implements XtdRoot {
+  id: ID!
+  recordType: CatalogRecordType!
+  created: String!
+  createdBy: String!
+  lastModified: String!
+  lastModifiedBy: String!
+  majorVersion: Int!
+  minorVersion: Int!
+  dictionary: XtdDictionary # required
+  dateOfCreation: String # required
+  status: XtdStatusOfActivationEnum # required
+  replacedObjects: [XtdObject!]!
+  replacingObjects: [XtdObject!]!
+  deprecationExplanation: XtdMultiLanguageText
+  name(input: LocalizationInput): String
+  names: [XtdMultiLanguageText!]!
+  comment(input: LocalizationInput): String
+  comments: [XtdMultiLanguageText!]!
+  tags: [Tag!]!
+  uri: String
 }
 
-interface XtdRoot implements Concept {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
-    collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
-    documentedBy: XtdRelDocumentsConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
+interface XtdConcept implements XtdRoot & XtdObject {
+  id: ID!
+  recordType: CatalogRecordType!
+  created: String!
+  createdBy: String!
+  lastModified: String!
+  lastModifiedBy: String!
+  majorVersion: Int!
+  minorVersion: Int!
+  dictionary: XtdDictionary # required
+  dateOfCreation: String # required
+  status: XtdStatusOfActivationEnum # required
+  replacedObjects: [XtdObject!]!
+  replacingObjects: [XtdObject!]!
+  deprecationExplanation: XtdMultiLanguageText
+  definition: XtdMultiLanguageText # required
+  examples: [XtdMultiLanguageText]
+  languageOfCreator: XtdLanguage # required
+  similarTo: [XtdConcept!]!
+  # visualRepresenation: [XtdVisualRepresenation]
+  countryOfOrigin: XtdCountry
+  name(input: LocalizationInput): String
+  names: [XtdMultiLanguageText!]!
+  description(input: LocalizationInput): String
+  descriptions: [XtdMultiLanguageText!]!
+  comment(input: LocalizationInput): String
+  comments: [XtdMultiLanguageText!]!
+  tags: [Tag!]!
+  uri: String
+  referenceDocuments: [XtdExternalDocument!]!
 }
 
-interface XtdObject implements Concept, XtdRoot {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
-    collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
-    documentedBy: XtdRelDocumentsConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
-    assignedCollections: XtdRelAssignsCollectionsConnection!
-    assignedProperties: XtdRelAssignsPropertiesConnection!
-    assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
+type XtdExternalDocument implements XtdRoot & XtdObject & XtdConcept {
+  id: ID!
+  recordType: CatalogRecordType!
+  created: String!
+  createdBy: String!
+  lastModified: String!
+  lastModifiedBy: String!
+  majorVersion: Int!
+  minorVersion: Int!
+  dictionary: XtdDictionary # required
+  dateOfCreation: String # required
+  status: XtdStatusOfActivationEnum # required
+  replacedObjects: [XtdObject!]!
+  replacingObjects: [XtdObject!]!
+  deprecationExplanation: XtdMultiLanguageText
+  definition: XtdMultiLanguageText # required
+  examples: [XtdMultiLanguageText]
+  languageOfCreator: XtdLanguage # required
+  similarTo: [XtdConcept!]!
+  # visualRepresenation: [XtdVisualRepresenation]
+  countryOfOrigin: XtdCountry
+  documentUri: String
+  author: String
+  isbn: String
+  publisher: String
+  dateOfPublication: String
+  languages: [XtdLanguage] # has to be required double
+  name(input: LocalizationInput): String
+  names: [XtdMultiLanguageText!]!
+  description(input: LocalizationInput): String
+  descriptions: [XtdMultiLanguageText!]!
+  comment(input: LocalizationInput): String
+  comments: [XtdMultiLanguageText!]!
+  tags: [Tag!]!
+  uri: String
+  documents: [XtdConcept!]!
+  referenceDocuments: [XtdExternalDocument!]!
 }
 
-interface XtdCollection implements Concept, XtdRoot {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
-    collectedBy: XtdRelCollectsConnection!
-    collects: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
-    documentedBy: XtdRelDocumentsConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
-    assignedTo: XtdRelAssignsCollectionsConnection!
+type XtdSubject implements XtdRoot & XtdObject & XtdConcept {
+  id: ID!
+  recordType: CatalogRecordType!
+  created: String!
+  createdBy: String!
+  lastModified: String!
+  lastModifiedBy: String!
+  majorVersion: Int!
+  minorVersion: Int!
+  dictionary: XtdDictionary # required
+  dateOfCreation: String # required
+  status: XtdStatusOfActivationEnum # required
+  replacedObjects: [XtdObject!]!
+  replacingObjects: [XtdObject!]!
+  deprecationExplanation: XtdMultiLanguageText
+  definition: XtdMultiLanguageText # required
+  examples: [XtdMultiLanguageText]
+  languageOfCreator: XtdLanguage # required
+  similarTo: [XtdConcept!]!
+  # visualRepresenation: [XtdVisualRepresenation]
+  countryOfOrigin: XtdCountry
+  name(input: LocalizationInput): String
+  names: [XtdMultiLanguageText!]!
+  description(input: LocalizationInput): String
+  descriptions: [XtdMultiLanguageText!]!
+  comment(input: LocalizationInput): String
+  comments: [XtdMultiLanguageText!]!
+  tags: [Tag!]!
+  uri: String
+  referenceDocuments: [XtdExternalDocument!]!
+  connectedSubjects: [XtdRelationshipToSubject!]!
+  connectingSubjects: [XtdRelationshipToSubject!]!
+  properties: [XtdProperty!]!
+  # filters: [XtdFilter]
 }
 
-interface XtdRelationship implements Concept {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
+type XtdProperty implements XtdRoot & XtdObject & XtdConcept {
+  id: ID!
+  recordType: CatalogRecordType!
+  created: String!
+  createdBy: String!
+  lastModified: String!
+  lastModifiedBy: String!
+  majorVersion: Int!
+  minorVersion: Int!
+  dictionary: XtdDictionary # required
+  dateOfCreation: String # required
+  status: XtdStatusOfActivationEnum # required
+  replacedObjects: [XtdObject!]!
+  replacingObjects: [XtdObject!]!
+  deprecationExplanation: XtdMultiLanguageText
+  definition: XtdMultiLanguageText # required
+  examples: [XtdMultiLanguageText]
+  languageOfCreator: XtdLanguage # required
+  similarTo: [XtdConcept!]!
+  # visualRepresenation: [XtdVisualRepresenation]
+  countryOfOrigin: XtdCountry
+  dataType: XtdDataTypeEnum # required
+  dataFormat: String
+  symbols: [XtdSymbol]
+  boundaryValues: [XtdInterval]
+  dimension: XtdDimension # required
+  quantityKinds: [XtdQuantityKind]
+  name(input: LocalizationInput): String
+  names: [XtdMultiLanguageText!]!
+  description(input: LocalizationInput): String
+  descriptions: [XtdMultiLanguageText!]!
+  comment(input: LocalizationInput): String
+  comments: [XtdMultiLanguageText!]!
+  tags: [Tag!]!
+  uri: String
+  referenceDocuments: [XtdExternalDocument!]!
+  connectedProperties: [XtdRelationshipToProperty!]!
+  connectingProperties: [XtdRelationshipToProperty!]!
+  subjects: [XtdSubject!]!
+  possibleValues: [XtdValueList!]
+  units: [XtdUnit!]
 }
 
-type XtdActivity implements Concept, XtdRoot, XtdObject {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
-    collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
-    documentedBy: XtdRelDocumentsConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
-    assignedCollections: XtdRelAssignsCollectionsConnection!
-    assignedProperties: XtdRelAssignsPropertiesConnection!
-    assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
+type XtdValueList implements XtdRoot & XtdObject & XtdConcept {
+  id: ID!
+  recordType: CatalogRecordType!
+  created: String!
+  createdBy: String!
+  lastModified: String!
+  lastModifiedBy: String!
+  majorVersion: Int!
+  minorVersion: Int!
+  dictionary: XtdDictionary # required
+  dateOfCreation: String # required
+  status: XtdStatusOfActivationEnum # required
+  replacedObjects: [XtdObject!]!
+  replacingObjects: [XtdObject!]!
+  deprecationExplanation: XtdMultiLanguageText
+  definition: XtdMultiLanguageText # required
+  examples: [XtdMultiLanguageText]
+  languageOfCreator: XtdLanguage # required
+  similarTo: [XtdConcept!]!
+  # visualRepresenation: [XtdVisualRepresenation]
+  countryOfOrigin: XtdCountry
+  language: XtdLanguage
+  name(input: LocalizationInput): String
+  names: [XtdMultiLanguageText!]!
+  description(input: LocalizationInput): String
+  descriptions: [XtdMultiLanguageText!]!
+  comment(input: LocalizationInput): String
+  comments: [XtdMultiLanguageText!]!
+  tags: [Tag!]!
+  uri: String
+  referenceDocuments: [XtdExternalDocument!]!
+  unit: XtdUnit
+  values: [XtdOrderedValue!]!
+  properties: [XtdProperty!]
 }
 
-type XtdActor implements Concept, XtdRoot, XtdObject {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
-    collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
-    documentedBy: XtdRelDocumentsConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
-    assignedCollections: XtdRelAssignsCollectionsConnection!
-    assignedProperties: XtdRelAssignsPropertiesConnection!
-    assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
+type XtdUnit implements XtdRoot & XtdObject & XtdConcept {
+  id: ID!
+  recordType: CatalogRecordType!
+  created: String!
+  createdBy: String!
+  lastModified: String!
+  lastModifiedBy: String!
+  majorVersion: Int!
+  minorVersion: Int!
+  dictionary: XtdDictionary # required
+  dateOfCreation: String # required
+  status: XtdStatusOfActivationEnum # required
+  replacedObjects: [XtdObject!]!
+  replacingObjects: [XtdObject!]!
+  deprecationExplanation: XtdMultiLanguageText
+  definition: XtdMultiLanguageText # required
+  examples: [XtdMultiLanguageText]
+  languageOfCreator: XtdLanguage # required
+  similarTo: [XtdConcept!]!
+  # visualRepresenation: [XtdVisualRepresenation]
+  countryOfOrigin: XtdCountry
+  scale: XtdUnitScaleEnum # required
+  base: XtdUnitBaseEnum # required
+  symbol: XtdMultiLanguageText 
+  offset: XtdRational # required
+  coefficient: XtdRational # required
+  dimension: XtdDimension # required
+  name(input: LocalizationInput): String
+  names: [XtdMultiLanguageText!]!
+  description(input: LocalizationInput): String
+  descriptions: [XtdMultiLanguageText!]!
+  comment(input: LocalizationInput): String
+  comments: [XtdMultiLanguageText!]!
+  tags: [Tag!]!
+  uri: String
+  referenceDocuments: [XtdExternalDocument!]!
+  properties: [XtdProperty!]
+  valueLists: [XtdValueList!]
 }
 
-type XtdSubject implements Concept, XtdRoot, XtdObject {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    groupOfProperties: [XtdNest!]!
-    properties: [XtdProperty!]!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
-    collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
-    documentedBy: XtdRelDocumentsConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
-    assignedCollections: XtdRelAssignsCollectionsConnection!
-    assignedProperties: XtdRelAssignsPropertiesConnection!
-    assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
+type XtdOrderedValue implements XtdRoot & XtdObject {
+  id: ID!
+  recordType: CatalogRecordType!
+  created: String!
+  createdBy: String!
+  lastModified: String!
+  lastModifiedBy: String!
+  majorVersion: Int!
+  minorVersion: Int!
+  dictionary: XtdDictionary # required
+  dateOfCreation: String # required
+  status: XtdStatusOfActivationEnum # required
+  replacedObjects: [XtdObject!]!
+  replacingObjects: [XtdObject!]!
+  deprecationExplanation: XtdMultiLanguageText
+  name(input: LocalizationInput): String
+  names: [XtdMultiLanguageText!]!
+  comment(input: LocalizationInput): String
+  comments: [XtdMultiLanguageText!]!
+  tags: [Tag!]!
+  uri: String
+  orderedValue: XtdValue! # should be exact one
+  valueLists: [XtdValueList!]!
+  order: Int!
 }
 
-
-type XtdClassification implements Concept, XtdRoot, XtdObject {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
-    collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
-    documentedBy: XtdRelDocumentsConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
-    assignedCollections: XtdRelAssignsCollectionsConnection!
-    assignedProperties: XtdRelAssignsPropertiesConnection!
-    assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
+type XtdValue implements XtdRoot & XtdObject {
+  id: ID!
+  recordType: CatalogRecordType!
+  created: String!
+  createdBy: String!
+  lastModified: String!
+  lastModifiedBy: String!
+  majorVersion: Int!
+  minorVersion: Int!
+  dictionary: XtdDictionary # required
+  dateOfCreation: String # required
+  status: XtdStatusOfActivationEnum # required
+  replacedObjects: [XtdObject!]!
+  replacingObjects: [XtdObject!]!
+  deprecationExplanation: XtdMultiLanguageText
+  name(input: LocalizationInput): String
+  names: [XtdMultiLanguageText!]!
+  comment(input: LocalizationInput): String
+  comments: [XtdMultiLanguageText!]!
+  tags: [Tag!]!
+  uri: String
+  orderedValues: [XtdOrderedValue!]
+  nominalValue: String
 }
 
-type XtdMeasureWithUnit implements Concept, XtdRoot, XtdObject {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-#    methodOfInterpretation: [Translation!]!
-    assignedTo: XtdRelAssignsMeasuresConnection!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
-    collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
-    documentedBy: XtdRelDocumentsConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
-    assignedCollections: XtdRelAssignsCollectionsConnection!
-    assignedProperties: XtdRelAssignsPropertiesConnection!
-    assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
-    assignedUnits: XtdRelAssignsUnitsConnection!
-    assignedValues: XtdRelAssignsValuesConnection!
+type XtdRelationshipToSubject implements XtdRoot & XtdObject {
+  id: ID!
+  recordType: CatalogRecordType!
+  created: String!
+  createdBy: String!
+  lastModified: String!
+  lastModifiedBy: String!
+  majorVersion: Int!
+  minorVersion: Int!
+  dictionary: XtdDictionary # required
+  dateOfCreation: String # required
+  status: XtdStatusOfActivationEnum # required
+  replacedObjects: [XtdObject!]!
+  replacingObjects: [XtdObject!]!
+  deprecationExplanation: XtdMultiLanguageText
+  name(input: LocalizationInput): String
+  names: [XtdMultiLanguageText!]!
+  comment(input: LocalizationInput): String
+  comments: [XtdMultiLanguageText!]!
+  tags: [Tag!]!
+  uri: String
+  connectingSubject: XtdSubject!
+  targetSubjects: [XtdSubject!]!
+  scopeSubjects: [XtdSubject!]
+  relationshipType: XtdRelationshipType # Should be changed to required
 }
 
-type XtdProperty implements Concept, XtdRoot, XtdObject {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    assignedMeasures: XtdRelAssignsMeasuresConnection!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
-    collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
-    documentedBy: XtdRelDocumentsConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
-    assignedCollections: XtdRelAssignsCollectionsConnection!
-    assignedProperties: XtdRelAssignsPropertiesConnection!
-    assignedTo: XtdRelAssignsPropertiesConnection!
-    assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
+type XtdRelationshipToProperty implements XtdRoot & XtdObject & XtdConcept {
+  id: ID!
+  recordType: CatalogRecordType!
+  created: String!
+  createdBy: String!
+  lastModified: String!
+  lastModifiedBy: String!
+  majorVersion: Int!
+  minorVersion: Int!
+  dictionary: XtdDictionary # required
+  dateOfCreation: String # required
+  status: XtdStatusOfActivationEnum # required
+  replacedObjects: [XtdObject!]!
+  replacingObjects: [XtdObject!]!
+  deprecationExplanation: XtdMultiLanguageText
+  definition: XtdMultiLanguageText # required
+  examples: [XtdMultiLanguageText]
+  languageOfCreator: XtdLanguage # required
+  similarTo: [XtdConcept!]!
+  # visualRepresenation: [XtdVisualRepresenation]
+  countryOfOrigin: XtdCountry
+  name(input: LocalizationInput): String
+  names: [XtdMultiLanguageText!]!
+  description(input: LocalizationInput): String
+  descriptions: [XtdMultiLanguageText!]!
+  comment(input: LocalizationInput): String
+  comments: [XtdMultiLanguageText!]!
+  tags: [Tag!]!
+  uri: String
+  referenceDocuments: [XtdExternalDocument!]!
+  connectingProperty: XtdProperty!
+  targetProperties: [XtdProperty!]!
+  relationshipType: XtdPropertyRelationshipTypeEnum!
 }
 
-
-type XtdUnit implements Concept, XtdRoot, XtdObject {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    assignedTo: XtdRelAssignsUnitsConnection!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
-    collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
-    documentedBy: XtdRelDocumentsConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
-    assignedCollections: XtdRelAssignsCollectionsConnection!
-    assignedProperties: XtdRelAssignsPropertiesConnection!
-    assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
+type XtdRelationshipType implements XtdRoot & XtdObject & XtdConcept {
+  id: ID!
+  recordType: CatalogRecordType!
+  created: String!
+  createdBy: String!
+  lastModified: String!
+  lastModifiedBy: String!
+  majorVersion: Int!
+  minorVersion: Int!
+  dictionary: XtdDictionary # required
+  dateOfCreation: String # required
+  status: XtdStatusOfActivationEnum # required
+  replacedObjects: [XtdObject!]!
+  replacingObjects: [XtdObject!]!
+  deprecationExplanation: XtdMultiLanguageText
+  definition: XtdMultiLanguageText # required
+  examples: [XtdMultiLanguageText]
+  languageOfCreator: XtdLanguage # required
+  similarTo: [XtdConcept!]!
+  # visualRepresenation: [XtdVisualRepresenation]
+  countryOfOrigin: XtdCountry
+  name(input: LocalizationInput): String
+  names: [XtdMultiLanguageText!]!
+  description(input: LocalizationInput): String
+  descriptions: [XtdMultiLanguageText!]!
+  comment(input: LocalizationInput): String
+  comments: [XtdMultiLanguageText!]!
+  tags: [Tag!]!
+  uri: String
+  referenceDocuments: [XtdExternalDocument!]!
+  kind: XtdRelationshipKindEnum!
 }
 
-type XtdValue implements Concept, XtdRoot, XtdObject {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    toleranceType: ToleranceType
-    lowerTolerance: String
-    upperTolerance: String
-    valueRole: ValueRole
-    valueType: ValueType
-    nominalValue: String
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
-    collectedBy: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
-    documentedBy: XtdRelDocumentsConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
-    assignedCollections: XtdRelAssignsCollectionsConnection!
-    assignedProperties: XtdRelAssignsPropertiesConnection!
-    assignedPropertiesWithValues: XtdRelAssignsPropertyWithValuesConnection!
-    assignedTo: XtdRelAssignsValuesConnection!
+type XtdLanguage implements XtdRoot {
+  id: ID!
+  recordType: CatalogRecordType!
+  created: String!
+  createdBy: String!
+  lastModified: String!
+  lastModifiedBy: String!
+  englishName: String!
+  nativeName: String
+  code: String!
+  comments: [String]
+  tags: [Tag!]!
 }
 
-type XtdBag implements Concept, XtdRoot, XtdCollection {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
-    collectedBy: XtdRelCollectsConnection!
-    collects: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
-    documentedBy: XtdRelDocumentsConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
-    assignedTo: XtdRelAssignsCollectionsConnection!
+type XtdDimension implements XtdRoot & XtdObject & XtdConcept {
+  id: ID!
+  recordType: CatalogRecordType!
+  created: String!
+  createdBy: String!
+  lastModified: String!
+  lastModifiedBy: String!
+  majorVersion: Int!
+  minorVersion: Int!
+  dictionary: XtdDictionary # required
+  dateOfCreation: String # required
+  status: XtdStatusOfActivationEnum # required
+  replacedObjects: [XtdObject!]!
+  replacingObjects: [XtdObject!]!
+  deprecationExplanation: XtdMultiLanguageText
+  definition: XtdMultiLanguageText # required
+  examples: [XtdMultiLanguageText]
+  languageOfCreator: XtdLanguage # required
+  similarTo: [XtdConcept!]!
+  # visualRepresenation: [XtdVisualRepresenation]
+  countryOfOrigin: XtdCountry
+  name(input: LocalizationInput): String
+  names: [XtdMultiLanguageText!]!
+  description(input: LocalizationInput): String
+  descriptions: [XtdMultiLanguageText!]!
+  comment(input: LocalizationInput): String
+  comments: [XtdMultiLanguageText!]!
+  tags: [Tag!]!
+  uri: String
+  referenceDocuments: [XtdExternalDocument!]!
+  thermodynamicTemperatureExponent: XtdRational # required
+  electricCurrentExponent: XtdRational # required
+  timeExponent: XtdRational # required
+  massExponent: XtdRational # required
+  lengthExponent: XtdRational # required
+  luminousIntensityExponent: XtdRational # required
+  amountOfSubstanceExponent: XtdRational # required
 }
 
-type XtdNest implements Concept, XtdRoot, XtdCollection {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    actedUponBy: XtdRelActsUponConnection!
-    actsUpon: XtdRelActsUponConnection!
-    associatedBy: XtdRelAssociatesConnection!
-    associates: XtdRelAssociatesConnection!
-    collectedBy: XtdRelCollectsConnection!
-    collects: XtdRelCollectsConnection!
-    composedBy: XtdRelComposesConnection!
-    composes: XtdRelComposesConnection!
-    documentedBy: XtdRelDocumentsConnection!
-    groupedBy: XtdRelGroupsConnection!
-    groups: XtdRelGroupsConnection!
-    specializedBy: XtdRelSpecializesConnection!
-    specializes: XtdRelSpecializesConnection!
-    assignedTo: XtdRelAssignsCollectionsConnection!
+type XtdRational implements XtdRoot {
+  id: ID!
+  recordType: CatalogRecordType!
+  created: String!
+  createdBy: String!
+  lastModified: String!
+  lastModifiedBy: String!
+  tags: [Tag!]!
+  numerator: Int!
+  denominator: Int!
 }
 
-type XtdRelAssignsCollections implements Concept, XtdRelationship {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    relatingObject: XtdObject!
-    relatedCollections: [XtdCollection!]!
+type XtdMultiLanguageText implements XtdRoot {
+  id: ID!
+  recordType: CatalogRecordType!
+  created: String!
+  createdBy: String!
+  lastModified: String!
+  lastModifiedBy: String!
+  tags: [Tag!]!
+  texts: [XtdText!]!
 }
 
-type XtdRelAssignsMeasures implements Concept, XtdRelationship {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    relatingProperty: XtdProperty!
-    relatedMeasures: [XtdMeasureWithUnit!]!
+type XtdText implements XtdRoot {
+  id: ID!
+  recordType: CatalogRecordType!
+  created: String!
+  createdBy: String!
+  lastModified: String!
+  lastModifiedBy: String!
+  tags: [Tag!]!
+  text: String!
+  language: XtdLanguage!
 }
 
-type XtdRelAssignsProperties implements Concept, XtdRelationship {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    relatingObject: XtdObject!
-    relatedProperties: [XtdProperty!]!
+type XtdSymbol implements XtdRoot {
+  id: ID!
+  recordType: CatalogRecordType!
+  created: String!
+  createdBy: String!
+  lastModified: String!
+  lastModifiedBy: String!
+  tags: [Tag!]!
+  subject: XtdSubject
+  symbol: XtdText #required
 }
 
-type XtdRelAssignsPropertyWithValues implements Concept, XtdRelationship {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    relatingObject: XtdObject!
-    relatedProperty: XtdProperty!
-    relatedValues: [XtdValue!]!
+type XtdInterval implements XtdRoot {
+  id: ID!
+  recordType: CatalogRecordType!
+  created: String!
+  createdBy: String!
+  lastModified: String!
+  lastModifiedBy: String!
+  tags: [Tag!]!
+  minimumIncluded: Boolean!
+  maximumIncluded: Boolean!
+  minimum: XtdValueList
+  maximum: XtdValueList
 }
 
-type XtdRelAssignsUnits implements Concept, XtdRelationship {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    relatingMeasure: XtdMeasureWithUnit!
-    relatedUnits: [XtdUnit!]!
+type XtdDictionary implements XtdRoot {
+  id: ID!
+  recordType: CatalogRecordType!
+  created: String!
+  createdBy: String!
+  lastModified: String!
+  lastModifiedBy: String!
+  tags: [Tag!]!
+  name: XtdMultiLanguageText # required
+  concepts: [XtdObject!]
 }
 
-type XtdRelAssignsValues implements Concept, XtdRelationship {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    relatingMeasure: XtdMeasureWithUnit!
-    relatedValues: [XtdValue!]!
+type XtdSubdivision implements XtdRoot & XtdObject & XtdConcept {
+  id: ID!
+  recordType: CatalogRecordType!
+  created: String!
+  createdBy: String!
+  lastModified: String!
+  lastModifiedBy: String!
+  majorVersion: Int!
+  minorVersion: Int!
+  dictionary: XtdDictionary # required
+  dateOfCreation: String # required
+  status: XtdStatusOfActivationEnum # required
+  replacedObjects: [XtdObject!]!
+  replacingObjects: [XtdObject!]!
+  deprecationExplanation: XtdMultiLanguageText
+  definition: XtdMultiLanguageText # required
+  examples: [XtdMultiLanguageText]
+  languageOfCreator: XtdLanguage # required
+  similarTo: [XtdConcept!]!
+  # visualRepresenation: [XtdVisualRepresenation]
+  countryOfOrigin: XtdCountry
+  name(input: LocalizationInput): String
+  names: [XtdMultiLanguageText!]!
+  description(input: LocalizationInput): String
+  descriptions: [XtdMultiLanguageText!]!
+  comment(input: LocalizationInput): String
+  comments: [XtdMultiLanguageText!]!
+  tags: [Tag!]!
+  uri: String
+  referenceDocuments: [XtdExternalDocument!]!
+  code: String!
+  subdivisions: [XtdSubdivision]
 }
 
-type XtdRelCollects implements Concept, XtdRelationship {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    relatingCollection: XtdCollection!
-    relatedThings: [XtdRoot!]!
+type XtdCountry implements XtdRoot & XtdObject & XtdConcept {
+  id: ID!
+  recordType: CatalogRecordType!
+  created: String!
+  createdBy: String!
+  lastModified: String!
+  lastModifiedBy: String!
+  majorVersion: Int!
+  minorVersion: Int!
+  dictionary: XtdDictionary # required
+  dateOfCreation: String # required
+  status: XtdStatusOfActivationEnum # required
+  replacedObjects: [XtdObject!]!
+  replacingObjects: [XtdObject!]!
+  deprecationExplanation: XtdMultiLanguageText
+  definition: XtdMultiLanguageText # required
+  examples: [XtdMultiLanguageText]
+  languageOfCreator: XtdLanguage # required
+  similarTo: [XtdConcept!]!
+  # visualRepresenation: [XtdVisualRepresenation]
+  countryOfOrigin: XtdCountry
+  name(input: LocalizationInput): String
+  names: [XtdMultiLanguageText!]!
+  description(input: LocalizationInput): String
+  descriptions: [XtdMultiLanguageText!]!
+  comment(input: LocalizationInput): String
+  comments: [XtdMultiLanguageText!]!
+  tags: [Tag!]!
+  uri: String
+  referenceDocuments: [XtdExternalDocument!]!
+  code: String!
+  subdivisions: [XtdSubdivision]
 }
 
-type XtdRelDocuments implements Concept, XtdRelationship {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    relatingDocument: XtdExternalDocument!
-    relatedThings: [XtdRoot!]!
-}
-
-type XtdRelAssociates implements Concept, XtdRelationship {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    relatingThing: XtdObject!
-    relatedThings: XtdObjectConnection!
-}
-
-type XtdRelGroups implements Concept, XtdRelationship {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    relatingThing: XtdRoot!
-    relatedThings: XtdRootConnection!
-}
-
-type XtdRelSequences implements Concept, XtdRelationship {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    relatingActivity: XtdActivity!
-    relatedActivity: XtdActivity!
-}
-
-type XtdRelSpecializes implements Concept, XtdRelationship {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    relatingThing: XtdRoot!
-    relatedThings: XtdRootConnection!
-}
-
-type XtdRelComposes implements Concept, XtdRelationship {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    relatingThing: XtdRoot!
-    relatedThings: XtdRootConnection!
-}
-
-type XtdRelActsUpon implements Concept, XtdRelationship {
-    id: ID!
-    recordType: CatalogRecordType!
-    created: String!
-    createdBy: String!
-    lastModified: String!
-    lastModifiedBy: String!
-    versionId: String
-    versionDate: String
-    name(input: LocalizationInput): String
-    names: [Translation!]!
-    description(input: LocalizationInput): String
-    descriptions: [Translation!]!
-    comment(input: LocalizationInput): String
-    comments: [Translation!]!
-    tags: [Tag!]!
-    relatingThing: XtdRoot!
-    relatedThings: XtdRootConnection!
+type XtdQuantityKind implements XtdRoot & XtdObject & XtdConcept {
+  id: ID!
+  recordType: CatalogRecordType!
+  created: String!
+  createdBy: String!
+  lastModified: String!
+  lastModifiedBy: String!
+  majorVersion: Int!
+  minorVersion: Int!
+  dictionary: XtdDictionary # required
+  dateOfCreation: String # required
+  status: XtdStatusOfActivationEnum # required
+  replacedObjects: [XtdObject!]!
+  replacingObjects: [XtdObject!]!
+  deprecationExplanation: XtdMultiLanguageText
+  definition: XtdMultiLanguageText # required
+  examples: [XtdMultiLanguageText]
+  languageOfCreator: XtdLanguage # required
+  similarTo: [XtdConcept!]!
+  # visualRepresenation: [XtdVisualRepresenation]
+  countryOfOrigin: XtdCountry
+  name(input: LocalizationInput): String
+  names: [XtdMultiLanguageText!]!
+  description(input: LocalizationInput): String
+  descriptions: [XtdMultiLanguageText!]!
+  comment(input: LocalizationInput): String
+  comments: [XtdMultiLanguageText!]!
+  tags: [Tag!]!
+  uri: String
+  referenceDocuments: [XtdExternalDocument!]!
+  units: [XtdUnit]
+  dimension: XtdDimension
 }
 
 # Connections
 
 type PageInfo {
-    pageNumber: Int!
-    pageSize: Int!
-    pageElements: Int!
-    totalPages: Int!
-    hasNext: Boolean!
-    hasPrevious: Boolean!
-    isFirst: Boolean!
-    isLast: Boolean!
+  pageNumber: Int!
+  pageSize: Int!
+  pageElements: Int!
+  totalPages: Int!
+  hasNext: Boolean!
+  hasPrevious: Boolean!
+  isFirst: Boolean!
+  isLast: Boolean!
 }
 
 type XtdExternalDocumentConnection {
-    nodes: [XtdExternalDocument!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
+  nodes: [XtdExternalDocument!]!
+  pageInfo: PageInfo!
+  totalElements: Int!
 }
 
 type XtdRootConnection {
-    nodes: [XtdRoot!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
+  nodes: [XtdRoot!]!
+  pageInfo: PageInfo!
+  totalElements: Int!
+}
+
+type XtdConceptConnection {
+  nodes: [XtdConcept!]!
+  pageInfo: PageInfo!
+  totalElements: Int!
 }
 
 type XtdObjectConnection {
-    nodes: [XtdObject!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
-}
-
-type XtdActivityConnection {
-    nodes: [XtdActivity!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
-}
-
-type XtdActorConnection {
-    nodes: [XtdActor!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
-}
-
-type XtdClassificationConnection {
-    nodes: [XtdClassification!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
-}
-
-type XtdMeasureWithUnitConnection {
-    nodes: [XtdMeasureWithUnit!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
+  nodes: [XtdObject!]!
+  pageInfo: PageInfo!
+  totalElements: Int!
 }
 
 type XtdPropertyConnection {
-    nodes: [XtdProperty!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
+  nodes: [XtdProperty!]!
+  pageInfo: PageInfo!
+  totalElements: Int!
 }
 
 type XtdSubjectConnection {
-    nodes: [XtdSubject!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
+  nodes: [XtdSubject!]!
+  pageInfo: PageInfo!
+  totalElements: Int!
 }
 
 type XtdUnitConnection {
-    nodes: [XtdUnit!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
+  nodes: [XtdUnit!]!
+  pageInfo: PageInfo!
+  totalElements: Int!
 }
 
 type XtdValueConnection {
-    nodes: [XtdValue!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
+  nodes: [XtdValue!]!
+  pageInfo: PageInfo!
+  totalElements: Int!
 }
 
-type XtdCollectionConnection {
-    nodes: [XtdCollection!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
+type XtdValueListConnection {
+  nodes: [XtdValueList!]!
+  pageInfo: PageInfo!
+  totalElements: Int!
 }
 
-type XtdBagConnection {
-    nodes: [XtdBag!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
+type XtdOrderedValueConnection {
+  nodes: [XtdOrderedValue!]!
+  pageInfo: PageInfo!
+  totalElements: Int!
 }
 
-type XtdNestConnection {
-    nodes: [XtdNest!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
+type XtdRelationshipToSubjectConnection {
+  nodes: [XtdRelationshipToSubject!]!
+  pageInfo: PageInfo!
+  totalElements: Int!
 }
 
-type XtdRelationshipConnection {
-    nodes: [XtdRelationship!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
+type XtdRelationshipToPropertyConnection {
+  nodes: [XtdRelationshipToProperty!]!
+  pageInfo: PageInfo!
+  totalElements: Int!
 }
 
-type XtdRelAssignsCollectionsConnection {
-    nodes: [XtdRelAssignsCollections!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
+type XtdLanguageConnection {
+  nodes: [XtdLanguage!]!
+  pageInfo: PageInfo!
+  totalElements: Int!
 }
 
-type XtdRelAssignsPropertiesConnection {
-    nodes: [XtdRelAssignsProperties!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
+type XtdDimensionConnection {
+  nodes: [XtdDimension!]!
+  pageInfo: PageInfo!
+  totalElements: Int!
 }
 
-type XtdRelAssignsMeasuresConnection {
-    nodes: [XtdRelAssignsMeasures!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
+type XtdRationalConnection {
+  nodes: [XtdRational!]!
+  pageInfo: PageInfo!
+  totalElements: Int!
 }
 
-type XtdRelAssignsPropertyWithValuesConnection {
-    nodes: [XtdRelAssignsPropertyWithValues!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
+type XtdMultiLanguageTextConnection {
+  nodes: [XtdMultiLanguageText!]!
+  pageInfo: PageInfo!
+  totalElements: Int!
 }
 
-type XtdRelAssignsUnitsConnection {
-    nodes: [XtdRelAssignsUnits!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
+type XtdTextConnection {
+  nodes: [XtdText!]!
+  pageInfo: PageInfo!
+  totalElements: Int!
 }
 
-type XtdRelAssignsValuesConnection {
-    nodes: [XtdRelAssignsValues!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
+type XtdSymbolConnection {
+  nodes: [XtdSymbol!]!
+  pageInfo: PageInfo!
+  totalElements: Int!
 }
 
-type XtdRelCollectsConnection {
-    nodes: [XtdRelCollects!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
+type XtdIntervalConnection {
+  nodes: [XtdInterval!]!
+  pageInfo: PageInfo!
+  totalElements: Int!
 }
 
-type XtdRelDocumentsConnection {
-    nodes: [XtdRelDocuments!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
+type XtdDictionaryConnection {
+  nodes: [XtdDictionary!]!
+  pageInfo: PageInfo!
+  totalElements: Int!
 }
 
-
-type XtdRelAssociatesConnection {
-    nodes: [XtdRelAssociates!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
+type XtdSubdivisionConnection {
+  nodes: [XtdSubdivision!]!
+  pageInfo: PageInfo!
+  totalElements: Int!
 }
 
-type XtdRelGroupsConnection {
-    nodes: [XtdRelGroups!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
+type XtdCountryConnection {
+  nodes: [XtdCountry!]!
+  pageInfo: PageInfo!
+  totalElements: Int!
 }
 
-type XtdRelSequencesConnection {
-    nodes: [XtdRelSequences!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
+type XtdQuantityKindConnection {
+  nodes: [XtdQuantityKind!]!
+  pageInfo: PageInfo!
+  totalElements: Int!
 }
 
-type XtdRelSpecializesConnection {
-    nodes: [XtdRelSpecializes!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
-}
-
-type XtdRelComposesConnection {
-    nodes: [XtdRelComposes!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
-}
-
-
-type XtdRelActsUponConnection {
-    nodes: [XtdRelActsUpon!]!
-    pageInfo: PageInfo!
-    totalElements: Int!
+type VerificationConnection {
+  nodes: [XtdObject!]!
+  paths: [ID!]!
+  pageInfo: PageInfo!
+  totalElements: Int!
 }
 
 type Query {
-    languages(input: LanguageFilterInput): LanguageConnection
+  statistics: CatalogStatistics!
 
-    statistics: CatalogStatistics!
+  node(id: ID!): XtdRoot
 
-    node(id: ID!): Concept
+  search(
+    input: SearchInput
+    pageSize: Int
+    pageNumber: Int
+  ): SearchResultConnection!
 
-    search(input: SearchInput, pageSize: Int, pageNumber: Int): SearchResultConnection!
+  hierarchy(input: HierarchyFilterInput!): HierarchyPayload!
 
-    hierarchy(input: HierarchyFilterInput!): HierarchyPayload!
+  findPropGroupWithoutProp(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findPropWithoutSubjectOrPropGroup(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findThemeWithoutSubject(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findSubjectWithoutProp(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findValueListWithoutProp(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findUnitWithoutValueList(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findValueWithoutValueList(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findMissingTags(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findMissingEnglishName(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findMultipleIDs(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findMissingDescription(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findMissingEnglishDescription(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findMultipleNames(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findMultipleNamesAcrossClasses(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findMissingDictionary(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findMissingReferenceDocument(pageNumber: Int!, pageSize: Int!): VerificationConnection!
+  findInactiveConcepts(pageNumber: Int!, pageSize: Int!): VerificationConnection!
 
-    findPropGroupWithoutProp: findPropGroupWithoutPropPayload!
+  findExportCatalogRecords: findExportCatalogRecordsPayload!
 
-    findPropWithoutSubjectOrPropGroup: findPropWithoutSubjectOrPropGroupPayload!
+  findExportCatalogRecordsRelationships: findExportCatalogRecordsRelationshipsPayload!
 
-    findModelWithoutGroup: findModelWithoutGroupPayload!
+  getTag(id: ID!): Tag!
+  findTags(input: FilterInput): TagConnection!
 
-    findGroupWithoutSubject: findGroupWithoutSubjectPayload!
+  getExternalDocument(id: ID!): XtdExternalDocument
+  findExternalDocuments(input: FilterInput): XtdExternalDocumentConnection!
 
-    findSubjectWithoutProp: findSubjectWithoutPropPayload!
+  getProperty(id: ID!): XtdProperty
+  findProperties(input: FilterInput): XtdPropertyConnection!
 
-    findMeasureWithoutProp: findMeasureWithoutPropPayload!
+  getSubject(id: ID!): XtdSubject
+  findSubjects(input: FilterInput): XtdSubjectConnection!
 
-    findUnitWithoutMeasure: findUnitWithoutMeasurePayload!
+  getUnit(id: ID!): XtdUnit
+  findUnits(input: FilterInput): XtdUnitConnection!
 
-    findValueWithoutMeasure: findValueWithoutMeasurePayload!
+  getValue(id: ID!): XtdValue
+  findValues(input: FilterInput): XtdValueConnection!
 
-    findMissingTags(input: findMissingTagsFilterInput!): findMissingTagsPayload!
+  getValueList(id: ID!): XtdValueList
+  findValueLists(input: FilterInput): XtdValueListConnection!
 
-    findMissingEnglishName(input: findMissingEnglishNameFilterInput!): findMissingEnglishNamePayload!
+  getOrderedValue(id: ID!): XtdOrderedValue
+  findOrderedValues(input: FilterInput): XtdOrderedValueConnection!
 
-    findMultipleIDs(input: findMultipleIDsFilterInput!): findMultipleIDsPayload!
+  getRelationshipToSubject(id: ID!): XtdRelationshipToSubject
+  findRelationshipToSubjects(
+    input: FilterInput
+  ): XtdRelationshipToSubjectConnection!
 
-    findMissingDescription(input: findMissingDescriptionFilterInput!): findMissingDescriptionPayload!
+  getRelationshipToProperty(id: ID!): XtdRelationshipToProperty
+  findRelationshipToProperties(
+    input: FilterInput
+  ): XtdRelationshipToPropertyConnection!
 
-    findMissingEnglishDescription(input: findMissingEnglishDescriptionFilterInput!): findMissingEnglishDescriptionPayload!
+  getLanguage(id: ID!): XtdLanguage
+  findLanguages(input: FilterInput): XtdLanguageConnection!
+  getLanguageByCode(code: String!): XtdLanguage
 
-    findMultipleNames(input: findMultipleNamesFilterInput!): findMultipleNamesPayload!
+  getDimension(id: ID!): XtdDimension
+  findDimensions(input: FilterInput): XtdDimensionConnection!
 
-    findMultipleNamesAcrossClasses(input: findMultipleNamesAcrossClassesFilterInput!): findMultipleNamesAcrossClassesPayload!
+  getRational(id: ID!): XtdRational
+  findRationals(input: FilterInput): XtdRationalConnection!
 
-    findExportCatalogItems: findExportCatalogItemsPayload!
+  getMultiLanguageText(id: ID!): XtdMultiLanguageText
+  findMultiLanguageTexts(input: FilterInput): XtdMultiLanguageTextConnection!
 
-    findExportCatalogItemsRelationships: findExportCatalogItemsRelationshipsPayload!
+  getText(id: ID!): XtdText
+  findTexts(input: FilterInput): XtdTextConnection!
 
+  getSymbol(id: ID!): XtdSymbol
+  findSymbols(input: FilterInput): XtdSymbolConnection!
 
-    getTag(id: ID!): Tag!
-    findTags(input: FilterInput): TagConnection!
+  getInterval(id: ID!): XtdInterval
+  findIntervals(input: FilterInput): XtdIntervalConnection!
 
-    getExternalDocument(id: ID!): XtdExternalDocument
-    findExternalDocuments(input: FilterInput): XtdExternalDocumentConnection!
+  getDictionary(id: ID!): XtdDictionary
+  findDictionaries(input: FilterInput): XtdDictionaryConnection!
 
-    getActor(id: ID!): XtdActor
-    findActors(input: FilterInput): XtdActorConnection!
+  getSubdivision(id: ID!): XtdSubdivision
+  findSubdivisions(input: FilterInput): XtdSubdivisionConnection!
 
-    getActivity(id: ID!): XtdActivity
-    findActivities(input: FilterInput): XtdActivityConnection!
+  getCountry(id: ID!): XtdCountry
+  findCountries(input: FilterInput): XtdCountryConnection!
 
-    getClassification(id: ID!): XtdClassification
-    findClassifications(input: FilterInput): XtdClassificationConnection!
+  getQuantityKind(id: ID!): XtdQuantityKind
+  findQuantityKinds(input: FilterInput): XtdQuantityKindConnection!
 
-    getMeasure(id: ID!): XtdMeasureWithUnit
-    findMeasures(input: FilterInput): XtdMeasureWithUnitConnection!
+  getConcept(id: ID!): XtdConcept
+  findConcepts(input: FilterInput): XtdConceptConnection!
 
-    getProperty(id: ID!): XtdProperty
-    findProperties(input: FilterInput): XtdPropertyConnection!
-
-    getSubject(id: ID!): XtdSubject
-    findSubjects(input: FilterInput): XtdSubjectConnection!
-
-    getUnit(id: ID!): XtdUnit
-    findUnits(input: FilterInput): XtdUnitConnection!
-
-    getValue(id: ID!): XtdValue
-    findValues(input: FilterInput): XtdValueConnection!
-
-    getBag(id: ID!): XtdBag
-    findBags(input: FilterInput): XtdBagConnection!
-
-    getNest(id: ID!): XtdNest
-    findNests(input: FilterInput): XtdNestConnection!
-
-    getAssignsCollections(id: ID!): XtdRelAssignsCollections
-    findAssignsCollections(input: FilterInput): XtdRelAssignsCollectionsConnection!
-
-    getAssignsPropertyWithValues(id: ID!): XtdRelAssignsPropertyWithValues
-    findAssignsPropertyWithValues(input: FilterInput): XtdRelAssignsPropertyWithValuesConnection!
-
-    getDocuments(id: ID!): XtdRelDocuments
-    findDocuments(input: FilterInput): XtdRelDocumentsConnection!
-
-    getCollects(id: ID!): XtdRelCollects
-    findCollects(input: FilterInput): XtdRelCollectsConnection!
-
-    getAssociates(id: ID!): XtdRelAssociates
-    findAssociates(input: FilterInput): XtdRelAssociatesConnection!
-
-    getGroups(id: ID!): XtdRelGroups
-    findGroups(input: FilterInput): XtdRelGroupsConnection!
-
-    getSpecialies(id: ID!): XtdRelSpecializes
-    findSpecializes(input: FilterInput): XtdRelSpecializesConnection!
-
-    getComposes(id: ID!): XtdRelComposes
-    findComposes(input: FilterInput): XtdRelComposesConnection!
-
-    getActsUpon(id: ID!): XtdRelActsUpon
-    findActsUpon(input: FilterInput): XtdRelActsUponConnection!
-
-    getAssignsProperties(id: ID!): XtdRelAssignsProperties
-    findAssignsProperties(input: FilterInput): XtdRelAssignsPropertiesConnection
-
-    getAssignsUnits(id: ID!): XtdRelAssignsUnits
-    findAssignsUnits(input: FilterInput): XtdRelAssignsUnitsConnection
-
-    getAssignsValues(id: ID!): XtdRelAssignsValues
-    findAssignsValues(input: FilterInput): XtdRelAssignsValuesConnection
+  getObject(id: ID!): XtdObject
+  findObjects(input: FilterInput): XtdObjectConnection!
 }

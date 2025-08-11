@@ -1,22 +1,19 @@
 package de.bentrm.datacat.catalog.service.impl;
 
-import de.bentrm.datacat.catalog.domain.*;
-import de.bentrm.datacat.catalog.repository.*;
-import de.bentrm.datacat.base.repository.EntityRepository;
+import de.bentrm.datacat.catalog.domain.XtdObject;
+import de.bentrm.datacat.catalog.repository.CatalogValidationQuery;
+import de.bentrm.datacat.catalog.repository.ObjectRepository;
 import de.bentrm.datacat.catalog.service.CatalogVerificationService;
-import de.bentrm.datacat.catalog.service.value.verification.*;
-import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
-import de.bentrm.datacat.catalog.specification.RootSpecification;
+import de.bentrm.datacat.catalog.service.value.VerificationConnection;
 import lombok.extern.slf4j.Slf4j;
-import org.neo4j.ogm.session.Session;
-import org.neo4j.ogm.session.SessionFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotNull;
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -27,268 +24,123 @@ import java.util.stream.StreamSupport;
 public class CatalogVerificationServiceImpl implements CatalogVerificationService {
 
     @Autowired
-    private SessionFactory sessionFactory;
-
-    @Autowired
     private CatalogValidationQuery catalogValidationQuery;
 
     @Autowired
-    private TranslationRespository translationRespository;
+    private ObjectRepository repository;
 
-    @Autowired
-    private TagRepository tagRepository;
-
-    @Autowired
-    private CatalogItemRepository catalogItemRepository;
-
-    @Autowired
-    private RootRepository rootRepository;
-
-    @Autowired
-    private ObjectRepository objectRepository;
-
-    @Autowired
-    private CollectionRepository collectionRepository;
-
-    @Autowired
-    private RelationshipRepository relationshipRepository;
 
     @Override
-    public findPropGroupWithoutPropValue getfindPropGroupWithoutProp() {
-
-        List<List<String>> paths = catalogValidationQuery.findPropGroupWithoutProp();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return new findPropGroupWithoutPropValue(leaves, paths);
+    public VerificationConnection getSubjectWithoutProp(Pageable pageable) {
+        List<String> paths = catalogValidationQuery.findSubjectWithoutProp();
+        return getPagedLeaves(paths, pageable);
     }
 
     @Override
-    public findPropWithoutSubjectOrPropGroupValue getfindPropWithoutSubjectOrPropGroup() {
-
-        List<List<String>> paths = catalogValidationQuery.findPropWithoutSubjectOrPropGroup();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return new findPropWithoutSubjectOrPropGroupValue(leaves, paths);
+    public VerificationConnection getThemeWithoutSubject(Pageable pageable) {
+        List<String> paths = catalogValidationQuery.findThemeWithoutSubject();
+        return getPagedLeaves(paths, pageable);
     }
 
     @Override
-    public findModelWithoutGroupValue getfindModelWithoutGroup() {
-
-        List<List<String>> paths = catalogValidationQuery.findModelWithoutGroup();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return new findModelWithoutGroupValue(leaves, paths);
+    public VerificationConnection getPropGroupWithoutProp(Pageable pageable) {
+        List<String> paths = catalogValidationQuery.findPropGroupWithoutProp();
+        return getPagedLeaves(paths, pageable);
     }
 
     @Override
-    public findGroupWithoutSubjectValue getfindGroupWithoutSubject() {
-
-        List<List<String>> paths = catalogValidationQuery.findGroupWithoutSubject();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return new findGroupWithoutSubjectValue(leaves, paths);
+    public VerificationConnection getPropWithoutSubjectOrPropGroup(Pageable pageable) {
+        List<String> paths = catalogValidationQuery.findPropWithoutSubjectOrPropGroup();
+        return getPagedLeaves(paths, pageable);
     }
 
     @Override
-    public findSubjectWithoutPropValue getfindSubjectWithoutProp() {
-
-        List<List<String>> paths = catalogValidationQuery.findSubjectWithoutProp();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return new findSubjectWithoutPropValue(leaves, paths);
+    public VerificationConnection getValueListWithoutProp(Pageable pageable) {
+        List<String> paths = catalogValidationQuery.findValueListWithoutProp();
+        return getPagedLeaves(paths, pageable);
     }
 
     @Override
-    public findMeasureWithoutPropValue getfindMeasureWithoutProp() {
-
-        List<List<String>> paths = catalogValidationQuery.findMeasureWithoutProp();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return new findMeasureWithoutPropValue(leaves, paths);
+    public VerificationConnection getUnitWithoutValueList(Pageable pageable) {
+        List<String> paths = catalogValidationQuery.findUnitWithoutValueList();
+        return getPagedLeaves(paths, pageable);
     }
 
     @Override
-    public findUnitWithoutMeasureValue getfindUnitWithoutMeasure() {
-
-        List<List<String>> paths = catalogValidationQuery.findUnitWithoutMeasure();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return new findUnitWithoutMeasureValue(leaves, paths);
+    public VerificationConnection getValueWithoutValueList(Pageable pageable) {
+        List<String> paths = catalogValidationQuery.findValueWithoutValueList();
+        return getPagedLeaves(paths, pageable);
     }
 
     @Override
-    public findValueWithoutMeasureValue getfindValueWithoutMeasure() {
-
-        List<List<String>> paths = catalogValidationQuery.findValueWithoutMeasure();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return new findValueWithoutMeasureValue(leaves, paths);
+    public VerificationConnection getMissingTags(Pageable pageable) {
+        List<String> paths = catalogValidationQuery.findMissingTags();
+        return getPagedLeaves(paths, pageable);
     }
 
     @Override
-    public findMissingTagsValue getfindMissingTags(CatalogRecordSpecification rootNodeSpecification) {
-        List<List<String>> paths = catalogValidationQuery.findMissingTags();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return new findMissingTagsValue(leaves, paths);
+    public VerificationConnection getMissingEnglishName(Pageable pageable) {
+        List<String> paths = catalogValidationQuery.findMissingEnglishName();
+        return getPagedLeaves(paths, pageable);
     }
 
     @Override
-    public findMissingEnglishNameValue getfindMissingEnglishName(CatalogRecordSpecification rootNodeSpecification) {
-
-        List<List<String>> paths = catalogValidationQuery.findMissingEnglishName();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return new findMissingEnglishNameValue(leaves, paths);
+    public VerificationConnection getMultipleIDs(Pageable pageable) {
+        List<String> paths = catalogValidationQuery.findMultipleIDs();
+        return getPagedLeaves(paths, pageable);
     }
 
     @Override
-    public findMultipleIDsValue getfindMultipleIDs(CatalogRecordSpecification rootNodeSpecification) {
-
-        List<List<String>> paths = catalogValidationQuery.findMultipleIDs();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return new findMultipleIDsValue(leaves, paths);
+    public VerificationConnection getMissingDescription(Pageable pageable) {
+        List<String> paths = catalogValidationQuery.findMissingDescription();
+        return getPagedLeaves(paths, pageable);
     }
 
     @Override
-    public findMissingDescriptionValue getfindMissingDescription(CatalogRecordSpecification rootNodeSpecification) {
-
-        List<List<String>> paths = catalogValidationQuery.findMissingDescription();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return new findMissingDescriptionValue(leaves, paths);
+    public VerificationConnection getMissingEnglishDescription(Pageable pageable) {
+        List<String> paths = catalogValidationQuery.findMissingEnglishDescription();
+        return getPagedLeaves(paths, pageable);
     }
 
     @Override
-    public findMissingEnglishDescriptionValue getfindMissingEnglishDescription(CatalogRecordSpecification rootNodeSpecification) {
-
-        List<List<String>> paths = catalogValidationQuery.findMissingEnglishDescription();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return new findMissingEnglishDescriptionValue(leaves, paths);
+    public VerificationConnection getMultipleNames(Pageable pageable) {
+        List<String> paths = catalogValidationQuery.findMultipleNames();
+        return getPagedLeaves(paths, pageable);
     }
 
     @Override
-    public findMultipleNamesValue getfindMultipleNames(CatalogRecordSpecification rootNodeSpecification) {
-
-        List<List<String>> paths = catalogValidationQuery.findMultipleNames();
-
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
-                .stream(nodes.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return new findMultipleNamesValue(leaves, paths);
+    public VerificationConnection getMultipleNamesAcrossClasses(Pageable pageable) {
+        List<String> paths = catalogValidationQuery.findMultipleNamesAcrossClasses();
+        return getPagedLeaves(paths, pageable);
     }
 
     @Override
-    public findMultipleNamesAcrossClassesValue getfindMultipleNamesAcrossClasses(CatalogRecordSpecification rootNodeSpecification) {
+    public VerificationConnection getMissingDictionary(Pageable pageable) {
+        List<String> paths = catalogValidationQuery.findMissingDictionary();
+        return getPagedLeaves(paths, pageable);
+    }
 
-        List<List<String>> paths = catalogValidationQuery.findMultipleNamesAcrossClasses();
+    @Override
+    public VerificationConnection getMissingReferenceDocument(Pageable pageable) {
+        List<String> paths = catalogValidationQuery.findMissingReferenceDocument();
+        return getPagedLeaves(paths, pageable);
+    }
 
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
+    @Override
+    public VerificationConnection getInactiveConcepts(Pageable pageable) {
+        List<String> paths = catalogValidationQuery.findInactiveConcepts();
+        return getPagedLeaves(paths, pageable);
+    }
 
-        final Iterable<XtdRoot> nodes = rootRepository.findAllById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport
+    private VerificationConnection getPagedLeaves(List<String> paths, Pageable pageable) {
+        int total = paths.size();
+        int from = (int) pageable.getOffset();
+        int to = Math.min(from + pageable.getPageSize(), total);
+        List<String> pagedPaths = paths.subList(Math.min(from, total), Math.min(to, total));
+        final Iterable<XtdObject> nodes = repository.findAllEntitiesById(pagedPaths);
+        final List<XtdObject> leaves = StreamSupport
                 .stream(nodes.spliterator(), false)
                 .collect(Collectors.toList());
-
-        return new findMultipleNamesAcrossClassesValue(leaves, paths);
+        return new VerificationConnection(leaves, pagedPaths, new de.bentrm.datacat.graphql.PageInfo(pageable.getPageNumber(), pageable.getPageSize(), pagedPaths.size(), (long) Math.ceil((double) total / pageable.getPageSize())), (long) total);
     }
 }

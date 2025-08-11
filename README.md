@@ -1,11 +1,11 @@
 # datacat API
 
 This project offers a GraphQL-API to manage and query a data
-catalog closely structured after the ISO 12006-3:2007 specification.
+catalog closely structured after the ISO 12006-3:2022 specification.
 The application is based on [Spring Boot](https://spring.io/projects/spring-boot) 
 and uses [Maven](http://maven.apache.org) as a package and dependency 
 management framework. The API layer is based on the [graphql-java](https://www.graphql-java.com) 
-library.
+library which is included in the Spring dependency [spring-boot-starter-graphql](https://spring.io/guides/gs/graphql-server).
 
 For development, a local Docker installation is needed. Also, Docker Compose should be
 used to orchestrate all runtime dependencies. 
@@ -75,7 +75,7 @@ $ ./mvnw spring-boot:run -Dspring-boot.run.arguments="\
 ````
 
 Follow the 
-[Spring Boot documentation](https://docs.spring.io/spring-boot/docs/2.4.2/reference/html/spring-boot-features.html#boot-features-external-config)
+[Spring Boot documentation](https://docs.spring.io/spring-boot/reference/features/external-config.html)
 on how to set the parameters either by environmental variable, 
 startup parameter or by overriding the default configuration.
 See the datacat-stack project on how to set these values using a `docker compose` configuration.
@@ -99,8 +99,7 @@ following command:
 $ docker build . -t schi11er/datacat:${version} -t schi11er/datacat:latest
 ````
 
-A Github action is configured to build new images with every push to the master branch as well as for
-every release that follows the v*.*.* naming convention.
+A Github action is configured to build new images with every release that follows the v*.*.* naming convention.
 
 The image should be hosted with a centralized package registry. Current images are available
 at [Docker Hub](https://hub.docker.com/repository/docker/schi11er/datacat).

@@ -7,8 +7,8 @@ import java.util.List;
 
 @Data
 public class HierarchyRootNodeFilterInput {
-    private List<CatalogRecordType> catalogEntryTypeIn;
-    private List<CatalogRecordType> catalogEntryTypeNotIn;
+    private List<CatalogRecordType> entityTypeIn;
+    private List<CatalogRecordType> entityTypeNotIn;
     List<String> idIn;
     List<String> idNotIn;
     List<String> tagged;

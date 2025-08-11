@@ -4,9 +4,9 @@ import de.bentrm.datacat.base.domain.Entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.neo4j.ogm.annotation.NodeEntity;
+import org.springframework.data.neo4j.core.schema.Node;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 /**
  * A tag marks a concept with a certain client defined intent.
@@ -14,8 +14,8 @@ import javax.validation.constraints.NotBlank;
  */
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-@ToString(callSuper = true)
-@NodeEntity(label = "Tag")
+@ToString(callSuper = false)
+@Node("Tag")
 public class Tag extends Entity {
     @NotBlank
     private String name;

@@ -1,35 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.bentrm</groupId>
     <artifactId>datacat</artifactId>
-    <version>0.8.0</version>
+    <version>2.0.0</version>
     <name>datacat</name>
-    <description>A generic data catalog implementation based on ISO 12006-3.</description>
+    <description>A generic data catalog implementation based on ISO 12006-3:2022.</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.5.RELEASE</version>
+        <version>3.5.4</version>
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
     <properties>
-        <commons-text.version>1.9</commons-text.version>
-        <graphql-java.version>16.2</graphql-java.version>
-        <graphql-spring-boot-starter.version>11.0.0</graphql-spring-boot-starter.version>
-        <java-jwt.version>3.13.0</java-jwt.version>
-        <java.version>15</java.version>
-        <lombok.version>1.18.12</lombok.version>
-        <mapstruct.version>1.4.2.Final</mapstruct.version>
-        <spring-boot.version>2.4.2</spring-boot.version>
+        <commons-text.version>1.14.0</commons-text.version>
+        <graphql-spring-boot-starter.version>15.1.0</graphql-spring-boot-starter.version>
+        <java-jwt.version>4.5.0</java-jwt.version>
+        <java.version>21</java.version>
+        <lombok.version>1.18.34</lombok.version>
+        <mapstruct.version>1.6.3</mapstruct.version>
     </properties>
 
     <repositories>
         <repository>
-            <id>jcenter</id>
-            <url>https://jcenter.bintray.com/</url>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
@@ -66,12 +72,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>java-jwt</artifactId>
-            <version>${java-jwt.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
         </dependency>
@@ -79,6 +79,17 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-neo4j</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-graphql</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>${java-jwt.version}</version>
         </dependency>
 
         <dependency>
@@ -100,18 +111,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.graphql-java-kickstart</groupId>
-            <artifactId>graphql-spring-boot-starter</artifactId>
-            <version>${graphql-spring-boot-starter.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.graphql-java</groupId>
-            <artifactId>graphql-java</artifactId>
-            <version>${graphql-java.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
@@ -122,7 +121,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -130,7 +128,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring-boot.version}</version>
                 <configuration>
                     <jvmArguments>
                         --enable-preview
@@ -143,17 +140,14 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.13.0</version>
                 <configuration>
                     <release>${java.version}</release>
-                    <compilerArgs>
-                        <arg>--enable-preview</arg>
-                    </compilerArgs>
+                    <!-- <enablePreview>true</enablePreview> -->
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.springframework.boot</groupId>
                             <artifactId>spring-boot-configuration-processor</artifactId>
-                            <version>${spring-boot.version}</version>
                         </path>
                         <path>
                             <groupId>org.mapstruct</groupId>
@@ -175,7 +169,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M5</version>
+                <version>3.5.2</version>
                 <configuration>
                     <argLine>--enable-preview</argLine>
                 </configuration>
@@ -183,7 +177,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.0.0-M3</version>
+                <version>3.5.0</version>
                 <executions>
                     <execution>
                         <id>enforce-maven</id>
@@ -193,14 +187,30 @@
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>3.0.5</version>
+                                    <version>3.6.3</version>
                                 </requireMavenVersion>
                             </rules>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+            <!-- <plugin>
+                <groupId>org.sonatype.ossindex.maven</groupId>
+                <artifactId>ossindex-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>audit-dependencies</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>audit</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <reportFile>${project.build.directory}/audit-report.json</reportFile>
+                </configuration>
+            </plugin> -->
         </plugins>
     </build>
-
 </project>

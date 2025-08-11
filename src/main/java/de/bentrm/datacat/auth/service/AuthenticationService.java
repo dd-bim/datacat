@@ -3,9 +3,9 @@ package de.bentrm.datacat.auth.service;
 import de.bentrm.datacat.graphql.dto.SignupInput;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public interface AuthenticationService {
 

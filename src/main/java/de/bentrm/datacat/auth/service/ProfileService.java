@@ -4,7 +4,7 @@ import de.bentrm.datacat.auth.service.dto.ProfileDto;
 import de.bentrm.datacat.auth.service.dto.ProfileUpdateDto;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 public interface ProfileService {
 

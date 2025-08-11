@@ -3,7 +3,7 @@ package de.bentrm.datacat.catalog.service.value;
 import de.bentrm.datacat.catalog.domain.XtdRoot;
 import lombok.Value;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 @Value

@@ -1,0 +1,1 @@
+MATCH (n:Tag {name: "Größe"}) SET n.name="Werteliste", n.`names.de-DE`="Werteliste", n.scope="" RETURN n;

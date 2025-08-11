@@ -15,11 +15,27 @@ datacat:
         - READONLY
   mail.from: postmaster@localhost
 
-graphql:
-  servlet:
-    enabled: true
-    corsEnabled: true
-    mapping: /graphql
-    tracing-enabled: true
-    actuator-metrics: true
-    exception-handlers-enabled: true
+spring:
+  graphql:
+    http:
+      path: /graphql
+    cors:
+      allow-credentials: true
+      allowed-methods: POST
+      allowed-origin-patterns:
+      - "*"
+      allowed-headers:
+      - Authorization
+      - Cache-Control
+      - Content-Type
+      - apollographql-client-name
+      - apollographql-client-version
+    graphiql:
+      enabled: true
+      path: /graphiql
+
+logging:
+  level: 
+    org.springframework.data.neo4j.cypher.unrecognized: ERROR
+    # org.springframework: DEBUG
+    # org.springframework.data.neo4j: DEBUG

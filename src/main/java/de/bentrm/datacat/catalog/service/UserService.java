@@ -2,7 +2,7 @@ package de.bentrm.datacat.catalog.service;
 
 import de.bentrm.datacat.auth.domain.User;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 public interface UserService extends QueryService<User> {
 

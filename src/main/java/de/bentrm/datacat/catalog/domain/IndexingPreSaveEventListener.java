@@ -1,9 +1,8 @@
 package de.bentrm.datacat.catalog.domain;
 
-import org.neo4j.ogm.session.event.Event;
-import org.neo4j.ogm.session.event.EventListenerAdapter;
+import org.springframework.data.neo4j.core.mapping.callback.BeforeBindCallback;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
-
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
@@ -15,27 +14,34 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Component
-class IndexingPreSaveEventListener extends EventListenerAdapter {
+public class IndexingPreSaveEventListener implements BeforeBindCallback<XtdObject> {
+
 
     /**
-     * The property {@link CatalogItem#getLabels()} represents a map all
+     * The property {@link XtdObject#getLabels()} represents a map all
      * translations
      * mapped to their language tag. The persisted structure is used to index full
      * text
      * queries honouring the current locale of the user.
      *
-     * @param event The persistence event.
+     * @param XtdObject The object to persist.
      */
     @Override
-    public void onPreSave(Event event) {
-        if (event.getObject() instanceof CatalogItem catalogItem) {
-            final Map<String, String> labels = catalogItem.getNames().stream()
-                    .collect(Collectors.toMap(Translation::getLanguageTag, Translation::getValue));
-
-            if (labels.size() > 0) {
-                catalogItem.getLabels().clear();
-                catalogItem.getLabels().putAll(labels);
+    public @NonNull XtdObject onBeforeBind(@NonNull XtdObject record) {
+   
+            final XtdMultiLanguageText mName = record.getNames().stream().findFirst().orElse(null);
+            if (mName == null) {
+                return record;
             }
-        }
+            final Map<String, String> labels = mName.getTexts().stream()
+                    .collect(Collectors.toMap(text -> text.getLocale().toString(), XtdText::getText));
+
+            if (!labels.isEmpty()) {
+                record.getLabels().clear();
+                record.getLabels().putAll(labels);
+            }
+
+            return record;
     }
+
 }

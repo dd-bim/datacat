@@ -5,7 +5,7 @@ import de.bentrm.datacat.base.specification.QuerySpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,5 +21,14 @@ public interface QueryService<T extends Entity> {
     @NotNull Page<T> findAll(@NotNull QuerySpecification specification);
 
     @PreAuthorize("hasRole('READONLY')")
-    @NotNull long count(@NotNull QuerySpecification specification);
+    @NotNull Long count(@NotNull QuerySpecification specification);
+
+    @PreAuthorize("hasRole('READONLY')")
+    @NotNull Optional<T> findByIdWithDirectRelations(@NotNull String id);
+
+    @PreAuthorize("hasRole('READONLY')")
+    @NotNull Optional<T> findByIdWithDirectRelations(@NotNull String id, @NotNull String type);
+
+    @PreAuthorize("hasRole('READONLY')")
+    @NotNull List<T> findAllEntitiesById(@NotNull List<String> ids);
 }

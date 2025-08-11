@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @Slf4j
 @Service
@@ -33,7 +33,7 @@ public class ProfileServiceImpl implements ProfileService {
         return userRepository
                 .findByUsername(username)
                 .map(user -> valueMapper.toProfileDto(user))
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException("No account with username " + username + " found."));
     }
 
     @Transactional
