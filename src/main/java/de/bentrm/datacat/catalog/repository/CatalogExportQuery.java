@@ -4,97 +4,90 @@ import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.XtdRoot;
 import de.bentrm.datacat.catalog.domain.ExportItemResult;
 import de.bentrm.datacat.catalog.domain.ExportRelationshipResult;
-import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
-import de.bentrm.datacat.catalog.domain.CatalogRecordType;
-import org.springframework.data.neo4j.repository.Neo4jRepository;
-import org.springframework.data.repository.NoRepositoryBean;
-import org.neo4j.driver.Result;
-import org.springframework.data.neo4j.annotation.Query;
+import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Repository
 public interface CatalogExportQuery extends EntityRepository<XtdRoot> {
     
-    /* gibt alle Katalogeinträge mit ihren Eigenschaften aus */
+    // gives important catalog records with some properties
+    // could be extended 
     @Query("""
-    MATCH(x:XtdRoot)-[:NAMED]->(t:Translation) 
-    WHERE t.languageCode="de" 
-    OPTIONAL MATCH(x)-[:NAMED]->(ten:Translation)
-    WHERE ten.languageCode="en" 
-    OPTIONAL MATCH(x)-[:TAGGED]->(tag)
-    OPTIONAL MATCH(x)-[:DESCRIBED]->(d) 
-    WHERE d.languageCode="de"
-    CALL apoc.case([
-    "XtdBag" IN(LABELS(x)), 'RETURN "XtdBag" AS type',
-    "XtdNest" IN(LABELS(x)), 'RETURN "XtdNest" AS type',
-    "XtdProperty" IN(LABELS(x)), 'RETURN "XtdProperty" AS type',
-    "XtdMeasureWithUnit" IN(LABELS(x)), 'RETURN "XtdMeasureWithUnit" AS type',
-    "XtdUnit" IN(LABELS(x)), 'RETURN "XtdUnit" AS type',
-    "XtdValue" IN(LABELS(x)), 'RETURN "XtdValue" AS type',
-    "XtdSubject" IN(LABELS(x)), 'RETURN "XtdSubject" AS type',
-    "XtdExternalDocument" IN(LABELS(x)), 'RETURN "XtdExternalDocument" AS type'
-    ], 'RETURN null AS type') YIELD value
+    MATCH (x:XtdObject|XtdDictionary)
+    OPTIONAL MATCH (x)-[:NAMES]->()-[:TEXTS]->(t)-[:LANGUAGE]->(l {code: "de"}) 
+    OPTIONAL MATCH (x)-[:NAMES]->()-[:TEXTS]->(ten)-[:LANGUAGE]->(len {code: "en"}) 
+    OPTIONAL MATCH (x)-[:DESCRIPTIONS]->()-[:TEXTS]->(d)-[:LANGUAGE]->(l {code: "de"}) 
+    OPTIONAL MATCH (x)-[:DESCRIPTIONS]->()-[:TEXTS]->(den)-[:LANGUAGE]->(len {code: "en"}) 
+    OPTIONAL MATCH (x)-[:TAGGED]->(tag)
+    OPTIONAL MATCH (x)-[:DEFINITION]->()-[:TEXTS]->(def)-[:LANGUAGE]->(l {code: "de"})
+    OPTIONAL MATCH (x)-[:DEFINITION]->()-[:TEXTS]->(defen)-[:LANGUAGE]->(len {code: "en"})
+    OPTIONAL MATCH (x)-[:DEPRECATION_EXPLANATION]->()-[:TEXTS]->(depex)-[:LANGUAGE]->(l {code: "de"})
+    OPTIONAL MATCH (x)-[:EXAMPLES]->()-[:TEXTS]->(ex)-[:LANGUAGE]->(l {code: "de"})
+    OPTIONAL MATCH (x)-[:LANGUAGE_OF_CREATOR]->(loc)
+    OPTIONAL MATCH (x)-[:COUNTRY_OF_ORIGIN]->(coo)
+    OPTIONAL MATCH (x)-[:LANGUAGE|LANGUAGES]->(langs)
+    WITH x, t, ten, d, den, def, defen, depex, ex, loc, coo, collect(tag.name) AS tags, collect(langs.code) AS langs,
+        CASE
+            WHEN "XtdExternalDocument" IN LABELS(x) THEN "XtdExternalDocument"
+            WHEN "XtdValueList" IN LABELS(x) THEN "XtdValueList"
+            WHEN "XtdProperty" IN LABELS(x) THEN "XtdProperty"
+            WHEN "XtdUnit" IN LABELS(x) THEN "XtdUnit"
+            WHEN "XtdValue" IN LABELS(x) THEN "XtdValue"
+            WHEN "XtdSubject" IN LABELS(x) THEN "XtdSubject"
+            WHEN "XtdDictionary" IN LABELS(x) THEN "XtdDictionary"
+            ELSE null
+        END AS type
+    WHERE type IS NOT NULL
     RETURN DISTINCT 
-    x.id AS id,  
-    value.type AS typ, 
-    tag.name AS schlagworte , 
-    t.label AS name,
-    ten.label AS name_en,
-    d.label AS description,
-    x.versionId AS versionId,
-    x.createdBy AS createdBy,
-    x.created AS created,
-    x.lastModified AS lastModified,
-    x.lastModifiedBy AS lastModifiedBy
+        x.id AS id,  
+        type, 
+        tags AS tags,
+        t.text AS name,
+        ten.text AS name_en,
+        d.text AS description,
+        den.text AS description_en,
+        def.text AS definition,
+        defen.text AS definition_en,
+        ex.text AS examples,
+        loc.code AS languageOfCreator,
+        coo.code AS countryOfOrigin,
+        langs AS languages,
+        x.createdBy AS createdBy,
+        x.created AS created,
+        x.lastModified AS lastModified,
+        x.lastModifiedBy AS lastModifiedBy,
+        x.majorVersion as majorVersion, x.minorVersion AS minorVersion, x.status AS status,
+        depex.text AS deprecationExplanation,
+        x.dataType AS dataType, x.dataFormat AS dataFormat, 
+        x.scale AS scale, x.base AS base, 
+        x.uri AS uri, x.author AS author, x.isbn AS isbn, x.publisher AS publisher, x.dateOfPublication AS dateOfPublication
     """)
-    List<ExportItemResult> findExportCatalogItems();
+    List<ExportItemResult> findExportCatalogRecords();
 
 
-    /* gibt alle Relationen zwischen Katalogeinträgen aus */
+    // gives relationships between catalog records
+    // could be extended
     @Query("""
-    MATCH(x)-[a]->(y:XtdRelationship)-[b]->(z) 
-    WHERE type(a)=type(b) 
-    CALL apoc.case([
-    "XtdRelAssignsCollections" IN(LABELS(y)), 'RETURN "XtdRelAssignsCollections" AS type',
-    "XtdRelAssignsMeasures" IN(LABELS(y)), 'RETURN "XtdRelAssignsMeasures" AS type',
-    "XtdRelAssignsProperties" IN(LABELS(y)), 'RETURN "XtdRelAssignsProperties" AS type',
-    "XtdRelAssignsValues" IN(LABELS(y)), 'RETURN "XtdRelAssignsValues" AS type',
-    "XtdRelAssignsUnits" IN(LABELS(y)), 'RETURN "XtdRelAssignsUnits" AS type',
-    "XtdRelAssignsPropertyWithValues" IN(LABELS(y)), 'RETURN "XtdRelAssignsPropertyWithValues" AS type',
-    "XtdRelCollects" IN(LABELS(y)), 'RETURN "XtdRelCollects" AS type',
-    "XtdRelDocuments" IN(LABELS(y)), 'RETURN "XtdRelDocuments" AS type'
-    ], 'RETURN null AS type') YIELD value
-    CALL apoc.case([
-    "XtdBag" IN(LABELS(x)), 'RETURN "XtdBag" AS type',
-    "XtdNest" IN(LABELS(x)), 'RETURN "XtdNest" AS type',
-    "XtdProperty" IN(LABELS(x)), 'RETURN "XtdProperty" AS type',
-    "XtdMeasureWithUnit" IN(LABELS(x)), 'RETURN "XtdMeasureWithUnit" AS type',
-    "XtdUnit" IN(LABELS(x)), 'RETURN "XtdUnit" AS type',
-    "XtdValue" IN(LABELS(x)), 'RETURN "XtdValue" AS type',
-    "XtdSubject" IN(LABELS(x)), 'RETURN "XtdSubject" AS type',
-    "XtdExternalDocument" IN(LABELS(x)), 'RETURN "XtdExternalDocument" AS type'
-    ], 'RETURN null AS type') YIELD value AS entity1Type
-    CALL apoc.case([
-    "XtdBag" IN(LABELS(z)), 'RETURN "XtdBag" AS type',
-    "XtdNest" IN(LABELS(z)), 'RETURN "XtdNest" AS type',
-    "XtdProperty" IN(LABELS(z)), 'RETURN "XtdProperty" AS type',
-    "XtdMeasureWithUnit" IN(LABELS(z)), 'RETURN "XtdMeasureWithUnit" AS type',
-    "XtdUnit" IN(LABELS(z)), 'RETURN "XtdUnit" AS type',
-    "XtdValue" IN(LABELS(z)), 'RETURN "XtdValue" AS type',
-    "XtdSubject" IN(LABELS(z)), 'RETURN "XtdSubject" AS type',
-    "XtdExternalDocument" IN(LABELS(z)), 'RETURN "XtdExternalDocument" AS type'
-    ], 'RETURN null AS type') YIELD value AS entity2Type
-    RETURN DISTINCT
-    x.id AS Entity1,
-    entity1Type.type AS Entity1Type, 
-    y.id AS RelationId,
-    value.type AS RelationshipType, 
-    z.id AS Entity2,
-    entity2Type.type AS Entity2Type
+    MATCH (x:XtdObject)-[y]->(z:XtdObject|XtdDictionary)
+    WHERE NOT type(y) IN ["SCOPE_SUBJECTS", "CONNECTED_SUBJECTS", "CONNECTED_PROPERTIES", "TARGET_SUBJECTS", "TARGET_PROPERTIES", "RELATIONSHIP_TYPE", "ORDERED_VALUE", "DIMENSION"]
+    RETURN DISTINCT 
+    x.id AS entity1, 
+    type(y) AS relationship, 
+    z.id AS entity2
+    UNION
+    MATCH (x:XtdConcept)-[:CONNECTED_SUBJECTS|CONNECTED_PROPERTIES]->()-[:TARGET_SUBJECTS|TARGET_PROPERTIES]->(z:XtdConcept)
+    RETURN DISTINCT 
+    x.id AS entity1, 
+    "GROUPS" AS relationship, 
+    z.id AS entity2
+    UNION
+    MATCH (x:XtdValueList)-[y:VALUES]->()-[:ORDERED_VALUE]->(z:XtdValue)
+    RETURN DISTINCT 
+    x.id AS entity1, 
+    type(y) AS relationship, 
+    z.id AS entity2
     """)
-    List<ExportRelationshipResult> findExportCatalogItemsRelationships();
+    List<ExportRelationshipResult> findExportCatalogRecordsRelationships();
 }

@@ -1,13 +1,15 @@
 package de.bentrm.datacat.catalog.service;
 
-import de.bentrm.datacat.catalog.domain.CatalogItem;
+import de.bentrm.datacat.catalog.domain.CatalogRecord;
 import de.bentrm.datacat.catalog.domain.CatalogRecordType;
+import de.bentrm.datacat.catalog.domain.SimpleRelationType;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-public interface CatalogRecordService<T extends CatalogItem> extends QueryService<T> {
+public interface CatalogRecordService<T extends CatalogRecord> extends QueryService<T> {
 
     @NotNull CatalogRecordType getSupportedCatalogRecordType();
 
@@ -19,4 +21,14 @@ public interface CatalogRecordService<T extends CatalogItem> extends QueryServic
     @PreAuthorize("hasRole('USER')")
     @NotNull T removeRecord(@NotBlank String id);
 
+    /**
+     * Allows to remove a relationship of a catalog record.
+     *
+     * @param recordId          The id of the catalog record node to set related records.
+     * @param relatedRecordId   The id of the catalog record that is related by relationship.
+     * @param relationType      The type of the relationship.
+     * @return The updated catalog record.
+     */
+    @PreAuthorize("hasRole('USER')")
+    @NotNull T removeRelationship(@NotBlank String recordId, @NotBlank String relatedRecordId, @NotNull SimpleRelationType relationType);
 }

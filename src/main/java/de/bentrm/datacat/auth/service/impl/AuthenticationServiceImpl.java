@@ -34,9 +34,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
@@ -106,7 +106,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void fulfillEmailConfirmationRequest(@NotNull String confirmationToken) {
-        final EmailConfirmationRequest request = emailConfirmationRepository.findByToken(confirmationToken, 1).orElseThrow();
+        final EmailConfirmationRequest request = emailConfirmationRepository.findByToken(confirmationToken, 1).orElseThrow(() -> new EmailConfirmationException("Confirmation Token is invalid."));
 
         if (request.isExpired()) {
             throw new EmailConfirmationException("Confirmation Token is expired.");
@@ -164,7 +164,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
         final UserDetails userDetails = new JwtUserDetails(jwt);
-        final HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        final ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attributes == null) {
+            throw new IllegalStateException("No request attributes found");
+        }
+        final HttpServletRequest request = attributes.getRequest();
         final WebAuthenticationDetails webAuthenticationDetails = new WebAuthenticationDetailsSource().buildDetails(request);
         final var authenticationToken = new JwtPreAuthenticatedAuthenticationToken(
                 userDetails.getUsername(),

@@ -1,8 +1,9 @@
 package de.bentrm.datacat.graphql.payload;
 
-import de.bentrm.datacat.catalog.domain.CatalogItem;
-import de.bentrm.datacat.catalog.domain.XtdRelationship;
-import de.bentrm.datacat.catalog.domain.XtdValue;
+import de.bentrm.datacat.catalog.domain.CatalogRecord;
+import de.bentrm.datacat.catalog.domain.XtdObject;
+import de.bentrm.datacat.catalog.domain.XtdProperty;
+import de.bentrm.datacat.catalog.domain.XtdText;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValueCheckStrategy;
@@ -17,60 +18,38 @@ public interface PayloadMapper {
     PayloadMapper INSTANCE = Mappers.getMapper(PayloadMapper.class);
 
     @Mapping(source = "item", target = "catalogEntry")
-    CreateEntryPayload toCreateEntryPayload(CatalogItem item);
+    CreateEntryPayload toCreateEntryPayload(CatalogRecord item);
 
     @Mapping(source = "item", target = "catalogEntry")
-    DeleteCatalogEntryPayload toDeleteEntryPayload(CatalogItem item);
-
-    @Mapping(source = "relationship", target = "relationship")
-    CreateRelationshipPayload toCreateRelationshipPayload(XtdRelationship relationship);
-
-    @Mapping(source = "relationship", target = "relationship")
-    SetRelatedEntriesPayload toSetRelatedEntriesPayload(XtdRelationship relationship);
-
-    @Mapping(source = "relationship", target = "relationship")
-    DeleteRelationshipPayload toDeleteRelationshipPayload(XtdRelationship relationship);
+    DeleteCatalogEntryPayload toDeleteEntryPayload(CatalogRecord item);
 
     @Mapping(source = "item", target = "catalogEntry")
-    SetVersionPayload toSetVersionPayload(CatalogItem item);
+    CreateRelationshipPayload toCreateRelationshipPayload(CatalogRecord item);
 
     @Mapping(source = "item", target = "catalogEntry")
-    AddNamePayload toAddNamePayload(CatalogItem item);
+    DeleteRelationshipPayload toDeleteRelationshipPayload(CatalogRecord item);
 
     @Mapping(source = "item", target = "catalogEntry")
-    UpdateNamePayload toUpdateNamePayload(CatalogItem item);
+    AddTextPayload toAddTextPayload(XtdObject item);
 
     @Mapping(source = "item", target = "catalogEntry")
-    DeleteNamePayload toDeleteNamePayload(CatalogItem item);
+    UpdateTextPayload toUpdateTextPayload(XtdText item);
 
     @Mapping(source = "item", target = "catalogEntry")
-    AddDescriptionPayload toAddDescriptionPayload(CatalogItem item);
+    DeleteTextPayload toDeleteTextPayload(XtdText item);
 
     @Mapping(source = "item", target = "catalogEntry")
-    UpdateDescriptionPayload toUpdateDescriptionPayload(CatalogItem item);
+    UpdateStatusPayload toUpdateStatusPayload(XtdObject item);
 
     @Mapping(source = "item", target = "catalogEntry")
-    DeleteDescriptionPayload toDeleteDescriptionPayload(CatalogItem item);
+    UpdateMajorVersionPayload toUpdateMajorVersionPayload(XtdObject item);
 
     @Mapping(source = "item", target = "catalogEntry")
-    AddCommentPayload toAddCommentPayload(CatalogItem item);
+    UpdateMinorVersionPayload toUpdateMinorVersionPayload(XtdObject item);
 
     @Mapping(source = "item", target = "catalogEntry")
-    UpdateCommentPayload toUpdateCommentPayload(CatalogItem item);
+    UpdateDataTypePayload toUpdateDataTypePayload(XtdProperty item);
 
     @Mapping(source = "item", target = "catalogEntry")
-    DeleteCommentPayload toDeleteCommentPayload(CatalogItem item);
-
-    @Mapping(source = "value", target = "catalogEntry")
-    SetTolerancePayload toSetTolerancePayload(XtdValue value);
-
-    @Mapping(source = "value", target = "catalogEntry")
-    UnsetTolerancePayload toUnsetTolerancePayload(XtdValue value);
-
-    @Mapping(source = "value", target = "catalogEntry")
-    SetNominalValuePayload toSetNominalValuePayload(XtdValue value);
-
-    @Mapping(source = "value", target = "catalogEntry")
-    UnsetNominalValuePayload toUnsetNominalValuePayload(XtdValue value);
-
+    UpdateNominalValuePayload toUpdateNominalValuePayload(XtdObject item);
 }

@@ -1,28 +1,15 @@
 package de.bentrm.datacat.catalog.service;
 
-import de.bentrm.datacat.catalog.domain.ToleranceType;
-import de.bentrm.datacat.catalog.domain.ValueRole;
-import de.bentrm.datacat.catalog.domain.ValueType;
-import de.bentrm.datacat.catalog.domain.XtdValue;
-import org.springframework.security.access.prepost.PreAuthorize;
+import java.util.List;
+import java.util.Optional;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import de.bentrm.datacat.catalog.domain.XtdOrderedValue;
+import de.bentrm.datacat.catalog.domain.XtdValue;
+import jakarta.validation.constraints.NotNull;
 
 public interface ValueRecordService extends SimpleRecordService<XtdValue> {
 
-    @PreAuthorize("hasRole('USER')")
-    XtdValue setTolerance(@NotBlank String id, @NotNull ToleranceType toleranceType,
-                          String lowerTolerance, String upperTolerance);
+    Optional<List<XtdOrderedValue>> getOrderedValues(@NotNull XtdValue value);
 
-    @PreAuthorize("hasRole('USER')")
-    XtdValue unsetTolerance(@NotBlank String id);
-
-    @PreAuthorize("hasRole('USER')")
-    XtdValue setNominalValue(@NotBlank String id, @NotNull ValueRole valueRole,
-                             @NotNull ValueType valueType, String nominalValue);
-
-    @PreAuthorize("hasRole('USER')")
-    XtdValue unsetNominalValue(@NotBlank String id);
-
+    @NotNull XtdValue updateNominalValue(@NotNull String id, @NotNull String nominalValue);
 }

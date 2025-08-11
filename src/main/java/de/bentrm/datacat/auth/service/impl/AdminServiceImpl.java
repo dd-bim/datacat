@@ -13,26 +13,27 @@ import de.bentrm.datacat.base.repository.EmailConfirmationRepository;
 import de.bentrm.datacat.base.repository.UserRepository;
 import de.bentrm.datacat.catalog.service.impl.AbstractQueryServiceImpl;
 import de.bentrm.datacat.catalog.service.value.ValueMapper;
-import org.neo4j.ogm.cypher.query.Pagination;
-import org.neo4j.ogm.cypher.query.SortOrder;
-import org.neo4j.ogm.session.Session;
-import org.neo4j.ogm.session.SessionFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.support.PageableExecutionUtils;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.springframework.data.neo4j.core.Neo4jTemplate;
 
 @Service
 @Validated
@@ -43,12 +44,12 @@ public class AdminServiceImpl extends AbstractQueryServiceImpl<User, UserReposit
     private final EmailService emailService;
     private final ValueMapper valueMapper;
 
-    public AdminServiceImpl(SessionFactory sessionFactory,
+    public AdminServiceImpl(Neo4jTemplate neo4jTemplate,
                             UserRepository repository,
                             EmailConfirmationRepository emailConfirmationRepository,
                             EmailService emailService,
                             ValueMapper valueMapper) {
-        super(User.class, sessionFactory, repository);
+        super(User.class, neo4jTemplate, repository);
         this.emailConfirmationRepository = emailConfirmationRepository;
         this.emailService = emailService;
         this.valueMapper = valueMapper;
@@ -116,7 +117,7 @@ public class AdminServiceImpl extends AbstractQueryServiceImpl<User, UserReposit
         return setAccountLock(username, false);
     }
 
-    private Optional<AccountDto> setAccountLock(String username, boolean locked) {
+    private Optional<AccountDto> setAccountLock(String username, Boolean locked) {
         User user = findByUsername(username);
         user.setLocked(locked);
         user = getRepository().save(user);
@@ -152,40 +153,67 @@ public class AdminServiceImpl extends AbstractQueryServiceImpl<User, UserReposit
     }
 
     @Override
-    public long countAccounts(UserSpecification specification) {
-        final Session session = getSessionFactory().openSession();
-        return session.count(User.class, specification.getFilters());
+    public Long countAccounts(@NotNull UserSpecification specification) {
+        String query;
+        if (specification.getFilters().isEmpty()) {
+            query = "MATCH (n:User) RETURN count(n)";
+        } else {
+            String whereClause = "WHERE " + String.join(" AND ", specification.getFilters());
+            query = "MATCH (n:User) " + whereClause + " RETURN count(n)";
+        }
+        return neo4jTemplate.count(query);
     }
 
     @Override
-    public Page<AccountDto> findAccounts(UserSpecification specification) {
+    public Page<AccountDto> findAccounts(@NotNull UserSpecification specification) {
         Collection<User> users;
         Pageable pageable;
-        final long count = countAccounts(specification);
-        final Session session = getSessionFactory().openSession();
+        final Long count = countAccounts(specification);
 
         final Optional<Pageable> paged = specification.getPageable();
         if (paged.isPresent()) {
             pageable = paged.get();
-            final Pagination pagination = new Pagination(pageable.getPageNumber(), pageable.getPageSize());
-
             if (pageable.getSort().isUnsorted()) {
-                users = session.loadAll(User.class, specification.getFilters(), pagination);
+                users = neo4jTemplate.findAll(getQuery(specification, pageable), User.class);
             } else {
                 final Sort sort = pageable.getSort();
                 final Sort.Direction direction = sort.get().findFirst().map(Sort.Order::getDirection).get();
                 final String[] properties = sort.get().map(Sort.Order::getProperty).toArray(String[]::new);
-                final SortOrder sortOrder = new SortOrder(SortOrder.Direction.valueOf(direction.name()), properties);
-                users = session.loadAll(User.class, specification.getFilters(), sortOrder, pagination);
+                users = neo4jTemplate.findAll(getQuery(specification, pageable, direction, properties), User.class);
             }
         } else {
             pageable = PageRequest.of(0, (int) Math.max(count, 10));
-            users = session.loadAll(User.class, specification.getFilters());
+            users = neo4jTemplate.findAll(getQuery(specification, pageable), User.class);
         }
 
         final List<AccountDto> newContent = users.stream()
                 .map(valueMapper::toAccountDto)
                 .collect(Collectors.toList());
         return PageableExecutionUtils.getPage(newContent, pageable, () -> count);
+    }
+
+    
+    public String getQuery(UserSpecification specification, Pageable pageable) {
+        return (getQuery(specification, pageable, null, null));
+    }
+
+        public String getQuery(UserSpecification specification, Pageable pageable, Sort.Direction direction,
+            String[] properties) {
+        String query;
+        String sort = "";
+        if (direction != null && properties != null) {
+            List<String> prefixedProperties = Arrays.stream(properties)
+                    .map(property -> "n.`" + property + "` " + direction.name()).collect(Collectors.toList());
+            sort = " ORDER BY " + String.join(", ", prefixedProperties);
+        }
+
+        if (specification.getFilters().isEmpty()) {
+            query = "MATCH (n:User)" + sort + " RETURN n";
+        } else {
+            String whereClause = "WHERE " + String.join(" AND ", specification.getFilters());
+            query = "MATCH (n:User) " + whereClause + sort +" RETURN n";
+        }
+        query = query + " SKIP " + pageable.getOffset() + " LIMIT " + pageable.getPageSize();
+        return query;
     }
 }

@@ -1,63 +1,59 @@
 package de.bentrm.datacat.catalog.service;
 
-import de.bentrm.datacat.catalog.domain.*;
-import de.bentrm.datacat.catalog.service.value.verification.*;
-import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
-import de.bentrm.datacat.catalog.specification.RootSpecification;
-import org.springframework.data.domain.Page;
+import de.bentrm.datacat.catalog.service.value.VerificationConnection;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
-import de.bentrm.datacat.catalog.domain.CatalogRecordType;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
 
 public interface CatalogVerificationService {
 
     @PreAuthorize("hasRole('READONLY')")
-    findPropGroupWithoutPropValue getfindPropGroupWithoutProp();
+    VerificationConnection getPropGroupWithoutProp(Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    findPropWithoutSubjectOrPropGroupValue getfindPropWithoutSubjectOrPropGroup();
+    VerificationConnection getPropWithoutSubjectOrPropGroup(Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    findModelWithoutGroupValue getfindModelWithoutGroup();
+    VerificationConnection getThemeWithoutSubject(Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    findGroupWithoutSubjectValue getfindGroupWithoutSubject();
+    VerificationConnection getSubjectWithoutProp(Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    findSubjectWithoutPropValue getfindSubjectWithoutProp();
+    VerificationConnection getValueListWithoutProp(Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    findMeasureWithoutPropValue getfindMeasureWithoutProp();
+    VerificationConnection getUnitWithoutValueList(Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    findUnitWithoutMeasureValue getfindUnitWithoutMeasure();
+    VerificationConnection getValueWithoutValueList(Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    findValueWithoutMeasureValue getfindValueWithoutMeasure();
+    VerificationConnection getMissingTags(Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    findMissingTagsValue getfindMissingTags(@NotNull CatalogRecordSpecification rootNodeSpecification);
+    VerificationConnection getMissingEnglishName(Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    findMissingEnglishNameValue getfindMissingEnglishName(@NotNull CatalogRecordSpecification rootNodeSpecification);
+    VerificationConnection getMultipleIDs(Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    findMultipleIDsValue getfindMultipleIDs(@NotNull CatalogRecordSpecification rootNodeSpecification);
+    VerificationConnection getMissingDescription(Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    findMissingDescriptionValue getfindMissingDescription(@NotNull CatalogRecordSpecification rootNodeSpecification);
+    VerificationConnection getMissingEnglishDescription(Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    findMissingEnglishDescriptionValue getfindMissingEnglishDescription(@NotNull CatalogRecordSpecification rootNodeSpecification);
+    VerificationConnection getMultipleNames(Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    findMultipleNamesValue getfindMultipleNames(@NotNull CatalogRecordSpecification rootNodeSpecification);
+    VerificationConnection getMultipleNamesAcrossClasses(Pageable pageable);
 
     @PreAuthorize("hasRole('READONLY')")
-    findMultipleNamesAcrossClassesValue getfindMultipleNamesAcrossClasses(@NotNull CatalogRecordSpecification rootNodeSpecification);
+    VerificationConnection getMissingDictionary(Pageable pageable);
+
+    @PreAuthorize("hasRole('READONLY')")
+    VerificationConnection getMissingReferenceDocument(Pageable pageable);
+
+    @PreAuthorize("hasRole('READONLY')")
+    VerificationConnection getInactiveConcepts(Pageable pageable);
 }

@@ -1,18 +1,13 @@
 package de.bentrm.datacat.graphql;
 
-import de.bentrm.datacat.graphql.fetcher.AttributeFetchers;
-import de.bentrm.datacat.graphql.fetcher.MutationFetchers;
-import de.bentrm.datacat.graphql.fetcher.QueryFetchers;
 import de.bentrm.datacat.graphql.resolver.CustomResolver;
 import graphql.GraphQLError;
-import graphql.kickstart.spring.error.ThrowableGraphQLError;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +16,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.graphql.execution.ErrorType;
+import org.springframework.lang.NonNull;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -31,26 +28,13 @@ import java.util.List;
 @Configuration
 public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
 
-    private final static String[] schemaFiles = {
-            "classpath:graphql/xtd.graphqls",
-            "classpath:graphql/auth.graphqls",
-            "classpath:graphql/admin.graphqls",
-            "classpath:graphql/management.graphqls"
-    };
+    private final static String[] schemaFiles = { "classpath:graphql/xtd.graphqls", "classpath:graphql/auth.graphqls",
+            "classpath:graphql/admin.graphqls", "classpath:graphql/management.graphqls" };
 
     private ResourceLoader resourceLoader;
 
     @Autowired
     private List<CustomResolver> customResolvers;
-
-    @Autowired
-    private List<AttributeFetchers> attributeFetchers;
-
-    @Autowired
-    private List<QueryFetchers> queryFetchers;
-
-    @Autowired
-    private List<MutationFetchers> mutationFetchers;
 
     final SchemaParser schemaParser = new SchemaParser();
     final SchemaGenerator schemaGenerator = new SchemaGenerator();
@@ -59,7 +43,7 @@ public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
 
     @ExceptionHandler(BadCredentialsException.class)
     GraphQLError handle(Throwable e) {
-        return new ThrowableGraphQLError(e, "Catch all handler");
+        return GraphQLError.newError().errorType(ErrorType.BAD_REQUEST).message(e.getMessage(), "Catch all handler").build();
     }
 
     @Bean
@@ -70,34 +54,9 @@ public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
             builder.type(resolver.getTypeName(), wiring -> wiring.typeResolver(resolver));
         });
 
-        RuntimeWiring wiring = getRuntimeWiring();
+        RuntimeWiring wiring = builder.build();
 
         return schemaGenerator.makeExecutableSchema(typeRegistry, wiring);
-    }
-
-    private RuntimeWiring getRuntimeWiring() {
-        attributeFetchers.forEach(fetcher -> {
-            log.trace("Registering AttributeFetcher {}", fetcher.getClass());
-            builder.type(fetcher.getTypeName(), wiring -> wiring.dataFetchers(fetcher.getAttributeFetchers()));
-        });
-
-        builder.type("Query", wiring -> {
-            queryFetchers.forEach(fetcher -> {
-                log.trace("Registering QueryFetchers {}", fetcher.getClass());
-                wiring.dataFetchers(fetcher.getQueryFetchers());
-            });
-            return wiring;
-        });
-
-        builder.type("Mutation", wiring -> {
-            mutationFetchers.forEach(fetcher -> {
-                log.trace("Registering MutationFetchers {}", fetcher.getClass());
-                wiring.dataFetchers(fetcher.getMutationFetchers());
-            });
-            return wiring;
-        });
-
-        return builder.build();
     }
 
     private void parseSchema() throws IOException {
@@ -110,7 +69,7 @@ public class SchemaDefinitionConfiguration implements ResourceLoaderAware {
     }
 
     @Override
-    public void setResourceLoader(@NotNull ResourceLoader resourceLoader) {
+    public void setResourceLoader(@NonNull ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }
 

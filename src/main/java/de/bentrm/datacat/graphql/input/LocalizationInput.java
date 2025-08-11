@@ -4,8 +4,8 @@ import de.bentrm.datacat.util.LocalizationUtils;
 import lombok.Data;
 import org.apache.commons.lang3.LocaleUtils;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
 import java.util.Locale;
 

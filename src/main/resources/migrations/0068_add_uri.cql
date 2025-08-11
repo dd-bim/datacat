@@ -1,0 +1,1 @@
+MATCH(x:XtdObject) WHERE x.uri IS NULL SET x.uri = "https://datacat_internal.de/uri/"+x.id RETURN x;

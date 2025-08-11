@@ -3,42 +3,79 @@ package de.bentrm.datacat.catalog.domain;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
-import java.util.Collection;
+import de.bentrm.datacat.catalog.domain.Enums.XtdDataTypeEnum;
+
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-@ToString(callSuper = true, onlyExplicitlyIncluded = true)
-@NodeEntity(label = XtdProperty.LABEL)
-public class XtdProperty extends XtdObject {
+@ToString(callSuper = false, onlyExplicitlyIncluded = true)
+@Node(XtdProperty.LABEL)
+public class XtdProperty extends XtdConcept {
 
     public static final String LABEL = "XtdProperty";
 
-    @Relationship(type = XtdRelAssignsProperties.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
-    private final Set<XtdRelAssignsProperties> assignedTo = new HashSet<>();
+    // Data type of the value of the property
+    @ToString.Include
+    private XtdDataTypeEnum dataType;
 
-    @Relationship(type = XtdRelAssignsPropertyWithValues.RELATIONSHIP_TYPE, direction = Relationship.INCOMING)
-    private final Set<XtdRelAssignsPropertyWithValues> assignedWithValues = new HashSet<>();
+    // Pattern for the property values, the meaning of the pattern is implementation
+    // dependant.
+    @ToString.Include
+    private String dataFormat;
 
-    @Relationship(type = XtdRelAssignsMeasures.RELATIONSHIP_TYPE)
-    private final Set<XtdRelAssignsMeasures> assignedMeasures = new HashSet<>();
+    // Symbols of the property.
+    // @ToString.Include
+    @Relationship(type = "SYMBOLS")
+    private Set<XtdSymbol> symbols = new HashSet<>();
 
-    @Override
-    public List<XtdRelationship> getOwnedRelationships() {
-        return Stream.of(
-                super.getOwnedRelationships(),
-                assignedWithValues,
-                assignedMeasures
-        )
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+    // Intervals of possible values for the property.
+    @ToString.Include
+    @Relationship(type = "BOUNDARY_VALUES")
+    private Set<XtdInterval> boundaryValues = new HashSet<>();
 
-    }
+    // Dimension of the property according to the ISO 80000 series.
+    @ToString.Include
+    @Relationship(type = "DIMENSION")
+    private XtdDimension dimension;
+
+    // List of the corresponding quantity kinds. All the quantity kinds shall
+    // have the same dimension as the property.
+    @ToString.Include
+    @Relationship(type = "QUANTITY_KINDS")
+    private Set<XtdQuantityKind> quantityKinds = new HashSet<>(); 
+
+    // List of the possible values that can be provided for the property. Several
+    // sets of possible values can be provided to allow providing them in different
+    // languages.
+    // @ToString.Include
+    @Relationship(type = "POSSIBLE_VALUES")
+    private Set<XtdValueList> possibleValues = new HashSet<>();
+
+    // List of units that can be attached to a value.
+    // @ToString.Include
+    @Relationship(type = "UNITS")
+    private Set<XtdUnit> units = new HashSet<>();
+
+    // isUsedByFilters() 
+
+    // List of properties connected to the current property. The connection can be a
+    // specialization or a dependency.
+    // @ToString.Include
+    @Relationship(type = XtdRelationshipToProperty.RELATIONSHIP_TYPE)
+    private Set<XtdRelationshipToProperty> connectedProperties = new HashSet<>();
+
+    // Incomming relations
+    // @ToString.Include
+    @Relationship(type = XtdRelationshipToProperty.RELATIONSHIP_TYPE, direction = Relationship.Direction.INCOMING)
+    private Set<XtdRelationshipToProperty> connectingProperties = new HashSet<>();
+
+    // List of the properties attached to the subject.
+    // @ToString.Include
+    @Relationship(type = "PROPERTIES", direction = Relationship.Direction.INCOMING)
+    private Set<XtdSubject> subjects = new HashSet<>();
 }

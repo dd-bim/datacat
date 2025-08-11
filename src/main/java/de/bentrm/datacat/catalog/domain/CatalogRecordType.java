@@ -6,31 +6,29 @@ import org.springframework.util.Assert;
  * Enumeration of all supported catalog record types.
  */
 public enum CatalogRecordType {
-    Activity(XtdActivity.LABEL),
-    Actor(XtdActor.LABEL),
-    ActsUpon(XtdRelActsUpon.LABEL),
-    AssignsCollections(XtdRelAssignsCollections.LABEL),
-    AssignsMeasures(XtdRelAssignsMeasures.LABEL),
-    AssignsProperties(XtdRelAssignsProperties.LABEL),
-    AssignsPropertyWithValues(XtdRelAssignsPropertyWithValues.LABEL),
-    AssignsUnits(XtdRelAssignsUnits.LABEL),
-    AssignsValues(XtdRelAssignsValues.LABEL),
-    Associates(XtdRelAssociates.LABEL),
-    Bag(XtdBag.LABEL),
-    Classification(XtdClassification.LABEL),
-    Collects(XtdRelCollects.LABEL),
-    Composes(XtdRelComposes.LABEL),
-    Documents(XtdRelDocuments.LABEL),
     ExternalDocument(XtdExternalDocument.LABEL),
-    Groups(XtdRelGroups.LABEL),
-    Measure(de.bentrm.datacat.catalog.domain.Measure.LABEL),
-    Nest(XtdNest.LABEL),
     Property(XtdProperty.LABEL),
-    Sequences(XtdRelSequences.LABEL),
-    Specializes(XtdRelSpecializes.LABEL),
     Subject(XtdSubject.LABEL),
     Unit(XtdUnit.LABEL),
-    Value(XtdValue.LABEL);
+    Value(XtdValue.LABEL),
+    OrderedValue(XtdOrderedValue.LABEL),
+    ValueList(XtdValueList.LABEL),
+    RelationshipToSubject(XtdRelationshipToSubject.LABEL),
+    RelationshipToProperty(XtdRelationshipToProperty.LABEL),
+    RelationshipType(XtdRelationshipType.LABEL),
+    Concept(XtdConcept.LABEL),
+    Dimension(XtdDimension.LABEL),
+    Rational(XtdRational.LABEL),
+    MultiLanguageText(XtdMultiLanguageText.LABEL),
+    Text(XtdText.LABEL),
+    Symbol(XtdSymbol.LABEL),
+    Interval(XtdInterval.LABEL),
+    Dictionary(XtdDictionary.LABEL),
+    QuantityKind(XtdQuantityKind.LABEL),
+    Subdivision(XtdSubdivision.LABEL),
+    Country(XtdCountry.LABEL),
+    Object(XtdObject.LABEL),
+    Language(XtdLanguage.LABEL);
 
     private final String label;
 
@@ -50,12 +48,11 @@ public enum CatalogRecordType {
      * @return The enum value.
      * @throws IllegalArgumentException if the enum has no record type matching with the catalog instance.
      */
-    public static CatalogRecordType getByDomainClass(CatalogItem record) {
+    public static CatalogRecordType getByDomainClass(CatalogRecord record) {
         Assert.notNull(record, "record may not be null");
         String simpleName = record.getClass().getSimpleName();
         simpleName = simpleName
-                .replace("Xtd", "")
-                .replace("Rel", "");
+                .replace("Xtd", "");
         return CatalogRecordType.valueOf(simpleName);
     }
 }

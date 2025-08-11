@@ -2,7 +2,7 @@ package de.bentrm.datacat.catalog.repository;
 
 import de.bentrm.datacat.base.repository.EntityRepository;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
-import org.springframework.data.neo4j.annotation.Query;
+import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,11 +11,48 @@ import java.util.List;
 public interface PropertyRepository extends EntityRepository<XtdProperty> {
 
     @Query("""
-            MATCH (n {id: $subjectId})-[:ASSIGNS_COLLECTIONS|COLLECTS*]->(p:XtdProperty)
-            RETURN p.id
-            UNION
-            MATCH (n {id: $subjectId})-[:ASSIGNS_PROPERTY*2]->(p:XtdProperty)
+            MATCH (n:XtdProperty {id: $propertyId})<-[:PROPERTIES]-(p:XtdSubject)
             RETURN p.id""")
-    List<String> findAllPropertyIdsAssignedToSubject(String subjectId);
+    List<String> findAllSubjectIdsAssignedToProperty(String propertyId);
+
+    @Query("""
+            MATCH (n:XtdProperty {id: $propertyId})-[:POSSIBLE_VALUES]->(p:XtdValueList)
+            RETURN p.id""")
+    List<String> findAllValueListIdsAssignedToProperty(String propertyId);
+
+    @Query("""
+            MATCH (n:XtdProperty {id: $propertyId})-[:UNITS]->(p:XtdUnit)
+            RETURN p.id""")
+    List<String> findAllUnitIdsAssignedToProperty(String propertyId);
+
+    @Query("""
+            MATCH (n:XtdProperty {id: $propertyId})-[:CONNECTED_PROPERTIES]->(p:XtdRelationshipToProperty)
+            RETURN p.id""")
+    List<String> findAllConnectedPropertyRelationshipIdsAssignedToProperty(String propertyId);
+
+    @Query("""
+            MATCH (n:XtdProperty {id: $propertyId})<-[:TARGET_PROPERTIES]-(p:XtdRelationshipToProperty)
+            RETURN p.id""")
+    List<String> findAllConnectingPropertyRelationshipIdsAssignedToProperty(String propertyId);
+
+    @Query("""
+            MATCH (n:XtdProperty {id: $propertyId})-[:DIMENSION]->(p:XtdDimension)
+            RETURN p.id""")
+    String findDimensionIdAssignedToProperty(String propertyId);
+
+    @Query("""
+            MATCH (n:XtdProperty {id: $propertyId})-[:SYMBOLS]->(p:XtdSymbol)
+            RETURN p.id""")
+    List<String> findAllSymbolIdsAssignedToProperty(String propertyId);
+
+    @Query("""
+            MATCH (n:XtdProperty {id: $propertyId})-[:BOUNDARY_VALUES]->(p:XtdInterval)
+            RETURN p.id""")
+    List<String> findAllIntervalIdsAssignedToProperty(String propertyId);
+
+    @Query("""
+            MATCH (:XtdProperty {id: $propertyId})-[:QUANTITY_KINDS]->(p:XtdQuantityKind)
+            RETURN p.id""")
+    List<String> findAllQuantityKindIdsAssignedToProperty(String propertyId);
 
 }

@@ -2,7 +2,7 @@ package de.bentrm.datacat.base.domain;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.neo4j.ogm.annotation.NodeEntity;
+import org.springframework.data.neo4j.core.schema.Node;
 
 import java.time.Instant;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@NodeEntity(label = "Migration")
+@Node("Migration")
 public class Migration extends Entity {
 
     private Instant appliedAt;

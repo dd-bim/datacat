@@ -57,7 +57,9 @@ extend type Mutation {
     unlockAccount(username: ID!): Account
     requestEmailConfirmation(username: ID!): Account
 
-    # Deletes the user account from the catalog. The user will not
-    # be able to login anymore. This operation can not be undone.
+    """
+    Deletes the user account from the catalog. The user will not
+    be able to login anymore. This operation can not be undone.
+    """
     deleteAccount(username: ID!): Account
 }
