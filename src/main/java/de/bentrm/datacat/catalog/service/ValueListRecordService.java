@@ -22,6 +22,10 @@ public interface ValueListRecordService extends SimpleRecordService<XtdValueList
 
     Optional<XtdLanguage> getLanguage(@NotNull XtdValueList valueList);
 
+    Optional<XtdValueList> findByIdWithAllRelations(@NotBlank String id);
+    
+    Optional<XtdValueList> findByIdWithIncomingAndOutgoingRelations(@NotBlank String id);
+
     @NotNull XtdValueList setOrderedValues(@NotBlank String fromId, @NotEmpty List<String> toIds, @NotNull SimpleRelationType relationType, Integer order);
 
 }

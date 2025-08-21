@@ -122,6 +122,16 @@ public class ValueListRecordServiceImpl extends AbstractSimpleRecordServiceImpl<
         }
     }
 
+    @Override
+    public Optional<XtdValueList> findByIdWithAllRelations(String id) {
+        return getRepository().findByIdWithAllRelations(id);
+    }
+    
+    @Override
+    public Optional<XtdValueList> findByIdWithIncomingAndOutgoingRelations(String id) {
+        return getRepository().findByIdWithIncomingAndOutgoingRelations(id);
+    }
+
     @Transactional
     @Override
     public @NotNull XtdValueList setRelatedRecords(@NotBlank String recordId,

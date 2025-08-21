@@ -21,7 +21,7 @@ import org.springframework.data.repository.query.Param;
 public interface EntityRepository<T extends Entity> extends Neo4jRepository<T, String> {
 
         @Query("""
-                        MATCH (o {id: $id})
+                        MATCH (o:Entity {id: $id})
                         OPTIONAL MATCH (o)-[r]->(related)
                         WITH o, collect(coalesce(r, [])) AS relations, collect(coalesce(related, [])) AS relatedNodes
                         RETURN o, relations, relatedNodes""")
