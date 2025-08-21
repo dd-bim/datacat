@@ -50,7 +50,17 @@ public class TagController {
         String name = tag.getName();
         
         if (name == null || name.trim().isEmpty()) {
-            log.error("CRITICAL: Tag with ID {} has null or empty name! This violates data integrity.", tag.getId());
+            log.error("CRITICAL: Tag with ID {} has null or empty name! Attempting to load from repository.", tag.getId());
+            
+            // Versuche das Tag direkt aus dem Repository zu laden
+            Optional<Tag> reloadedTag = repository.findById(tag.getId());
+            if (reloadedTag.isPresent() && reloadedTag.get().getName() != null) {
+                name = reloadedTag.get().getName();
+                log.warn("Successfully reloaded Tag name from repository: {}", name);
+                return name;
+            }
+            
+            log.error("CRITICAL: Even after reloading, Tag with ID {} has null name! This violates data integrity.", tag.getId());
             throw new IllegalStateException("Tag name cannot be null or empty. Tag ID: " + tag.getId());
         }
         

@@ -40,7 +40,11 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
+import org.springframework.data.support.PageableExecutionUtils;
 
 @Slf4j
 @Service
@@ -73,6 +77,60 @@ public class ValueListRecordServiceImpl extends AbstractSimpleRecordServiceImpl<
     public ValueListRecordServiceImpl(Neo4jTemplate neo4jTemplate, ValueListRepository repository,
             CatalogCleanupService cleanupService) {
         super(XtdValueList.class, neo4jTemplate, repository, cleanupService);
+    }
+
+    @Override
+    public @NotNull Page<XtdValueList> findAll(@NotNull de.bentrm.datacat.base.specification.QuerySpecification specification) {
+        // Use optimized query when no complex filters are applied
+        if (isSimpleQuery(specification)) {
+            List<XtdValueList> valueLists = findValueListsWithRelations(specification);
+            Pageable pageable = specification.getPageable().orElse(PageRequest.of(0, 20));
+            return PageableExecutionUtils.getPage(valueLists, pageable, 
+                () -> getRepository().count());
+        }
+        // Fallback to default implementation for complex queries
+        return super.findAll(specification);
+    }
+
+    private boolean isSimpleQuery(de.bentrm.datacat.base.specification.QuerySpecification specification) {
+        // Consider it simple if there are no filters, only pagination and sorting
+        return specification.getFilters() == null || specification.getFilters().isEmpty();
+    }
+
+    private List<XtdValueList> findValueListsWithRelations(de.bentrm.datacat.base.specification.QuerySpecification specification) {
+        Pageable pageable = specification.getPageable().orElse(PageRequest.of(0, 20));
+        String query = buildOptimizedValueListQuery(pageable);
+        return getNeo4jTemplate().findAll(query, XtdValueList.class);
+    }
+
+    private String buildOptimizedValueListQuery(Pageable pageable) {
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("MATCH (vl:XtdValueList) ");
+        
+        // Add optional matches for commonly used relations
+        queryBuilder.append("OPTIONAL MATCH (vl)-[:VALUES]->(values:XtdValue) ");
+        queryBuilder.append("OPTIONAL MATCH (vl)-[:ORDERED_VALUES]->(orderedValues:XtdOrderedValue) ");
+        queryBuilder.append("OPTIONAL MATCH (vl)<-[:ASSIGNS_VALUE_LIST]-(properties:XtdProperty) ");
+        
+        queryBuilder.append("RETURN vl, ");
+        queryBuilder.append("collect(DISTINCT values) as values, ");
+        queryBuilder.append("collect(DISTINCT orderedValues) as orderedValues, ");
+        queryBuilder.append("collect(DISTINCT properties) as properties ");
+        
+        // Add sorting if specified
+        if (pageable.getSort().isSorted()) {
+            queryBuilder.append("ORDER BY ");
+            String sortClause = pageable.getSort().stream()
+                    .map(order -> "vl." + order.getProperty() + " " + order.getDirection())
+                    .collect(Collectors.joining(", "));
+            queryBuilder.append(sortClause).append(" ");
+        }
+        
+        // Add pagination
+        queryBuilder.append("SKIP ").append(pageable.getOffset()).append(" ");
+        queryBuilder.append("LIMIT ").append(pageable.getPageSize());
+        
+        return queryBuilder.toString();
     }
 
     @Override

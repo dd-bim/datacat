@@ -39,6 +39,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -68,6 +73,66 @@ public class ObjectRecordServiceImpl extends AbstractSimpleRecordServiceImpl<Xtd
     public ObjectRecordServiceImpl(Neo4jTemplate neo4jTemplate, ObjectRepository repository,
             CatalogCleanupService cleanupService) {
         super(XtdObject.class, neo4jTemplate, repository, cleanupService);
+    }
+
+    @Override
+    public @NotNull Page<XtdObject> findAll(@NotNull de.bentrm.datacat.base.specification.QuerySpecification specification) {
+        // Use optimized query when no complex filters are applied
+        if (isSimpleQuery(specification)) {
+            List<XtdObject> objects = findObjectsWithRelations(specification);
+            Pageable pageable = specification.getPageable().orElse(PageRequest.of(0, 20));
+            return PageableExecutionUtils.getPage(objects, pageable, 
+                () -> getRepository().count());
+        }
+        // Fallback to default implementation for complex queries
+        return super.findAll(specification);
+    }
+
+    private boolean isSimpleQuery(de.bentrm.datacat.base.specification.QuerySpecification specification) {
+        // Consider it simple if there are no filters, only pagination and sorting
+        return specification.getFilters() == null || specification.getFilters().isEmpty();
+    }
+
+    private List<XtdObject> findObjectsWithRelations(de.bentrm.datacat.base.specification.QuerySpecification specification) {
+        Pageable pageable = specification.getPageable().orElse(PageRequest.of(0, 20));
+        String query = buildOptimizedObjectQuery(pageable);
+        return getNeo4jTemplate().findAll(query, XtdObject.class);
+    }
+
+    private String buildOptimizedObjectQuery(Pageable pageable) {
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("MATCH (o:XtdObject) ");
+        
+        // Add optional matches for commonly used relations
+        queryBuilder.append("OPTIONAL MATCH (o)<-[:GROUPS]-(subjects:XtdSubject) ");
+        queryBuilder.append("OPTIONAL MATCH (o)-[:NAMES]->(names:XtdMultiLanguageText) ");
+        queryBuilder.append("OPTIONAL MATCH (o)-[:COMMENTS]->(comments:XtdMultiLanguageText) ");
+        queryBuilder.append("OPTIONAL MATCH (o)-[:TEXTS]->(texts:XtdText) ");
+        queryBuilder.append("OPTIONAL MATCH (o)-[:DICTIONARY]->(dictionary:XtdDictionary) ");
+        queryBuilder.append("OPTIONAL MATCH (o)-[:TAGGED]->(tags:Tag) ");
+        
+        queryBuilder.append("RETURN o, ");
+        queryBuilder.append("collect(DISTINCT subjects) as subjects, ");
+        queryBuilder.append("collect(DISTINCT names) as names, ");
+        queryBuilder.append("collect(DISTINCT comments) as comments, ");
+        queryBuilder.append("collect(DISTINCT texts) as texts, ");
+        queryBuilder.append("collect(DISTINCT dictionary) as dictionary, ");
+        queryBuilder.append("collect(DISTINCT tags) as tags ");
+        
+        // Add sorting if specified
+        if (pageable.getSort().isSorted()) {
+            queryBuilder.append("ORDER BY ");
+            String sortClause = pageable.getSort().stream()
+                    .map(order -> "o." + order.getProperty() + " " + order.getDirection())
+                    .collect(Collectors.joining(", "));
+            queryBuilder.append(sortClause).append(" ");
+        }
+        
+        // Add pagination
+        queryBuilder.append("SKIP ").append(pageable.getOffset()).append(" ");
+        queryBuilder.append("LIMIT ").append(pageable.getPageSize());
+        
+        return queryBuilder.toString();
     }
 
     @Override

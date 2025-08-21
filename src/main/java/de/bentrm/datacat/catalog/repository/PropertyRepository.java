@@ -6,6 +6,7 @@ import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PropertyRepository extends EntityRepository<XtdProperty> {
@@ -54,5 +55,23 @@ public interface PropertyRepository extends EntityRepository<XtdProperty> {
             MATCH (:XtdProperty {id: $propertyId})-[:QUANTITY_KINDS]->(p:XtdQuantityKind)
             RETURN p.id""")
     List<String> findAllQuantityKindIdsAssignedToProperty(String propertyId);
+
+    @Query("""
+            MATCH (p:XtdProperty {id: $id})
+            OPTIONAL MATCH (p)-[r1]->(related1)
+            OPTIONAL MATCH (p)<-[r2]-(related2)
+            
+            // Explizit RelationshipToProperty Relationen laden
+            OPTIONAL MATCH (p)-[:CONNECTED_PROPERTIES]->(rel1:XtdRelationshipToProperty)
+            OPTIONAL MATCH (rel1)-[rel1R]->(rel1Related)
+            OPTIONAL MATCH (p)<-[:TARGET_PROPERTIES]-(rel2:XtdRelationshipToProperty)
+            OPTIONAL MATCH (rel2)-[rel2R]->(rel2Related)
+            
+            WITH p, 
+                 collect(coalesce(r1, [])) + collect(coalesce(r2, [])) + collect(coalesce(rel1R, [])) + collect(coalesce(rel2R, [])) AS relations, 
+                 collect(coalesce(related1, [])) + collect(coalesce(related2, [])) + collect(coalesce(rel1Related, [])) + collect(coalesce(rel2Related, [])) AS relatedNodes
+            RETURN p, relations, relatedNodes
+            """)
+    Optional<XtdProperty> findByIdWithIncomingAndOutgoingRelations(String id);
 
 }
