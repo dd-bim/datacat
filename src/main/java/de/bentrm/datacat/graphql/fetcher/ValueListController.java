@@ -21,6 +21,8 @@ import org.springframework.stereotype.Controller;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.ArrayList;
+import java.util.Set;
 
 @Slf4j
 @Controller
@@ -34,7 +36,11 @@ public class ValueListController {
 
     @QueryMapping
     public Optional<XtdValueList> getValueList(@Argument String id) {
-        return valueListRecordService.findByIdWithDirectRelations(id, XtdValueList.class.getSimpleName());
+        long start = System.currentTimeMillis();
+        Optional<XtdValueList> result = valueListRecordService.findByIdWithIncomingAndOutgoingRelations(id);
+        long end = System.currentTimeMillis();
+        log.info("Query executed in {} ms", end - start);
+        return result;
     }
 
     @QueryMapping
@@ -46,23 +52,30 @@ public class ValueListController {
         return Connection.of(page);
     }
 
+    // Optimierte Schema-Mappings, die bereits geladene Daten verwenden
     @SchemaMapping(typeName = "XtdValueList", field = "values")
     public List<XtdOrderedValue> getOrderedValues(XtdValueList valueList) {
-        return valueListRecordService.getOrderedValues(valueList);
+        return new ArrayList<>(valueList.getValues());
     }
 
     @SchemaMapping(typeName = "XtdValueList", field = "properties")
     public List<XtdProperty> getProperties(XtdValueList valueList) {
-        return valueListRecordService.getProperties(valueList);
+        Set<XtdProperty> loadedProperties = valueList.getProperties();
+        if (loadedProperties != null && !loadedProperties.isEmpty()) {
+            return new ArrayList<>(loadedProperties);
+        } else {
+            // Fallback: lade aus DB
+            return valueListRecordService.getProperties(valueList);
+        }
     }
 
     @SchemaMapping(typeName = "XtdValueList", field = "unit")
     public Optional<XtdUnit> getUnit(XtdValueList valueList) {
-        return valueListRecordService.getUnit(valueList);
+        return Optional.ofNullable(valueList.getUnit());
     }
 
     @SchemaMapping(typeName = "XtdValueList", field = "language")
     public Optional<XtdLanguage> getLanguage(XtdValueList valueList) {
-        return valueListRecordService.getLanguage(valueList);
+        return Optional.ofNullable(valueList.getLanguage());
     }
 }

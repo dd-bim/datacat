@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
 import java.util.Optional;
@@ -41,5 +42,18 @@ public class TagController {
         final TagSpecification specification = specificationMapper.toTagSpec(input);
         final Page<Tag> page = tagService.findAll(specification);
         return Connection.of(page);
+    }
+
+    // Schema-Mapping für Tag.name mit Validierung
+    @SchemaMapping(typeName = "Tag", field = "name")
+    public String getTagName(Tag tag) {
+        String name = tag.getName();
+        
+        if (name == null || name.trim().isEmpty()) {
+            log.error("CRITICAL: Tag with ID {} has null or empty name! This violates data integrity.", tag.getId());
+            throw new IllegalStateException("Tag name cannot be null or empty. Tag ID: " + tag.getId());
+        }
+        
+        return name;
     }
 }

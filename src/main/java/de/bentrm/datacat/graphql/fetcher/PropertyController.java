@@ -14,6 +14,7 @@ import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.dto.FilterInput;
 import de.bentrm.datacat.graphql.dto.SpecificationMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Controller;
 import java.util.Optional;
 import java.util.List;
 
+@Slf4j
 @Controller
 public class PropertyController {
 
@@ -35,7 +37,11 @@ public class PropertyController {
 
     @QueryMapping
     public Optional<XtdProperty> getProperty(@Argument String id) {
-        return service.findByIdWithDirectRelations(id, XtdProperty.class.getSimpleName());
+        long start = System.currentTimeMillis();
+        Optional<XtdProperty> result = service.findByIdWithDirectRelations(id, XtdProperty.class.getSimpleName());
+        long end = System.currentTimeMillis();
+        log.info("getProperty executed in {} ms", end - start);
+        return result;
     }
 
     @QueryMapping

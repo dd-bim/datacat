@@ -17,6 +17,7 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,11 +47,23 @@ public class OrderedValueController {
 
     @SchemaMapping(typeName = "XtdOrderedValue", field = "orderedValue")
     public XtdValue getOrderedValue(XtdOrderedValue orderedValue) {
-        return orderedValueRecordService.getValue(orderedValue);
+        // Verwende bereits geladene Daten wenn verfügbar
+        XtdValue result = orderedValue.getOrderedValue();
+        if (result == null) {
+            // Fallback: lade aus DB wenn nicht bereits geladen
+            result = orderedValueRecordService.getValue(orderedValue);
+        }
+        return result;
     }
 
     @SchemaMapping(typeName = "XtdOrderedValue", field = "valueLists")
     public List<XtdValueList> getValueLists(XtdOrderedValue orderedValue) {
-        return orderedValueRecordService.getValueLists(orderedValue);
+        // Verwende bereits geladene Daten wenn verfügbar
+        List<XtdValueList> result = new ArrayList<>(orderedValue.getValueLists());
+        if (result.isEmpty()) {
+            // Fallback: lade aus DB wenn nicht bereits geladen
+            result = orderedValueRecordService.getValueLists(orderedValue);
+        }
+        return result;
     }
 }

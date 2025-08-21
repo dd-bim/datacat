@@ -238,16 +238,33 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public HierarchyValue getHierarchy(@NotNull CatalogRecordSpecification rootNodeSpecification) {
+        long startTime = System.currentTimeMillis();
+        
         final Page<XtdObject> rootNodes = findAllCatalogRecords(rootNodeSpecification);
         final List<String> rootNodeIds = rootNodes.map(XtdObject::getId).stream().collect(Collectors.toList());
+        
+        long rootNodesTime = System.currentTimeMillis();
+        log.debug("Found {} root nodes in {} ms", rootNodeIds.size(), rootNodesTime - startTime);
 
         final List<List<String>> paths = findRelationshipPaths(rootNodeIds);
+        
+        long pathsTime = System.currentTimeMillis();
+        log.debug("Found {} paths in {} ms", paths.size(), pathsTime - rootNodesTime);
 
         final Set<String> nodeIds = new HashSet<>();
         paths.forEach(nodeIds::addAll);
+        
+        log.debug("Need to load {} unique nodes from {} paths", nodeIds.size(), paths.size());
 
         final Iterable<XtdRoot> nodes = rootRepository.findAllEntitiesById(nodeIds);
         final List<XtdRoot> leaves = StreamSupport.stream(nodes.spliterator(), false).collect(Collectors.toList());
+        
+        long nodesTime = System.currentTimeMillis();
+        log.debug("Loaded {} nodes in {} ms", leaves.size(), nodesTime - pathsTime);
+        
+        long totalTime = System.currentTimeMillis();
+        log.info("Hierarchy query completed in {} ms total (root: {}ms, paths: {}ms, nodes: {}ms)", 
+                totalTime - startTime, rootNodesTime - startTime, pathsTime - rootNodesTime, nodesTime - pathsTime);
 
         return new HierarchyValue(leaves, paths);
     }

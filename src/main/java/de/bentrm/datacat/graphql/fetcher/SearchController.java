@@ -52,6 +52,8 @@ public class SearchController {
 
     @QueryMapping
     public HierarchyValue hierarchy(@Argument HierarchyFilterInput input) {
+        if (input == null) input = new HierarchyFilterInput();
+        
         final HierarchyRootNodeFilterInput rootNodeFilter = input.getRootNodeFilter();
         final CatalogRecordSpecification rootNodeSpecification = specificationMapper.toCatalogRecordSpecification(rootNodeFilter);
         return catalogService.getHierarchy(rootNodeSpecification);
