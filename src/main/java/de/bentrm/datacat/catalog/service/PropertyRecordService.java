@@ -36,4 +36,7 @@ public interface PropertyRecordService extends SimpleRecordService<XtdProperty> 
     List<XtdQuantityKind> getQuantityKinds(@NotNull XtdProperty property);
 
     @NotNull XtdProperty updateDataType(@NotNull String id, @NotNull XtdDataTypeEnum dataTypeId);
+
+    Optional<XtdProperty> findByIdWithIncomingAndOutgoingRelations(@NotNull String id);
+
 }

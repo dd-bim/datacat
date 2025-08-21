@@ -8,6 +8,7 @@ import de.bentrm.datacat.catalog.specification.CatalogRecordSpecification;
 import de.bentrm.datacat.graphql.Connection;
 import de.bentrm.datacat.graphql.dto.FilterInput;
 import de.bentrm.datacat.graphql.dto.SpecificationMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -15,9 +16,12 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+@Slf4j
 @Controller
 public class SubjectController {
 
@@ -29,7 +33,11 @@ public class SubjectController {
 
     @QueryMapping
     public Optional<XtdSubject> getSubject(@Argument String id) {
-        return service.findByIdWithDirectRelations(id, XtdSubject.class.getSimpleName());
+        long start = System.currentTimeMillis();
+        Optional<XtdSubject> result = service.findByIdWithIncomingAndOutgoingRelations(id);
+        long end = System.currentTimeMillis();
+        log.info("getSubject executed in {} ms", end - start);
+        return result;
     }
 
     @QueryMapping
@@ -41,18 +49,34 @@ public class SubjectController {
         return Connection.of(page);
     }
 
+    // Optimierte Schema-Mappings, die bereits geladene Daten verwenden
     @SchemaMapping(typeName = "XtdSubject", field = "properties")
     public List<XtdProperty> getProperties(XtdSubject subject) {
-        return service.getProperties(subject);
+        Set<XtdProperty> loadedProperties = subject.getProperties();
+        if (loadedProperties != null && !loadedProperties.isEmpty()) {
+            return new ArrayList<>(loadedProperties);
+        } else {
+            // Fallback: lade aus DB
+            return service.getProperties(subject);
+        }
     }
 
     @SchemaMapping(typeName = "XtdSubject", field = "connectedSubjects")
     public List<XtdRelationshipToSubject> getConnectedSubjects(XtdSubject subject) {
-        return service.getConnectedSubjects(subject);
+        Set<XtdRelationshipToSubject> loadedConnectedSubjects = subject.getConnectedSubjects();
+        if (loadedConnectedSubjects != null && !loadedConnectedSubjects.isEmpty()) {
+            return new ArrayList<>(loadedConnectedSubjects);
+        } else {
+            // Fallback: lade aus DB
+            return service.getConnectedSubjects(subject);
+        }
     }
 
     @SchemaMapping(typeName = "XtdSubject", field = "connectingSubjects")
     public List<XtdRelationshipToSubject> getConnectingSubjects(XtdSubject subject) {
+        // Note: connectingSubjects werden über inverse Beziehung geladen,
+        // diese sind möglicherweise nicht direkt im Subject verfügbar
+        // Fallback zur DB-Abfrage
         return service.getConnectingSubjects(subject);
     }
 }

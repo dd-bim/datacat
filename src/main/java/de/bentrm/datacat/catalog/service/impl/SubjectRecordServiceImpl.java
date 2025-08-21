@@ -1,5 +1,6 @@
 package de.bentrm.datacat.catalog.service.impl;
 
+import de.bentrm.datacat.base.specification.QuerySpecification;
 import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
@@ -24,11 +25,16 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
+import org.springframework.data.support.PageableExecutionUtils;
 
 @Slf4j
 @Service
@@ -51,6 +57,66 @@ public class SubjectRecordServiceImpl
             SubjectRepository repository,
             CatalogCleanupService cleanupService) {
         super(XtdSubject.class, neo4jTemplate, repository, cleanupService);
+    }
+
+    @Override
+    public @NotNull Page<XtdSubject> findAll(@NotNull QuerySpecification specification) {
+        // Use optimized query when no complex filters are applied
+        if (isSimpleQuery(specification)) {
+            List<XtdSubject> subjects = findSubjectsWithRelations(specification);
+            Pageable pageable = specification.getPageable().orElse(PageRequest.of(0, 20));
+            return PageableExecutionUtils.getPage(subjects, pageable, 
+                () -> getRepository().count());
+        }
+        // Fallback to default implementation for complex queries
+        return super.findAll(specification);
+    }
+
+    private boolean isSimpleQuery(QuerySpecification specification) {
+        // Consider it simple if there are no filters, only pagination and sorting
+        return specification.getFilters() == null || specification.getFilters().isEmpty();
+    }
+
+    private List<XtdSubject> findSubjectsWithRelations(QuerySpecification specification) {
+        Pageable pageable = specification.getPageable().orElse(PageRequest.of(0, 20));
+        String query = buildOptimizedSubjectQuery(pageable);
+        return getNeo4jTemplate().findAll(query, XtdSubject.class);
+    }
+
+    private String buildOptimizedSubjectQuery(Pageable pageable) {
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("MATCH (s:XtdSubject) ");
+        
+        // Add optional matches for commonly used relations
+        queryBuilder.append("OPTIONAL MATCH (s)-[:COLLECTS]->(collectedSubjects:XtdSubject) ");
+        queryBuilder.append("OPTIONAL MATCH (s)<-[:COLLECTS]-(collectingSubjects:XtdSubject) ");
+        queryBuilder.append("OPTIONAL MATCH (s)-[:SPECIALIZES]->(specializedSubjects:XtdSubject) ");
+        queryBuilder.append("OPTIONAL MATCH (s)<-[:SPECIALIZES]-(specializingSubjects:XtdSubject) ");
+        queryBuilder.append("OPTIONAL MATCH (s)-[:GROUPS]->(groupedObjects:XtdObject) ");
+        queryBuilder.append("OPTIONAL MATCH (s)-[:TAGGED]->(tags:Tag) ");
+        
+        queryBuilder.append("RETURN s, ");
+        queryBuilder.append("collect(DISTINCT collectedSubjects) as collectedSubjects, ");
+        queryBuilder.append("collect(DISTINCT collectingSubjects) as collectingSubjects, ");
+        queryBuilder.append("collect(DISTINCT specializedSubjects) as specializedSubjects, ");
+        queryBuilder.append("collect(DISTINCT specializingSubjects) as specializingSubjects, ");
+        queryBuilder.append("collect(DISTINCT groupedObjects) as groupedObjects, ");
+        queryBuilder.append("collect(DISTINCT tags) as tags ");
+        
+        // Add sorting if specified
+        if (pageable.getSort().isSorted()) {
+            queryBuilder.append("ORDER BY ");
+            String sortClause = pageable.getSort().stream()
+                    .map(order -> "s." + order.getProperty() + " " + order.getDirection())
+                    .collect(Collectors.joining(", "));
+            queryBuilder.append(sortClause).append(" ");
+        }
+        
+        // Add pagination
+        queryBuilder.append("SKIP ").append(pageable.getOffset()).append(" ");
+        queryBuilder.append("LIMIT ").append(pageable.getPageSize());
+        
+        return queryBuilder.toString();
     }
 
     @Override
@@ -93,6 +159,11 @@ public class SubjectRecordServiceImpl
         return StreamSupport
                 .stream(relations.spliterator(), false)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<XtdSubject> findByIdWithIncomingAndOutgoingRelations(String id) {
+        return getRepository().findByIdWithIncomingAndOutgoingRelations(id);
     }
 
     @Transactional

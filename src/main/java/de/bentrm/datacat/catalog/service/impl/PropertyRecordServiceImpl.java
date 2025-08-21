@@ -1,5 +1,6 @@
 package de.bentrm.datacat.catalog.service.impl;
 
+import de.bentrm.datacat.base.specification.QuerySpecification;
 import de.bentrm.datacat.catalog.domain.CatalogRecordType;
 import de.bentrm.datacat.catalog.domain.SimpleRelationType;
 import de.bentrm.datacat.catalog.domain.XtdProperty;
@@ -35,7 +36,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -45,6 +51,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -204,6 +212,79 @@ public class PropertyRecordServiceImpl extends AbstractSimpleRecordServiceImpl<X
                 property.setDataType(dataType);
                 neo4jTemplate.saveAs(property, PropertyDtoProjection.class);
                 return property;
+        }
+
+        @Override
+        public Optional<XtdProperty> findByIdWithIncomingAndOutgoingRelations(String id) {
+                return getRepository().findByIdWithIncomingAndOutgoingRelations(id);
+        }
+
+        @Override
+        public @NotNull Page<XtdProperty> findAll(@NotNull QuerySpecification specification) {
+                // Verwende eine optimierte Query für Properties, die wichtige Relationen vorlädt
+                Collection<XtdProperty> properties;
+                Pageable pageable;
+                final Long count = count(specification);
+
+                final Optional<Pageable> paged = specification.getPageable();
+                if (paged.isPresent()) {
+                        pageable = paged.get();
+                        // Verwende optimierte Cypher-Query statt der Standard-Query
+                        properties = findPropertiesWithRelations(specification, pageable);
+                } else {
+                        pageable = PageRequest.of(0, (int) Math.max(count, 10));
+                        properties = findPropertiesWithRelations(specification, pageable);
+                }
+
+                return PageableExecutionUtils.getPage(List.copyOf(properties), pageable, () -> count);
+        }
+
+        private Collection<XtdProperty> findPropertiesWithRelations(QuerySpecification specification, Pageable pageable) {
+                String query = buildOptimizedPropertyQuery(specification, pageable);
+                return neo4jTemplate.findAll(query, XtdProperty.class);
+        }
+
+        private String buildOptimizedPropertyQuery(QuerySpecification specification, Pageable pageable) {
+                String sort = "";
+                if (pageable.getSort().isSorted()) {
+                        final Sort.Direction direction = pageable.getSort().get().findFirst().map(Sort.Order::getDirection).orElse(Sort.Direction.ASC);
+                        final String[] properties = pageable.getSort().get().map(Sort.Order::getProperty).toArray(String[]::new);
+                        List<String> prefixedProperties = Arrays.stream(properties)
+                                        .map(property -> "p.`" + property + "` " + direction.name()).collect(Collectors.toList());
+                        sort = " ORDER BY " + String.join(", ", prefixedProperties);
+                }
+
+                String whereClause = "";
+                if (!specification.getFilters().isEmpty()) {
+                        whereClause = " WHERE " + String.join(" AND ", specification.getFilters().stream()
+                                        .map(filter -> filter.replace("n.", "p.")).collect(Collectors.toList()));
+                }
+
+                return String.format("""
+                                MATCH (p:XtdProperty)%s
+                                
+                                // Wichtigste Relationen vorladen
+                                OPTIONAL MATCH (p)-[:DIMENSION]->(dim:XtdDimension)
+                                OPTIONAL MATCH (p)-[:POSSIBLE_VALUES]->(vl:XtdValueList)
+                                OPTIONAL MATCH (p)-[:UNITS]->(unit:XtdUnit)
+                                OPTIONAL MATCH (p)-[:SYMBOLS]->(sym:XtdSymbol)
+                                OPTIONAL MATCH (p)-[:QUANTITY_KINDS]->(qk:XtdQuantityKind)
+                                OPTIONAL MATCH (p)-[:BOUNDARY_VALUES]->(iv:XtdInterval)
+                                OPTIONAL MATCH (p)-[:TAGGED]->(tag:Tag)
+                                
+                                WITH p, 
+                                     collect(DISTINCT dim) as dimensions,
+                                     collect(DISTINCT vl) as valueLists, 
+                                     collect(DISTINCT unit) as units,
+                                     collect(DISTINCT sym) as symbols,
+                                     collect(DISTINCT qk) as quantityKinds,
+                                     collect(DISTINCT iv) as intervals,
+                                     collect(DISTINCT tag) as tags%s
+                                
+                                RETURN p, dimensions, valueLists, units, symbols, quantityKinds, intervals, tags
+                                SKIP %d LIMIT %d
+                                """,
+                                whereClause, sort, pageable.getOffset(), pageable.getPageSize());
         }
 
         @Transactional

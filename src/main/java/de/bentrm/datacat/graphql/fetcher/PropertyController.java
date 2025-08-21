@@ -24,6 +24,8 @@ import org.springframework.stereotype.Controller;
 
 import java.util.Optional;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
 
 @Slf4j
 @Controller
@@ -38,7 +40,7 @@ public class PropertyController {
     @QueryMapping
     public Optional<XtdProperty> getProperty(@Argument String id) {
         long start = System.currentTimeMillis();
-        Optional<XtdProperty> result = service.findByIdWithDirectRelations(id, XtdProperty.class.getSimpleName());
+        Optional<XtdProperty> result = service.findByIdWithIncomingAndOutgoingRelations(id);
         long end = System.currentTimeMillis();
         log.info("getProperty executed in {} ms", end - start);
         return result;
@@ -53,48 +55,97 @@ public class PropertyController {
         return Connection.of(page);
     }
 
+    // Optimierte Schema-Mappings, die bereits geladene Daten verwenden
     @SchemaMapping(typeName = "XtdProperty", field = "dimension")
     public Optional<XtdDimension> getDimension(XtdProperty property) {
-        return service.getDimension(property);
+        XtdDimension loadedDimension = property.getDimension();
+        if (loadedDimension != null) {
+            return Optional.of(loadedDimension);
+        } else {
+            // Fallback: lade aus DB
+            return service.getDimension(property);
+        }
     }
 
     @SchemaMapping(typeName = "XtdProperty", field = "possibleValues")
     public List<XtdValueList> getPossibleValues(XtdProperty property) {
-        return service.getValueLists(property);
+        Set<XtdValueList> loadedValueLists = property.getPossibleValues();
+        if (loadedValueLists != null && !loadedValueLists.isEmpty()) {
+            return new ArrayList<>(loadedValueLists);
+        } else {
+            // Fallback: lade aus DB
+            return service.getValueLists(property);
+        }
     }
 
     @SchemaMapping(typeName = "XtdProperty", field = "units")
     public List<XtdUnit> getUnits(XtdProperty property) {
-        return service.getUnits(property);
+        Set<XtdUnit> loadedUnits = property.getUnits();
+        if (loadedUnits != null && !loadedUnits.isEmpty()) {
+            return new ArrayList<>(loadedUnits);
+        } else {
+            // Fallback: lade aus DB
+            return service.getUnits(property);
+        }
     }
 
     @SchemaMapping(typeName = "XtdProperty", field = "connectedProperties")
     public List<XtdRelationshipToProperty> getConnectedProperties(XtdProperty property) {
-        return service.getConnectedProperties(property);
+        Set<XtdRelationshipToProperty> loadedConnectedProperties = property.getConnectedProperties();
+        if (loadedConnectedProperties != null && !loadedConnectedProperties.isEmpty()) {
+            return new ArrayList<>(loadedConnectedProperties);
+        } else {
+            // Fallback: lade aus DB
+            return service.getConnectedProperties(property);
+        }
     }
 
     @SchemaMapping(typeName = "XtdProperty", field = "connectingProperties")
     public List<XtdRelationshipToProperty> getConnectingProperties(XtdProperty property) {
+        // Note: connectingProperties werden über inverse Beziehung geladen, 
+        // diese sind möglicherweise nicht direkt in der Property verfügbar
+        // Fallback zur DB-Abfrage
         return service.getConnectingProperties(property);
     }
 
     @SchemaMapping(typeName = "XtdProperty", field = "symbols")
     public List<XtdSymbol> getSymbols(XtdProperty property) {
-        return service.getSymbols(property);
+        Set<XtdSymbol> loadedSymbols = property.getSymbols();
+        if (loadedSymbols != null && !loadedSymbols.isEmpty()) {
+            return new ArrayList<>(loadedSymbols);
+        } else {
+            // Fallback: lade aus DB
+            return service.getSymbols(property);
+        }
     }
 
     @SchemaMapping(typeName = "XtdProperty", field = "boundaryValues")
     public List<XtdInterval> getBoundaryValues(XtdProperty property) {
-        return service.getIntervals(property);
+        Set<XtdInterval> loadedBoundaryValues = property.getBoundaryValues();
+        if (loadedBoundaryValues != null && !loadedBoundaryValues.isEmpty()) {
+            return new ArrayList<>(loadedBoundaryValues);
+        } else {
+            // Fallback: lade aus DB
+            return service.getIntervals(property);
+        }
     }
 
     @SchemaMapping(typeName = "XtdProperty", field = "quantityKinds")
     public List<XtdQuantityKind> getQuantityKinds(XtdProperty property) {
-        return service.getQuantityKinds(property);
+        Set<XtdQuantityKind> loadedQuantityKinds = property.getQuantityKinds();
+        if (loadedQuantityKinds != null && !loadedQuantityKinds.isEmpty()) {
+            return new ArrayList<>(loadedQuantityKinds);
+        } else {
+            // Fallback: lade aus DB
+            return service.getQuantityKinds(property);
+        }
     }
 
     @SchemaMapping(typeName = "XtdProperty", field = "subjects")
     public List<XtdSubject> getSubjects(XtdProperty property) {
+        // Note: subjects werden über inverse Beziehung geladen,
+        // diese sind möglicherweise nicht direkt in der Property verfügbar
+        // Fallback zur DB-Abfrage
         return service.getSubjects(property);
     }
 }
