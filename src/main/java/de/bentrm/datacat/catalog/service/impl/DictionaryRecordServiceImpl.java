@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.util.Assert;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -77,10 +80,22 @@ public class DictionaryRecordServiceImpl
     }
 
     @Override
-    public @NotNull List<XtdObject> getConcepts(@NotNull XtdDictionary dictionary) {
+    public @NotNull Page<XtdObject> getConcepts(@NotNull XtdDictionary dictionary, @NotNull Pageable pageable) {
         Assert.notNull(dictionary.getId(), "Dictionary must be persistent.");
-        final List<String> conceptIds = getRepository().findConceptsByDictionaryId(dictionary.getId());
+        
+        final List<String> conceptIds = getRepository().findConceptsByDictionaryIdPaginated(
+            dictionary.getId(), 
+            (int) pageable.getOffset(), 
+            pageable.getPageSize()
+        );
+        
         final Iterable<XtdObject> concepts = objectRecordService.findAllEntitiesById(conceptIds);
-        return StreamSupport.stream(concepts.spliterator(), false).collect(Collectors.toList());
+        final List<XtdObject> conceptsList = StreamSupport.stream(concepts.spliterator(), false)
+            .collect(Collectors.toList());
+        
+        // Get total count for pagination
+        final Long totalCount = getRepository().countConceptsByDictionaryId(dictionary.getId());
+        
+        return PageableExecutionUtils.getPage(conceptsList, pageable, () -> totalCount);
     }
 }

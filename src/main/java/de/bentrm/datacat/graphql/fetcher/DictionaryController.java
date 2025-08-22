@@ -10,12 +10,13 @@ import de.bentrm.datacat.graphql.dto.FilterInput;
 import de.bentrm.datacat.graphql.dto.SpecificationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -47,7 +48,14 @@ public class DictionaryController {
     }
 
     @SchemaMapping(typeName = "XtdDictionary", field = "concepts")
-    public List<XtdObject> getConcepts(XtdDictionary dictionary) {
-        return service.getConcepts(dictionary);
+    public Connection<XtdObject> getConcepts(XtdDictionary dictionary, 
+                                            @Argument Integer pageSize, 
+                                            @Argument Integer pageNumber) {
+        if (pageSize == null) pageSize = 20;
+        if (pageNumber == null) pageNumber = 0;
+        
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<XtdObject> page = service.getConcepts(dictionary, pageable);
+        return Connection.of(page);
     }
 }
