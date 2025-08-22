@@ -2,7 +2,8 @@ package de.bentrm.datacat.catalog.service;
 
 import jakarta.validation.constraints.NotNull;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import de.bentrm.datacat.catalog.domain.XtdDictionary;
 import de.bentrm.datacat.catalog.domain.XtdMultiLanguageText;
@@ -12,5 +13,5 @@ public interface DictionaryRecordService extends SimpleRecordService<XtdDictiona
 
     @NotNull XtdMultiLanguageText getName(@NotNull XtdDictionary dictionary);
 
-    @NotNull List<XtdObject> getConcepts(@NotNull XtdDictionary dictionary);
+    @NotNull Page<XtdObject> getConcepts(@NotNull XtdDictionary dictionary, @NotNull Pageable pageable);
 }

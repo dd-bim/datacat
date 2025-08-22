@@ -689,7 +689,7 @@ type XtdDictionary implements XtdRoot {
   lastModifiedBy: String!
   tags: [Tag!]!
   name: XtdMultiLanguageText # required
-  concepts: [XtdObject!]
+  concepts(pageSize: Int, pageNumber: Int): XtdObjectConnection!
 }
 
 type XtdSubdivision implements XtdRoot & XtdObject & XtdConcept {
