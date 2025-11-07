@@ -14,7 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.BatchMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
 import java.util.ArrayList;
@@ -52,43 +51,51 @@ public class SubjectController {
         return Connection.of(page);
     }
 
-    // // Optimierte Schema-Mappings, die bereits geladene Daten verwenden
-    // @SchemaMapping(typeName = "XtdSubject", field = "properties")
-    // public List<XtdProperty> getProperties(XtdSubject subject) {
-    //     Set<XtdProperty> loadedProperties = subject.getProperties();
-    //     if (loadedProperties != null && !loadedProperties.isEmpty()) {
-    //         return new ArrayList<>(loadedProperties);
-    //     } else {
-    //         // Fallback: lade aus DB
-    //         return service.getProperties(subject);
-    //     }
-    // }
-
     @BatchMapping(typeName = "XtdSubject", field = "properties")
     public Map<XtdSubject, List<XtdProperty>> getProperties(List<XtdSubject> subjects) {
         return subjects.stream()
+                .filter(subject -> subject != null)  // Filter out null subjects
                 .collect(Collectors.toMap(
                         subject -> subject,
-                        subject -> service.getProperties(subject)
+                        subject -> {
+                            List<XtdProperty> result = service.getProperties(subject);
+                            return result != null ? result : new ArrayList<>();  // Handle null result
+                        }
                 ));                
     }
 
-    @SchemaMapping(typeName = "XtdSubject", field = "connectedSubjects")
-    public List<XtdRelationshipToSubject> getConnectedSubjects(XtdSubject subject) {
-        Set<XtdRelationshipToSubject> loadedConnectedSubjects = subject.getConnectedSubjects();
-        if (loadedConnectedSubjects != null && !loadedConnectedSubjects.isEmpty()) {
-            return new ArrayList<>(loadedConnectedSubjects);
-        } else {
-            // Fallback: lade aus DB
-            return service.getConnectedSubjects(subject);
-        }
+    @BatchMapping(typeName = "XtdSubject", field = "connectedSubjects")
+    public Map<XtdSubject, List<XtdRelationshipToSubject>> getConnectedSubjects(List<XtdSubject> subjects) {
+        return subjects.stream()
+                .filter(subject -> subject != null)  // Filter out null subjects
+                .collect(Collectors.toMap(
+                        subject -> subject,
+                        subject -> {
+                            Set<XtdRelationshipToSubject> loadedConnectedSubjects = subject.getConnectedSubjects();
+                            if (loadedConnectedSubjects != null && !loadedConnectedSubjects.isEmpty()) {
+                                return new ArrayList<>(loadedConnectedSubjects);
+                            } else {
+                                // Fallback: lade aus DB
+                                List<XtdRelationshipToSubject> result = service.getConnectedSubjects(subject);
+                                return result != null ? result : new ArrayList<>();  // Handle null result
+                            }
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdSubject", field = "connectingSubjects")
-    public List<XtdRelationshipToSubject> getConnectingSubjects(XtdSubject subject) {
-        // Note: connectingSubjects werden über inverse Beziehung geladen,
-        // diese sind möglicherweise nicht direkt im Subject verfügbar
-        // Fallback zur DB-Abfrage
-        return service.getConnectingSubjects(subject);
+    @BatchMapping(typeName = "XtdSubject", field = "connectingSubjects")
+    public Map<XtdSubject, List<XtdRelationshipToSubject>> getConnectingSubjects(List<XtdSubject> subjects) {
+        return subjects.stream()
+                .filter(subject -> subject != null)  // Filter out null subjects
+                .collect(Collectors.toMap(
+                        subject -> subject,
+                        subject -> {
+                            // Note: connectingSubjects werden über inverse Beziehung geladen,
+                            // diese sind möglicherweise nicht direkt im Subject verfügbar
+                            // Fallback zur DB-Abfrage
+                            List<XtdRelationshipToSubject> result = service.getConnectingSubjects(subject);
+                            return result != null ? result : new ArrayList<>();  // Handle null result
+                        }
+                ));                
     }
 }

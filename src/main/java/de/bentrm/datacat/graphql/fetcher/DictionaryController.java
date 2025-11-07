@@ -13,11 +13,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.BatchMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 public class DictionaryController {
@@ -42,9 +46,17 @@ public class DictionaryController {
         return Connection.of(page);
     }
 
-    @SchemaMapping(typeName = "XtdDictionary", field = "name")
-    public XtdMultiLanguageText getName(XtdDictionary dictionary) {
-        return service.getName(dictionary);
+    @BatchMapping(typeName = "XtdDictionary", field = "name")
+    public Map<XtdDictionary, XtdMultiLanguageText> getName(List<XtdDictionary> dictionaries) {
+        return dictionaries.stream()
+                .filter(dictionary -> dictionary != null)  // Filter out null dictionaries
+                .collect(Collectors.toMap(
+                        dictionary -> dictionary,
+                        dictionary -> {
+                            XtdMultiLanguageText result = service.getName(dictionary);
+                            return result;  // Return as-is since it's not Optional or List
+                        }
+                ));                
     }
 
     @SchemaMapping(typeName = "XtdDictionary", field = "concepts")

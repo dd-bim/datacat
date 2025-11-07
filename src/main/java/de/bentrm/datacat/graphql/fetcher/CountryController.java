@@ -10,12 +10,15 @@ import de.bentrm.datacat.graphql.dto.SpecificationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.BatchMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 public class CountryController {
@@ -39,8 +42,16 @@ public class CountryController {
         return Connection.of(page);
     }
 
-    @SchemaMapping(typeName = "XtdCountry", field = "subdivisions")
-    public List<XtdSubdivision> getSubdivisions(XtdCountry country) {
-        return service.getSubdivisions(country);
+    @BatchMapping(typeName = "XtdCountry", field = "subdivisions")
+    public Map<XtdCountry, List<XtdSubdivision>> getSubdivisions(List<XtdCountry> countries) {
+        return countries.stream()
+                .filter(country -> country != null)  // Filter out null countries
+                .collect(Collectors.toMap(
+                        country -> country,
+                        country -> {
+                            List<XtdSubdivision> result = service.getSubdivisions(country);
+                            return result != null ? result : new ArrayList<>();  // Handle null result
+                        }
+                ));                
     }
 }

@@ -475,8 +475,40 @@ public class CatalogServiceImpl implements CatalogService {
             }
         }
 
+        // Fallback to English for objects without names in the requested language
+        if (!languageCode.equals("en")) {
+            List<String> missingIds = objectIds.stream()
+                    .filter(id -> !namesMap.containsKey(id))
+                    .collect(Collectors.toList());
+
+            if (!missingIds.isEmpty()) {
+                log.debug("Attempting fallback to English for {} objects without names in language: {}", 
+                          missingIds.size(), languageCode);
+
+                String fallbackQuery = """
+                        MATCH (obj:XtdObject)-[:NAMES]->(mlt:XtdMultiLanguageText)-[:TEXTS]->(text:XtdText)-[:LANGUAGE]->(lang:XtdLanguage)
+                        WHERE obj.id IN $ids AND lang.code = 'en'
+                        RETURN obj.id AS objectId, text.text AS name
+                        """;
+
+                Collection<Map<String, Object>> fallbackResults = neo4jClient.query(fallbackQuery)
+                        .bind(missingIds).to("ids").fetch().all();
+
+                for (Map<String, Object> row : fallbackResults) {
+                    String objectId = (String) row.get("objectId");
+                    String name = (String) row.get("name");
+                    if (objectId != null && name != null) {
+                        namesMap.putIfAbsent(objectId, name);
+                    }
+                }
+
+                log.debug("Fallback completed: Found {} additional English names", 
+                          fallbackResults.size());
+            }
+        }
+
         long duration = System.currentTimeMillis() - startTime;
-        log.debug("getNamesForMultipleIds completed: Loaded {} names for {}/{} objects in {}ms (language: {})", 
+        log.debug("getNamesForMultipleIds completed: Loaded {} names for {}/{} objects in {}ms (language: {}, with fallback)", 
                   namesMap.size(), namesMap.size(), objectIds.size(), duration, languageCode);
         return namesMap;
     }

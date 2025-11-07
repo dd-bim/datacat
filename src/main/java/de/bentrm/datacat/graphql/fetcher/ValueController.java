@@ -10,12 +10,14 @@ import de.bentrm.datacat.graphql.dto.SpecificationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.BatchMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 public class ValueController {
@@ -40,8 +42,16 @@ public class ValueController {
         return Connection.of(page);
     }
 
-    @SchemaMapping(typeName = "XtdValue", field = "orderedValues")
-    public Optional<List<XtdOrderedValue>> getOrderedValues(XtdValue value) {
-        return valueRecordService.getOrderedValues(value);
+    @BatchMapping(typeName = "XtdValue", field = "orderedValues")
+    public Map<XtdValue, Optional<List<XtdOrderedValue>>> getOrderedValues(List<XtdValue> values) {
+        return values.stream()
+                .filter(value -> value != null)  // Filter out null values
+                .collect(Collectors.toMap(
+                        value -> value,
+                        value -> {
+                            Optional<List<XtdOrderedValue>> result = valueRecordService.getOrderedValues(value);
+                            return result != null ? result : Optional.empty();  // Handle null Optional
+                        }
+                ));                
     }
 }

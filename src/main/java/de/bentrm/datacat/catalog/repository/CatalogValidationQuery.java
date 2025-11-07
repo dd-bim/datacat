@@ -138,22 +138,39 @@ public interface CatalogValidationQuery extends EntityRepository<XtdRoot> {
 
         /* Finde Elemente mit identischer Bezeichnung innerhalb eines Types */
         @Query("""
-                        MATCH (x)-[:TAGGED]->()<-[:TAGGED]-(y)
-                        WHERE x.`labels.de` = y.`labels.de`
-                        OR x.`labels.en` = y.`labels.en`
-                        WITH x.id AS paths ORDER BY x.`labels.de` ASC
-                        RETURN paths;
-                        """)
+                MATCH (x)-[:TAGGED]->(tag:Tag)
+                WHERE x.`labels.de` IS NOT NULL
+                WITH tag, x.`labels.de` AS labelDe, collect(x.id) AS ids
+                WHERE size(ids) > 1
+                UNWIND ids AS paths
+                RETURN paths
+                ORDER BY labelDe ASC
+                UNION
+                MATCH (x)-[:TAGGED]->(tag:Tag)
+                WHERE x.`labels.en` IS NOT NULL
+                WITH tag, x.`labels.en` AS labelEn, collect(x.id) AS ids
+                WHERE size(ids) > 1
+                UNWIND ids AS paths
+                RETURN DISTINCT paths;
+                """)
         List<String> findMultipleNames();
 
         /* Finde Elemente mit identischer Bezeichnung im gesamten Datenbestand */
         @Query("""
-                        MATCH (x)-[:TAGGED]->(),()<-[:TAGGED]-(y)
-                        WHERE (x.`labels.de` = y.`labels.de`
-                        OR x.`labels.en` = y.`labels.en`) AND x.id <> y.id
-                        WITH x.id AS paths ORDER BY x.`labels.de` ASC
-                        RETURN paths;
-                            """)
+                MATCH (x)-[:TAGGED]->()
+                WHERE x.`labels.de` IS NOT NULL
+                WITH x.`labels.de` AS labelDe, collect(DISTINCT x) AS nodes
+                WHERE size(nodes) > 1
+                UNWIND nodes AS node
+                RETURN DISTINCT node.id AS paths
+                UNION
+                MATCH (x)-[:TAGGED]->()
+                WHERE x.`labels.en` IS NOT NULL
+                WITH x.`labels.en` AS labelEn, collect(DISTINCT x) AS nodes
+                WHERE size(nodes) > 1
+                UNWIND nodes AS node
+                RETURN DISTINCT node.id AS paths
+                """)
         List<String> findMultipleNamesAcrossClasses();
 
         /* ---- Prüfen auf Verständlichkeit ---- */

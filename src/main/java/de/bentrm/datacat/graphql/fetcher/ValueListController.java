@@ -15,14 +15,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.BatchMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -52,30 +54,62 @@ public class ValueListController {
         return Connection.of(page);
     }
 
-    // Optimierte Schema-Mappings, die bereits geladene Daten verwenden
-    @SchemaMapping(typeName = "XtdValueList", field = "values")
-    public List<XtdOrderedValue> getOrderedValues(XtdValueList valueList) {
-        return new ArrayList<>(valueList.getValues());
+    // Optimierte Batch-Mappings, die bereits geladene Daten verwenden
+    @BatchMapping(typeName = "XtdValueList", field = "values")
+    public Map<XtdValueList, List<XtdOrderedValue>> getOrderedValues(List<XtdValueList> valueLists) {
+        return valueLists.stream()
+                .filter(valueList -> valueList != null)  // Filter out null valueLists
+                .collect(Collectors.toMap(
+                        valueList -> valueList,
+                        valueList -> {
+                            List<XtdOrderedValue> result = new ArrayList<>(valueList.getValues());
+                            return result != null ? result : new ArrayList<>();  // Handle null result
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdValueList", field = "properties")
-    public List<XtdProperty> getProperties(XtdValueList valueList) {
-        Set<XtdProperty> loadedProperties = valueList.getProperties();
-        if (loadedProperties != null && !loadedProperties.isEmpty()) {
-            return new ArrayList<>(loadedProperties);
-        } else {
-            // Fallback: lade aus DB
-            return valueListRecordService.getProperties(valueList);
-        }
+    @BatchMapping(typeName = "XtdValueList", field = "properties")
+    public Map<XtdValueList, List<XtdProperty>> getProperties(List<XtdValueList> valueLists) {
+        return valueLists.stream()
+                .filter(valueList -> valueList != null)  // Filter out null valueLists
+                .collect(Collectors.toMap(
+                        valueList -> valueList,
+                        valueList -> {
+                            Set<XtdProperty> loadedProperties = valueList.getProperties();
+                            if (loadedProperties != null && !loadedProperties.isEmpty()) {
+                                return new ArrayList<>(loadedProperties);
+                            } else {
+                                // Fallback: lade aus DB
+                                List<XtdProperty> result = valueListRecordService.getProperties(valueList);
+                                return result != null ? result : new ArrayList<>();  // Handle null result
+                            }
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdValueList", field = "unit")
-    public Optional<XtdUnit> getUnit(XtdValueList valueList) {
-        return Optional.ofNullable(valueList.getUnit());
+    @BatchMapping(typeName = "XtdValueList", field = "unit")
+    public Map<XtdValueList, Optional<XtdUnit>> getUnit(List<XtdValueList> valueLists) {
+        return valueLists.stream()
+                .filter(valueList -> valueList != null)  // Filter out null valueLists
+                .collect(Collectors.toMap(
+                        valueList -> valueList,
+                        valueList -> {
+                            Optional<XtdUnit> result = Optional.ofNullable(valueList.getUnit());
+                            return result != null ? result : Optional.empty();  // Handle null Optional
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdValueList", field = "language")
-    public Optional<XtdLanguage> getLanguage(XtdValueList valueList) {
-        return Optional.ofNullable(valueList.getLanguage());
+    @BatchMapping(typeName = "XtdValueList", field = "language")
+    public Map<XtdValueList, Optional<XtdLanguage>> getLanguage(List<XtdValueList> valueLists) {
+        return valueLists.stream()
+                .filter(valueList -> valueList != null)  // Filter out null valueLists
+                .collect(Collectors.toMap(
+                        valueList -> valueList,
+                        valueList -> {
+                            Optional<XtdLanguage> result = Optional.ofNullable(valueList.getLanguage());
+                            return result != null ? result : Optional.empty();  // Handle null Optional
+                        }
+                ));                
     }
 }

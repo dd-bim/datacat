@@ -54,11 +54,6 @@ public class ObjectController {
         return Connection.of(page);
     }
 
-    // @SchemaMapping(typeName = "XtdObject", field = "names")
-    // public List<XtdMultiLanguageText> getNames(XtdObject object) {
-    //     return service.getNames(object);
-    // }
-
     @BatchMapping(typeName = "XtdObject", field = "names")
     public Map<XtdObject, List<XtdMultiLanguageText>> getNames(List<XtdObject> objects) {
         return objects.stream()
@@ -71,11 +66,6 @@ public class ObjectController {
                         }
                 ));                
     }
-
-    // @SchemaMapping(typeName = "XtdObject", field = "dictionary")
-    // public Optional<XtdDictionary> getDictionary(XtdObject object) {
-    //     return service.getDictionary(object);
-    // }
 
     @BatchMapping(typeName = "XtdObject", field = "dictionary")
     public Map<XtdObject, Optional<XtdDictionary>> getDictionary(List<XtdObject> objects) {
@@ -90,11 +80,6 @@ public class ObjectController {
                 ));                
     }
 
-    // @SchemaMapping(typeName = "XtdObject", field = "deprecationExplanation")
-    // public Optional<XtdMultiLanguageText> getDeprecationExplanation(XtdObject object) {
-    //     return service.getDeprecationExplanation(object);
-    // }
-
     @BatchMapping(typeName = "XtdObject", field = "deprecationExplanation")
     public Map<XtdObject, Optional<XtdMultiLanguageText>> getDeprecationExplanation(List<XtdObject> objects) {
         return objects.stream()
@@ -107,11 +92,6 @@ public class ObjectController {
                         }
                 ));                
     }
-
-    // @SchemaMapping(typeName = "XtdObject", field = "replacedObjects")
-    // public List<XtdObject> getReplacedObjects(XtdObject object) {
-    //     return service.getReplacedObjects(object);
-    // }
 
     @BatchMapping(typeName = "XtdObject", field = "replacedObjects")
     public Map<XtdObject, List<XtdObject>> getReplacedObjects(List<XtdObject> objects) {
@@ -126,11 +106,6 @@ public class ObjectController {
                 ));
     }
 
-    // @SchemaMapping(typeName = "XtdObject", field = "replacingObjects")
-    // public List<XtdObject> getReplacingObjects(XtdObject object) {
-    //     return service.getReplacingObjects(object);
-    // }
-
     @BatchMapping(typeName = "XtdObject", field = "replacingObjects")
     public Map<XtdObject, List<XtdObject>> getReplacingObjects(List<XtdObject> objects) {
         return objects.stream()
@@ -143,11 +118,6 @@ public class ObjectController {
                         }
                 ));
     }
-
-    // @SchemaMapping(typeName = "XtdObject", field = "comments")
-    // public List<XtdMultiLanguageText> getComments(XtdObject object) {
-    //     return service.getComments(object);
-    // }
 
     @BatchMapping(typeName = "XtdObject", field = "comments")
     public Map<XtdObject, List<XtdMultiLanguageText>> getComments(List<XtdObject> objects) {

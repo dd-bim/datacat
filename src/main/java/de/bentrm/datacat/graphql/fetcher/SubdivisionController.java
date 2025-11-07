@@ -9,12 +9,15 @@ import de.bentrm.datacat.graphql.dto.SpecificationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.BatchMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 public class SubdivisionController {
@@ -38,8 +41,16 @@ public class SubdivisionController {
         return Connection.of(page);
     }
 
-    @SchemaMapping(typeName = "XtdSubdivision", field = "subdivisions")
-    public List<XtdSubdivision> getSubdivisions(XtdSubdivision subdivision) {
-        return service.getSubdivisions(subdivision);
+    @BatchMapping(typeName = "XtdSubdivision", field = "subdivisions")
+    public Map<XtdSubdivision, List<XtdSubdivision>> getSubdivisions(List<XtdSubdivision> subdivisions) {
+        return subdivisions.stream()
+                .filter(subdivision -> subdivision != null)  // Filter out null subdivisions
+                .collect(Collectors.toMap(
+                        subdivision -> subdivision,
+                        subdivision -> {
+                            List<XtdSubdivision> result = service.getSubdivisions(subdivision);
+                            return result != null ? result : new ArrayList<>();  // Handle null result
+                        }
+                ));                
     }
 }

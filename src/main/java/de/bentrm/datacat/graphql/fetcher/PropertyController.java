@@ -18,14 +18,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.BatchMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
 import java.util.Optional;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -55,97 +57,169 @@ public class PropertyController {
         return Connection.of(page);
     }
 
-    // Optimierte Schema-Mappings, die bereits geladene Daten verwenden
-    @SchemaMapping(typeName = "XtdProperty", field = "dimension")
-    public Optional<XtdDimension> getDimension(XtdProperty property) {
-        XtdDimension loadedDimension = property.getDimension();
-        if (loadedDimension != null) {
-            return Optional.of(loadedDimension);
-        } else {
-            // Fallback: lade aus DB
-            return service.getDimension(property);
-        }
+    // Optimierte Batch-Mappings, die bereits geladene Daten verwenden
+    @BatchMapping(typeName = "XtdProperty", field = "dimension")
+    public Map<XtdProperty, Optional<XtdDimension>> getDimension(List<XtdProperty> properties) {
+        return properties.stream()
+                .filter(property -> property != null)  // Filter out null properties
+                .collect(Collectors.toMap(
+                        property -> property,
+                        property -> {
+                            XtdDimension loadedDimension = property.getDimension();
+                            if (loadedDimension != null) {
+                                return Optional.of(loadedDimension);
+                            } else {
+                                // Fallback: lade aus DB
+                                Optional<XtdDimension> result = service.getDimension(property);
+                                return result != null ? result : Optional.empty();  // Handle null Optional
+                            }
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdProperty", field = "possibleValues")
-    public List<XtdValueList> getPossibleValues(XtdProperty property) {
-        Set<XtdValueList> loadedValueLists = property.getPossibleValues();
-        if (loadedValueLists != null && !loadedValueLists.isEmpty()) {
-            return new ArrayList<>(loadedValueLists);
-        } else {
-            // Fallback: lade aus DB
-            return service.getValueLists(property);
-        }
+    @BatchMapping(typeName = "XtdProperty", field = "possibleValues")
+    public Map<XtdProperty, List<XtdValueList>> getPossibleValues(List<XtdProperty> properties) {
+        return properties.stream()
+                .filter(property -> property != null)  // Filter out null properties
+                .collect(Collectors.toMap(
+                        property -> property,
+                        property -> {
+                            Set<XtdValueList> loadedValueLists = property.getPossibleValues();
+                            if (loadedValueLists != null && !loadedValueLists.isEmpty()) {
+                                return new ArrayList<>(loadedValueLists);
+                            } else {
+                                // Fallback: lade aus DB
+                                List<XtdValueList> result = service.getValueLists(property);
+                                return result != null ? result : new ArrayList<>();  // Handle null result
+                            }
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdProperty", field = "units")
-    public List<XtdUnit> getUnits(XtdProperty property) {
-        Set<XtdUnit> loadedUnits = property.getUnits();
-        if (loadedUnits != null && !loadedUnits.isEmpty()) {
-            return new ArrayList<>(loadedUnits);
-        } else {
-            // Fallback: lade aus DB
-            return service.getUnits(property);
-        }
+    @BatchMapping(typeName = "XtdProperty", field = "units")
+    public Map<XtdProperty, List<XtdUnit>> getUnits(List<XtdProperty> properties) {
+        return properties.stream()
+                .filter(property -> property != null)  // Filter out null properties
+                .collect(Collectors.toMap(
+                        property -> property,
+                        property -> {
+                            Set<XtdUnit> loadedUnits = property.getUnits();
+                            if (loadedUnits != null && !loadedUnits.isEmpty()) {
+                                return new ArrayList<>(loadedUnits);
+                            } else {
+                                // Fallback: lade aus DB
+                                List<XtdUnit> result = service.getUnits(property);
+                                return result != null ? result : new ArrayList<>();  // Handle null result
+                            }
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdProperty", field = "connectedProperties")
-    public List<XtdRelationshipToProperty> getConnectedProperties(XtdProperty property) {
-        Set<XtdRelationshipToProperty> loadedConnectedProperties = property.getConnectedProperties();
-        if (loadedConnectedProperties != null && !loadedConnectedProperties.isEmpty()) {
-            return new ArrayList<>(loadedConnectedProperties);
-        } else {
-            // Fallback: lade aus DB
-            return service.getConnectedProperties(property);
-        }
+    @BatchMapping(typeName = "XtdProperty", field = "connectedProperties")
+    public Map<XtdProperty, List<XtdRelationshipToProperty>> getConnectedProperties(List<XtdProperty> properties) {
+        return properties.stream()
+                .filter(property -> property != null)  // Filter out null properties
+                .collect(Collectors.toMap(
+                        property -> property,
+                        property -> {
+                            Set<XtdRelationshipToProperty> loadedConnectedProperties = property.getConnectedProperties();
+                            if (loadedConnectedProperties != null && !loadedConnectedProperties.isEmpty()) {
+                                return new ArrayList<>(loadedConnectedProperties);
+                            } else {
+                                // Fallback: lade aus DB
+                                List<XtdRelationshipToProperty> result = service.getConnectedProperties(property);
+                                return result != null ? result : new ArrayList<>();  // Handle null result
+                            }
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdProperty", field = "connectingProperties")
-    public List<XtdRelationshipToProperty> getConnectingProperties(XtdProperty property) {
-        // Note: connectingProperties werden über inverse Beziehung geladen, 
-        // diese sind möglicherweise nicht direkt in der Property verfügbar
-        // Fallback zur DB-Abfrage
-        return service.getConnectingProperties(property);
+    @BatchMapping(typeName = "XtdProperty", field = "connectingProperties")
+    public Map<XtdProperty, List<XtdRelationshipToProperty>> getConnectingProperties(List<XtdProperty> properties) {
+        return properties.stream()
+                .filter(property -> property != null)  // Filter out null properties
+                .collect(Collectors.toMap(
+                        property -> property,
+                        property -> {
+                            // Note: connectingProperties werden über inverse Beziehung geladen, 
+                            // diese sind möglicherweise nicht direkt in der Property verfügbar
+                            // Fallback zur DB-Abfrage
+                            List<XtdRelationshipToProperty> result = service.getConnectingProperties(property);
+                            return result != null ? result : new ArrayList<>();  // Handle null result
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdProperty", field = "symbols")
-    public List<XtdSymbol> getSymbols(XtdProperty property) {
-        Set<XtdSymbol> loadedSymbols = property.getSymbols();
-        if (loadedSymbols != null && !loadedSymbols.isEmpty()) {
-            return new ArrayList<>(loadedSymbols);
-        } else {
-            // Fallback: lade aus DB
-            return service.getSymbols(property);
-        }
+    @BatchMapping(typeName = "XtdProperty", field = "symbols")
+    public Map<XtdProperty, List<XtdSymbol>> getSymbols(List<XtdProperty> properties) {
+        return properties.stream()
+                .filter(property -> property != null)  // Filter out null properties
+                .collect(Collectors.toMap(
+                        property -> property,
+                        property -> {
+                            Set<XtdSymbol> loadedSymbols = property.getSymbols();
+                            if (loadedSymbols != null && !loadedSymbols.isEmpty()) {
+                                return new ArrayList<>(loadedSymbols);
+                            } else {
+                                // Fallback: lade aus DB
+                                List<XtdSymbol> result = service.getSymbols(property);
+                                return result != null ? result : new ArrayList<>();  // Handle null result
+                            }
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdProperty", field = "boundaryValues")
-    public List<XtdInterval> getBoundaryValues(XtdProperty property) {
-        Set<XtdInterval> loadedBoundaryValues = property.getBoundaryValues();
-        if (loadedBoundaryValues != null && !loadedBoundaryValues.isEmpty()) {
-            return new ArrayList<>(loadedBoundaryValues);
-        } else {
-            // Fallback: lade aus DB
-            return service.getIntervals(property);
-        }
+    @BatchMapping(typeName = "XtdProperty", field = "boundaryValues")
+    public Map<XtdProperty, List<XtdInterval>> getBoundaryValues(List<XtdProperty> properties) {
+        return properties.stream()
+                .filter(property -> property != null)  // Filter out null properties
+                .collect(Collectors.toMap(
+                        property -> property,
+                        property -> {
+                            Set<XtdInterval> loadedBoundaryValues = property.getBoundaryValues();
+                            if (loadedBoundaryValues != null && !loadedBoundaryValues.isEmpty()) {
+                                return new ArrayList<>(loadedBoundaryValues);
+                            } else {
+                                // Fallback: lade aus DB
+                                List<XtdInterval> result = service.getIntervals(property);
+                                return result != null ? result : new ArrayList<>();  // Handle null result
+                            }
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdProperty", field = "quantityKinds")
-    public List<XtdQuantityKind> getQuantityKinds(XtdProperty property) {
-        Set<XtdQuantityKind> loadedQuantityKinds = property.getQuantityKinds();
-        if (loadedQuantityKinds != null && !loadedQuantityKinds.isEmpty()) {
-            return new ArrayList<>(loadedQuantityKinds);
-        } else {
-            // Fallback: lade aus DB
-            return service.getQuantityKinds(property);
-        }
+    @BatchMapping(typeName = "XtdProperty", field = "quantityKinds")
+    public Map<XtdProperty, List<XtdQuantityKind>> getQuantityKinds(List<XtdProperty> properties) {
+        return properties.stream()
+                .filter(property -> property != null)  // Filter out null properties
+                .collect(Collectors.toMap(
+                        property -> property,
+                        property -> {
+                            Set<XtdQuantityKind> loadedQuantityKinds = property.getQuantityKinds();
+                            if (loadedQuantityKinds != null && !loadedQuantityKinds.isEmpty()) {
+                                return new ArrayList<>(loadedQuantityKinds);
+                            } else {
+                                // Fallback: lade aus DB
+                                List<XtdQuantityKind> result = service.getQuantityKinds(property);
+                                return result != null ? result : new ArrayList<>();  // Handle null result
+                            }
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdProperty", field = "subjects")
-    public List<XtdSubject> getSubjects(XtdProperty property) {
-        // Note: subjects werden über inverse Beziehung geladen,
-        // diese sind möglicherweise nicht direkt in der Property verfügbar
-        // Fallback zur DB-Abfrage
-        return service.getSubjects(property);
+    @BatchMapping(typeName = "XtdProperty", field = "subjects")
+    public Map<XtdProperty, List<XtdSubject>> getSubjects(List<XtdProperty> properties) {
+        return properties.stream()
+                .filter(property -> property != null)  // Filter out null properties
+                .collect(Collectors.toMap(
+                        property -> property,
+                        property -> {
+                            // Note: subjects werden über inverse Beziehung geladen,
+                            // diese sind möglicherweise nicht direkt in der Property verfügbar
+                            // Fallback zur DB-Abfrage
+                            List<XtdSubject> result = service.getSubjects(property);
+                            return result != null ? result : new ArrayList<>();  // Handle null result
+                        }
+                ));                
     }
 }

@@ -12,11 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.BatchMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -41,8 +42,16 @@ public class MultiLanguageTextController {
         return Connection.of(page);
     }
 
-    @SchemaMapping(typeName = "XtdMultiLanguageText", field = "texts")
-    public List<XtdText> getTexts(XtdMultiLanguageText multiLanguageText) {
-        return service.getTexts(multiLanguageText);
+    @BatchMapping(typeName = "XtdMultiLanguageText", field = "texts")
+    public Map<XtdMultiLanguageText, List<XtdText>> getTexts(List<XtdMultiLanguageText> multiLanguageTexts) {
+        return multiLanguageTexts.stream()
+                .filter(multiLanguageText -> multiLanguageText != null)  // Filter out null multiLanguageTexts
+                .collect(Collectors.toMap(
+                        multiLanguageText -> multiLanguageText,
+                        multiLanguageText -> {
+                            List<XtdText> result = service.getTexts(multiLanguageText);
+                            return result != null ? result : new ArrayList<>();  // Handle null result
+                        }
+                ));                
     }
 }
