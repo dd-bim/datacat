@@ -12,14 +12,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.BatchMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -49,16 +52,25 @@ public class SubjectController {
         return Connection.of(page);
     }
 
-    // Optimierte Schema-Mappings, die bereits geladene Daten verwenden
-    @SchemaMapping(typeName = "XtdSubject", field = "properties")
-    public List<XtdProperty> getProperties(XtdSubject subject) {
-        Set<XtdProperty> loadedProperties = subject.getProperties();
-        if (loadedProperties != null && !loadedProperties.isEmpty()) {
-            return new ArrayList<>(loadedProperties);
-        } else {
-            // Fallback: lade aus DB
-            return service.getProperties(subject);
-        }
+    // // Optimierte Schema-Mappings, die bereits geladene Daten verwenden
+    // @SchemaMapping(typeName = "XtdSubject", field = "properties")
+    // public List<XtdProperty> getProperties(XtdSubject subject) {
+    //     Set<XtdProperty> loadedProperties = subject.getProperties();
+    //     if (loadedProperties != null && !loadedProperties.isEmpty()) {
+    //         return new ArrayList<>(loadedProperties);
+    //     } else {
+    //         // Fallback: lade aus DB
+    //         return service.getProperties(subject);
+    //     }
+    // }
+
+    @BatchMapping(typeName = "XtdSubject", field = "properties")
+    public Map<XtdSubject, List<XtdProperty>> getProperties(List<XtdSubject> subjects) {
+        return subjects.stream()
+                .collect(Collectors.toMap(
+                        subject -> subject,
+                        subject -> service.getProperties(subject)
+                ));                
     }
 
     @SchemaMapping(typeName = "XtdSubject", field = "connectedSubjects")

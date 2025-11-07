@@ -52,10 +52,28 @@ public class SearchController {
 
     @QueryMapping
     public HierarchyValue hierarchy(@Argument HierarchyFilterInput input) {
-        if (input == null) input = new HierarchyFilterInput();
+        log.info("=== Hierarchy endpoint called with input: {} ===", input);
         
-        final HierarchyRootNodeFilterInput rootNodeFilter = input.getRootNodeFilter();
-        final CatalogRecordSpecification rootNodeSpecification = specificationMapper.toCatalogRecordSpecification(rootNodeFilter);
-        return catalogService.getHierarchy(rootNodeSpecification);
+        try {
+            if (input == null) {
+                log.warn("Input is null, creating empty HierarchyFilterInput");
+                input = new HierarchyFilterInput();
+            }
+            
+            final HierarchyRootNodeFilterInput rootNodeFilter = input.getRootNodeFilter();
+            log.info("Root node filter: {}", rootNodeFilter);
+            
+            final CatalogRecordSpecification rootNodeSpecification = specificationMapper.toCatalogRecordSpecification(rootNodeFilter);
+            log.info("Root node specification: {}", rootNodeSpecification);
+            
+            HierarchyValue result = catalogService.getHierarchy(rootNodeSpecification);
+            log.info("=== Hierarchy result: {} nodes, {} paths ===", 
+                    result.getNodes().size(), result.getPaths().size());
+            
+            return result;
+        } catch (Exception e) {
+            log.error("Error in hierarchy endpoint", e);
+            throw e;
+        }
     }
 }

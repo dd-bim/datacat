@@ -13,13 +13,10 @@ import de.bentrm.datacat.graphql.dto.CatalogStatistics;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
-import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -28,7 +25,6 @@ import org.springframework.validation.annotation.Validated;
 import jakarta.validation.constraints.NotNull;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Slf4j
 @Validated
@@ -41,6 +37,9 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Autowired
     Neo4jClient neo4jClient;
+
+    // Cache for entity classes to avoid repeated reflection lookups
+    private static final Map<String, Class<? extends XtdRoot>> ENTITY_CLASS_CACHE = new HashMap<>();
 
     @Autowired
     private TagRepository tagRepository;
@@ -89,7 +88,8 @@ public class CatalogServiceImpl implements CatalogService {
     @Transactional
     @Override
     public @NotNull Tag updateTag(String id, String name) {
-        final Tag tag = tagRepository.findByIdWithDirectRelations(id).orElseThrow(() -> new IllegalArgumentException("No tag with id " + id + " found."));
+        final Tag tag = tagRepository.findByIdWithDirectRelations(id)
+                .orElseThrow(() -> new IllegalArgumentException("No tag with id " + id + " found."));
         tag.setName(name);
         neo4jTemplate.saveAs(tag, TagDtoProjection.class);
         return tag;
@@ -99,7 +99,8 @@ public class CatalogServiceImpl implements CatalogService {
     @Override
     public @NotNull Tag deleteTag(String id) {
         Assert.notNull(id, "id may not be null.");
-        final Tag tag = tagRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("No tag with id " + id + " found."));
+        final Tag tag = tagRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No tag with id " + id + " found."));
         tagRepository.deleteById(id);
         return tag;
     }
@@ -107,8 +108,10 @@ public class CatalogServiceImpl implements CatalogService {
     @Transactional
     @Override
     public CatalogRecord addTag(String entryId, String tagId) {
-        CatalogRecord item = catalogRecordRepository.findByIdWithDirectRelations(entryId).orElseThrow(() -> new IllegalArgumentException("No record with id " + entryId + " found."));
-        final Tag tag = tagRepository.findByIdWithDirectRelations(tagId).orElseThrow(() -> new IllegalArgumentException("No record with tag " + tagId + " found."));
+        CatalogRecord item = catalogRecordRepository.findByIdWithDirectRelations(entryId)
+                .orElseThrow(() -> new IllegalArgumentException("No record with id " + entryId + " found."));
+        final Tag tag = tagRepository.findByIdWithDirectRelations(tagId)
+                .orElseThrow(() -> new IllegalArgumentException("No record with tag " + tagId + " found."));
         item.addTag(tag);
         neo4jTemplate.saveAs(item, CatalogRecordDtoProjection.class);
         return item;
@@ -117,8 +120,10 @@ public class CatalogServiceImpl implements CatalogService {
     @Transactional
     @Override
     public CatalogRecord removeTag(String entryId, String tagId) {
-        final CatalogRecord item = catalogRecordRepository.findByIdWithDirectRelations(entryId).orElseThrow(() -> new IllegalArgumentException("No record with id " + entryId + " found."));
-        final Tag tag = tagRepository.findByIdWithDirectRelations(tagId).orElseThrow(() -> new IllegalArgumentException("No record with tag " + tagId + " found."));
+        final CatalogRecord item = catalogRecordRepository.findByIdWithDirectRelations(entryId)
+                .orElseThrow(() -> new IllegalArgumentException("No record with id " + entryId + " found."));
+        final Tag tag = tagRepository.findByIdWithDirectRelations(tagId)
+                .orElseThrow(() -> new IllegalArgumentException("No record with tag " + tagId + " found."));
         item.removeTag(tag);
         neo4jTemplate.saveAs(item, CatalogRecordDtoProjection.class);
         return item;
@@ -187,8 +192,8 @@ public class CatalogServiceImpl implements CatalogService {
         // return objectRepository.findRelationshipBetweenObjects(fromId, toId);
         String relationship = objectRepository.findRelationshipBetweenObjects(fromId, toId);
         if (relationship == null) {
-            throw new NoSuchElementException("Relationship not found between the given objects:" + fromId
-                        + " and " + toId);
+            throw new NoSuchElementException(
+                    "Relationship not found between the given objects:" + fromId + " and " + toId);
         }
         return relationship;
     }
@@ -199,72 +204,117 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
-    public Page<XtdObject> findAllCatalogRecords(CatalogRecordSpecification specification) {
-        Collection<XtdObject> catalogRecords;
-        Pageable pageable;
-        final Long count = countCatalogRecords(specification);
+    public List<String> findAllCatalogRecords(CatalogRecordSpecification specification) {
+        long startTime = System.currentTimeMillis();
 
-        final Optional<Pageable> paged = specification.getPageable();
-        if (paged.isPresent()) {
-            pageable = paged.get();
-            if (pageable.getSort().isUnsorted()) {
-                catalogRecords = neo4jTemplate.findAll(getQuery(specification, pageable), XtdObject.class);
-            } else {
-                final Sort sort = pageable.getSort();
-                final Sort.Direction direction = sort.get().findFirst().map(Sort.Order::getDirection).get();
-                final String[] properties = sort.get().map(Sort.Order::getProperty).toArray(String[]::new);
-                catalogRecords = neo4jTemplate.findAll(getQuery(specification, pageable, direction, properties),
-                XtdObject.class);
-            }
-        } else {
-            pageable = PageRequest.of(0, (int) Math.max(count, 10));
-            catalogRecords = neo4jTemplate.findAll(getQuery(specification, pageable), XtdObject.class);
-        }
+        // Match any node (n) and use filters for label checks
+        // Filters already contain label constraints like "n:XtdSubject"
+        String baseMatch = "MATCH (n)";
+        String whereClause = specification.getFilters().isEmpty() ? ""
+                : " WHERE " + String.join(" AND ", specification.getFilters());
 
-        return PageableExecutionUtils.getPage(List.copyOf(catalogRecords), pageable, () -> count);
-    }
+        String query = baseMatch + whereClause + " RETURN n.id AS id";
+        log.debug("findAllCatalogRecords query: {}", query);
 
-    @Override
-    public @NotNull Long countCatalogRecords(@NotNull CatalogRecordSpecification specification) {
-        String query;
-        if (specification.getFilters().isEmpty()) {
-            query = "MATCH (n:XtdObject) RETURN count(n)";
-        } else {
-            String whereClause = "WHERE " + String.join(" AND ", specification.getFilters());
-            query = "MATCH (n:XtdObject) " + whereClause + " RETURN count(n)";
-        }
-        return neo4jTemplate.count(query);
+        List<String> result = neo4jClient.query(query).fetch().all().stream().map(record -> (String) record.get("id"))
+                .collect(Collectors.toList());
+
+        long duration = System.currentTimeMillis() - startTime;
+        log.debug("findAllCatalogRecords completed: {} IDs in {}ms", result.size(), duration);
+        return result;
     }
 
     @Override
     public HierarchyValue getHierarchy(@NotNull CatalogRecordSpecification rootNodeSpecification) {
-        long startTime = System.currentTimeMillis();
-        
-        final Page<XtdObject> rootNodes = findAllCatalogRecords(rootNodeSpecification);
-        final List<String> rootNodeIds = rootNodes.map(XtdObject::getId).stream().collect(Collectors.toList());
-        
-        long rootNodesTime = System.currentTimeMillis();
-        log.debug("Found {} root nodes in {} ms", rootNodeIds.size(), rootNodesTime - startTime);
+        long hierarchyStartTime = System.currentTimeMillis();
+        log.debug("=== Starting getHierarchy ===");
 
+        // Step 1: Find root node IDs
+        long step1Start = System.currentTimeMillis();
+        final List<String> rootNodeIds = findAllCatalogRecords(rootNodeSpecification);
+        long step1Duration = System.currentTimeMillis() - step1Start;
+        log.debug("Step 1: Found {} root node IDs in {}ms", rootNodeIds.size(), step1Duration);
+
+        if (rootNodeIds.isEmpty()) {
+            log.warn("No root nodes found for specification: {}", rootNodeSpecification);
+            long totalDuration = System.currentTimeMillis() - hierarchyStartTime;
+            log.debug("=== getHierarchy completed in {}ms (empty result) ===", totalDuration);
+            return new HierarchyValue(List.of(), List.of());
+        }
+
+        // Step 2: Find relationship paths
+        long step2Start = System.currentTimeMillis();
         final List<List<String>> paths = findRelationshipPaths(rootNodeIds);
-        
-        long pathsTime = System.currentTimeMillis();
-        log.debug("Found {} paths in {} ms", paths.size(), pathsTime - rootNodesTime);
+        long step2Duration = System.currentTimeMillis() - step2Start;
+        log.debug("Step 2: Found {} paths from root nodes in {}ms", paths.size(), step2Duration);
 
-        final Set<String> nodeIds = new HashSet<>();
-        paths.forEach(nodeIds::addAll);
-        
-        log.debug("Need to load {} unique nodes from {} paths", nodeIds.size(), paths.size());
+        // Step 3: Collect unique node IDs from paths
+        long step3Start = System.currentTimeMillis();
+        final Set<String> nodeIds = paths.stream().flatMap(List::stream).collect(Collectors.toSet());
+        long step3Duration = System.currentTimeMillis() - step3Start;
+        log.debug("Step 3: Collected {} unique node IDs from paths in {}ms", nodeIds.size(), step3Duration);
 
-        final Iterable<XtdRoot> nodes = rootRepository.findAllEntitiesById(nodeIds);
-        final List<XtdRoot> leaves = StreamSupport.stream(nodes.spliterator(), false).collect(Collectors.toList());
-        
-        long nodesTime = System.currentTimeMillis();
-        log.debug("Loaded {} nodes in {} ms", leaves.size(), nodesTime - pathsTime);
-        
-        long totalTime = System.currentTimeMillis();
-        log.info("Hierarchy query completed in {} ms total (root: {}ms, paths: {}ms, nodes: {}ms)", 
-                totalTime - startTime, rootNodesTime - startTime, pathsTime - rootNodesTime, nodesTime - pathsTime);
+        // Step 4: Load entities in batches
+        long step4Start = System.currentTimeMillis();
+        final int BATCH_SIZE = 500;
+        final List<String> nodeIdList = new ArrayList<>(nodeIds);
+        final List<XtdRoot> leaves = new ArrayList<>();
+
+        String query = """
+                MATCH (node:XtdRoot)
+                WHERE node.id IN $ids
+                RETURN node.id AS id, labels(node) AS labels
+                """;
+
+        int totalBatches = (nodeIdList.size() + BATCH_SIZE - 1) / BATCH_SIZE;
+        log.debug("Step 4: Loading {} node IDs in {} batches of max {} IDs each...", nodeIdList.size(), totalBatches,
+                BATCH_SIZE);
+
+        for (int i = 0; i < nodeIdList.size(); i += BATCH_SIZE) {
+            long batchStart = System.currentTimeMillis();
+            int batchNum = (i / BATCH_SIZE) + 1;
+            int end = Math.min(i + BATCH_SIZE, nodeIdList.size());
+            List<String> batch = nodeIdList.subList(i, end);
+
+            List<XtdRoot> batchResults = neo4jClient.query(query).bind(batch).to("ids").fetchAs(XtdRoot.class)
+                    .mappedBy((typeSystem, record) -> {
+                        String id = record.get("id").asString();
+                        List<String> labels = record.get("labels").asList(org.neo4j.driver.Value::asString);
+
+                        // Exclude abstract base classes and find the most specific concrete class
+                        // Abstract classes: Entity, CatalogRecord, XtdRoot, XtdObject, XtdConcept
+                        String specificLabel = labels
+                                .stream().filter(l -> !l.equals("Entity") && !l.equals("CatalogRecord")
+                                        && !l.equals("XtdRoot") && !l.equals("XtdObject") && !l.equals("XtdConcept"))
+                                .findFirst().orElse(null);
+
+                        if (specificLabel == null) {
+                            log.warn("No concrete label found for id {}, labels: {}", id, labels);
+                            return null;
+                        }
+
+                        // Create instance of the specific concrete type
+                        XtdRoot entity = createEntityInstance(specificLabel);
+                        if (entity != null) {
+                            entity.setId(id);
+                            entity.setTags(new HashSet<>()); // Empty tags - GraphQL will use BatchMapping
+                        }
+                        return entity;
+                    }).all().stream().filter(entity -> entity != null).toList();
+
+            leaves.addAll(batchResults);
+            long batchDuration = System.currentTimeMillis() - batchStart;
+            log.debug("  Batch {}/{}: loaded {} entities in {}ms", batchNum, totalBatches, batchResults.size(),
+                    batchDuration);
+        }
+
+        long step4Duration = System.currentTimeMillis() - step4Start;
+        log.debug("Step 4 completed: Loaded {} entities in {}ms across {} batches (WITHOUT tags)", leaves.size(),
+                step4Duration, totalBatches);
+
+        long totalDuration = System.currentTimeMillis() - hierarchyStartTime;
+        log.debug("=== getHierarchy completed in {}ms (Step1: {}ms, Step2: {}ms, Step3: {}ms, Step4: {}ms) ===",
+                totalDuration, step1Duration, step2Duration, step3Duration, step4Duration);
 
         return new HierarchyValue(leaves, paths);
     }
@@ -295,34 +345,139 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     public List<List<String>> findRelationshipPaths(List<String> startIds) {
-        return neo4jClient.query("""
-                MATCH (start:XtdObject)
-                WHERE start.id IN $startIds
-                MATCH path = (start)-[*]->(end:XtdObject)
-                WHERE NONE(n IN nodes(path)[1..] WHERE (n:XtdInterval OR n:XtdExternalDocument))
-                WITH nodes(path) AS nodelist
-                WITH [n IN nodelist WHERE NOT (n:XtdRelationshipToSubject OR n:XtdOrderedValue OR n:XtdRelationshipType OR n:XtdRelationshipToProperty OR n:XtdQuantityKind OR n:XtdCountry OR n:XtdDimension OR n:XtdSubdivision) | n.id] AS paths
-                RETURN paths
-            """)
-            .bind(startIds).to("startIds")
-            .fetch()
-            .all()
-            .stream()
-            .map(record -> Optional.ofNullable(record.get("paths"))
-                               .filter(List.class::isInstance)
-                               .map(List.class::cast)
-                               .orElse(List.of()))
-        .map(list -> ((List<?>) list).stream()
-                                     .filter(String.class::isInstance)
-                                     .map(String.class::cast)
-                                     .toList())
-            .toList();
+        long startTime = System.currentTimeMillis();
+        log.debug("findRelationshipPaths: Finding paths for {} start IDs: {}", startIds.size(),
+                startIds.size() <= 10 ? startIds : startIds.subList(0, 10) + "...");
+
+        List<List<String>> result = neo4jClient
+                .query("""
+                            MATCH (start:XtdObject)
+                            WHERE start.id IN $startIds
+                            MATCH path = (start)-[*1..8]->(end:XtdObject)
+                            WHERE NONE(n IN nodes(path)[1..] WHERE (n:XtdInterval OR n:XtdExternalDocument))
+                            WITH nodes(path) AS nodelist
+                            WITH [n IN nodelist WHERE NOT (n:XtdRelationshipToSubject OR n:XtdOrderedValue OR n:XtdRelationshipType OR n:XtdRelationshipToProperty OR n:XtdQuantityKind OR n:XtdCountry OR n:XtdDimension OR n:XtdSubdivision) | n.id] AS paths
+                            RETURN paths
+                        """)
+                .bind(startIds).to("startIds").fetch().all().stream()
+                .map(record -> Optional.ofNullable(record.get("paths")).filter(List.class::isInstance)
+                        .map(List.class::cast).orElse(List.of()))
+                .map(list -> ((List<?>) list).stream().filter(String.class::isInstance).map(String.class::cast)
+                        .toList())
+                .toList();
+
+        long duration = System.currentTimeMillis() - startTime;
+        int totalNodes = result.stream().mapToInt(List::size).sum();
+        log.debug("findRelationshipPaths completed: {} paths with {} total nodes in {}ms", result.size(), totalNodes,
+                duration);
+        return result;
+    }
+
+    /**
+     * Creates a minimal entity instance based on the Neo4j label. Returns an
+     * instance with only the ID set, no relationships loaded. Uses caching to avoid
+     * repeated reflection lookups.
+     */
+    @SuppressWarnings("unchecked")
+    private XtdRoot createEntityInstance(String label) {
+        try {
+            // Check cache first
+            Class<? extends XtdRoot> clazz = ENTITY_CLASS_CACHE.get(label);
+
+            if (clazz == null) {
+                // Map label to fully qualified class name
+                String className = "de.bentrm.datacat.catalog.domain." + label;
+                Class<?> loadedClass = Class.forName(className);
+
+                // Check if it's a subclass of XtdRoot
+                if (XtdRoot.class.isAssignableFrom(loadedClass)) {
+                    clazz = (Class<? extends XtdRoot>) loadedClass;
+                    ENTITY_CLASS_CACHE.put(label, clazz);
+                } else {
+                    log.warn("Label {} does not correspond to XtdRoot subclass", label);
+                    return null;
+                }
+            }
+
+            return clazz.getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            log.error("Failed to create entity instance for label: {}", label, e);
+            return null;
+        }
     }
 
     @Override
     public List<Tag> getTags(String entryId) {
         List<Tag> t = catalogRecordRepository.findTagsByCatalogRecordId(entryId);
         return t;
+    }
 
+    @Override
+    public Map<String, List<Tag>> getTagsForMultipleIds(List<String> recordIds) {
+        long startTime = System.currentTimeMillis();
+
+        if (recordIds == null || recordIds.isEmpty()) {
+            log.debug("getTagsForMultipleIds: No record IDs provided");
+            return Map.of();
+        }
+
+        log.debug("getTagsForMultipleIds: Loading tags for {} record IDs...", recordIds.size());
+
+        // Load all tags for all records in ONE query
+        Collection<Map<String, Object>> results = neo4jClient.query("""
+                    MATCH (record:CatalogRecord)-[:TAGGED]->(tag:Tag)
+                    WHERE record.id IN $ids
+                    RETURN record.id AS recordId, tag.id AS tagId, tag.name AS tagName
+                """).bind(recordIds).to("ids").fetch().all();
+
+        // Group tags by record ID
+        Map<String, List<Tag>> tagsMap = new HashMap<>();
+
+        for (Map<String, Object> row : results) {
+            String recordId = (String) row.get("recordId");
+            Tag tag = new Tag();
+            tag.setId((String) row.get("tagId"));
+            tag.setName((String) row.get("tagName"));
+
+            tagsMap.computeIfAbsent(recordId, k -> new ArrayList<>()).add(tag);
+        }
+
+        long duration = System.currentTimeMillis() - startTime;
+        int totalTags = tagsMap.values().stream().mapToInt(List::size).sum();
+        log.debug("getTagsForMultipleIds completed: Loaded {} tags for {}/{} records in {}ms", totalTags,
+                tagsMap.size(), recordIds.size(), duration);
+        return tagsMap;
+    }
+
+    @Override
+    public Map<String, String> getNamesForMultipleIds(List<String> objectIds, String languageCode) {
+        long startTime = System.currentTimeMillis();
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("ids", objectIds);
+
+        String query = """
+                MATCH (obj:XtdObject)-[:NAMES]->(mlt:XtdMultiLanguageText)-[:TEXTS]->(text:XtdText)-[:LANGUAGE]->(lang:XtdLanguage)
+                WHERE obj.id IN $ids AND lang.code = $languageCode
+                RETURN obj.id AS objectId, text.text AS name
+                """;
+        parameters.put("languageCode", languageCode);
+
+        Collection<Map<String, Object>> results = neo4jClient.query(query).bindAll(parameters).fetch().all();
+
+        // Simple mapping - one name per object
+        Map<String, String> namesMap = new HashMap<>();
+        for (Map<String, Object> row : results) {
+            String objectId = (String) row.get("objectId");
+            String name = (String) row.get("name");
+            if (objectId != null && name != null) {
+                namesMap.putIfAbsent(objectId, name); // putIfAbsent in case of duplicates
+            }
+        }
+
+        long duration = System.currentTimeMillis() - startTime;
+        log.debug("getNamesForMultipleIds completed: Loaded {} names for {}/{} objects in {}ms (language: {})", 
+                  namesMap.size(), namesMap.size(), objectIds.size(), duration, languageCode);
+        return namesMap;
     }
 }
