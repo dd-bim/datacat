@@ -10,11 +10,14 @@ import de.bentrm.datacat.graphql.dto.SpecificationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.BatchMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 public class IntervalController {
@@ -39,13 +42,29 @@ public class IntervalController {
         return Connection.of(page);
     }
 
-    @SchemaMapping(typeName = "XtdInterval", field = "minimum")
-    public Optional<XtdValueList> getMinimum(XtdInterval interval) {
-        return service.getMinimum(interval);
+    @BatchMapping(typeName = "XtdInterval", field = "minimum")
+    public Map<XtdInterval, Optional<XtdValueList>> getMinimum(List<XtdInterval> intervals) {
+        return intervals.stream()
+                .filter(interval -> interval != null)  // Filter out null intervals
+                .collect(Collectors.toMap(
+                        interval -> interval,
+                        interval -> {
+                            Optional<XtdValueList> result = service.getMinimum(interval);
+                            return result != null ? result : Optional.empty();  // Handle null Optional
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdInterval", field = "maximum")
-    public Optional<XtdValueList> getMaximum(XtdInterval interval) {
-        return service.getMaximum(interval);
+    @BatchMapping(typeName = "XtdInterval", field = "maximum")
+    public Map<XtdInterval, Optional<XtdValueList>> getMaximum(List<XtdInterval> intervals) {
+        return intervals.stream()
+                .filter(interval -> interval != null)  // Filter out null intervals
+                .collect(Collectors.toMap(
+                        interval -> interval,
+                        interval -> {
+                            Optional<XtdValueList> result = service.getMaximum(interval);
+                            return result != null ? result : Optional.empty();  // Handle null Optional
+                        }
+                ));                
     }
 }

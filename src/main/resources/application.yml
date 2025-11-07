@@ -33,9 +33,25 @@ spring:
     graphiql:
       enabled: true
       path: /graphiql
+  threads:
+    virtual:
+      enabled: true
+  task:
+    execution:
+      simple:
+        concurrency-limit: 200
+  neo4j:
+    pool:
+      max-connection-pool-size: 220 
+      connection-acquisition-timeout: 60s  # Erhöht für große Queries
+      max-connection-lifetime: 30m
+      idle-time-before-connection-test: 15s
+    connection-timeout: 60s  # Erhöht für große Queries
+    max-transaction-retry-time: 30s  # Erhöht für große Queries
 
 logging:
   level: 
     org.springframework.data.neo4j.cypher.unrecognized: ERROR
+    # org.springframework.data.neo4j.repository.query: DEBUG
+    # org.neo4j.driver: DEBUG
     # org.springframework: DEBUG
-    # org.springframework.data.neo4j: DEBUG

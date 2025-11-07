@@ -11,12 +11,15 @@ import de.bentrm.datacat.graphql.dto.SpecificationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.BatchMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 public class QuantityKindController {
@@ -41,13 +44,29 @@ public class QuantityKindController {
         return Connection.of(page);
     }
 
-    @SchemaMapping(typeName = "XtdQuantityKind", field = "units")
-    public List<XtdUnit> getUnits(XtdQuantityKind quantityKind) {
-        return service.getUnits(quantityKind);
+    @BatchMapping(typeName = "XtdQuantityKind", field = "units")
+    public Map<XtdQuantityKind, List<XtdUnit>> getUnits(List<XtdQuantityKind> quantityKinds) {
+        return quantityKinds.stream()
+                .filter(quantityKind -> quantityKind != null)  // Filter out null quantityKinds
+                .collect(Collectors.toMap(
+                        quantityKind -> quantityKind,
+                        quantityKind -> {
+                            List<XtdUnit> result = service.getUnits(quantityKind);
+                            return result != null ? result : new ArrayList<>();  // Handle null result
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdQuantityKind", field = "dimension")
-    public Optional<XtdDimension> getDimension(XtdQuantityKind quantityKind) {
-        return service.getDimension(quantityKind);
+    @BatchMapping(typeName = "XtdQuantityKind", field = "dimension")
+    public Map<XtdQuantityKind, Optional<XtdDimension>> getDimension(List<XtdQuantityKind> quantityKinds) {
+        return quantityKinds.stream()
+                .filter(quantityKind -> quantityKind != null)  // Filter out null quantityKinds
+                .collect(Collectors.toMap(
+                        quantityKind -> quantityKind,
+                        quantityKind -> {
+                            Optional<XtdDimension> result = service.getDimension(quantityKind);
+                            return result != null ? result : Optional.empty();  // Handle null Optional
+                        }
+                ));                
     }
 }

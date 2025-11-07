@@ -18,12 +18,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.BatchMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -49,39 +53,95 @@ public class ConceptController {
         return Connection.of(page);
     }
 
-    @SchemaMapping(typeName = "XtdConcept", field = "definition")
-    public Optional<XtdMultiLanguageText> getDefinition(XtdConcept concept) {
-        return service.getDefinition(concept);
+    @BatchMapping(typeName = "XtdConcept", field = "definition")
+    public Map<XtdConcept, Optional<XtdMultiLanguageText>> getDefinition(List<XtdConcept> concepts) {
+        return concepts.stream()
+                .filter(concept -> concept != null)  // Filter out null concepts
+                .collect(Collectors.toMap(
+                        concept -> concept,
+                        concept -> {
+                            Optional<XtdMultiLanguageText> result = service.getDefinition(concept);
+                            return result != null ? result : Optional.empty();  // Handle null Optional
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdConcept", field = "examples")
-    public List<XtdMultiLanguageText> getExamples(XtdConcept concept) {
-        return service.getExamples(concept);
+    @BatchMapping(typeName = "XtdConcept", field = "examples")
+    public Map<XtdConcept, List<XtdMultiLanguageText>> getExamples(List<XtdConcept> concepts) {
+        return concepts.stream()
+                .filter(concept -> concept != null)  // Filter out null concepts
+                .collect(Collectors.toMap(
+                        concept -> concept,
+                        concept -> {
+                            List<XtdMultiLanguageText> result = service.getExamples(concept);
+                            return result != null ? result : new ArrayList<>();  // Handle null result
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdConcept", field = "languageOfCreator")
-    public Optional<XtdLanguage> getLanguageOfCreator(XtdConcept concept) {
-        return service.getLanguageOfCreator(concept);
+    @BatchMapping(typeName = "XtdConcept", field = "languageOfCreator")
+    public Map<XtdConcept, Optional<XtdLanguage>> getLanguageOfCreator(List<XtdConcept> concepts) {
+        return concepts.stream()
+                .filter(concept -> concept != null)  // Filter out null concepts
+                .collect(Collectors.toMap(
+                        concept -> concept,
+                        concept -> {
+                            Optional<XtdLanguage> result = service.getLanguageOfCreator(concept);
+                            return result != null ? result : Optional.empty();  // Handle null Optional
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdConcept", field = "referenceDocuments")
-    public List<XtdExternalDocument> getReferenceDocuments(XtdConcept concept) {
-        return service.getReferenceDocuments(concept);
+    @BatchMapping(typeName = "XtdConcept", field = "referenceDocuments")
+    public Map<XtdConcept, List<XtdExternalDocument>> getReferenceDocuments(List<XtdConcept> concepts) {
+        return concepts.stream()
+                .filter(concept -> concept != null)  // Filter out null concepts
+                .collect(Collectors.toMap(
+                        concept -> concept,
+                        concept -> {
+                            List<XtdExternalDocument> result = service.getReferenceDocuments(concept);
+                            return result != null ? result : new ArrayList<>();  // Handle null result
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdConcept", field = "countryOfOrigin")
-    public Optional<XtdCountry> getCountryOfOrigin(XtdConcept concept) {
-        return service.getCountryOfOrigin(concept);
+    @BatchMapping(typeName = "XtdConcept", field = "countryOfOrigin")
+    public Map<XtdConcept, Optional<XtdCountry>> getCountryOfOrigin(List<XtdConcept> concepts) {
+        return concepts.stream()
+                .filter(concept -> concept != null)  // Filter out null concepts
+                .collect(Collectors.toMap(
+                        concept -> concept,
+                        concept -> {
+                            Optional<XtdCountry> result = service.getCountryOfOrigin(concept);
+                            return result != null ? result : Optional.empty();  // Handle null Optional
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdConcept", field = "similarTo")
-    public List<XtdConcept> getSimilarConcepts(XtdConcept concept) {
-        return service.getSimilarConcepts(concept);
+    @BatchMapping(typeName = "XtdConcept", field = "similarTo")
+    public Map<XtdConcept, List<XtdConcept>> getSimilarConcepts(List<XtdConcept> concepts) {
+        return concepts.stream()
+                .filter(concept -> concept != null)  // Filter out null concepts
+                .collect(Collectors.toMap(
+                        concept -> concept,
+                        concept -> {
+                            List<XtdConcept> result = service.getSimilarConcepts(concept);
+                            return result != null ? result : new ArrayList<>();  // Handle null result
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdConcept", field = "descriptions")
-    public List<XtdMultiLanguageText> getDescriptions(XtdConcept concept) {
-        return service.getDescriptions(concept);
+    @BatchMapping(typeName = "XtdConcept", field = "descriptions")
+    public Map<XtdConcept, List<XtdMultiLanguageText>> getDescriptions(List<XtdConcept> concepts) {
+        return concepts.stream()
+                .filter(concept -> concept != null)  // Filter out null concepts
+                .collect(Collectors.toMap(
+                        concept -> concept,
+                        concept -> {
+                            List<XtdMultiLanguageText> result = service.getDescriptions(concept);
+                            return result != null ? result : new ArrayList<>();  // Handle null result
+                        }
+                ));                
     }
 
     @SchemaMapping(typeName = "XtdConcept", field = "description")

@@ -12,11 +12,14 @@ import de.bentrm.datacat.graphql.dto.SpecificationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.BatchMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 public class SymbolController {
@@ -40,13 +43,29 @@ public class SymbolController {
         return Connection.of(page);
     }
 
-    @SchemaMapping(typeName = "XtdSymbol", field = "subject")
-    public Optional<XtdSubject> getSubject(XtdSymbol symbol) {
-        return service.getSubject(symbol);
+    @BatchMapping(typeName = "XtdSymbol", field = "subject")
+    public Map<XtdSymbol, Optional<XtdSubject>> getSubject(List<XtdSymbol> symbols) {
+        return symbols.stream()
+                .filter(symbol -> symbol != null)  // Filter out null symbols
+                .collect(Collectors.toMap(
+                        symbol -> symbol,
+                        symbol -> {
+                            Optional<XtdSubject> result = service.getSubject(symbol);
+                            return result != null ? result : Optional.empty();  // Handle null Optional
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdSymbol", field = "symbol")
-    public Optional<XtdText> getSymbolText(XtdSymbol symbol) {
-        return service.getSymbolText(symbol);
+    @BatchMapping(typeName = "XtdSymbol", field = "symbol")
+    public Map<XtdSymbol, Optional<XtdText>> getSymbolText(List<XtdSymbol> symbols) {
+        return symbols.stream()
+                .filter(symbol -> symbol != null)  // Filter out null symbols
+                .collect(Collectors.toMap(
+                        symbol -> symbol,
+                        symbol -> {
+                            Optional<XtdText> result = service.getSymbolText(symbol);
+                            return result != null ? result : Optional.empty();  // Handle null Optional
+                        }
+                ));                
     }
 }

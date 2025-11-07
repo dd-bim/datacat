@@ -14,12 +14,15 @@ import de.bentrm.datacat.graphql.dto.SpecificationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.BatchMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 public class UnitController {
@@ -44,33 +47,81 @@ public class UnitController {
         return Connection.of(page);
     }
 
-    @SchemaMapping(typeName = "XtdUnit", field = "properties")
-    public List<XtdProperty> getProperties(XtdUnit unit) {
-        return service.getProperties(unit);
+    @BatchMapping(typeName = "XtdUnit", field = "properties")
+    public Map<XtdUnit, List<XtdProperty>> getProperties(List<XtdUnit> units) {
+        return units.stream()
+                .filter(unit -> unit != null)  // Filter out null units
+                .collect(Collectors.toMap(
+                        unit -> unit,
+                        unit -> {
+                            List<XtdProperty> result = service.getProperties(unit);
+                            return result != null ? result : new ArrayList<>();  // Handle null result
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdUnit", field = "dimension")
-    public Optional<XtdDimension> getDimension(XtdUnit unit) {
-        return service.getDimension(unit);
+    @BatchMapping(typeName = "XtdUnit", field = "dimension")
+    public Map<XtdUnit, Optional<XtdDimension>> getDimension(List<XtdUnit> units) {
+        return units.stream()
+                .filter(unit -> unit != null)  // Filter out null units
+                .collect(Collectors.toMap(
+                        unit -> unit,
+                        unit -> {
+                            Optional<XtdDimension> result = service.getDimension(unit);
+                            return result != null ? result : Optional.empty();  // Handle null Optional
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdUnit", field = "symbol")
-    public Optional<XtdMultiLanguageText> getSymbol(XtdUnit unit) {
-        return service.getSymbol(unit);
+    @BatchMapping(typeName = "XtdUnit", field = "symbol")
+    public Map<XtdUnit, Optional<XtdMultiLanguageText>> getSymbol(List<XtdUnit> units) {
+        return units.stream()
+                .filter(unit -> unit != null)  // Filter out null units
+                .collect(Collectors.toMap(
+                        unit -> unit,
+                        unit -> {
+                            Optional<XtdMultiLanguageText> result = service.getSymbol(unit);
+                            return result != null ? result : Optional.empty();  // Handle null Optional
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdUnit", field = "coefficient")
-    public Optional<XtdRational> getCoefficient(XtdUnit unit) {
-        return service.getCoefficient(unit);
+    @BatchMapping(typeName = "XtdUnit", field = "coefficient")
+    public Map<XtdUnit, Optional<XtdRational>> getCoefficient(List<XtdUnit> units) {
+        return units.stream()
+                .filter(unit -> unit != null)  // Filter out null units
+                .collect(Collectors.toMap(
+                        unit -> unit,
+                        unit -> {
+                            Optional<XtdRational> result = service.getCoefficient(unit);
+                            return result != null ? result : Optional.empty();  // Handle null Optional
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdUnit", field = "offset")
-    public Optional<XtdRational> getOffset(XtdUnit unit) {
-        return service.getOffset(unit);
+    @BatchMapping(typeName = "XtdUnit", field = "offset")
+    public Map<XtdUnit, Optional<XtdRational>> getOffset(List<XtdUnit> units) {
+        return units.stream()
+                .filter(unit -> unit != null)  // Filter out null units
+                .collect(Collectors.toMap(
+                        unit -> unit,
+                        unit -> {
+                            Optional<XtdRational> result = service.getOffset(unit);
+                            return result != null ? result : Optional.empty();  // Handle null Optional
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdUnit", field = "valueLists")
-    public Optional<List<XtdValueList>> getValueLists(XtdUnit unit) {
-        return service.getValueLists(unit);
+    @BatchMapping(typeName = "XtdUnit", field = "valueLists")
+    public Map<XtdUnit, Optional<List<XtdValueList>>> getValueLists(List<XtdUnit> units) {
+        return units.stream()
+                .filter(unit -> unit != null)  // Filter out null units
+                .collect(Collectors.toMap(
+                        unit -> unit,
+                        unit -> {
+                            Optional<List<XtdValueList>> result = service.getValueLists(unit);
+                            return result != null ? result : Optional.empty();  // Handle null Optional
+                        }
+                ));                
     }
 }

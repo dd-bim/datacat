@@ -10,11 +10,14 @@ import de.bentrm.datacat.graphql.dto.SpecificationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.BatchMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 public class TextController {
@@ -38,8 +41,16 @@ public class TextController {
         return Connection.of(page);
     }
 
-    @SchemaMapping(typeName = "XtdText", field = "language")
-    public XtdLanguage getLanguage(XtdText text) {
-        return service.getLanguage(text);
+    @BatchMapping(typeName = "XtdText", field = "language")
+    public Map<XtdText, XtdLanguage> getLanguage(List<XtdText> texts) {
+        return texts.stream()
+                .filter(text -> text != null)  // Filter out null texts
+                .collect(Collectors.toMap(
+                        text -> text,
+                        text -> {
+                            XtdLanguage result = service.getLanguage(text);
+                            return result;  // Return as-is since it's not Optional or List
+                        }
+                ));                
     }
 }

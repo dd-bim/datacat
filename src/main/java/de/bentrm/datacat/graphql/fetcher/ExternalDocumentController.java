@@ -11,12 +11,15 @@ import de.bentrm.datacat.graphql.dto.SpecificationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.BatchMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 public class ExternalDocumentController {
@@ -41,14 +44,30 @@ public class ExternalDocumentController {
         return Connection.of(page);
     }
 
-    @SchemaMapping(typeName = "XtdExternalDocument", field = "languages")
-    public List<XtdLanguage> getLanguages(XtdExternalDocument document) {
-        return service.getLanguages(document);
+    @BatchMapping(typeName = "XtdExternalDocument", field = "languages")
+    public Map<XtdExternalDocument, List<XtdLanguage>> getLanguages(List<XtdExternalDocument> documents) {
+        return documents.stream()
+                .filter(document -> document != null)  // Filter out null documents
+                .collect(Collectors.toMap(
+                        document -> document,
+                        document -> {
+                            List<XtdLanguage> result = service.getLanguages(document);
+                            return result != null ? result : new ArrayList<>();  // Handle null result
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdExternalDocument", field = "documents")
-    public List<XtdConcept> getConcepts(XtdExternalDocument document) {
-        return service.getConcepts(document);
+    @BatchMapping(typeName = "XtdExternalDocument", field = "documents")
+    public Map<XtdExternalDocument, List<XtdConcept>> getConcepts(List<XtdExternalDocument> documents) {
+        return documents.stream()
+                .filter(document -> document != null)  // Filter out null documents
+                .collect(Collectors.toMap(
+                        document -> document,
+                        document -> {
+                            List<XtdConcept> result = service.getConcepts(document);
+                            return result != null ? result : new ArrayList<>();  // Handle null result
+                        }
+                ));                
     }
 
 }

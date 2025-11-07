@@ -11,12 +11,15 @@ import de.bentrm.datacat.graphql.dto.SpecificationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.BatchMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 public class RelationshipToSubjectController {
@@ -41,24 +44,56 @@ public class RelationshipToSubjectController {
         return Connection.of(page);
     }
 
-    @SchemaMapping(typeName = "XtdRelationshipToSubject", field = "connectingSubject")
-    public XtdSubject getConnectingSubject(XtdRelationshipToSubject relationshipToSubject) {
-        return service.getConnectingSubject(relationshipToSubject);
+    @BatchMapping(typeName = "XtdRelationshipToSubject", field = "connectingSubject")
+    public Map<XtdRelationshipToSubject, XtdSubject> getConnectingSubject(List<XtdRelationshipToSubject> relationshipToSubjects) {
+        return relationshipToSubjects.stream()
+                .filter(relationshipToSubject -> relationshipToSubject != null)  // Filter out null relationships
+                .collect(Collectors.toMap(
+                        relationshipToSubject -> relationshipToSubject,
+                        relationshipToSubject -> {
+                            XtdSubject result = service.getConnectingSubject(relationshipToSubject);
+                            return result;  // Return as-is since it's not Optional or List
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdRelationshipToSubject", field = "targetSubjects")
-    public List<XtdSubject> getTargetSubjects(XtdRelationshipToSubject relationshipToSubject) {
-        return service.getTargetSubjects(relationshipToSubject);
+    @BatchMapping(typeName = "XtdRelationshipToSubject", field = "targetSubjects")
+    public Map<XtdRelationshipToSubject, List<XtdSubject>> getTargetSubjects(List<XtdRelationshipToSubject> relationshipToSubjects) {
+        return relationshipToSubjects.stream()
+                .filter(relationshipToSubject -> relationshipToSubject != null)  // Filter out null relationships
+                .collect(Collectors.toMap(
+                        relationshipToSubject -> relationshipToSubject,
+                        relationshipToSubject -> {
+                            List<XtdSubject> result = service.getTargetSubjects(relationshipToSubject);
+                            return result != null ? result : new ArrayList<>();  // Handle null result
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdRelationshipToSubject", field = "scopeSubjects")
-    public List<XtdSubject> getScopeSubjects(XtdRelationshipToSubject relationshipToSubject) {
-        return service.getScopeSubjects(relationshipToSubject);
+    @BatchMapping(typeName = "XtdRelationshipToSubject", field = "scopeSubjects")
+    public Map<XtdRelationshipToSubject, List<XtdSubject>> getScopeSubjects(List<XtdRelationshipToSubject> relationshipToSubjects) {
+        return relationshipToSubjects.stream()
+                .filter(relationshipToSubject -> relationshipToSubject != null)  // Filter out null relationships
+                .collect(Collectors.toMap(
+                        relationshipToSubject -> relationshipToSubject,
+                        relationshipToSubject -> {
+                            List<XtdSubject> result = service.getScopeSubjects(relationshipToSubject);
+                            return result != null ? result : new ArrayList<>();  // Handle null result
+                        }
+                ));                
     }
 
-    @SchemaMapping(typeName = "XtdRelationshipToSubject", field = "relationshipType")
-    public XtdRelationshipType getRelationshipType(XtdRelationshipToSubject relationshipToSubject) {
-        return service.getRelationshipType(relationshipToSubject);
+    @BatchMapping(typeName = "XtdRelationshipToSubject", field = "relationshipType")
+    public Map<XtdRelationshipToSubject, XtdRelationshipType> getRelationshipType(List<XtdRelationshipToSubject> relationshipToSubjects) {
+        return relationshipToSubjects.stream()
+                .filter(relationshipToSubject -> relationshipToSubject != null)  // Filter out null relationships
+                .collect(Collectors.toMap(
+                        relationshipToSubject -> relationshipToSubject,
+                        relationshipToSubject -> {
+                            XtdRelationshipType result = service.getRelationshipType(relationshipToSubject);
+                            return result;  // Return as-is since it's not Optional or List
+                        }
+                ));                
     }
 
 }
