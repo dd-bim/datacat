@@ -57,59 +57,49 @@ public class ValueListController {
     // Optimierte Batch-Mappings, die bereits geladene Daten verwenden
     @BatchMapping(typeName = "XtdValueList", field = "values")
     public Map<XtdValueList, List<XtdOrderedValue>> getOrderedValues(List<XtdValueList> valueLists) {
-        return valueLists.stream()
-                .filter(valueList -> valueList != null)  // Filter out null valueLists
-                .collect(Collectors.toMap(
-                        valueList -> valueList,
-                        valueList -> {
-                            List<XtdOrderedValue> result = new ArrayList<>(valueList.getValues());
-                            return result != null ? result : new ArrayList<>();  // Handle null result
-                        }
-                ));                
+        return valueLists.stream().filter(valueList -> valueList != null) // Filter out null valueLists
+                .collect(Collectors.toMap(valueList -> valueList, valueList -> {
+                    Set<XtdOrderedValue> loadedValues = valueList.getValues();
+                    if (loadedValues != null && !loadedValues.isEmpty()) {
+                        return new ArrayList<>(loadedValues);
+                    } else {
+                        // Fallback: lade aus DB
+                        List<XtdOrderedValue> result = valueListRecordService.getOrderedValues(valueList);
+                        return result != null ? result : new ArrayList<>();
+                    }
+                }));
     }
 
     @BatchMapping(typeName = "XtdValueList", field = "properties")
     public Map<XtdValueList, List<XtdProperty>> getProperties(List<XtdValueList> valueLists) {
-        return valueLists.stream()
-                .filter(valueList -> valueList != null)  // Filter out null valueLists
-                .collect(Collectors.toMap(
-                        valueList -> valueList,
-                        valueList -> {
-                            Set<XtdProperty> loadedProperties = valueList.getProperties();
-                            if (loadedProperties != null && !loadedProperties.isEmpty()) {
-                                return new ArrayList<>(loadedProperties);
-                            } else {
-                                // Fallback: lade aus DB
-                                List<XtdProperty> result = valueListRecordService.getProperties(valueList);
-                                return result != null ? result : new ArrayList<>();  // Handle null result
-                            }
-                        }
-                ));                
+        return valueLists.stream().filter(valueList -> valueList != null) // Filter out null valueLists
+                .collect(Collectors.toMap(valueList -> valueList, valueList -> {
+                    Set<XtdProperty> loadedProperties = valueList.getProperties();
+                    if (loadedProperties != null && !loadedProperties.isEmpty()) {
+                        return new ArrayList<>(loadedProperties);
+                    } else {
+                        // Fallback: lade aus DB
+                        List<XtdProperty> result = valueListRecordService.getProperties(valueList);
+                        return result != null ? result : new ArrayList<>(); // Handle null result
+                    }
+                }));
     }
 
     @BatchMapping(typeName = "XtdValueList", field = "unit")
     public Map<XtdValueList, Optional<XtdUnit>> getUnit(List<XtdValueList> valueLists) {
-        return valueLists.stream()
-                .filter(valueList -> valueList != null)  // Filter out null valueLists
-                .collect(Collectors.toMap(
-                        valueList -> valueList,
-                        valueList -> {
-                            Optional<XtdUnit> result = Optional.ofNullable(valueList.getUnit());
-                            return result != null ? result : Optional.empty();  // Handle null Optional
-                        }
-                ));                
+        return valueLists.stream().filter(valueList -> valueList != null) // Filter out null valueLists
+                .collect(Collectors.toMap(valueList -> valueList, valueList -> {
+                    Optional<XtdUnit> result = Optional.ofNullable(valueList.getUnit());
+                    return result != null ? result : Optional.empty(); // Handle null Optional
+                }));
     }
 
     @BatchMapping(typeName = "XtdValueList", field = "language")
     public Map<XtdValueList, Optional<XtdLanguage>> getLanguage(List<XtdValueList> valueLists) {
-        return valueLists.stream()
-                .filter(valueList -> valueList != null)  // Filter out null valueLists
-                .collect(Collectors.toMap(
-                        valueList -> valueList,
-                        valueList -> {
-                            Optional<XtdLanguage> result = Optional.ofNullable(valueList.getLanguage());
-                            return result != null ? result : Optional.empty();  // Handle null Optional
-                        }
-                ));                
+        return valueLists.stream().filter(valueList -> valueList != null) // Filter out null valueLists
+                .collect(Collectors.toMap(valueList -> valueList, valueList -> {
+                    Optional<XtdLanguage> result = Optional.ofNullable(valueList.getLanguage());
+                    return result != null ? result : Optional.empty(); // Handle null Optional
+                }));
     }
 }

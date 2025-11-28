@@ -122,9 +122,10 @@ public class PropertyRecordServiceImpl extends AbstractSimpleRecordServiceImpl<X
                 Assert.notNull(property.getId(), "Property must be persistent.");
                 final List<String> valueListIds = getRepository()
                                 .findAllValueListIdsAssignedToProperty(property.getId());
-                final Iterable<XtdValueList> valueLists = valueListRecordService.findAllEntitiesById(valueListIds);
-
-                return StreamSupport.stream(valueLists.spliterator(), false).collect(Collectors.toList());
+  
+                return valueListIds.stream()
+                                .map(id -> valueListRecordService.findByIdWithIncomingAndOutgoingRelations(id))
+                                .filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
         }
 
         @Override
@@ -221,7 +222,8 @@ public class PropertyRecordServiceImpl extends AbstractSimpleRecordServiceImpl<X
 
         @Override
         public @NotNull Page<XtdProperty> findAll(@NotNull QuerySpecification specification) {
-                // Verwende eine optimierte Query für Properties, die wichtige Relationen vorlädt
+                // Verwende eine optimierte Query für Properties, die wichtige Relationen
+                // vorlädt
                 Collection<XtdProperty> properties;
                 Pageable pageable;
                 final Long count = count(specification);
@@ -239,7 +241,8 @@ public class PropertyRecordServiceImpl extends AbstractSimpleRecordServiceImpl<X
                 return PageableExecutionUtils.getPage(List.copyOf(properties), pageable, () -> count);
         }
 
-        private Collection<XtdProperty> findPropertiesWithRelations(QuerySpecification specification, Pageable pageable) {
+        private Collection<XtdProperty> findPropertiesWithRelations(QuerySpecification specification,
+                        Pageable pageable) {
                 String query = buildOptimizedPropertyQuery(specification, pageable);
                 return neo4jTemplate.findAll(query, XtdProperty.class);
         }
@@ -247,10 +250,13 @@ public class PropertyRecordServiceImpl extends AbstractSimpleRecordServiceImpl<X
         private String buildOptimizedPropertyQuery(QuerySpecification specification, Pageable pageable) {
                 String sort = "";
                 if (pageable.getSort().isSorted()) {
-                        final Sort.Direction direction = pageable.getSort().get().findFirst().map(Sort.Order::getDirection).orElse(Sort.Direction.ASC);
-                        final String[] properties = pageable.getSort().get().map(Sort.Order::getProperty).toArray(String[]::new);
+                        final Sort.Direction direction = pageable.getSort().get().findFirst()
+                                        .map(Sort.Order::getDirection).orElse(Sort.Direction.ASC);
+                        final String[] properties = pageable.getSort().get().map(Sort.Order::getProperty)
+                                        .toArray(String[]::new);
                         List<String> prefixedProperties = Arrays.stream(properties)
-                                        .map(property -> "p.`" + property + "` " + direction.name()).collect(Collectors.toList());
+                                        .map(property -> "p.`" + property + "` " + direction.name())
+                                        .collect(Collectors.toList());
                         sort = " ORDER BY " + String.join(", ", prefixedProperties);
                 }
 
@@ -262,7 +268,7 @@ public class PropertyRecordServiceImpl extends AbstractSimpleRecordServiceImpl<X
 
                 return String.format("""
                                 MATCH (p:XtdProperty)%s
-                                
+
                                 // Wichtigste Relationen vorladen
                                 OPTIONAL MATCH (p)-[:DIMENSION]->(dim:XtdDimension)
                                 OPTIONAL MATCH (p)-[:POSSIBLE_VALUES]->(vl:XtdValueList)
@@ -271,20 +277,19 @@ public class PropertyRecordServiceImpl extends AbstractSimpleRecordServiceImpl<X
                                 OPTIONAL MATCH (p)-[:QUANTITY_KINDS]->(qk:XtdQuantityKind)
                                 OPTIONAL MATCH (p)-[:BOUNDARY_VALUES]->(iv:XtdInterval)
                                 OPTIONAL MATCH (p)-[:TAGGED]->(tag:Tag)
-                                
-                                WITH p, 
+
+                                WITH p,
                                      collect(DISTINCT dim) as dimensions,
-                                     collect(DISTINCT vl) as valueLists, 
+                                     collect(DISTINCT vl) as valueLists,
                                      collect(DISTINCT unit) as units,
                                      collect(DISTINCT sym) as symbols,
                                      collect(DISTINCT qk) as quantityKinds,
                                      collect(DISTINCT iv) as intervals,
                                      collect(DISTINCT tag) as tags%s
-                                
+
                                 RETURN p, dimensions, valueLists, units, symbols, quantityKinds, intervals, tags
                                 SKIP %d LIMIT %d
-                                """,
-                                whereClause, sort, pageable.getOffset(), pageable.getPageSize());
+                                """, whereClause, sort, pageable.getOffset(), pageable.getPageSize());
         }
 
         @Transactional
@@ -292,7 +297,8 @@ public class PropertyRecordServiceImpl extends AbstractSimpleRecordServiceImpl<X
         public @NotNull XtdProperty setRelatedRecords(@NotBlank String recordId,
                         @NotEmpty List<@NotBlank String> relatedRecordIds, @NotNull SimpleRelationType relationType) {
 
-                final XtdProperty property = getRepository().findByIdWithDirectRelations(recordId).orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
+                final XtdProperty property = getRepository().findByIdWithDirectRelations(recordId).orElseThrow(
+                                () -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
                 switch (relationType) {
                 case Symbols -> {
@@ -320,7 +326,9 @@ public class PropertyRecordServiceImpl extends AbstractSimpleRecordServiceImpl<X
                                 throw new IllegalArgumentException("Exactly one dimension must be assigned.");
                         } else {
                                 final XtdDimension dimension = dimensionRecordService
-                                                .findByIdWithDirectRelations(relatedRecordIds.get(0)).orElseThrow(() -> new IllegalArgumentException("No record with id " + relatedRecordIds.get(0) + " found."));
+                                                .findByIdWithDirectRelations(relatedRecordIds.get(0))
+                                                .orElseThrow(() -> new IllegalArgumentException("No record with id "
+                                                                + relatedRecordIds.get(0) + " found."));
                                 property.setDimension(dimension);
                         }
                         neo4jTemplate.saveAs(property, DimensionDtoProjection.class);
