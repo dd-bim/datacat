@@ -23,11 +23,16 @@ public interface RelationshipToSubjectRepository extends EntityRepository<XtdRel
 
     @Query("""
             MATCH (n:XtdRelationshipToSubject {id: $relationshiptToSubjectId})<-[:CONNECTED_SUBJECTS]-(p:XtdSubject)
-            RETURN p.id""")
+            RETURN p.id LIMIT 1""")
     String findConnectingSubjectIdAssignedToRelationshipToSubject(String relationshiptToSubjectId);
 
     @Query("""
             MATCH (n:XtdRelationshipToSubject {id: $relationshiptToSubjectId})-[:RELATIONSHIP_TYPE]->(p:XtdRelationshipType)
             RETURN p.id""")
     String findRelationshipTypeIdAssignedToRelationshipToSubject(String relationshiptToSubjectId);
+
+    @Query("""
+            MATCH (n:XtdRelationshipToSubject)-[:RELATIONSHIP_TYPE]->(p:XtdRelationshipType {id: $relationshipTypeId})
+            RETURN count(n)""")
+    Long countRelationshipsUsingRelationshipType(String relationshipTypeId);
 }

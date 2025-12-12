@@ -26,6 +26,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -55,6 +56,12 @@ public class OrderedValueRecordServiceImpl extends
     @Override
     public @NotNull CatalogRecordType getSupportedCatalogRecordType() {
         return CatalogRecordType.OrderedValue;
+    }
+
+    @Override
+    public @NotNull Optional<XtdOrderedValue> findById(@NotNull String id) {
+        // Überschreibe die Standard-Methode, um KEINE Relationen zu laden
+        return getRepository().findByIdWithoutRelations(id);
     }
 
     @Override

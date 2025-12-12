@@ -34,7 +34,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Service
-@Transactional
 public class DataStoreMigrationService implements ApplicationRunner, ResourceLoaderAware {
 
     private final String MIGRATIONS_RESOURCE_PATTERN = "classpath:migrations/*.cql";
@@ -49,14 +48,17 @@ public class DataStoreMigrationService implements ApplicationRunner, ResourceLoa
     }
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public synchronized void run(ApplicationArguments args) throws Exception {
+        log.info("Starting database migration (synchronized execution)...");
         importMigrationFixtures();
         runMigrations();
+        log.info("Database migration completed.");
     }
 
     /**
      * Finds and executes all migrations on the classpath.
      */
+    @Transactional
     private void importMigrationFixtures() throws IOException {
         final Resource[] resources = ResourcePatternUtils.getResourcePatternResolver(resourceLoader)
                 .getResources(MIGRATIONS_RESOURCE_PATTERN);
@@ -102,6 +104,7 @@ public class DataStoreMigrationService implements ApplicationRunner, ResourceLoa
         log.info("Finished importing migration resources.");
     }
 
+    @Transactional
     private void runMigrations() {
         final Iterable<Migration> migrations = migrationRepository.findAllMigrationsOrderedById();
 

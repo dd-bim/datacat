@@ -1,1 +1,0 @@
-MATCH (t:XtdProperty) - [:POSSIBLE_VALUES] -> (x:XtdValueList) - [:ASSIGNS_UNIT] -> (y:XtdRelAssignsUnits) - [:ASSIGNS_UNIT] -> (z:XtdUnit) CREATE (t) - [:UNITS] -> (z) DETACH DELETE y RETURN t,x,z;

@@ -3,6 +3,7 @@ package de.bentrm.datacat.catalog.domain;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
@@ -32,6 +33,7 @@ public class XtdExternalDocument extends XtdConcept {
     private Set<XtdLanguage> languages = new HashSet<>();
 
     // @ToString.Include
+    @Lazy
     @Relationship(type = "REFERENCE_DOCUMENTS", direction = Relationship.Direction.INCOMING)
     private Set<XtdConcept> documents = new HashSet<>();
 

@@ -3,6 +3,7 @@ package de.bentrm.datacat.catalog.domain;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
@@ -19,6 +20,7 @@ public class XtdValue extends XtdObject {
 
     private String nominalValue;
 
+    @Lazy
     @Relationship(type = "ORDERED_VALUE", direction = Relationship.Direction.INCOMING)
     private Set<XtdOrderedValue> orderedValues = new HashSet<>();
 }

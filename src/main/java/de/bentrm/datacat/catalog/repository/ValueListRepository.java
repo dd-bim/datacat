@@ -12,9 +12,26 @@ import java.util.Optional;
 public interface ValueListRepository extends EntityRepository<XtdValueList> {
 
         @Query("""
+                        MATCH (vl:XtdValueList {id: $id})
+                        RETURN vl""")
+        Optional<XtdValueList> findByIdWithoutRelations(String id);
+
+        @Query("""
                         MATCH (n:XtdValueList {id: $valueListId})-[:VALUES]->(p:XtdOrderedValue)
                         RETURN p.id""")
         List<String> findAllOrderedValueIdsAssignedToValueList(String valueListId);
+
+        @Query("""
+                        MATCH (n:XtdValueList {id: $valueListId})-[:VALUES]->(p:XtdOrderedValue)
+                        RETURN p.id
+                        ORDER BY p.orderIndex
+                        SKIP $skip LIMIT $limit""")
+        List<String> findOrderedValuesByValueListIdPaginated(String valueListId, int skip, int limit);
+
+        @Query("""
+                        MATCH (n:XtdValueList {id: $valueListId})-[:VALUES]->(p:XtdOrderedValue)
+                        RETURN count(p)""")
+        Long countOrderedValuesByValueListId(String valueListId);
 
         @Query("""
                         MATCH (n:XtdValueList {id: $valueListId})<-[:POSSIBLE_VALUES]-(p:XtdProperty)

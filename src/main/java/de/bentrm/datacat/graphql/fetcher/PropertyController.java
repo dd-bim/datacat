@@ -41,8 +41,9 @@ public class PropertyController {
 
     @QueryMapping
     public Optional<XtdProperty> getProperty(@Argument String id) {
+        // Lade Property OHNE jegliche Relationen - alle Felder werden über separate Resolver geladen
         long start = System.currentTimeMillis();
-        Optional<XtdProperty> result = service.findByIdWithIncomingAndOutgoingRelations(id);
+        Optional<XtdProperty> result = service.findById(id);
         long end = System.currentTimeMillis();
         log.info("getProperty executed in {} ms", end - start);
         return result;

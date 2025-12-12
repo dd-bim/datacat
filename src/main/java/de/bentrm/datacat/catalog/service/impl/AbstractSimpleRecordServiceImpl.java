@@ -289,11 +289,15 @@ public abstract class AbstractSimpleRecordServiceImpl<T extends CatalogRecord, R
     @Override
     public @NotNull T removeRelationship(@NotBlank String recordId, @NotBlank String relatedRecordId,
             @NotNull SimpleRelationType relationType) {
+        log.info("removeRelationship called: recordId={}, relatedRecordId={}, relationType={}", 
+            recordId, relatedRecordId, relationType.getRelationProperty());
         log.trace("Deleting relationship from record with id {}...", recordId);
         final T entry = this.getRepository().findByIdWithDirectRelations(recordId)
                 .orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
+        log.info("Found entry, calling purgeRelationship...");
         cleanupService.purgeRelationship(recordId, relatedRecordId, relationType);
+        log.info("purgeRelationship completed");
         return entry;
     }
 

@@ -85,15 +85,16 @@ public class RelationshipToSubjectController {
 
     @BatchMapping(typeName = "XtdRelationshipToSubject", field = "relationshipType")
     public Map<XtdRelationshipToSubject, XtdRelationshipType> getRelationshipType(List<XtdRelationshipToSubject> relationshipToSubjects) {
-        return relationshipToSubjects.stream()
-                .filter(relationshipToSubject -> relationshipToSubject != null)  // Filter out null relationships
-                .collect(Collectors.toMap(
-                        relationshipToSubject -> relationshipToSubject,
-                        relationshipToSubject -> {
-                            XtdRelationshipType result = service.getRelationshipType(relationshipToSubject);
-                            return result;  // Return as-is since it's not Optional or List
-                        }
-                ));                
+        Map<XtdRelationshipToSubject, XtdRelationshipType> result = new java.util.HashMap<>();
+        for (XtdRelationshipToSubject relationshipToSubject : relationshipToSubjects) {
+            if (relationshipToSubject != null) {
+                XtdRelationshipType relationshipType = service.getRelationshipType(relationshipToSubject);
+                if (relationshipType != null) {
+                    result.put(relationshipToSubject, relationshipType);
+                }
+            }
+        }
+        return result;
     }
 
 }

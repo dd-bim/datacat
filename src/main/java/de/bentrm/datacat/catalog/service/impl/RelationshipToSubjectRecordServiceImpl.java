@@ -57,6 +57,15 @@ public class RelationshipToSubjectRecordServiceImpl
             @Autowired
             private RelationshipTypeRepository relationshipTypeRepository;
 
+            @Autowired
+            private de.bentrm.datacat.catalog.repository.LanguageRepository languageRepository;
+
+            @Autowired
+            private de.bentrm.datacat.catalog.repository.TextRepository textRepository;
+
+            @Autowired
+            private de.bentrm.datacat.catalog.repository.MultiLanguageTextRepository multiLanguageTextRepository;
+
     public RelationshipToSubjectRecordServiceImpl(Neo4jTemplate neo4jTemplate,
                                      RelationshipToSubjectRepository repository,
                                      CatalogCleanupService cleanupService) {
@@ -123,13 +132,19 @@ public class RelationshipToSubjectRecordServiceImpl
     public @NotNull XtdSubject getConnectingSubject(XtdRelationshipToSubject relationshipToSubject) {
         Assert.notNull(relationshipToSubject.getId(), "RelationshipToSubject must be persistent.");
         final String subjectId = getRepository().findConnectingSubjectIdAssignedToRelationshipToSubject(relationshipToSubject.getId());
-        return subjectRecordService.findByIdWithDirectRelations(subjectId).orElseThrow(() -> new IllegalArgumentException("No record with id " + subjectId + " found."));
+        if (subjectId == null) {
+            throw new IllegalArgumentException("No connecting subject found for RelationshipToSubject with id " + relationshipToSubject.getId());
+        }
+        return subjectRecordService.findById(subjectId).orElseThrow(() -> new IllegalArgumentException("No record with id " + subjectId + " found."));
     }
 
     @Override
-    public @NotNull XtdRelationshipType getRelationshipType(XtdRelationshipToSubject relationshipToSubject) {
+    public XtdRelationshipType getRelationshipType(XtdRelationshipToSubject relationshipToSubject) {
         Assert.notNull(relationshipToSubject.getId(), "RelationshipToSubject must be persistent.");
         final String relationshipTypeId = getRepository().findRelationshipTypeIdAssignedToRelationshipToSubject(relationshipToSubject.getId());
+        if (relationshipTypeId == null) {
+            return null;
+        }
         return relationshipTypeRecordService.findByIdWithDirectRelations(relationshipTypeId).orElseThrow(() -> new IllegalArgumentException("No record with id " + relationshipTypeId + " found."));
     }
 
@@ -145,6 +160,81 @@ public class RelationshipToSubjectRecordServiceImpl
         relationshipToSubject.setRelationshipType(relationshipType);
         neo4jTemplate.saveAs(relationshipToSubject, RelationshipTypeDtoProjection.class);
         return relationshipToSubject;
+    }
+
+    @Transactional
+    @Override
+    public @NotNull XtdRelationshipToSubject addRelationshipTypeByName(@NotNull XtdRelationshipToSubject relationshipToSubject,
+                                                    @NotNull String name,
+                                                    @NotNull XtdRelationshipKindEnum relationshipKind) {
+        Assert.notNull(relationshipToSubject.getId(), "RelationshipToSubject must be persistent.");
+        Assert.notNull(name, "Name must not be null.");
+        Assert.notNull(relationshipKind, "RelationshipKind must be a valid input.");
+
+        // Suche nach bestehendem XtdRelationshipType mit exakt diesem Namen und Kind
+        XtdRelationshipType existingType = findRelationshipTypeByNameAndKind(name, relationshipKind);
+
+        if (existingType != null) {
+            // Bestehendes Objekt verwenden
+            relationshipToSubject.setRelationshipType(existingType);
+        } else {
+            // Neues XtdRelationshipType erstellen
+            XtdRelationshipType relationshipType = new XtdRelationshipType();
+            relationshipType.setKind(relationshipKind);
+            relationshipType = relationshipTypeRepository.save(relationshipType);
+
+            // Namen als XtdMultiLanguageText mit deutscher Sprache hinzufügen
+            de.bentrm.datacat.catalog.domain.XtdLanguage germanLanguage = languageRepository.findByCode("de")
+                    .orElseThrow(() -> new IllegalArgumentException("German language not found in database."));
+
+            de.bentrm.datacat.catalog.domain.XtdText text = new de.bentrm.datacat.catalog.domain.XtdText();
+            text.setText(name);
+            text.setLanguage(germanLanguage);
+            text = textRepository.save(text);
+
+            de.bentrm.datacat.catalog.domain.XtdMultiLanguageText multiLanguageText = new de.bentrm.datacat.catalog.domain.XtdMultiLanguageText();
+            multiLanguageText.getTexts().add(text);
+            multiLanguageText = multiLanguageTextRepository.save(multiLanguageText);
+
+            relationshipType.getNames().add(multiLanguageText);
+            relationshipType = relationshipTypeRepository.save(relationshipType);
+
+            relationshipToSubject.setRelationshipType(relationshipType);
+        }
+
+        neo4jTemplate.saveAs(relationshipToSubject, RelationshipTypeDtoProjection.class);
+        return relationshipToSubject;
+    }
+
+    private XtdRelationshipType findRelationshipTypeByNameAndKind(String name, XtdRelationshipKindEnum kind) {
+        // Lade alle XtdRelationshipType mit dem gegebenen Kind
+        Iterable<XtdRelationshipType> allTypes = relationshipTypeRepository.findAll();
+
+        for (XtdRelationshipType type : allTypes) {
+            // Prüfe ob das Kind übereinstimmt
+            if (type.getKind() != kind) {
+                continue;
+            }
+
+            // Lade vollständig mit Neo4jTemplate um names zu bekommen
+            type = neo4jTemplate.findById(type.getId(), XtdRelationshipType.class).orElse(null);
+            if (type == null || type.getNames() == null) {
+                continue;
+            }
+
+            // Prüfe alle Namen
+            for (de.bentrm.datacat.catalog.domain.XtdMultiLanguageText multiLangText : type.getNames()) {
+                if (multiLangText.getTexts() != null) {
+                    for (de.bentrm.datacat.catalog.domain.XtdText text : multiLangText.getTexts()) {
+                        if (name.equals(text.getText())) {
+                            return type;
+                        }
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     @Transactional
@@ -198,5 +288,10 @@ public class RelationshipToSubjectRecordServiceImpl
 
         log.trace("Updated relationship: {}", relationship);
         return relationship;
-    }   
+    }
+
+    @Override
+    public Long countRelationshipsUsingRelationshipType(@NotBlank String relationshipTypeId) {
+        return getRepository().countRelationshipsUsingRelationshipType(relationshipTypeId);
+    }
 }

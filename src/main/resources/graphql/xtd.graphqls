@@ -295,10 +295,14 @@ type XtdSubject implements XtdRoot & XtdObject & XtdConcept {
   tags: [Tag!]!
   uri: String
   referenceDocuments: [XtdExternalDocument!]!
-  connectedSubjects: [XtdRelationshipToSubject!]!
-  connectingSubjects: [XtdRelationshipToSubject!]!
+  connectedSubjects(filter: RelationshipToSubjectFilterInput): [XtdRelationshipToSubject!]!
+  connectingSubjects(filter: RelationshipToSubjectFilterInput): [XtdRelationshipToSubject!]!
   properties: [XtdProperty!]!
   # filters: [XtdFilter]
+}
+
+input RelationshipToSubjectFilterInput {
+  relationshipTypeName: String
 }
 
 type XtdProperty implements XtdRoot & XtdObject & XtdConcept {
@@ -376,7 +380,7 @@ type XtdValueList implements XtdRoot & XtdObject & XtdConcept {
   uri: String
   referenceDocuments: [XtdExternalDocument!]!
   unit: XtdUnit
-  values: [XtdOrderedValue!]!
+  values(pageSize: Int, pageNumber: Int): XtdOrderedValueConnection!
   properties: [XtdProperty!]
 }
 
@@ -879,6 +883,12 @@ type XtdRelationshipToPropertyConnection {
   totalElements: Int!
 }
 
+type XtdRelationshipTypeConnection {
+  nodes: [XtdRelationshipType!]!
+  pageInfo: PageInfo!
+  totalElements: Int!
+}
+
 type XtdLanguageConnection {
   nodes: [XtdLanguage!]!
   pageInfo: PageInfo!
@@ -1060,4 +1070,7 @@ type Query {
 
   getObject(id: ID!): XtdObject
   findObjects(input: FilterInput): XtdObjectConnection!
+
+  getRelationshipType(id: ID!): XtdRelationshipType
+  findRelationshipTypes(input: FilterInput): XtdRelationshipTypeConnection!
 }

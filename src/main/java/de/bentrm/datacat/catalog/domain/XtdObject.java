@@ -3,6 +3,7 @@ package de.bentrm.datacat.catalog.domain;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.neo4j.core.schema.CompositeProperty;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
@@ -74,6 +75,7 @@ public abstract class XtdObject extends XtdRoot {
 
     // Incoming relations of above relation
     @ToString.Include
+    @Lazy
     @Relationship(type = XtdObject.REPLACE_OBJECT_TYPE, direction = Relationship.Direction.INCOMING)
     private Set<XtdObject> replacingObjects = new HashSet<>();
 

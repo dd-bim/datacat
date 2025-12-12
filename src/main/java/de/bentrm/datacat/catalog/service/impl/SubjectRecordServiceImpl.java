@@ -125,6 +125,12 @@ public class SubjectRecordServiceImpl
     }
 
     @Override
+    public @NotNull Optional<XtdSubject> findById(@NotNull String id) {
+        // Überschreibe die Standard-Methode, um KEINE Relationen zu laden
+        return getRepository().findByIdWithoutRelations(id);
+    }
+
+    @Override
     public List<XtdProperty> getProperties(XtdSubject subject) {
         Assert.notNull(subject.getId(), "Subject must be persistent.");
         final List<String> propertyIds = getRepository().findAllPropertyIdsAssignedToSubject(subject.getId());

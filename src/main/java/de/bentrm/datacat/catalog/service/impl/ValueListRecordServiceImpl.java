@@ -139,12 +139,38 @@ public class ValueListRecordServiceImpl extends AbstractSimpleRecordServiceImpl<
     }
 
     @Override
+    public @NotNull Optional<XtdValueList> findById(@NotNull String id) {
+        // Überschreibe die Standard-Methode, um KEINE Relationen zu laden
+        return getRepository().findByIdWithoutRelations(id);
+    }
+
+    @Override
     public List<XtdOrderedValue> getOrderedValues(XtdValueList valueList) {
         Assert.notNull(valueList.getId(), "ValueList must be persistent.");
         final List<String> valueIds = getRepository().findAllOrderedValueIdsAssignedToValueList(valueList.getId());
         final Iterable<XtdOrderedValue> values = orderedValueRecordService.findAllEntitiesById(valueIds);
 
         return StreamSupport.stream(values.spliterator(), false).collect(Collectors.toList());
+    }
+
+    @Override
+    public @NotNull Page<XtdOrderedValue> getOrderedValues(@NotNull XtdValueList valueList, @NotNull Pageable pageable) {
+        Assert.notNull(valueList.getId(), "ValueList must be persistent.");
+        
+        final List<String> valueIds = getRepository().findOrderedValuesByValueListIdPaginated(
+            valueList.getId(), 
+            (int) pageable.getOffset(), 
+            pageable.getPageSize()
+        );
+        
+        final Iterable<XtdOrderedValue> values = orderedValueRecordService.findAllEntitiesById(valueIds);
+        final List<XtdOrderedValue> valuesList = StreamSupport.stream(values.spliterator(), false)
+            .collect(Collectors.toList());
+        
+        // Get total count for pagination
+        final Long totalCount = getRepository().countOrderedValuesByValueListId(valueList.getId());
+        
+        return PageableExecutionUtils.getPage(valuesList, pageable, () -> totalCount);
     }
 
     @Override
@@ -188,6 +214,11 @@ public class ValueListRecordServiceImpl extends AbstractSimpleRecordServiceImpl<
     @Override
     public Optional<XtdValueList> findByIdWithIncomingAndOutgoingRelations(String id) {
         return getRepository().findByIdWithIncomingAndOutgoingRelations(id);
+    }
+
+    @Override
+    public Optional<XtdValueList> findByIdWithoutRelations(String id) {
+        return getRepository().findByIdWithoutRelations(id);
     }
 
     @Transactional
@@ -262,19 +293,30 @@ public class ValueListRecordServiceImpl extends AbstractSimpleRecordServiceImpl<
     @Override
     public @NotNull XtdValueList removeRelationship(@NotBlank String recordId, @NotBlank String relatedRecordId,
             @NotNull SimpleRelationType relationType) {
+        log.info("ValueListRecordService.removeRelationship called: recordId={}, relatedRecordId={}, relationType={}", 
+            recordId, relatedRecordId, relationType.getRelationProperty());
         log.trace("Deleting relationship from record with id {}...", recordId);
         final XtdValueList entry = this.getRepository().findByIdWithDirectRelations(recordId)
                 .orElseThrow(() -> new IllegalArgumentException("No record with id " + recordId + " found."));
 
-        Set<XtdOrderedValue> orderedValues = entry.getValues();
-        for (XtdOrderedValue orderedValue : orderedValues) {
-            XtdOrderedValue value = orderedValueRepository.findByIdWithDirectRelations(orderedValue.getId())
-                    .orElseThrow(() -> new IllegalArgumentException(
-                            "No record with id " + orderedValue.getOrderedValue().getId() + " found."));
-            if (value.getOrderedValue().getId().equals(relatedRecordId)) {
-                removeRecord(orderedValue.getId());
+        // Handle Values relationship (via OrderedValue)
+        if (relationType == SimpleRelationType.Values) {
+            Set<XtdOrderedValue> orderedValues = entry.getValues();
+            for (XtdOrderedValue orderedValue : orderedValues) {
+                XtdOrderedValue value = orderedValueRepository.findByIdWithDirectRelations(orderedValue.getId())
+                        .orElseThrow(() -> new IllegalArgumentException(
+                                "No record with id " + orderedValue.getOrderedValue().getId() + " found."));
+                if (value.getOrderedValue().getId().equals(relatedRecordId)) {
+                    removeRecord(orderedValue.getId());
+                }
             }
+        } 
+        // Handle other relationships (Unit, Language, etc.) via standard cleanup
+        else {
+            log.info("Delegating to super.removeRelationship for relationType: {}", relationType.getRelationProperty());
+            super.removeRelationship(recordId, relatedRecordId, relationType);
         }
+        
         return entry;
     }
 }

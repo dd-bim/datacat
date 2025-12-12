@@ -45,6 +45,11 @@ public interface ObjectRepository extends EntityRepository<XtdObject> {
         String findRelationshipBetweenObjects(String fromId, String toId);
 
         @Query("""
+                        MATCH(x:XtdObject {id: $fromId})-[]->(y:XtdRelationshipToSubject|XtdRelationshipToProperty)-[]->(z:XtdObject {id: $toId}) 
+                        RETURN y.id""")
+        List<String> findAllRelationshipsBetweenObjects(String fromId, String toId);
+
+        @Query("""
                         MATCH(x:XtdObject {id: $objectId})-[n:TARGET_PROPERTIES|TARGET_SUBJECTS]->() 
                         RETURN count(n)
                         """)

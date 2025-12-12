@@ -14,9 +14,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.BatchMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -38,8 +41,9 @@ public class ValueListController {
 
     @QueryMapping
     public Optional<XtdValueList> getValueList(@Argument String id) {
+        // Lade ValueList OHNE jegliche Relationen - alle Felder werden über separate Resolver geladen
         long start = System.currentTimeMillis();
-        Optional<XtdValueList> result = valueListRecordService.findByIdWithIncomingAndOutgoingRelations(id);
+        Optional<XtdValueList> result = valueListRecordService.findByIdWithoutRelations(id);
         long end = System.currentTimeMillis();
         log.info("Query executed in {} ms", end - start);
         return result;
@@ -54,20 +58,16 @@ public class ValueListController {
         return Connection.of(page);
     }
 
-    // Optimierte Batch-Mappings, die bereits geladene Daten verwenden
-    @BatchMapping(typeName = "XtdValueList", field = "values")
-    public Map<XtdValueList, List<XtdOrderedValue>> getOrderedValues(List<XtdValueList> valueLists) {
-        return valueLists.stream().filter(valueList -> valueList != null) // Filter out null valueLists
-                .collect(Collectors.toMap(valueList -> valueList, valueList -> {
-                    Set<XtdOrderedValue> loadedValues = valueList.getValues();
-                    if (loadedValues != null && !loadedValues.isEmpty()) {
-                        return new ArrayList<>(loadedValues);
-                    } else {
-                        // Fallback: lade aus DB
-                        List<XtdOrderedValue> result = valueListRecordService.getOrderedValues(valueList);
-                        return result != null ? result : new ArrayList<>();
-                    }
-                }));
+    @SchemaMapping(typeName = "XtdValueList", field = "values")
+    public Connection<XtdOrderedValue> getOrderedValues(XtdValueList valueList,
+                                            @Argument Integer pageSize, 
+                                            @Argument Integer pageNumber) {
+        if (pageSize == null) pageSize = 20;
+        if (pageNumber == null) pageNumber = 0;
+        
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<XtdOrderedValue> page = valueListRecordService.getOrderedValues(valueList, pageable);
+        return Connection.of(page);
     }
 
     @BatchMapping(typeName = "XtdValueList", field = "properties")

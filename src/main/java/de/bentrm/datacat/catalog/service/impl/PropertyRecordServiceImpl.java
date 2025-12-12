@@ -109,6 +109,12 @@ public class PropertyRecordServiceImpl extends AbstractSimpleRecordServiceImpl<X
         }
 
         @Override
+        public @NotNull Optional<XtdProperty> findById(@NotNull String id) {
+                // Überschreibe die Standard-Methode, um KEINE Relationen zu laden
+                return getRepository().findByIdWithoutRelations(id);
+        }
+
+        @Override
         public List<XtdSubject> getSubjects(XtdProperty property) {
                 Assert.notNull(property.getId(), "Property must be persistent.");
                 final List<String> subjectIds = getRepository().findAllSubjectIdsAssignedToProperty(property.getId());
@@ -122,10 +128,9 @@ public class PropertyRecordServiceImpl extends AbstractSimpleRecordServiceImpl<X
                 Assert.notNull(property.getId(), "Property must be persistent.");
                 final List<String> valueListIds = getRepository()
                                 .findAllValueListIdsAssignedToProperty(property.getId());
+                final Iterable<XtdValueList> valueLists = valueListRecordService.findAllEntitiesById(valueListIds);
   
-                return valueListIds.stream()
-                                .map(id -> valueListRecordService.findByIdWithIncomingAndOutgoingRelations(id))
-                                .filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
+                return StreamSupport.stream(valueLists.spliterator(), false).collect(Collectors.toList());
         }
 
         @Override

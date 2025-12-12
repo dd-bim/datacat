@@ -70,8 +70,19 @@ public class RelationshipRecordMutationController {
             } else {
                 catalogEntry = relationshipToSubjectRecordService.addRecord(relId, input.getFromId(),
                         input.getToIds());
-                catalogEntry = relationshipToSubjectRecordService.addRelationshipType(catalogEntry,
-                        inputProperties.getRelationshipToSubjectProperties().getRelationshipType());
+                
+                // Prüfe ob ein Name vorhanden ist
+                String name = inputProperties.getRelationshipToSubjectProperties().getName();
+                if (name != null && !name.isEmpty()) {
+                    // Verwende die neue Methode die nach bestehendem Type sucht oder neuen erstellt
+                    catalogEntry = relationshipToSubjectRecordService.addRelationshipTypeByName(catalogEntry,
+                            name,
+                            inputProperties.getRelationshipToSubjectProperties().getRelationshipType());
+                } else {
+                    // Bisheriges Verhalten: Erstelle immer neues XtdRelationshipType
+                    catalogEntry = relationshipToSubjectRecordService.addRelationshipType(catalogEntry,
+                            inputProperties.getRelationshipToSubjectProperties().getRelationshipType());
+                }
             }
             return catalogEntry;
         } else {
@@ -125,8 +136,13 @@ public class RelationshipRecordMutationController {
 
         if (relationship instanceof XtdRelationshipToSubject) {
             String relationshipTypeId = ((XtdRelationshipToSubject) relationship).getRelationshipType().getId();
-            catalogCleanupService.deleteNodeWithRelationships(relationshipTypeId);
             relationship = relationshipToSubjectRecordService.removeRecord(relationshipId);
+            
+            // Lösche den RelationshipType nur, wenn er nicht mehr von anderen Relationen verwendet wird
+            Long usageCount = relationshipToSubjectRecordService.countRelationshipsUsingRelationshipType(relationshipTypeId);
+            if (usageCount == 0) {
+                catalogCleanupService.deleteNodeWithRelationships(relationshipTypeId);
+            }
         } else {
             relationship = relationshipToPropertyRecordService.removeRecord(relationshipId);
         }
@@ -135,6 +151,9 @@ public class RelationshipRecordMutationController {
 
     @MutationMapping
     protected DeleteRelationshipPayload deleteRelationship(@Argument DeleteRelationshipInput input) {
+        log.info("Deleting relationship: type={}, from={}, to={}, name={}", 
+            input.getRelationshipType(), input.getFromId(), input.getToId(), input.getName());
+        
         SimpleRelationType relType = input.getRelationshipType();
         CatalogRecord record;
         final CatalogRecord fromEntity = catalogService.getEntryById(input.getFromId())
@@ -143,7 +162,11 @@ public class RelationshipRecordMutationController {
                 .getService(CatalogRecordType.getByDomainClass(fromEntity));
         if (relType == SimpleRelationType.RelationshipToSubject
                 || relType == SimpleRelationType.RelationshipToProperty) {
-            String relationshipId = catalogService.getRelationshipBetweenObjects(input.getFromId(), input.getToId());
+            String relationshipId = catalogService.getRelationshipBetweenObjectsByName(
+                input.getFromId(), 
+                input.getToId(), 
+                input.getName()
+            );
             SimpleRelationType target;
             if (relType == SimpleRelationType.RelationshipToSubject) {
                 target = SimpleRelationType.TargetSubjects;
@@ -156,8 +179,10 @@ public class RelationshipRecordMutationController {
                 deleteObjectRelationship(relationshipId);
             }
         } else {
+            log.info("Removing simple relationship: relationType={}", relType.getRelationProperty());
             record = simpleRecordService.removeRelationship(input.getFromId(), input.getToId(), relType);
         }
+        log.info("Relationship deleted successfully for record: {}", record.getId());
         return PAYLOAD_MAPPER.toDeleteRelationshipPayload(record);
     }
 }

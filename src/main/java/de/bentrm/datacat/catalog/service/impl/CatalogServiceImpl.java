@@ -199,6 +199,55 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
+    public @NotNull String getRelationshipBetweenObjectsByName(String fromId, String toId, String name) {
+        List<String> relationshipIds = objectRepository.findAllRelationshipsBetweenObjects(fromId, toId);
+        
+        if (relationshipIds == null || relationshipIds.isEmpty()) {
+            throw new NoSuchElementException(
+                    "No relationship found between the given objects: " + fromId + " and " + toId);
+        }
+
+        // Wenn kein Name angegeben wurde
+        if (name == null || name.isEmpty()) {
+            if (relationshipIds.size() > 1) {
+                throw new IllegalStateException(
+                    "Multiple relationships found between objects " + fromId + " and " + toId + 
+                    ". Please specify a relationship name to disambiguate.");
+            }
+            return relationshipIds.get(0);
+        }
+
+        // Filtere nach Name
+        for (String relId : relationshipIds) {
+            Optional<CatalogRecord> relOpt = catalogRecordRepository.findByIdWithDirectRelations(relId);
+            if (relOpt.isPresent() && relOpt.get() instanceof de.bentrm.datacat.catalog.domain.XtdRelationshipToSubject) {
+                de.bentrm.datacat.catalog.domain.XtdRelationshipToSubject rel = 
+                    (de.bentrm.datacat.catalog.domain.XtdRelationshipToSubject) relOpt.get();
+                
+                de.bentrm.datacat.catalog.domain.XtdRelationshipType relType = rel.getRelationshipType();
+                if (relType != null) {
+                    // Lade vollständig mit Neo4jTemplate um names zu bekommen
+                    relType = neo4jTemplate.findById(relType.getId(), de.bentrm.datacat.catalog.domain.XtdRelationshipType.class).orElse(null);
+                    if (relType != null && relType.getNames() != null) {
+                        for (de.bentrm.datacat.catalog.domain.XtdMultiLanguageText multiLangText : relType.getNames()) {
+                            if (multiLangText.getTexts() != null) {
+                                for (de.bentrm.datacat.catalog.domain.XtdText text : multiLangText.getTexts()) {
+                                    if (name.equals(text.getText())) {
+                                        return relId;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        throw new NoSuchElementException(
+            "No relationship found between objects " + fromId + " and " + toId + " with name '" + name + "'");
+    }
+
+    @Override
     public Long countTargetRelationships(String objectId) {
         return objectRepository.countTargetRelationships(objectId);
     }

@@ -3,6 +3,7 @@ package de.bentrm.datacat.catalog.domain;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
@@ -43,10 +44,12 @@ public class XtdUnit extends XtdConcept {
     private XtdDimension dimension; 
 
     // @ToString.Include
+    @Lazy
     @Relationship(type = "UNITS", direction = Relationship.Direction.INCOMING)
     private Set<XtdProperty> properties = new HashSet<>();
 
     // @ToString.Include
+    @Lazy
     @Relationship(type = "UNIT", direction = Relationship.Direction.INCOMING)
     private Set<XtdValueList> valueLists = new HashSet<>();
 }

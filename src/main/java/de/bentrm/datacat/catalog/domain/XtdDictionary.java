@@ -7,6 +7,7 @@ import lombok.ToString;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
@@ -21,6 +22,7 @@ public class XtdDictionary extends XtdRoot {
     @Relationship(type = "NAME")
     private XtdMultiLanguageText name;
 
+    @Lazy
     @Relationship(type = "DICTIONARY", direction = Relationship.Direction.INCOMING)
     private Set<XtdObject> concepts = new HashSet<>();
 }

@@ -3,6 +3,7 @@ package de.bentrm.datacat.catalog.domain;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
@@ -24,14 +25,17 @@ public class XtdRelationshipToSubject extends XtdObject {
     private XtdRelationshipType relationshipType;
 
     // @ToString.Include
+    @Lazy
     @Relationship(type = "SCOPE_SUBJECTS")
     private Set<XtdSubject> scopeSubjects = new HashSet<>();
 
     // @ToString.Include
+    @Lazy
     @Relationship(type = XtdRelationshipToSubject.RELATIONSHIP_TYPE_OUT)
     private Set<XtdSubject> targetSubjects = new HashSet<>();
 
     // @ToString.Include
+    @Lazy
     @Relationship(type = XtdRelationshipToSubject.RELATIONSHIP_TYPE, direction = Relationship.Direction.INCOMING)
     private XtdSubject connectingSubject;
 

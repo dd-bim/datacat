@@ -3,6 +3,7 @@ package de.bentrm.datacat.catalog.domain;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
@@ -53,11 +54,13 @@ public class XtdProperty extends XtdConcept {
     // sets of possible values can be provided to allow providing them in different
     // languages.
     // @ToString.Include
+    @Lazy
     @Relationship(type = "POSSIBLE_VALUES")
     private Set<XtdValueList> possibleValues = new HashSet<>();
 
     // List of units that can be attached to a value.
     // @ToString.Include
+    @Lazy
     @Relationship(type = "UNITS")
     private Set<XtdUnit> units = new HashSet<>();
 
@@ -66,16 +69,19 @@ public class XtdProperty extends XtdConcept {
     // List of properties connected to the current property. The connection can be a
     // specialization or a dependency.
     // @ToString.Include
+    @Lazy
     @Relationship(type = XtdRelationshipToProperty.RELATIONSHIP_TYPE)
     private Set<XtdRelationshipToProperty> connectedProperties = new HashSet<>();
 
     // Incomming relations
     // @ToString.Include
+    @Lazy
     @Relationship(type = XtdRelationshipToProperty.RELATIONSHIP_TYPE, direction = Relationship.Direction.INCOMING)
     private Set<XtdRelationshipToProperty> connectingProperties = new HashSet<>();
 
     // List of the properties attached to the subject.
     // @ToString.Include
+    @Lazy
     @Relationship(type = "PROPERTIES", direction = Relationship.Direction.INCOMING)
     private Set<XtdSubject> subjects = new HashSet<>();
 }

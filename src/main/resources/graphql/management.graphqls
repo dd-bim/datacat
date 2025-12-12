@@ -149,6 +149,7 @@ input RelationshipToPropertyInput {
 
 input RelationshipToSubjectInput {
     relationshipType: XtdRelationshipKindEnum
+    name: String
 }
 
 input PropertiesInput {
@@ -231,6 +232,7 @@ input DeleteRelationshipInput {
     relationshipType: RelationshipRecordType!
     fromId: ID!
     toId: ID!
+    name: String
 }
 
 type DeleteRelationshipPayload {

@@ -1,2 +1,0 @@
-MATCH (x:XtdSubject) - [:ASSIGNS_PROPERTY_WITH_VALUES] -> (z:XtdRelAssignsPropertyWithValues) - [:ASSIGNS_PROPERTY_WITH_VALUES] -> (y:XtdProperty) CREATE (x) - [:PROPERTIES] -> (y) DETACH DELETE z RETURN x,y,z;
-MATCH ()-[r]->() MATCH (s)-[r]->(e) WITH s,e,type(r) as typ, tail(collect(r)) as coll FOREACH(x in coll | delete x);

@@ -1,3 +1,0 @@
-MATCH (x:XtdSubject) - [:TAGGED] -> (y:Tag {name: "Klasse"}) WITH x MATCH (x) - [r:ASSIGNS_COLLECTIONS] -> (z:XtdRelAssignsCollections) CREATE (x) - [:CONNECTED_SUBJECTS] -> (z) DELETE r RETURN x,z;
-MATCH (x:XtdSubject) - [:TAGGED] -> (y:Tag {name: "Merkmalsgruppe"}) WITH x MATCH (z:XtdRelAssignsCollections) - [r:ASSIGNS_COLLECTIONS] -> (x) CREATE (z) - [:TARGET_SUBJECTS] -> (x) DELETE r RETURN x,z;
-MATCH (n:XtdRelAssignsCollections) SET n:XtdRelationshipToSubject REMOVE n:XtdRelAssignsCollections RETURN n;

@@ -12,4 +12,5 @@ public class DeleteRelationshipInput {
     @NotNull SimpleRelationType relationshipType;
     @NotBlank String fromId;
     @NotBlank String toId;
+    String name;
 }

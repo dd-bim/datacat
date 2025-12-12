@@ -136,15 +136,15 @@ public class ObjectController {
     public Map<XtdObject, Optional<String>> getName(
             List<XtdObject> objects, 
             org.dataloader.BatchLoaderEnvironment environment) {
-        long startTime = System.currentTimeMillis();
+        // long startTime = System.currentTimeMillis();
         
         // Filter out null objects first
         List<XtdObject> validObjects = objects.stream()
                 .filter(object -> object != null)
                 .toList();
         
-        log.info("=== BatchMapping name START: Processing {} objects ({} valid) ===", 
-                 objects.size(), validObjects.size());
+        // log.info("=== BatchMapping name START: Processing {} objects ({} valid) ===", 
+                //  objects.size(), validObjects.size());
         
         if (validObjects.isEmpty()) {
             log.warn("=== BatchMapping name: No valid objects to process ===");
@@ -165,19 +165,19 @@ public class ObjectController {
         String languageCode;
         if (input != null && input.getPriorityList() != null && !input.getPriorityList().isEmpty()) {
             languageCode = input.getPriorityList().get(0).getRange();
-            log.info("Using language from input argument: {}", languageCode);
+            // log.info("Using language from input argument: {}", languageCode);
         } else {
             languageCode = LocalizationUtils.DEFAULT_LANGUAGE_RANGE.get(0).getRange();
-            log.info("Using default language: {}", languageCode);
+            // log.info("Using default language: {}", languageCode);
         }
         
-        log.info("=== BatchMapping name: Calling getNamesForMultipleIds with {} IDs, language: {} ===", 
-                 objectIds.size(), languageCode);
+        // log.info("=== BatchMapping name: Calling getNamesForMultipleIds with {} IDs, language: {} ===", 
+        //          objectIds.size(), languageCode);
         
         // Load names in ONE query via CatalogService
         Map<String, String> namesById = catalogService.getNamesForMultipleIds(objectIds, languageCode);
         
-        log.info("=== BatchMapping name: Received {} names, mapping back to objects ===", namesById.size());
+        // log.info("=== BatchMapping name: Received {} names, mapping back to objects ===", namesById.size());
         
         // Map back to objects (only valid objects)
         Map<XtdObject, Optional<String>> result = validObjects.stream()
@@ -186,9 +186,9 @@ public class ObjectController {
                         object -> Optional.ofNullable(namesById.get(object.getId()))
                 ));
         
-        long duration = System.currentTimeMillis() - startTime;
-        log.info("=== BatchMapping name END: {} names for {} objects in {}ms ===", 
-                 namesById.size(), validObjects.size(), duration);
+        // long duration = System.currentTimeMillis() - startTime;
+        // log.info("=== BatchMapping name END: {} names for {} objects in {}ms ===", 
+        //          namesById.size(), validObjects.size(), duration);
         return result;
     }
 

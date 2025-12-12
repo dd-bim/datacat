@@ -59,6 +59,9 @@ public interface CatalogService {
     @NotNull String getRelationshipBetweenObjects(@NotBlank String fromId, @NotBlank String toId);
 
     @PreAuthorize("hasRole('READONLY')")
+    @NotNull String getRelationshipBetweenObjectsByName(@NotBlank String fromId, @NotBlank String toId, String name);
+
+    @PreAuthorize("hasRole('READONLY')")
     Long countTargetRelationships(@NotBlank String objectId);
 
     @PreAuthorize("hasRole('READONLY')")

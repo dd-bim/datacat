@@ -50,6 +50,12 @@ public class ValueRecordServiceImpl extends AbstractSimpleRecordServiceImpl<XtdV
     }
 
     @Override
+    public @NotNull Optional<XtdValue> findById(@NotNull String id) {
+        // Überschreibe die Standard-Methode, um KEINE Relationen zu laden
+        return getRepository().findByIdWithoutRelations(id);
+    }
+
+    @Override
     public Optional<List<XtdOrderedValue>> getOrderedValues(@NotNull XtdValue value) {
         Assert.notNull(value.getId(), "Value must be persistent.");
         final List<String> orderedValueIds = getRepository().findOrderedValueIdByValueId(value.getId());

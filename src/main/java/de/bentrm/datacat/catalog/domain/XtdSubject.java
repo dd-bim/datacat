@@ -6,6 +6,7 @@ import lombok.ToString;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
@@ -18,16 +19,19 @@ public class XtdSubject extends XtdConcept {
 
     // List of the properties attached to the subject.
     // @ToString.Include
+    @Lazy
     @Relationship(type = "PROPERTIES")
     private Set<XtdProperty> properties = new HashSet<>();
 
     // List of subjects connected with a qualified relationship.
     // @ToString.Include
+    @Lazy
     @Relationship(type = XtdRelationshipToSubject.RELATIONSHIP_TYPE)
     private Set<XtdRelationshipToSubject> connectedSubjects = new HashSet<>();
 
     // Incomming relations
     // @ToString.Include
+    @Lazy
     @Relationship(type = XtdRelationshipToSubject.RELATIONSHIP_TYPE_OUT, direction = Relationship.Direction.INCOMING)
     private Set<XtdRelationshipToSubject> connectingSubjects = new HashSet<>();
 

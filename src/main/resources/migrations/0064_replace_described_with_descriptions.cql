@@ -1,1 +1,0 @@
-MATCH(x) - [c:DESCRIBED] -> (y) CREATE (x) - [:DESCRIPTIONS] -> (y) DELETE c RETURN  x,y;

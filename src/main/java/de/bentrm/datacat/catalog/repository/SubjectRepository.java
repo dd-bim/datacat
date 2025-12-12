@@ -12,6 +12,11 @@ import java.util.Optional;
 public interface SubjectRepository extends EntityRepository<XtdSubject> {
 
         @Query("""
+                        MATCH (s:XtdSubject {id: $id})
+                        RETURN s""")
+        Optional<XtdSubject> findByIdWithoutRelations(String id);
+
+        @Query("""
                         MATCH (n:XtdSubject {id: $subjectId})-[:PROPERTIES]->(p:XtdProperty)
                         RETURN p.id""")
         List<String> findAllPropertyIdsAssignedToSubject(String subjectId);
