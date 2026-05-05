@@ -133,6 +133,7 @@ public class ObjectController {
     }
     
     @BatchMapping(typeName = "XtdObject", field = "name")
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public Map<XtdObject, Optional<String>> getName(
             List<XtdObject> objects, 
             org.dataloader.BatchLoaderEnvironment environment) {

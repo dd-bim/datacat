@@ -80,6 +80,7 @@ public class DictionaryRecordServiceImpl
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public @NotNull Page<XtdObject> getConcepts(@NotNull XtdDictionary dictionary, @NotNull Pageable pageable) {
         Assert.notNull(dictionary.getId(), "Dictionary must be persistent.");
         

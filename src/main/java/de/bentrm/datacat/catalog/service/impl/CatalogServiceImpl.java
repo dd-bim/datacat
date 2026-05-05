@@ -499,6 +499,7 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public Map<String, String> getNamesForMultipleIds(List<String> objectIds, String languageCode) {
         long startTime = System.currentTimeMillis();
 

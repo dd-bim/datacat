@@ -47,6 +47,7 @@ public class DictionaryController {
     }
 
     @BatchMapping(typeName = "XtdDictionary", field = "name")
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public Map<XtdDictionary, XtdMultiLanguageText> getName(List<XtdDictionary> dictionaries) {
         return dictionaries.stream()
                 .filter(dictionary -> dictionary != null)  // Filter out null dictionaries

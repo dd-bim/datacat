@@ -11,6 +11,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -23,6 +24,7 @@ import static java.util.function.Predicate.not;
  * a JWT-token in the header of the request.
  *
  * If a token is found, it will be validated.
+ * This filter handles legacy/custom JWT tokens. Keycloak tokens are handled by OAuth2 Resource Server.
  */
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -35,7 +37,22 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
-        getToken(request).ifPresent(token -> authenticationService.login(token));
+        Optional<String> token = getToken(request);
+        
+        // Versuche nur den eigenen JWT zu validieren, wenn ein Token vorhanden ist
+        // Der OAuth2 Resource Server wird Keycloak-Tokens automatisch verarbeiten
+        if (token.isPresent()) {
+            try {
+                authenticationService.login(token.get());
+                // Wenn Login erfolgreich, wurde Authentication gesetzt
+                // Das signalisiert dem OAuth2 Resource Server, dass er nicht mehr prüfen muss
+            } catch (Exception e) {
+                // Falls eigener JWT-Verifier fehlschlägt, könnte es ein Keycloak-Token sein
+                // In diesem Fall lassen wir den OAuth2 Resource Server weitermachen
+                // (keine Exception werfen, damit OAuth2 Resource Server den Token prüfen kann)
+            }
+        }
+        
         filterChain.doFilter(request, response);
     }
 

@@ -9,6 +9,7 @@ import de.bentrm.datacat.catalog.service.value.ValueMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -29,11 +30,35 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public ProfileDto getProfile() {
-        final String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userRepository
-                .findByUsername(username)
-                .map(user -> valueMapper.toProfileDto(user))
-                .orElseThrow(() -> new IllegalArgumentException("No account with username " + username + " found."));
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        
+        if (principal instanceof Jwt jwt) {
+            // Keycloak JWT Token - Virtuelles Profil direkt aus Token-Claims erstellen
+            String username = jwt.getClaimAsString("preferred_username");
+            if (username == null) {
+                username = jwt.getClaimAsString("sub");
+            }
+            
+            String firstName = jwt.getClaimAsString("given_name");
+            String lastName = jwt.getClaimAsString("family_name");
+            String email = jwt.getClaimAsString("email");
+            String organization = jwt.getClaimAsString("organization");
+            
+            return ProfileDto.builder()
+                    .username(username)
+                    .firstName(firstName != null ? firstName : "")
+                    .lastName(lastName != null ? lastName : "")
+                    .email(email != null ? email : "")
+                    .organization(organization != null ? organization : "")
+                    .build();
+        } else {
+            // Legacy JWT Token - Profil aus DB laden
+            String username = (String) principal;
+            return userRepository
+                    .findByUsername(username)
+                    .map(user -> valueMapper.toProfileDto(user))
+                    .orElseThrow(() -> new IllegalArgumentException("No account with username " + username + " found."));
+        }
     }
 
     @Transactional

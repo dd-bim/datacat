@@ -32,7 +32,17 @@ public class DataStoreConfiguration {
     public AuditorAware<String> auditorAware() {
         return () -> Optional.ofNullable(SecurityContextHolder.getContext()
                 .getAuthentication())
-                .map(auth -> (String) auth.getPrincipal())
+                .map(auth -> {
+                    Object principal = auth.getPrincipal();
+                    if (principal instanceof org.springframework.security.oauth2.jwt.Jwt jwt) {
+                        // Keycloak JWT Token - extrahiere Username aus Claims
+                        String username = jwt.getClaimAsString("preferred_username");
+                        return username != null ? username : jwt.getClaimAsString("sub");
+                    } else {
+                        // Legacy JWT Token - Principal ist direkt der Username
+                        return (String) principal;
+                    }
+                })
                 .or(() -> Optional.of("SYSTEM"));
     }
 

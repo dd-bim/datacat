@@ -27,4 +27,16 @@ EXPOSE 8080
 
 HEALTHCHECK --start-period=30s --interval=30s --timeout=3s --retries=3 \
     CMD curl -m 5 --silent --fail localhost:8080/actuator/health | jq --exit-status -n 'inputs | if has("status") then .status=="UP" else false end' > /dev/null || exit 1
-CMD ["java", "--enable-preview", "org.springframework.boot.loader.launch.JarLauncher"]
+
+# Optimierte JVM-Settings für Production mit Memory-Leak-Prävention
+ENV JAVA_OPTS="-XX:+UseG1GC \
+    -XX:MaxGCPauseMillis=200 \
+    -XX:+HeapDumpOnOutOfMemoryError \
+    -XX:HeapDumpPath=/tmp/heapdump.hprof \
+    -XX:+ExitOnOutOfMemoryError \
+    -Xms512m \
+    -Xmx1g \
+    -XX:MaxMetaspaceSize=256m \
+    -XX:MaxDirectMemorySize=256m"
+
+CMD ["sh", "-c", "java $JAVA_OPTS --enable-preview org.springframework.boot.loader.launch.JarLauncher"]
